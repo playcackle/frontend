@@ -1,0 +1,240 @@
+.formContainer {
+  width: 40%;
+  background-color: rgba(20, 20, 40, 0.7);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.3);
+  border: 1px solid rgba(0, 221, 255, 0.3);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 2rem;
+  font-family: var(--retro-font);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.neonText {
+  color: #fff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff,
+    0 0 80px #0ff;
+}
+
+.neonTextPink {
+  color: #fff;
+  text-shadow: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px #f0f, 0 0 40px #f0f,
+    0 0 80px #f0f;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: var(--retro-font);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  color: rgba(0, 221, 255, 0.7);
+}
+
+.input {
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 221, 255, 0.3);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  font-family: var(--retro-font-alt);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 10px rgba(0, 221, 255, 0.5);
+}
+
+.submitButton {
+  background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-family: var(--retro-font);
+  position: relative;
+  overflow: hidden;
+}
+
+.submitButton:hover {
+  box-shadow: 0 0 15px rgba(183, 0, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+.submitButton::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: buttonShine 3s ease-in-out infinite;
+}
+
+@keyframes buttonShine {
+  0% {
+    left: -50%;
+    top: -50%;
+  }
+  100% {
+    left: 100%;
+    top: 100%;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.divider span {
+  padding: 0 1rem;
+}
+
+.socialButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.socialButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: none;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--retro-font-alt);
+}
+
+.githubButton {
+  background-color: #24292e;
+}
+
+.twitterButton {
+  background-color: #1da1f2;
+}
+
+.facebookButton {
+  background-color: #4267b2;
+}
+
+.socialButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.switchText {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.switchLink {
+  color: var(--neon-blue);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.switchLink:hover {
+  text-shadow: 0 0 5px var(--neon-blue);
+}
+
+.demoNotice {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background-color: rgba(255, 204, 0, 0.2);
+  border: 1px solid rgba(255, 204, 0, 0.3);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #ffcc00;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .formContainer {
+    padding: 1.5rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+}

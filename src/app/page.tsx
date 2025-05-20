@@ -1,0 +1,53 @@
+import LobbyTile from "@/app/components/lobby-tile";
+import { Lobby } from "./models/lobby";
+import styles from "./page.module.css";
+
+export default async function Home() {
+  const lobbies = await fetchLobbies();
+  return (
+    <>
+      <section className={styles.heroSection}>
+        <h1 className={styles.title}>
+          <span className={styles.neonText}>SNAP</span>
+          <span className={styles.neonTextPink}>SCORE</span>
+        </h1>
+      </section>
+
+      <section className={styles.lobbiesSection}>
+        <div className={styles.lobbiesContainer}>
+          {lobbies.map((x: Lobby, i: number) => (
+            <LobbyTile lobby={x} key={i} />
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
+
+// Server-side function to fetch quiz rooms
+async function fetchLobbies(): Promise<Lobby[]> {
+  try {
+    // Use the absolute URL for server-side fetching
+    console.log("PROCESS ENV: ");
+    console.log;
+    const baseUrl =
+      process.env.BACKEND_URL || process.env.NEXT_PUBLIC_APP_BACKEND_URL;
+
+    const response = await fetch(`${baseUrl}/lobbies`, {
+      // Add cache options for revalidation
+      next: {
+        revalidate: 60, // Revalidate every 60 seconds
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching rooms: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch quiz rooms:", error);
+    return [];
+  }
+}

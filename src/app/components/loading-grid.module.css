@@ -1,0 +1,60 @@
+.mGrid.isAnimating {
+  animation: fly 5s linear infinite;
+}
+
+@keyframes fly {
+  0% {
+    transform: perspective(300px) rotateX(80deg) translateY(0%);
+  }
+  100% {
+    transform: perspective(300px) rotateX(80deg) translateY(50px);
+  }
+}
+
+.mGrid {
+  -webkit-mask-image: -webkit-gradient(
+    linear,
+    left 90%,
+    left bottom,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 90%,
+    rgba(0, 0, 0, 0)
+  );
+  position: absolute;
+  top: 0;
+  left: -50vw; /* Center the grid */
+  margin-top: 5vh;
+  width: 200vw;
+  height: 150vh;
+  transform: scaleY(0);
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      rgba(255, 0, 170, 0.5) 25%,
+      rgba(255, 0, 170, 0.9) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(255, 0, 170, 0.5) 75%,
+      rgba(255, 0, 170, 0.9) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      rgba(255, 0, 170, 0.75) 25%,
+      rgba(255, 0, 170, 0.25) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(255, 0, 170, 0.75) 75%,
+      rgba(255, 0, 170, 0.25) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-size: 50px 50px;
+  z-index: 10;
+}
