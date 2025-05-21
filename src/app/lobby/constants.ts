@@ -53,65 +53,6 @@ export const ENTRANCE_ANIMATIONS = [
   "animate__slideInUp",
 ];
 
-// Quiz room data
-export const QUIZ_ROOMS: Record<string, QuizRoomData> = {
-  music: {
-    id: "music",
-    name: "80s Music",
-    description: "Test your knowledge of 80s hits, bands, and music trivia",
-    color: "var(--neon-pink)",
-    difficulty: "Medium",
-    questions: 20,
-    capacity: 50,
-    activePlayers: 42,
-  },
-  movies: {
-    id: "movies",
-    name: "Retro Movies",
-    description:
-      "From Blade Runner to Back to the Future, how well do you know 80s cinema?",
-    color: "var(--neon-blue)",
-    difficulty: "Hard",
-    questions: 25,
-    capacity: 50,
-    activePlayers: 37,
-  },
-  tech: {
-    id: "tech",
-    name: "Vintage Tech",
-    description: "Commodore 64, Nintendo, and the birth of personal computing",
-    color: "var(--neon-green)",
-    difficulty: "Easy",
-    questions: 15,
-    capacity: 50,
-    activePlayers: 28,
-  },
-  pop: {
-    id: "pop",
-    name: "Pop Culture",
-    description: "Fashion, fads, and famous moments from the radical decade",
-    color: "var(--neon-purple)",
-    difficulty: "Medium",
-    questions: 20,
-    capacity: 50,
-    activePlayers: 33,
-  },
-};
-
-// Sample correct answers for the questions
-export const SAMPLE_ANSWERS = [
-  "Michael Jackson",
-  "Madonna",
-  "Prince",
-  "Duran Duran",
-  "Queen",
-  "The Police",
-  "Bon Jovi",
-  "Cyndi Lauper",
-  "David Bowie",
-  "Whitney Houston",
-];
-
 // Avatar patterns for retro style
 export const AVATAR_PATTERNS = [
   "linear-gradient(45deg, #ff00aa, #00ddff)",
@@ -131,5 +72,3 @@ export const SUCCESS_SOUNDS = ["success1", "success2", "success3", "correct"];
 export const ROUND_TIME = 150; // 2:30 in seconds
 export const INTERMISSION_TIME = 90; // 1:30 in seconds
 export const COUNTDOWN_THRESHOLD = 10; // Show countdown when 10 seconds or less remain
-
-import type { QuizRoomData } from "./types";

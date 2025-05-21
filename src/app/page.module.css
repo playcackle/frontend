@@ -89,47 +89,6 @@
   margin-top: 2rem;
 }
 
-.infoSection {
-  padding: 4rem 0;
-  display: flex;
-  justify-content: center;
-}
-
-.neonBox {
-  background-color: rgba(20, 20, 40, 0.7);
-  border-radius: 8px;
-  padding: 2rem;
-  max-width: 600px;
-  box-shadow: 0 0 5px #0ff, 0 0 10px #0ff, inset 0 0 5px rgba(0, 255, 255, 0.5);
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  backdrop-filter: blur(5px);
-}
-
-.infoTitle {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  color: #fff;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-}
-
-.infoList {
-  list-style-type: none;
-  padding: 0;
-}
-
-.infoList li {
-  margin-bottom: 1rem;
-  padding-left: 1.5rem;
-  position: relative;
-}
-
-.infoList li::before {
-  content: ">";
-  position: absolute;
-  left: 0;
-  color: #0ff;
-}
-
 .footer {
   text-align: center;
   padding: 2rem;
@@ -145,4 +104,10 @@
   .title {
     font-size: 2.5rem;
   }
+}
+
+.authSection {
+  padding: 2rem 0 4rem;
+  width: 100%;
+  animation: fadeIn 0.5s ease-out;
 }

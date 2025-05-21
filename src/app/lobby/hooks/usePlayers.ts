@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState, useCallback } from "react"
-import type { Player, PlayerAction } from "../types"
-import { AVATAR_PATTERNS } from "../constants"
+import { useCallback, useState } from "react";
+import { AVATAR_PATTERNS } from "../[id]/constants";
+import type { Player, PlayerAction } from "../types";
 
 // Initial players data
 const initialPlayers: Player[] = [
@@ -48,81 +48,89 @@ const initialPlayers: Player[] = [
     avatar: "YO",
     color: AVATAR_PATTERNS[5],
   },
-]
+];
 
 export const usePlayers = () => {
-  const [players, setPlayers] = useState<Player[]>(initialPlayers)
-  const [playerActions, setPlayerActions] = useState<PlayerAction[]>([])
-  const [lastAnsweringPlayer, setLastAnsweringPlayer] = useState<Player | null>(null)
-  const [playerName] = useState<string>("You")
+  const [players, setPlayers] = useState<Player[]>(initialPlayers);
+  const [playerActions, setPlayerActions] = useState<PlayerAction[]>([]);
+  const [lastAnsweringPlayer, setLastAnsweringPlayer] = useState<Player | null>(
+    null
+  );
+  const [playerName] = useState<string>("You");
 
   // Update player score
   const updatePlayerScore = useCallback((playerId: number, points: number) => {
     setPlayers((prev) => {
-      const updatedPlayers = [...prev]
-      const playerIndex = updatedPlayers.findIndex((p) => p.id === playerId)
+      const updatedPlayers = [...prev];
+      const playerIndex = updatedPlayers.findIndex((p) => p.id === playerId);
 
       if (playerIndex !== -1) {
         updatedPlayers[playerIndex] = {
           ...updatedPlayers[playerIndex],
           score: updatedPlayers[playerIndex].score + points,
-        }
+        };
       }
 
       // Sort by score (descending)
-      return [...updatedPlayers].sort((a, b) => b.score - a.score)
-    })
-  }, [])
+      return [...updatedPlayers].sort((a, b) => b.score - a.score);
+    });
+  }, []);
 
   // Add player action
-  const addPlayerAction = useCallback((playerId: number, questionId: number) => {
-    setPlayerActions((prev) => [
-      ...prev,
-      {
-        playerId,
-        questionId,
-        timestamp: Date.now(),
-        animationComplete: false,
-      },
-    ])
-  }, [])
+  const addPlayerAction = useCallback(
+    (playerId: number, questionId: number) => {
+      setPlayerActions((prev) => [
+        ...prev,
+        {
+          playerId,
+          questionId,
+          timestamp: Date.now(),
+          animationComplete: false,
+        },
+      ]);
+    },
+    []
+  );
 
   // Mark player action as complete
-  const markPlayerActionComplete = useCallback((playerId: number, questionId: number) => {
-    setPlayerActions((prev) =>
-      prev.map((action) =>
-        action.playerId === playerId && action.questionId === questionId
-          ? { ...action, animationComplete: true }
-          : action,
-      ),
-    )
-  }, [])
+  const markPlayerActionComplete = useCallback(
+    (playerId: number, questionId: number) => {
+      setPlayerActions((prev) =>
+        prev.map((action) =>
+          action.playerId === playerId && action.questionId === questionId
+            ? { ...action, animationComplete: true }
+            : action
+        )
+      );
+    },
+    []
+  );
 
   // Get player by ID
   const getPlayerById = useCallback(
     (id: number) => {
-      return players.find((p) => p.id === id)
+      return players.find((p) => p.id === id);
     },
-    [players],
-  )
+    [players]
+  );
 
   // Get player by name
   const getPlayerByName = useCallback(
     (name: string) => {
-      return players.find((p) => p.name === name)
+      return players.find((p) => p.name === name);
     },
-    [players],
-  )
+    [players]
+  );
 
   // Get current player
   const getCurrentPlayer = useCallback(() => {
-    return players.find((p) => p.name === "You") || players[5]
-  }, [players])
+    return players.find((p) => p.name === "You") || players[5];
+  }, [players]);
 
   // Get other players (not the current player)
   const getOtherPlayers = useCallback(() => {
-    return players.filter((p) => p.name !== "You")
-  }, [players])
+    return players.filter((p) => p.name !== "You");
+  }, [players]);
 
   return {
     players,
@@ -137,5 +145,5 @@ export const usePlayers = () => {
     getCurrentPlayer,
     getOtherPlayers,
     setLastAnsweringPlayer,
-  }
-}
+  };
+};

@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { joinLobby } from "../actions/joinLobby";
 import { Lobby } from "../models/lobby";
 import styles from "./lobby-tile.module.css";
 
@@ -9,20 +10,16 @@ export type LobbyProps = {
 };
 
 export default function LobbyTile(props: LobbyProps) {
-  const router = useRouter();
+  const { lobby } = props;
+  const { data } = useSession();
 
-  const handlelobbyClick = (lobbyId: string) => {
-    router.push(`/quiz-lobby?lobbyId=${lobbyId}`);
+  const handleClick = async () => {
+    console.log("click on tile");
+    await joinLobby(data?.user.id);
   };
 
-  const { lobby } = props;
-
   return (
-    <div
-      key={lobby.lobby_id}
-      className={styles.lobbyCard}
-      onClick={() => handlelobbyClick(lobby.lobby_id)}
-    >
+    <div className={styles.lobbyCard} onClick={async () => await handleClick()}>
       <h3 className={styles.lobbyName}>{lobby.collection_name}</h3>
       <div className={styles.lobbyCapacity}>
         <span className={styles.capacityText}>

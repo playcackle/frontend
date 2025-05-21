@@ -1,9 +1,13 @@
 import LobbyTile from "@/app/components/lobby-tile";
+import { getServerSession } from "next-auth";
+import { AuthButtons } from "./components/auth-buttons";
 import { Lobby } from "./models/lobby";
 import styles from "./page.module.css";
 
 export default async function Home() {
   const lobbies = await fetchLobbies();
+  const session = await getServerSession();
+  const isSession = session?.user;
   return (
     <>
       <section className={styles.heroSection}>
@@ -12,24 +16,26 @@ export default async function Home() {
           <span className={styles.neonTextPink}>SCORE</span>
         </h1>
       </section>
-
-      <section className={styles.lobbiesSection}>
-        <div className={styles.lobbiesContainer}>
-          {lobbies.map((x: Lobby, i: number) => (
-            <LobbyTile lobby={x} key={i} />
-          ))}
-        </div>
-      </section>
+      {isSession ? (
+        <section className={styles.lobbiesSection}>
+          <div className={styles.lobbiesContainer}>
+            {lobbies.map((x: Lobby, i: number) => (
+              <LobbyTile lobby={x} key={i} />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section className={styles.authSection}>
+          <AuthButtons />
+        </section>
+      )}
     </>
   );
 }
 
-// Server-side function to fetch quiz rooms
+// Server-side function to fetch snap lobbies
 async function fetchLobbies(): Promise<Lobby[]> {
   try {
-    // Use the absolute URL for server-side fetching
-    console.log("PROCESS ENV: ");
-    console.log;
     const baseUrl =
       process.env.BACKEND_URL || process.env.NEXT_PUBLIC_APP_BACKEND_URL;
 
@@ -41,13 +47,13 @@ async function fetchLobbies(): Promise<Lobby[]> {
     });
 
     if (!response.ok) {
-      throw new Error(`Error fetching rooms: ${response.status}`);
+      throw new Error(`Error fetching lobbies: ${response.status}`);
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Failed to fetch quiz rooms:", error);
+    console.error("Failed to fetch lobbies lobbies:", error);
     return [];
   }
 }

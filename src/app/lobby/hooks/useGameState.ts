@@ -5,7 +5,7 @@ import {
   COUNTDOWN_THRESHOLD,
   INTERMISSION_TIME,
   ROUND_TIME,
-} from "../constants";
+} from "../[id]/constants";
 import type { Message } from "../types";
 import { getCurrentTime, playSound } from "../utils";
 
@@ -154,13 +154,6 @@ export const useGameState = ({
 
     // Play a sound effect
     playSound("timeUp");
-
-    // Add a message to the chat
-    addMessage({
-      user: "System",
-      text: "Time's up! All answers are being revealed.",
-      time: getCurrentTime(),
-    });
   }, [addMessage]);
 
   // Set other player answering state

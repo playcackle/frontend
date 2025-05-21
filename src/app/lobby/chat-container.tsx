@@ -1,31 +1,34 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useEffect, useRef } from "react"
-import { Button } from "@radix-ui/themes"
-import styles from "./quiz-room.module.css"
+import { Button } from "@radix-ui/themes";
+import { useEffect, useRef } from "react";
+import styles from "./quiz-room.module.css";
 
 type Message = {
-  user: string
-  text: string
-  time: string
-}
+  user: string;
+  text: string;
+  time: string;
+};
 
 type ChatContainerProps = {
-  messages: Message[]
-  chatInput: string
-  setChatInput: (value: string) => void
-  handleSendMessage: (e: React.FormEvent) => void
-}
+  chatInput: string;
+  setChatInput: (value: string) => void;
+  handleSendMessage: (e: React.FormEvent) => void;
+};
 
-export default function ChatContainer({ messages, chatInput, setChatInput, handleSendMessage }: ChatContainerProps) {
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+export default function ChatContainer({
+  chatInput,
+  setChatInput,
+  handleSendMessage,
+}: ChatContainerProps) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <div className={styles.chatContainer}>
@@ -34,7 +37,12 @@ export default function ChatContainer({ messages, chatInput, setChatInput, handl
       </div>
       <div className={styles.chatMessages}>
         {messages.map((msg, index) => (
-          <div key={index} className={`${styles.chatMessage} ${msg.user === "You" ? styles.ownMessage : ""}`}>
+          <div
+            key={index}
+            className={`${styles.chatMessage} ${
+              msg.user === "You" ? styles.ownMessage : ""
+            }`}
+          >
             <span className={styles.messageTime}>{msg.time}</span>
             <span className={styles.messageUser}>{msg.user}:</span>
             <span className={styles.messageText}>{msg.text}</span>
@@ -57,5 +65,5 @@ export default function ChatContainer({ messages, chatInput, setChatInput, handl
         </form>
       </div>
     </div>
-  )
+  );
 }

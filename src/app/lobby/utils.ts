@@ -3,7 +3,7 @@ import {
   ENTRANCE_ANIMATIONS,
   SUCCESS_SOUNDS,
 } from "./constants";
-import type { Player, Question, SoundType } from "./types";
+import type { Question, SoundType } from "./types";
 
 /**
  * Format time as MM:SS
@@ -35,13 +35,6 @@ export const getRandomEntranceAnimation = (): string => {
 };
 
 /**
- * Get a random player from the players array
- */
-export const getRandomPlayer = (players: Player[]): Player => {
-  return players[Math.floor(Math.random() * players.length)];
-};
-
-/**
  * Get a random success sound
  */
 export const getRandomSuccessSound = (): SoundType => {
@@ -70,7 +63,7 @@ export const playSound = (type: SoundType): void => {
 /**
  * Initialize questions with random animations and staggered delays
  */
-export const initializeQuestions = (
+export const initializeSlots = (
   count: number,
   answers: string[],
   roundNumber = 1
@@ -117,15 +110,4 @@ export const initializeBonusQuestions = (
       revealDelay: id * 0.3,
     };
   });
-};
-
-/**
- * Get current time in HH:MM format
- */
-export const getCurrentTime = (): string => {
-  // Use a fixed format that doesn't depend on locale
-  const now = new Date();
-  const hours = now.getHours().toString().padStart(2, "0");
-  const minutes = now.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
 };

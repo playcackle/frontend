@@ -6,7 +6,6 @@ import styles from "./header.module.css";
 
 export default function Header() {
   const { data, status } = useSession();
-  console.log(JSON.stringify(data));
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
