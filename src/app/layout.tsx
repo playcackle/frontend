@@ -10,9 +10,8 @@ import "./globals.css";
 import { Provider } from "./provider";
 
 export const metadata: Metadata = {
-  title: "Retro Quiz - 80s Style Quiz Game",
-  description:
-    "Step into the 80s with our retro-styled quiz game featuring neon lights and nostalgic vibes",
+  title: "Race. Claim. Win",
+  description: "Snap answers first, win points. Chaotic and addictive!",
   generator: "v0.dev",
 };
 
