@@ -28,7 +28,9 @@ export default function GameroomPage() {
   const ws = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    ws.current = new WebSocket(gameroom?.game_ws_url!);
+    ws.current = new WebSocket(
+      `${gameroom?.game_ws_url!}?token=${gameroom?.token}`
+    );
 
     ws.current.onopen = () => {
       console.log("✅ WebSocket connected");
