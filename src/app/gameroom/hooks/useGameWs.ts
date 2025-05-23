@@ -6,13 +6,20 @@ import { EventPayloadMap, GameEvent } from "../types";
 
 type EventListener<T extends GameEvent> = (data: EventPayloadMap[T]) => void;
 
-export const useGameSocket = (url: string, token: string) => {
+function toHttpUrl(wsUrl: string) {
+  if (wsUrl.startsWith("ws://")) return "http://" + wsUrl.slice(5);
+  if (wsUrl.startsWith("wss://")) return "https://" + wsUrl.slice(6);
+  return wsUrl;
+}
+
+export const useGameSocket = (baseUrl: string, token: string) => {
   const socketRef = useRef<any>(null);
   const listenersRef = useRef<{
     [K in GameEvent]?: EventListener<K>[];
   }>({});
 
   useEffect(() => {
+    const url = toHttpUrl(baseUrl.replace(/\/gameroom$/, "")) + "/game";
     const socket = io(url, {
       transports: ["websocket"],
       auth: { token },
@@ -52,7 +59,7 @@ export const useGameSocket = (url: string, token: string) => {
     return () => {
       socket.disconnect();
     };
-  }, [url, token]);
+  }, [baseUrl, token]);
 
   const sendEvent = <T extends GameEvent>(
     event: T,
@@ -76,8 +83,22 @@ export const useGameSocket = (url: string, token: string) => {
     listenersRef.current[event]!.push(callback);
   };
 
+  const offEvent = <T extends GameEvent>(
+    event: T,
+    callback: EventListener<T>
+  ) => {
+    const listeners = listenersRef.current[event];
+    if (listeners) {
+      const index = listeners.findIndex(cb => cb === callback);
+      if (index !== -1) {
+        listeners.splice(index, 1);
+      }
+    }
+  };
+
   return {
     sendEvent,
     onEvent,
+    offEvent,
   };
 };

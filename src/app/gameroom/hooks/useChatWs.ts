@@ -6,11 +6,19 @@ import { ChatEvent, ChatEventPayloadMap } from "../types";
 
 type ChatMessage = ChatEventPayloadMap["new_message"];
 
-export const useChatSocket = (url: string, token: string) => {
+function toHttpUrl(wsUrl: string) {
+  if (wsUrl.startsWith("ws://")) return "http://" + wsUrl.slice(5);
+  if (wsUrl.startsWith("wss://")) return "https://" + wsUrl.slice(6);
+  return wsUrl;
+}
+
+export const useChatSocket = (baseUrl: string, token: string) => {
   const socketRef = useRef<any>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const url = toHttpUrl(baseUrl.replace(/\/gameroom$/, "")) + "/chat";
     const socket = io(url, {
       transports: ["websocket"],
       auth: { token },
@@ -19,50 +27,48 @@ export const useChatSocket = (url: string, token: string) => {
 
     socket.on("connect", () => {
       console.log("Chat socket connected.");
+      setError(null);
     });
 
-    socket.on("message", (event) => {
-      try {
-        const parsed = JSON.parse(event) as {
-          event: ChatEvent;
-          data: ChatEventPayloadMap[ChatEvent];
-        };
+    socket.on("new_message", (data) => {
+      setMessages((prev) => [...prev, data]);
+    });
 
-        if (parsed.event === "new_message") {
-          setMessages((prev) => [...prev, parsed.data as ChatMessage]);
-        } else if (parsed.event === "connection_success_chat") {
-          console.log("connection_success_chat");
-        }
-      } catch (err) {
-        console.error("Error parsing chat event:", event);
-      }
+    socket.on("connection_success_chat", (data) => {
+      console.log("Chat connection success:", data.message);
+    });
+
+    socket.on("message_error", (data) => {
+      setError(data.error);
     });
 
     socket.on("error", (err) => {
       console.error("Chat socket error:", err);
+      setError("Connection error");
     });
 
     socket.on("disconnect", () => {
       console.warn("Chat socket closed.");
+      setError("Disconnected from chat");
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [url, token]);
+  }, [baseUrl, token]);
 
   const sendMessage = (text: string) => {
     const socket = socketRef.current;
     if (socket?.connected) {
-      socket.emit("message", JSON.stringify({
-        event: "send_message",
-        data: { text },
-      }));
+      socket.emit("send_message", text);
+    } else {
+      setError("Not connected to chat");
     }
   };
 
   return {
     messages,
+    error,
     sendMessage,
   };
 };
