@@ -2,7 +2,7 @@
 
 import SoundEffects from "@/app/components/sound-effects";
 import { useSearchParams } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import ConfettiExplosion from "./confetti-explosion";
 import styles from "./gameroom.module.css";
 import ParticleExplosion from "./particle-explosion";
@@ -28,14 +28,18 @@ export default function GameroomPage() {
   const [answer, setAnswer] = useState<string>("");
   const gameroom = useAtomValue(gameRoomAtom);
 
-  const gameRoomWs = useGameSocket(gameroom!.game_ws_url, gameroom!.token);
+  if (!gameroom) {
+    return <div>Loading gameroom...</div>;
+  }
+
+  const gameRoomWs = useGameSocket(gameroom.game_ws_url, gameroom.token);
 
   // Refs
   const mainRef = useRef<HTMLDivElement>(null);
 
   // Custom hooks
 
-  const { players, getCurrentPlayer } = usePlayers();
+  const { players: initialPlayers, getCurrentPlayer } = usePlayers();
 
   const { animationState, triggerCorrectAnimations } = useAnimations();
 
@@ -48,6 +52,32 @@ export default function GameroomPage() {
     x: number;
     y: number;
   } | null>(null);
+
+  const [activePlayers, setActivePlayers] = useState(1);
+  const [timeRemaining, setTimeRemaining] = useState(45);
+  const [players, setPlayers] = useState<any[]>([]); // Replace any with Player type if available
+
+  useEffect(() => {
+    if (!gameRoomWs) return;
+    // Listen for lobby_tick to update activePlayers and timeRemaining
+    gameRoomWs.onEvent("lobby_tick", (data) => {
+      console.log("[Game WS] lobby_tick event received:", data);
+      setActivePlayers(data.player_count);
+      setTimeRemaining(data.time_remaining_seconds ?? 0);
+    });
+    // Listen for round_over_timeout to update leaderboard
+    gameRoomWs.onEvent("round_over_timeout", (data) => {
+      setPlayers(data.player_scores);
+    });
+    // Listen for round_over_all_snapped to update leaderboard
+    gameRoomWs.onEvent("round_over_all_snapped", (data) => {
+      setPlayers(data.player_scores);
+    });
+    // Listen for game_over to update leaderboard
+    gameRoomWs.onEvent("game_over", (data) => {
+      setPlayers(data.final_scores);
+    });
+  }, [gameRoomWs]);
 
   return (
     <div className={styles.container}>
@@ -97,9 +127,9 @@ export default function GameroomPage() {
 
         {/* First row: Stats tiles */}
         <StatsRow
-          activePlayers={1}
+          activePlayers={activePlayers}
           isIntermission={false}
-          timeRemaining={45}
+          timeRemaining={timeRemaining}
           intermissionTimeRemaining={90}
           players={players}
           nameFlash={animationState.nameFlash}
