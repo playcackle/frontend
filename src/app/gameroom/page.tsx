@@ -21,6 +21,7 @@ import RoomHeader from "./components/RoomHeader";
 import SlotGrid from "./components/SlotGrid";
 import StatsRow from "./components/StatsRow";
 import { useGameSocket } from "./hooks/useGameWs";
+import { GameEvent } from "./types";
 
 export default function GameroomPage() {
   const searchParams = useSearchParams();
@@ -38,9 +39,7 @@ export default function GameroomPage() {
   const mainRef = useRef<HTMLDivElement>(null);
 
   // Custom hooks
-
   const { players: initialPlayers, getCurrentPlayer } = usePlayers();
-
   const { animationState, triggerCorrectAnimations } = useAnimations();
 
   // State for sound loading
@@ -56,6 +55,7 @@ export default function GameroomPage() {
   const [activePlayers, setActivePlayers] = useState(1);
   const [timeRemaining, setTimeRemaining] = useState(45);
   const [players, setPlayers] = useState<any[]>([]); // Replace any with Player type if available
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!gameRoomWs) return;
@@ -77,7 +77,28 @@ export default function GameroomPage() {
     gameRoomWs.onEvent("game_over", (data) => {
       setPlayers(data.final_scores);
     });
-  }, [gameRoomWs]);
+    // Listen for submission feedback
+    gameRoomWs.onEvent("submission_feedback", (data) => {
+      console.log("[Game WS] Submission feedback:", data);
+      setIsSubmitting(false);
+      if (data.status === "correct") {
+        // Trigger animations for correct answer
+        triggerCorrectAnimations(parseInt(data.slot_id!), null, mainRef);
+        // Play success sound
+        if (typeof window !== 'undefined' && 'playFallbackAudio' in window) {
+          (window as any).playFallbackAudio();
+        }
+      }
+    });
+  }, [gameRoomWs, triggerCorrectAnimations]);
+
+  const handleSubmitAnswer = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!answer.trim() || isSubmitting || !gameRoomWs) return;
+    setIsSubmitting(true);
+    gameRoomWs.sendEvent("submit_answer", answer);
+    setAnswer(""); // Clear the input after submission
+  };
 
   return (
     <div className={styles.container}>
@@ -155,7 +176,7 @@ export default function GameroomPage() {
             timeExpired={false}
             isIntermission={false}
             intermissionTimeRemaining={10}
-            onSubmit={() => console.log()}
+            onSubmit={handleSubmitAnswer}
           />
         </div>
       </main>

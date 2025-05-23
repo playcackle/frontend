@@ -164,7 +164,7 @@ export const useGameSocket = (baseUrl: string, token: string) => {
 
   const sendEvent = <T extends GameEvent>(
     event: T,
-    data: EventPayloadMap[T]
+    data: T extends "submit_answer" ? string : EventPayloadMap[T]
   ) => {
     const socket = socketRef.current;
     if (socket?.connected) {

@@ -15,7 +15,8 @@ export type GameEvent =
   | "break_starting"
   | "game_over"
   | "lobby_resetting_for_new_game"
-  | "submission_feedback";
+  | "submission_feedback"
+  | "submit_answer";
 
 export type ChatEvent = "connection_success_chat" | "new_message" | "message_error";
 
