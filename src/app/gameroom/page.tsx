@@ -2,31 +2,42 @@
 
 import SoundEffects from "@/app/components/sound-effects";
 import { useSearchParams } from "next/navigation";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ConfettiExplosion from "./confetti-explosion";
 import styles from "./gameroom.module.css";
 import ParticleExplosion from "./particle-explosion";
 
 // Import custom hooks
 import { useAnimations } from "./hooks/useAnimations";
-import { usePlayers } from "./hooks/usePlayers";
 
 // Import components
 import { useAtomValue } from "jotai";
+import Progress from "../loading";
 import { gameRoomAtom } from "../store/lobby";
 import ChatContainer from "./chat-container";
 import AnswerForm from "./components/AnswerForm";
 import CountdownOverlay from "./components/CountdownOverlay";
 import RoomHeader from "./components/RoomHeader";
-import SlotGrid from "./components/SlotGrid";
+import SlotTile from "./components/SlotTile";
 import StatsRow from "./components/StatsRow";
 import { useGameSocket } from "./hooks/useGameWs";
-import { GameEvent } from "./types";
+import {
+  FinalScore,
+  NewRoundStartingPayload,
+  PlayerScore,
+  Slot,
+  SubmissionFeedbackPayload,
+} from "./types";
+import {
+  getRandomAttentionAnimation,
+  getRandomEntranceAnimation,
+} from "./utils";
 
 export default function GameroomPage() {
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
   const [answer, setAnswer] = useState<string>("");
+  const [slots, setSlots] = useState<Slot[]>([]);
   const gameroom = useAtomValue(gameRoomAtom);
 
   if (!gameroom) {
@@ -39,57 +50,89 @@ export default function GameroomPage() {
   const mainRef = useRef<HTMLDivElement>(null);
 
   // Custom hooks
-  const { players: initialPlayers, getCurrentPlayer } = usePlayers();
   const { animationState, triggerCorrectAnimations } = useAnimations();
 
-  // State for sound loading
-  const [soundsLoaded, setSoundsLoaded] = React.useState(false);
-  const [showConfetti, setShowConfetti] = React.useState(false);
-
-  // Add a new state for confetti position
+  const [loading, setLoading] = useState(false);
+  const [soundsLoaded, setSoundsLoaded] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [confettiPosition, setConfettiPosition] = useState<{
     x: number;
     y: number;
   } | null>(null);
 
-  const [activePlayers, setActivePlayers] = useState(1);
+  const [playerCount, setPlayerCount] = useState(1);
   const [timeRemaining, setTimeRemaining] = useState(45);
-  const [players, setPlayers] = useState<any[]>([]); // Replace any with Player type if available
+  const [playerScore, setPlayerScore] = useState<PlayerScore[]>([]); // Replace any with Player type if available
+  const [finalScore, setFinalScore] = useState<FinalScore[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [entranceAnimation, setEntranceAnimation] = useState("");
+  const [isIntermission, setIsIntermission] = useState(false);
+  const [animatingTile, setAnimatingTile] = useState("");
+  const [attentionAnimation, setAttentionAnimation] = useState("");
 
+  useEffect(() => {
+    setLoading(!gameRoomWs);
+  }, [gameRoomWs]);
   useEffect(() => {
     if (!gameRoomWs) return;
     // Listen for lobby_tick to update activePlayers and timeRemaining
     gameRoomWs.onEvent("lobby_tick", (data) => {
+      if (slots.length === 0) {
+        setSlots([]);
+      }
       console.log("[Game WS] lobby_tick event received:", data);
-      setActivePlayers(data.player_count);
+      setPlayerCount(data.player_count);
       setTimeRemaining(data.time_remaining_seconds ?? 0);
     });
     // Listen for round_over_timeout to update leaderboard
     gameRoomWs.onEvent("round_over_timeout", (data) => {
-      setPlayers(data.player_scores);
+      setPlayerScore(data.player_scores);
+      setIsIntermission(true);
     });
+    gameRoomWs.onEvent(
+      "new_round_starting",
+      (data: NewRoundStartingPayload) => {
+        debugger;
+        setEntranceAnimation(getRandomEntranceAnimation());
+        setSlots(data.answer_slots);
+        setIsIntermission(false);
+      }
+    );
     // Listen for round_over_all_snapped to update leaderboard
     gameRoomWs.onEvent("round_over_all_snapped", (data) => {
-      setPlayers(data.player_scores);
+      setPlayerScore(data.player_scores);
+      setIsIntermission(true);
     });
+
     // Listen for game_over to update leaderboard
     gameRoomWs.onEvent("game_over", (data) => {
-      setPlayers(data.final_scores);
+      setFinalScore(data.final_scores);
     });
     // Listen for submission feedback
-    gameRoomWs.onEvent("submission_feedback", (data) => {
-      console.log("[Game WS] Submission feedback:", data);
-      setIsSubmitting(false);
-      if (data.status === "correct") {
-        // Trigger animations for correct answer
-        triggerCorrectAnimations(parseInt(data.slot_id!), null, mainRef);
-        // Play success sound
-        if (typeof window !== 'undefined' && 'playFallbackAudio' in window) {
-          (window as any).playFallbackAudio();
+    gameRoomWs.onEvent(
+      "submission_feedback",
+      (data: SubmissionFeedbackPayload) => {
+        console.log("[Game WS] Submission feedback:", data);
+        setIsSubmitting(false);
+        if (data.status === "correct") {
+          const animation = getRandomAttentionAnimation();
+          setAttentionAnimation(animation);
+          setAnimatingTile(data.slot_id!);
+          // Trigger animations for correct answer
+          triggerCorrectAnimations(
+            parseInt(data.slot_id!),
+            null,
+            mainRef,
+            false
+          );
+          // Play success sound
+          if (typeof window !== "undefined" && "playFallbackAudio" in window) {
+            (window as any).playFallbackAudio();
+          }
+          setTimeout(() => {}, 300);
         }
       }
-    });
+    );
   }, [gameRoomWs, triggerCorrectAnimations]);
 
   const handleSubmitAnswer = (e: React.FormEvent) => {
@@ -101,85 +144,116 @@ export default function GameroomPage() {
   };
 
   return (
-    <div className={styles.container}>
-      {/* Countdown overlay */}
-      <CountdownOverlay show={false} value={2} />
+    <>
+      {loading && <Progress />}
+      {!loading && (
+        <div className={styles.container}>
+          {/* Countdown overlay */}
+          <CountdownOverlay
+            show={isIntermission && timeRemaining === 5}
+            value={timeRemaining}
+          />
 
-      {/* Confetti explosion */}
-      {true && confettiPosition && (
-        <ConfettiExplosion
-          isBonus={animationState.isBonus}
-          x={confettiPosition.x}
-          y={confettiPosition.y}
-          centered={false}
-          playerColor={"--neon-blue"} // Add player color
-        />
-      )}
+          {/* Confetti explosion */}
+          {true && confettiPosition && (
+            <ConfettiExplosion
+              isBonus={animationState.isBonus}
+              x={confettiPosition.x}
+              y={confettiPosition.y}
+              centered={false}
+              playerColor={"--neon-blue"} // Add player color
+            />
+          )}
 
-      <main
-        ref={mainRef}
-        className={`
+          <main
+            ref={mainRef}
+            className={`
           ${styles.main}
-          ${animationState.screenShake ? styles.screenShake : ""}
+          ${animationState.shake ? styles.shake : ""}
           ${animationState.colorFlash ? styles.colorFlash : ""}
           ${animationState.zoomEffect ? styles.zoomEffect : ""}
           ${animationState.rotateEffect ? styles.rotateEffect : ""}
         `}
-      >
-        {/* Room title */}
-        <RoomHeader name={name!} roundNumber={1} />
+          >
+            {/* Room title */}
+            <RoomHeader name={name!} roundNumber={1} />
 
-        {/* Sound effects */}
-        <SoundEffects onLoad={() => setSoundsLoaded(true)} />
+            {/* Sound effects */}
+            <SoundEffects onLoad={() => setSoundsLoaded(true)} />
 
-        {/* Glitter overlay */}
-        {animationState.showGlitter && (
-          <div className={styles.glitterOverlay}></div>
-        )}
+            {/* Glitter overlay */}
+            {animationState.showGlitter && (
+              <div className={styles.glitterOverlay}></div>
+            )}
 
-        {/* Particle explosion */}
-        {animationState.particlePosition && (
-          <ParticleExplosion
-            x={animationState.particlePosition.x}
-            y={animationState.particlePosition.y}
-            isBonus={animationState.isBonus}
-          />
-        )}
+            {/* Particle explosion */}
+            {animationState.particlePosition && (
+              <ParticleExplosion
+                x={animationState.particlePosition.x}
+                y={animationState.particlePosition.y}
+                isBonus={animationState.isBonus}
+              />
+            )}
 
-        {/* First row: Stats tiles */}
-        <StatsRow
-          activePlayers={activePlayers}
-          isIntermission={false}
-          timeRemaining={timeRemaining}
-          intermissionTimeRemaining={90}
-          players={players}
-          nameFlash={animationState.nameFlash}
-        />
+            {/* First row: Stats tiles */}
+            <StatsRow
+              activePlayers={playerCount}
+              isIntermission={false}
+              timeRemaining={timeRemaining}
+              intermissionTimeRemaining={90}
+              players={playerScore}
+              nameFlash={animationState.nameFlash}
+            />
 
-        {/* Second row: Slots grid and chat */}
-        <div className={styles.contentRow}>
-          <SlotGrid
-            slots={[]}
-            bonusSlots={[]}
-            animatingTile={animationState.animatingTile}
-            timeExpired={false}
-            isIntermission={false}
-          />
-          <ChatContainer />
+            {/* Second row: Slots grid and chat */}
+            <div className={styles.contentRow}>
+              <div
+                className={styles.slotContainer}
+                style={
+                  { "--room-color": "var(--neon-pink)" } as React.CSSProperties
+                }
+              >
+                <div className={styles.slotGrid}>
+                  {slots.map((slot, i) => (
+                    <SlotTile
+                      className={`
+                  ${styles.main}
+                  ${animationState.shake ? styles.shake : ""}
+                  ${animationState.colorFlash ? styles.colorFlash : ""}
+                  ${animationState.zoomEffect ? styles.zoomEffect : ""}
+                  ${animationState.rotateEffect ? styles.rotateEffect : ""}
+                `}
+                      key={slot.slot_id}
+                      slot={slot}
+                      isAnimating={animatingTile === slot.slot_id}
+                      timeExpired={timeRemaining === 0}
+                      isIntermission={isIntermission}
+                      entranceAnimation={entranceAnimation}
+                      entranceDelay={i + 20}
+                      revealDelay={i + 10}
+                      animation={attentionAnimation}
+                      revealAnimation={entranceAnimation}
+                    />
+                  ))}
+                </div>
+              </div>
+              <ChatContainer />
+            </div>
+
+            {/* Third row: Answer input and feedback */}
+            <div className={styles.answerRow}>
+              <AnswerForm
+                answer={answer}
+                setAnswer={setAnswer}
+                timeExpired={timeRemaining === 0}
+                isIntermission={false}
+                intermissionTimeRemaining={10}
+                onSubmit={handleSubmitAnswer}
+              />
+            </div>
+          </main>
         </div>
-
-        {/* Third row: Answer input and feedback */}
-        <div className={styles.answerRow}>
-          <AnswerForm
-            answer={answer}
-            setAnswer={setAnswer}
-            timeExpired={false}
-            isIntermission={false}
-            intermissionTimeRemaining={10}
-            onSubmit={handleSubmitAnswer}
-          />
-        </div>
-      </main>
-    </div>
+      )}
+    </>
   );
 }

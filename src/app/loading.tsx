@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingGrid from "./components/loading-grid";
 import styles from "./loading.module.css";
 
 const Progress = () => {
   const [progress, setProgress] = useState(0);
   const [loadingText, setLoadingText] = useState("INITIALIZING");
-  const cassetteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Simulate loading progress
@@ -39,20 +38,6 @@ const Progress = () => {
       setLoadingText(texts[textIndex]);
     }, 1500);
 
-    // Animate cassette rotation
-    if (cassetteRef.current) {
-      const cassette = cassetteRef.current;
-      let rotation = 0;
-
-      const rotateCassette = () => {
-        rotation += 1;
-        cassette.style.transform = `rotate(${rotation}deg)`;
-        requestAnimationFrame(rotateCassette);
-      };
-
-      requestAnimationFrame(rotateCassette);
-    }
-
     return () => {
       clearInterval(interval);
       clearInterval(textInterval);
@@ -62,21 +47,6 @@ const Progress = () => {
   return (
     <div className={styles.loadingContainer}>
       <div className={styles.scanlines}></div>
-
-      <div className={styles.cassetteContainer}>
-        <div className={styles.cassette}>
-          <div className={styles.cassetteBody}>
-            <div className={styles.cassetteLabel}>
-              <span>RETRO QUIZ</span>
-              <span className={styles.side}>A-SIDE</span>
-            </div>
-            <div className={styles.cassetteSpool} ref={cassetteRef}>
-              <div className={styles.spoolHole}></div>
-              <div className={styles.spoolHole}></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className={styles.loadingTextContainer}>
         <div className={styles.loadingText}>

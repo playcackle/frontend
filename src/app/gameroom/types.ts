@@ -18,7 +18,10 @@ export type GameEvent =
   | "submission_feedback"
   | "submit_answer";
 
-export type ChatEvent = "connection_success_chat" | "new_message" | "message_error";
+export type ChatEvent =
+  | "connection_success_chat"
+  | "new_message"
+  | "message_error";
 
 // ========================
 // Game Event Payloads
@@ -45,7 +48,13 @@ export type GameStartCancelledPayload = {
 };
 
 export type LobbyTickPayload = {
-  status: "WAITING" | "STARTING_SOON" | "IN_ROUND" | "ROUND_BREAK" | "POST_GAME_SHOWCASE" | "GAME_OVER_NO_NEW_GAME";
+  status:
+    | "WAITING"
+    | "STARTING_SOON"
+    | "IN_ROUND"
+    | "ROUND_BREAK"
+    | "POST_GAME_SHOWCASE"
+    | "GAME_OVER_NO_NEW_GAME";
   current_round: number;
   time_remaining_seconds: number | null;
   player_count: number;
@@ -54,7 +63,7 @@ export type LobbyTickPayload = {
   timestamp_utc: string;
 };
 
-export type AnswerSlot = {
+export type Slot = {
   slot_id: string;
   points: number;
   is_snapped: boolean;
@@ -67,7 +76,7 @@ export type NewRoundStartingPayload = {
   round_number: number;
   topic_name: string;
   round_duration_seconds: number;
-  answer_slots: AnswerSlot[];
+  answer_slots: Slot[];
   round_end_timestamp_utc: string;
 };
 
@@ -141,7 +150,14 @@ export type LobbyResettingForNewGamePayload = {
 };
 
 export type SubmissionFeedbackPayload = {
-  status: "correct" | "incorrect" | "already_snapped" | "too_slow" | "round_not_active" | "not_in_play" | "error";
+  status:
+    | "correct"
+    | "incorrect"
+    | "already_snapped"
+    | "too_slow"
+    | "round_not_active"
+    | "not_in_play"
+    | "error";
   message: string;
   slot_id?: string;
   points_awarded?: number;
@@ -225,7 +241,7 @@ export type AnimationState = {
   animatingTile: number | null;
   showGlitter: boolean;
   nameFlash: boolean;
-  screenShake: boolean;
+  shake: boolean;
   colorFlash: boolean;
   zoomEffect: boolean;
   rotateEffect: boolean;

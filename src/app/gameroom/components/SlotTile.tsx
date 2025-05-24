@@ -10,14 +10,25 @@ interface SlotTileProps {
   timeExpired: boolean;
   isIntermission: boolean;
   isBonus?: boolean;
+  revealDelay: number;
+  entranceDelay: number;
+  animation: string | null;
+  entranceAnimation: string | null;
+  revealAnimation: string | null;
+  className: string;
 }
 
 const SlotTile: React.FC<SlotTileProps> = ({
   slot,
   isAnimating,
   timeExpired,
-  isIntermission,
   isBonus = false,
+  revealDelay = 0,
+  entranceDelay = 0,
+  animation,
+  entranceAnimation,
+  revealAnimation,
+  className,
 }) => {
   const [mounted, setMounted] = useState(false);
 
@@ -27,27 +38,27 @@ const SlotTile: React.FC<SlotTileProps> = ({
 
   // Prepare animationDelay only after mount to avoid SSR mismatch
   const animationDelay = mounted
-    ? timeExpired && !slot.answered
-      ? `${slot.revealDelay}s`
-      : `${slot.entranceDelay}s`
+    ? timeExpired && !slot.is_snapped
+      ? `${revealDelay}s`
+      : `${entranceDelay}s`
     : undefined;
 
   const tileClassNames = [
     styles.questionTile,
     isBonus ? styles.bonusTile : "",
-    slot.answered ? styles.answered : "",
+    slot.is_snapped ? styles.answered : "",
     mounted && isAnimating ? styles.correctPulse : "",
-    mounted ? slot.animation : "",
-    mounted ? slot.entranceAnimation : "",
-    mounted && timeExpired && !slot.answered ? slot.revealAnimation : "",
+    mounted ? animation : "",
+    mounted ? entranceAnimation : "",
+    mounted && timeExpired && !slot.is_snapped ? revealAnimation : "",
   ]
     .filter(Boolean)
     .join(" ");
 
   return (
     <div
-      id={`slot-${slot.id}`}
-      className={tileClassNames}
+      id={`slot-${slot.slot_id}`}
+      className={`${tileClassNames} {className}`}
       style={
         {
           "--room-color": isBonus ? "var(--neon-purple)" : "var(--neon-pink)",
@@ -55,20 +66,22 @@ const SlotTile: React.FC<SlotTileProps> = ({
         } as React.CSSProperties
       }
     >
-      {slot.answered || (timeExpired && !slot.answered) ? (
+      {slot.is_snapped || (timeExpired && !slot.is_snapped) ? (
         <div className={styles.answeredContent}>
-          <div className={styles.correctAnswer}>{slot.correctAnswer}</div>
-          {slot.answeredBy && (
+          <div className={styles.correctAnswer}>{slot.text_preview}</div>
+          {slot.snapped_by_display_name && (
             <div className={styles.playerBadge}>
               <div
                 className={styles.playerBadgeAvatar}
                 style={{
-                  background: slot.playerColor || "var(--neon-blue)",
+                  background: "var(--neon-blue)",
                 }}
               >
-                {slot.playerAvatar || slot.answeredBy.substring(0, 2)}
+                {slot.snapped_by_display_name}
               </div>
-              <div className={styles.playerBadgeName}>{slot.answeredBy}</div>
+              <div className={styles.playerBadgeName}>
+                {slot.snapped_by_display_name}
+              </div>
             </div>
           )}
         </div>

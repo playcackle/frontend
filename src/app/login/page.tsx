@@ -22,7 +22,6 @@ export default function RegisterPage() {
       password: formData.get("password"),
       redirect: false,
     });
-    debugger;
     if (res?.error) {
       setError(res.error as string);
     }

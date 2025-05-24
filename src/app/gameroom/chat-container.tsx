@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@radix-ui/themes";
+import { Button, Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
@@ -19,7 +19,10 @@ export default function ChatContainer() {
     return url.replace(/\/(game|chat)$/, "");
   }
   const baseWsUrl = getBaseWsUrl(gameroom!.game_ws_url);
-  const { messages, error, sendMessage } = useChatSocket(baseWsUrl, gameroom!.token);
+  const { messages, error, sendMessage } = useChatSocket(
+    baseWsUrl,
+    gameroom!.token
+  );
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -37,7 +40,10 @@ export default function ChatContainer() {
   const formatTimestamp = (timestamp: string) => {
     try {
       const date = new Date(timestamp);
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
     } catch (e) {
       return timestamp;
     }
@@ -62,12 +68,12 @@ export default function ChatContainer() {
                 msg.player_id === data?.user.id ? styles.ownMessage : ""
               }`}
             >
-              <div className={styles.messageHeader}>
+              <Flex direction={"row"} gap={"2"}>
                 <span className={styles.messageUser}>{msg.display_name}</span>
                 <span className={styles.messageTime}>
                   {formatTimestamp(msg.timestamp)}
                 </span>
-              </div>
+              </Flex>
               <div className={styles.messageContent}>{msg.text}</div>
             </div>
           ))
@@ -84,8 +90,8 @@ export default function ChatContainer() {
             className={styles.chatInputField}
             disabled={!!error}
           />
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className={styles.chatSendButton}
             disabled={!!error || !input.trim()}
           >

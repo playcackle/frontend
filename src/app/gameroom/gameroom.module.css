@@ -908,11 +908,11 @@
 }
 
 /* New chaotic animations */
-.screenShake {
-  animation: screenShake 0.5s ease-in-out;
+.shake {
+  animation: shake 0.5s ease-in-out;
 }
 
-@keyframes screenShake {
+@keyframes shake {
   0%,
   100% {
     transform: translateX(0);

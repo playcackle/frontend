@@ -33,7 +33,6 @@ export const useGameSocket = (baseUrl: string, token: string) => {
 
     // Add direct event listeners for each game event
     socket.on("lobby_tick", (data) => {
-      console.log("[Game WS] Direct lobby_tick event:", data);
       const listeners = listenersRef.current["lobby_tick"];
       if (listeners) {
         listeners.forEach((cb) => cb(data));
@@ -41,7 +40,6 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     });
 
     socket.on("game_starting_soon", (data) => {
-      console.log("[Game WS] Direct game_starting_soon event:", data);
       const listeners = listenersRef.current["game_starting_soon"];
       if (listeners) {
         listeners.forEach((cb) => cb(data));
@@ -49,7 +47,6 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     });
 
     socket.on("waiting_for_players", (data) => {
-      console.log("[Game WS] Direct waiting_for_players event:", data);
       const listeners = listenersRef.current["waiting_for_players"];
       if (listeners) {
         listeners.forEach((cb) => cb(data));
@@ -57,7 +54,6 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     });
 
     socket.on("game_start_cancelled", (data) => {
-      console.log("[Game WS] Direct game_start_cancelled event:", data);
       const listeners = listenersRef.current["game_start_cancelled"];
       if (listeners) {
         listeners.forEach((cb) => cb(data));
@@ -65,7 +61,6 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     });
 
     socket.on("new_round_starting", (data) => {
-      console.log("[Game WS] Direct new_round_starting event:", data);
       const listeners = listenersRef.current["new_round_starting"];
       if (listeners) {
         listeners.forEach((cb) => cb(data));
@@ -73,7 +68,6 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     });
 
     socket.on("slot_snapped", (data) => {
-      console.log("[Game WS] Direct slot_snapped event:", data);
       const listeners = listenersRef.current["slot_snapped"];
       if (listeners) {
         listeners.forEach((cb) => cb(data));

@@ -11,7 +11,7 @@ export const useAnimations = () => {
     animatingTile: null,
     showGlitter: false,
     nameFlash: false,
-    screenShake: false,
+    shake: false,
     colorFlash: false,
     zoomEffect: false,
     rotateEffect: false,
@@ -26,21 +26,19 @@ export const useAnimations = () => {
       questionId: number,
       event: React.MouseEvent | null = null,
       mainRef: React.RefObject<HTMLDivElement | null>,
+      isBonus: boolean,
       playerColor?: string
     ) => {
-      // Determine if it's a bonus slot
-      const isCurrentBonus = questionId > 8;
-
       setAnimationState((prev) => ({
         ...prev,
         animatingTile: questionId,
         showGlitter: true,
         nameFlash: true,
-        screenShake: true,
+        shake: true,
         colorFlash: Math.random() > 0.5, // Random chance
         zoomEffect: Math.random() > 0.5, // Random chance
         rotateEffect: Math.random() > 0.7, // Random chance
-        isBonus: isCurrentBonus,
+        isBonus: isBonus,
         playerColor: playerColor, // Store player color in animation state
         particlePosition: event
           ? { x: event.clientX, y: event.clientY }
@@ -53,7 +51,7 @@ export const useAnimations = () => {
       }));
 
       // Play sound - bonus sound for bonus slots, random success sound for regular slots
-      if (isCurrentBonus) {
+      if (isBonus) {
         playSound("bonus");
       } else {
         playSound(getRandomSuccessSound());
@@ -65,7 +63,7 @@ export const useAnimations = () => {
           animatingTile: null,
           showGlitter: false,
           nameFlash: false,
-          screenShake: false,
+          shake: false,
           colorFlash: false,
           zoomEffect: false,
           rotateEffect: false,

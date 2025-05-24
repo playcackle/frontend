@@ -20,8 +20,6 @@ export default function LobbyTile(props: LobbyProps) {
 
   const handleClick = async () => {
     const gameRoom = await joinGameroom(data?.user.id);
-    console.log("joined gameroom");
-    debugger;
     setGameroom(gameRoom);
     router.push(`/gameroom?name=${lobby.collection_name}`);
   };
