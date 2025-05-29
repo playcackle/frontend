@@ -14,14 +14,12 @@ export const SOUND_COUNTDOWN = "countdown" as const;
 
 // ANIMATIONS
 export const ENTRANCE_ANIMATIONS = [
-  "slideInUp",
-  "slideInDown",
-  "slideInLeft",
-  "slideInRight",
   "fadeIn",
   "bounceIn",
   "zoomIn",
   "rotateIn",
+  "flipInX",
+  "flipInY",
 ] as const;
 
 export const ATTENTION_ANIMATIONS = [

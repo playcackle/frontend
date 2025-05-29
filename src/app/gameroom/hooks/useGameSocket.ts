@@ -250,7 +250,6 @@ export const useGameSocket = (baseUrl: string, token: string) => {
         event: T,
         data: T extends "submit_answer" ? string : EventPayloadMap[T]
       ) => {
-        debugger;
         const socket = socketRef.current;
         if (!socket?.connected) {
           console.warn(`Cannot send ${event}: socket not connected`);
@@ -258,7 +257,7 @@ export const useGameSocket = (baseUrl: string, token: string) => {
         }
 
         try {
-          socket.emit("message", JSON.stringify({ event, data }));
+          socket.emit(event, data);
           return true;
         } catch (error) {
           debouncedErrorLog(`Error sending ${event}:`, error);

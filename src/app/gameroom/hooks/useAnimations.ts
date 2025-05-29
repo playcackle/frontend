@@ -5,7 +5,7 @@ import type { AnimationState } from "../types";
 import { getRandomSuccessSound, playSound } from "../utils";
 
 const initialAnimationState: AnimationState = {
-  animatingTile: null,
+  slotId: null,
   showGlitter: false,
   nameFlash: false,
   shake: false,
@@ -38,34 +38,17 @@ export const useAnimations = () => {
 
   // Trigger animations for a correct answer
   const triggerCorrectAnimations = useCallback(
-    (
-      questionId: number,
-      event: React.MouseEvent | null = null,
-      mainRef: React.RefObject<HTMLDivElement | null>,
-      isBonus: boolean,
-      playerColor?: string
-    ) => {
+    (slotId: number, isBonus: boolean, playerColor?: string) => {
       // Calculate particle position
       let particlePosition = null;
-      if (event) {
-        particlePosition = { x: event.clientX, y: event.clientY };
-      } else if (mainRef.current) {
-        const rect = mainRef.current.getBoundingClientRect();
-        particlePosition = {
-          x: rect.width / 2,
-          y: rect.height / 2,
-        };
-      }
+      particlePosition = {
+        x: 100 / 2,
+        y: 100 / 2,
+      };
 
       // Set new animation state
       setAnimationState({
-        animatingTile: questionId,
-        showGlitter: true,
-        nameFlash: true,
-        shake: true,
-        colorFlash: Math.random() > 0.5,
-        zoomEffect: Math.random() > 0.5,
-        rotateEffect: Math.random() > 0.7,
+        animatingTile: slotId.toString(),
         isBonus,
         playerColor,
         particlePosition,

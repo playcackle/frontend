@@ -67,10 +67,11 @@ export type LobbyTickPayload = {
 export type Slot = {
   slot_id: string;
   points: number;
-  is_snapped: boolean;
+  taken: boolean;
   snapped_by_player_id: string | null;
   snapped_by_display_name: string | null;
   text_preview: string;
+  is_rare: boolean;
 };
 
 export type NewRoundStartingPayload = {
@@ -152,6 +153,7 @@ export type LobbyResettingForNewGamePayload = {
 
 export type SubmissionFeedbackPayload = {
   status:
+    | "success"
     | "correct"
     | "incorrect"
     | "already_snapped"
@@ -203,17 +205,6 @@ export type EventPayloadMap = {
   submit_answer: any;
 };
 
-export type GameroomData = {
-  id: string;
-  name: string;
-  description: string;
-  color: string;
-  difficulty: string;
-  slots: number;
-  capacity: number;
-  activePlayers: number;
-};
-
 export type PlayerAction = {
   playerId: number;
   questionId: number;
@@ -228,28 +219,23 @@ export type Message = {
 };
 
 export type GameState = {
+  playerCount: number;
   timeRemaining: number;
-  timeExpired: boolean;
+  roundName: string;
   isIntermission: boolean;
-  intermissionTimeRemaining: number;
-  roundNumber: number;
-  showCountdown: boolean;
-  countdownValue: number;
-  showConfetti: boolean;
-  otherPlayerAnswering: boolean;
+  loading: boolean;
+  soundsLoaded: boolean;
+  slots: Slot[];
+  playerScore: PlayerScore[];
+  finalScore: FinalScore[];
 };
 
 export type AnimationState = {
-  animatingTile: number | null;
-  showGlitter: boolean;
-  nameFlash: boolean;
-  shake: boolean;
-  colorFlash: boolean;
-  zoomEffect: boolean;
-  rotateEffect: boolean;
-  particlePosition: { x: number; y: number } | null;
-  isBonus: boolean;
-  playerColor?: string; // Add player color
+  entranceAnimation: string;
+  attentionAnimation: string;
+  animatingTile: string;
+  showConfetti: boolean;
+  confettiPosition: { x: number; y: number } | null;
 };
 
 export type SoundType =

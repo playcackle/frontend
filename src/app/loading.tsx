@@ -36,7 +36,7 @@ const Progress = () => {
     const textInterval = setInterval(() => {
       textIndex = (textIndex + 1) % texts.length;
       setLoadingText(texts[textIndex]);
-    }, 1500);
+    }, 2500);
 
     return () => {
       clearInterval(interval);
@@ -60,7 +60,6 @@ const Progress = () => {
               style={{ width: `${progress}%` }}
             ></div>
           </div>
-          <div className={styles.progressText}>{progress}%</div>
         </div>
       </div>
       <LoadingGrid />

@@ -1,81 +1,76 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import styles from "../gameroom.module.css";
+import { useAnimationState } from "../hooks/useGameState";
 import type { Slot } from "../types";
 
 interface SlotTileProps {
   slot: Slot;
-  isAnimating: boolean;
-  timeExpired: boolean;
-  isIntermission: boolean;
   isBonus?: boolean;
   revealDelay: number;
   entranceDelay: number;
-  animation: string | null;
-  entranceAnimation: string | null;
-  revealAnimation: string | null;
-  className: string;
+  isTimeUp: boolean; // Passed from parent instead of calculating internally
 }
 
 const SlotTile: React.FC<SlotTileProps> = ({
   slot,
-  isAnimating,
-  timeExpired,
-  isBonus = false,
   revealDelay = 0,
   entranceDelay = 0,
-  animation,
-  entranceAnimation,
-  revealAnimation,
-  className,
+  isTimeUp = false,
 }) => {
-  const [mounted, setMounted] = useState(false);
+  // Only get animation state, not time-dependent state
+  const { entranceAnimation, attentionAnimation, animatingTile } =
+    useAnimationState();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Memoize all calculations based on props
+  const displayState = useMemo(() => {
+    const shouldShowContent = slot.taken || (isTimeUp && !slot.taken);
+    const shouldShowAttention = isTimeUp && !slot.taken;
 
-  // Prepare animationDelay only after mount to avoid SSR mismatch
-  const animationDelay = mounted
-    ? timeExpired && !slot.is_snapped
-      ? `${revealDelay}s`
-      : `${entranceDelay}s`
-    : undefined;
+    return {
+      shouldShowContent,
+      shouldShowAttention,
+      roomColor: slot.taken ? "var(--neon-purple)" : "var(--neon-pink)",
+    };
+  }, [slot.taken, isTimeUp]);
 
-  const tileClassNames = [
-    styles.slotTile,
-    isBonus ? styles.bonusTile : "",
-    slot.is_snapped ? styles.answered : "",
-    mounted && isAnimating ? styles.correctPulse : "",
-    mounted ? animation : "",
-    mounted ? entranceAnimation : "",
-    mounted && timeExpired && !slot.is_snapped ? revealAnimation : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const tileClassNames = useMemo(
+    () =>
+      [
+        styles.slotTile,
+        slot.is_rare ? styles.bonusTile : "",
+        slot.taken ? styles.answered : "",
+        slot.slot_id === animatingTile ? styles.correctPulse : "",
+        entranceAnimation,
+        displayState.shouldShowAttention ? attentionAnimation : "",
+      ].join(" "),
+    [
+      slot.taken,
+      slot.is_rare,
+      slot.slot_id,
+      animatingTile,
+      entranceAnimation,
+      attentionAnimation,
+      displayState.shouldShowAttention,
+    ]
+  );
 
-  return (
-    <div
-      id={`slot-${slot.slot_id}`}
-      className={`animated ${tileClassNames} {className}`}
-      style={
-        {
-          "--room-color": isBonus ? "var(--neon-purple)" : "var(--neon-pink)",
-          animationDelay,
-        } as React.CSSProperties
-      }
-    >
-      {slot.is_snapped || (timeExpired && !slot.is_snapped) ? (
+  console.log(
+    `Entrance animation: ${entranceAnimation} Delay: ${entranceDelay}`
+  );
+
+  console.log("slot is snapped: " + slot.taken);
+  const content = useMemo(() => {
+    if (displayState.shouldShowContent) {
+      return (
         <div className={styles.answeredContent}>
           <div className={styles.correctAnswer}>{slot.text_preview}</div>
           {slot.snapped_by_display_name && (
             <div className={styles.playerBadge}>
               <div
                 className={styles.playerBadgeAvatar}
-                style={{
-                  background: "var(--neon-blue)",
-                }}
+                style={{ background: "var(--neon-blue)" }}
               >
                 {slot.snapped_by_display_name}
               </div>
@@ -85,11 +80,41 @@ const SlotTile: React.FC<SlotTileProps> = ({
             </div>
           )}
         </div>
-      ) : (
-        <div className={styles.questionMark}>?</div>
-      )}
+      );
+    }
+    return <div className={styles.questionMark}>?</div>;
+  }, [
+    displayState.shouldShowContent,
+    slot.text_preview,
+    slot.snapped_by_display_name,
+  ]);
+
+  return (
+    <div
+      id={`slot-${slot.slot_id}`}
+      className={tileClassNames}
+      style={
+        {
+          "--animate-delay": revealDelay || entranceDelay,
+          "--room-color": displayState.roomColor,
+        } as React.CSSProperties
+      }
+    >
+      {content}
     </div>
   );
 };
 
-export default React.memo(SlotTile);
+// Optimized memo comparison - only re-render when these specific props change
+export default React.memo(SlotTile, (prevProps, nextProps) => {
+  return (
+    prevProps.slot.slot_id === nextProps.slot.slot_id &&
+    prevProps.slot.taken === nextProps.slot.taken &&
+    prevProps.slot.text_preview === nextProps.slot.text_preview &&
+    prevProps.slot.snapped_by_display_name ===
+      nextProps.slot.snapped_by_display_name &&
+    prevProps.isTimeUp === nextProps.isTimeUp &&
+    prevProps.revealDelay === nextProps.revealDelay &&
+    prevProps.entranceDelay === nextProps.entranceDelay
+  );
+});

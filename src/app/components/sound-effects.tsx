@@ -27,7 +27,6 @@ const getOrCreateAudioContext = (): AudioContext | null => {
         window.AudioContext || (window as any).webkitAudioContext;
       if (AudioContext) {
         globalAudioContext = new AudioContext();
-        console.log("Audio context created successfully");
       } else {
         console.error("Web Audio API not supported in this browser");
         return null;
@@ -234,8 +233,6 @@ const createSoundGenerators = () => {
       oscillator2.stop(context.currentTime + 0.8);
       oscillator3.stop(context.currentTime + 0.7);
       oscillator4.stop(context.currentTime + 0.6);
-
-      console.log("Played epic bonus sound effect");
     } catch (e) {
       console.error("Error playing bonus sound effect:", e);
     }

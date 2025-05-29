@@ -20,7 +20,7 @@ export const formatTime = (seconds: number): string => {
  * Get a random attention animation
  */
 export const getRandomAttentionAnimation = (): string => {
-  return `animate__animated ${
+  return `animate__animated animate__${
     ATTENTION_ANIMATIONS[
       Math.floor(Math.random() * ATTENTION_ANIMATIONS.length)
     ]
@@ -31,7 +31,7 @@ export const getRandomAttentionAnimation = (): string => {
  * Get a random entrance animation
  */
 export const getRandomEntranceAnimation = (): string => {
-  return `animate__animated ${
+  return `animate__animated animate__${
     ENTRANCE_ANIMATIONS[Math.floor(Math.random() * ENTRANCE_ANIMATIONS.length)]
   }`;
 };
