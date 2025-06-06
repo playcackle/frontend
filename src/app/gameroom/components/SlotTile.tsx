@@ -1,39 +1,43 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import React, { useMemo } from "react";
 import styles from "../gameroom.module.css";
 import { useAnimationState } from "../hooks/useGameState";
-import type { Slot } from "../types";
+import { Slot } from "../types/state";
 
 interface SlotTileProps {
   slot: Slot;
   isBonus?: boolean;
   revealDelay: number;
   entranceDelay: number;
-  isTimeUp: boolean; // Passed from parent instead of calculating internally
 }
 
 const SlotTile: React.FC<SlotTileProps> = ({
   slot,
   revealDelay = 0,
   entranceDelay = 0,
-  isTimeUp = false,
 }) => {
+  const { data } = useSession();
   // Only get animation state, not time-dependent state
-  const { entranceAnimation, attentionAnimation, animatingTile } =
-    useAnimationState();
+  const {
+    entranceAnimation,
+    attentionAnimation,
+    animatingSlotId: animatingTile,
+  } = useAnimationState();
 
   // Memoize all calculations based on props
   const displayState = useMemo(() => {
-    const shouldShowContent = slot.taken || (isTimeUp && !slot.taken);
-    const shouldShowAttention = isTimeUp && !slot.taken;
+    const shouldShowContent = slot.taken;
+    const shouldShowAttention =
+      slot.taken && slot.snapped_by_player_id === data?.user.id;
 
     return {
       shouldShowContent,
       shouldShowAttention,
       roomColor: slot.taken ? "var(--neon-purple)" : "var(--neon-pink)",
     };
-  }, [slot.taken, isTimeUp]);
+  }, [slot.taken]);
 
   const tileClassNames = useMemo(
     () =>
@@ -41,14 +45,14 @@ const SlotTile: React.FC<SlotTileProps> = ({
         styles.slotTile,
         slot.is_rare ? styles.bonusTile : "",
         slot.taken ? styles.answered : "",
-        slot.slot_id === animatingTile ? styles.correctPulse : "",
+        slot.id === animatingTile ? styles.correctPulse : "",
         entranceAnimation,
         displayState.shouldShowAttention ? attentionAnimation : "",
       ].join(" "),
     [
       slot.taken,
       slot.is_rare,
-      slot.slot_id,
+      slot.id,
       animatingTile,
       entranceAnimation,
       attentionAnimation,
@@ -56,16 +60,11 @@ const SlotTile: React.FC<SlotTileProps> = ({
     ]
   );
 
-  console.log(
-    `Entrance animation: ${entranceAnimation} Delay: ${entranceDelay}`
-  );
-
-  console.log("slot is snapped: " + slot.taken);
   const content = useMemo(() => {
     if (displayState.shouldShowContent) {
       return (
         <div className={styles.answeredContent}>
-          <div className={styles.correctAnswer}>{slot.text_preview}</div>
+          <div className={styles.correctAnswer}>{slot.canonical_text}</div>
           {slot.snapped_by_display_name && (
             <div className={styles.playerBadge}>
               <div
@@ -91,7 +90,7 @@ const SlotTile: React.FC<SlotTileProps> = ({
 
   return (
     <div
-      id={`slot-${slot.slot_id}`}
+      id={`slot-${slot.id}`}
       className={tileClassNames}
       style={
         {
@@ -108,12 +107,11 @@ const SlotTile: React.FC<SlotTileProps> = ({
 // Optimized memo comparison - only re-render when these specific props change
 export default React.memo(SlotTile, (prevProps, nextProps) => {
   return (
-    prevProps.slot.slot_id === nextProps.slot.slot_id &&
+    prevProps.slot.id === nextProps.slot.id &&
     prevProps.slot.taken === nextProps.slot.taken &&
     prevProps.slot.text_preview === nextProps.slot.text_preview &&
     prevProps.slot.snapped_by_display_name ===
       nextProps.slot.snapped_by_display_name &&
-    prevProps.isTimeUp === nextProps.isTimeUp &&
     prevProps.revealDelay === nextProps.revealDelay &&
     prevProps.entranceDelay === nextProps.entranceDelay
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import type { AnimationState } from "../types";
+import { AnimationState } from "../types/state";
 import { getRandomSuccessSound, playSound } from "../utils";
 
 const initialAnimationState: AnimationState = {

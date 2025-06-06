@@ -4,21 +4,21 @@ import { formatTime } from "../utils";
 
 interface FeedbackTileProps {
   feedback: string;
-  isIntermission: boolean;
+  isRoundBreak: boolean;
   intermissionTimeRemaining: number;
   roundNumber: number;
 }
 
 const FeedbackTile: React.FC<FeedbackTileProps> = ({
   feedback,
-  isIntermission,
+  isRoundBreak,
   intermissionTimeRemaining,
   roundNumber,
 }) => {
   return (
     <div className={styles.feedbackTile}>
       <div className={styles.feedbackContent}>
-        {isIntermission ? (
+        {isRoundBreak ? (
           <>
             <div className={styles.intermissionText}>
               Intermission: Next round starts in{" "}

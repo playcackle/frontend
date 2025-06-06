@@ -1,11 +1,3 @@
-// GAME_CONFIG
-export const MAX_RECONNECT_ATTEMPTS = 5;
-export const RECONNECT_DELAY_BASE = 1000;
-export const ANIMATION_DURATION = 2000;
-export const ENTRANCE_DELAY_BASE = 20;
-export const REVEAL_DELAY_BASE = 10;
-export const PARTICLE_DURATION = 1500;
-
 // SOUND_EFFECTS
 export const SOUND_SUCCESS = ["success1", "success2", "success3"] as const;
 export const SOUND_BONUS = "bonus" as const;

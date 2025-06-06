@@ -17,6 +17,7 @@ export const useGameState = () => {
     ...gameState,
     updateGameState,
     resetGameState,
+    gameState,
   };
 };
 

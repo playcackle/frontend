@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 import {
+  LobbyTickPayload,
   NewRoundStartingPayload,
+  RoundOverPayload,
   SlotSnappedPayload,
   SubmissionFeedbackPayload,
-} from "../types";
+} from "../types/payloads";
+import { Slot } from "../types/state";
 import {
   getRandomAttentionAnimation,
   getRandomEntranceAnimation,
@@ -13,8 +16,24 @@ import { useAnimationState, useGameState } from "./useGameState";
 
 export const useGameEvents = (gameWsUrl: string, token: string) => {
   const { onEvent, sendEvent, isConnected } = useGameSocket(gameWsUrl, token);
-  const { updateGameState, slots } = useGameState();
+  const { updateGameState, slots, isBootstraped, gameState } = useGameState();
   const { updateAnimationState } = useAnimationState();
+
+  const setAnimationWithClear = (animationUpdate: any, delay = 100) => {
+    console.log("set animate");
+    updateAnimationState(animationUpdate);
+    setTimeout(() => {
+      if (animationUpdate.entranceAnimation !== undefined) {
+        updateAnimationState({ entranceAnimation: "" });
+      }
+      if (animationUpdate.attentionAnimation !== undefined) {
+        updateAnimationState({
+          attentionAnimation: "",
+          animatingSlotId: "",
+        });
+      }
+    }, delay);
+  };
 
   useEffect(() => {
     updateGameState({ loading: !isConnected });
@@ -22,63 +41,69 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
   useEffect(() => {
     // Lobby tick event
-    onEvent("lobby_tick", (data) => {
-      if (
-        slots.filter((x) => x.taken).length !==
-        data.slots.filter((x) => x.taken).length
-      ) {
-        updateGameState({ slots: data.slots });
-      } else if (slots.length === 0 && data.slots.length > 0) {
-        updateGameState({ slots: data.slots });
-        console.log("Tick will animate and set slots");
-        updateAnimationState({
-          entranceAnimation: getRandomEntranceAnimation(),
-        });
-        setTimeout(() => {
-          updateAnimationState({
-            entranceAnimation: "",
-          });
-        }, 10);
-      }
-
+    onEvent("lobby_tick", (data: LobbyTickPayload) => {
       updateGameState({
         playerCount: data.player_count,
         timeRemaining: data.time_remaining_seconds ?? 0,
         roundName: data.topic_name || "",
+        showCountDown:
+          data.time_remaining_seconds! < 6 &&
+          data.time_remaining_seconds! > 0 &&
+          (data.status === "ROUND_BREAK" ||
+            data.status === "POST_GAME_SHOWCASE"),
+        isRoundBreak: data.status === "ROUND_BREAK",
+        scores: data.scores,
       });
+
+      if (data.time_remaining_seconds! % 4 === 0) {
+        console.log("STATE: " + JSON.stringify(gameState));
+        console.log("ROOM TICK: " + JSON.stringify(data));
+      }
+      if (
+        (data.time_remaining_seconds! % 2 === 0 && !isBootstraped) ||
+        (slots.length === 0 && data.status !== "ROUND_BREAK")
+      ) {
+        updateGameState({
+          slots: data.slots,
+          scores: data.scores,
+          isBootstraped: true,
+        });
+        console.log("STATE: " + JSON.stringify(gameState));
+        console.log("ROOM TICK: " + JSON.stringify(data));
+      }
     });
 
     // Round over events
-    onEvent("round_over_timeout", (data) => {
+    onEvent("round_over", (data: RoundOverPayload) => {
+      console.log("round over");
       updateGameState({
-        isIntermission: true,
+        isRoundBreak: true,
         slots: [],
-        playerScore: data.player_scores,
+        scores: data.player_scores || [],
       });
     });
 
-    onEvent("round_over_all_snapped", (data) => {
+    onEvent("round_starting_soon", () => {
+      debugger;
       updateGameState({
-        isIntermission: true,
-        playerScore: data.player_scores,
+        showCountDown: true,
+        isRoundBreak: false,
       });
     });
 
     // New round starting
-    onEvent("new_round_starting", (data: NewRoundStartingPayload) => {
+    onEvent("new_round_started", (data: NewRoundStartingPayload) => {
       debugger;
       console.log("[Game WS] new_round_starting event received:", data);
-      updateAnimationState({ entranceAnimation: getRandomEntranceAnimation() });
-      setTimeout(() => {
-        debugger;
-        updateAnimationState({
-          entranceAnimation: "",
-        });
-      }, 10);
+      setAnimationWithClear({
+        entranceAnimation: getRandomEntranceAnimation(),
+      });
       updateGameState({
-        isIntermission: false,
+        isRoundBreak: false,
         roundName: data.topic_name,
         slots: data.answer_slots,
+        roundNumber: data.round_number,
+        showCountDown: false,
       });
     });
 
@@ -90,20 +115,20 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     });
 
     onEvent("slot_snapped", (data: SlotSnappedPayload) => {
-      // const slot = slots.find((x) => data.slot_id);
-      // const otherSlots = slots.filter((x) => x.slot_id !== data.slot_id);
-      // updateGameState({ slots: [...otherSlots!, slot!] });
+      const slot = slots.find((x) => x.id === data.id);
+      if (slot) {
+        const otherSlots = slots.filter((x: Slot) => x.id !== data.id);
+        updateGameState({ slots: [...otherSlots, slot] });
+      }
     });
 
     // Submission feedback
     onEvent("submission_feedback", (data: SubmissionFeedbackPayload) => {
-      console.log("[Game WS] Submission feedback:", data);
-      debugger;
-      if (data.status === "correct" || data.status === "success") {
+      if (data.status === "success") {
         const animation = getRandomAttentionAnimation();
         updateAnimationState({
           attentionAnimation: animation,
-          animatingTile: data.slot_id!,
+          animatingSlotId: data.id!,
         });
 
         // Play success sound
@@ -112,7 +137,14 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         }
       }
     });
-  }, [onEvent]);
+  }, [
+    onEvent,
+    slots,
+    isBootstraped,
+    gameState,
+    updateGameState,
+    updateAnimationState,
+  ]);
 
   return { sendEvent };
 };

@@ -9,6 +9,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  transpilePackages: ['jotai-devtools'],
 }
 
 export default nextConfig

@@ -48,7 +48,6 @@
 /* Adjust room title container */
 .roomTitle {
   text-align: center;
-  animation: fadeIn 0.5s ease-in-out;
 }
 
 .roomTitle h1 {
@@ -70,17 +69,6 @@
   border: 1px solid var(--room-color, var(--neon-pink));
   margin-top: 0.8rem;
   font-family: var(--retro-font-alt);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* First row: Stats tiles */
@@ -230,7 +218,7 @@
   font-family: var(--retro-font-alt);
 }
 
-.playerScore {
+.scores {
   font-weight: bold;
   color: var(--neon-pink);
   font-size: 0.8rem; /* Smaller font */
@@ -257,9 +245,9 @@
 /* Update the slots grid to 2x5 layout (2 rows, 5 columns) */
 .slotGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 columns */
+  grid-template-columns: repeat(4, 1fr); /* 5 columns */
   grid-template-rows: repeat(2, auto); /* 2 rows */
-  gap: 1rem; /* Increased gap for larger tiles */
+  gap: 1.5rem; /* Increased gap for larger tiles */
   width: 100%;
 }
 
@@ -422,8 +410,8 @@
   position: relative;
   overflow: hidden;
   opacity: 1;
-  min-height: 80px; /* Increased minimum height */
-  max-height: 120px; /* Increased maximum height */
+  min-height: 120px; /* Increased minimum height */
+  max-height: 160px; /* Increased maximum height */
   /* Add visibility to ensure animations work properly */
   visibility: visible;
 }
@@ -499,7 +487,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  max-height: 300px;
+  height: 100%;
+  max-height: 400px;
   scroll-behavior: smooth;
   font-family: var(--retro-font-alt);
 }
@@ -552,11 +541,8 @@
   box-shadow: 0 0 10px rgba(183, 0, 255, 0.7);
 }
 
-/* Third row: Answer input and feedback */
 .answerRow {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1.5rem;
+  width: 100%;
 }
 
 .answerForm {
@@ -568,6 +554,7 @@
   backdrop-filter: blur(5px);
   display: flex;
   gap: 1rem;
+  width: 100%;
 }
 
 .answerInput {
@@ -979,10 +966,6 @@
 @media (max-width: 1024px) {
   .statsRow,
   .contentRow,
-  .answerRow {
-    grid-template-columns: 1fr;
-  }
-
   .slotGrid {
     grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
     grid-template-rows: auto; /* Let rows adjust automatically */

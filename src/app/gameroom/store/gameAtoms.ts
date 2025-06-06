@@ -1,18 +1,21 @@
 import { atom } from "jotai";
-import { AnimationState, GameState, Slot } from "../types";
+import { AnimationState, GameState, Slot } from "../types/state";
 
-// Core game state atoms
-export const gameStateAtom = atom<GameState>({
+const initGameState = {
   playerCount: 0,
-  timeRemaining: 250,
+  timeRemaining: 150,
   roundName: "",
-  isIntermission: false,
+  roundNumber: 0,
+  isRoundBreak: false,
   loading: true,
-  slots: [],
   soundsLoaded: false,
-  playerScore: [],
+  slots: [],
+  scores: [],
   finalScore: [],
-});
+  showCountDown: false,
+};
+// Core game state atoms
+export const gameStateAtom = atom<GameState>(initGameState);
 
 export const slotsAtom = atom<Slot[]>([]);
 export const answerAtom = atom<string>("");
@@ -44,17 +47,7 @@ export const updateAnimationStateAtom = atom(
 );
 
 export const resetGameStateAtom = atom(null, (get, set) => {
-  set(gameStateAtom, {
-    playerCount: 0,
-    timeRemaining: 150,
-    roundName: "",
-    isIntermission: false,
-    loading: false,
-    soundsLoaded: false,
-    slots: [],
-    playerScore: [],
-    finalScore: [],
-  });
+  set(gameStateAtom, initGameState);
   set(answerAtom, "");
   set(animationStateAtom, {
     entranceAnimation: "",

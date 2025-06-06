@@ -7,11 +7,11 @@ export const joinGameroom = async (playerId: string) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ player_id: playerId }),
-    // …
   });
   if (!response.ok) {
     const errorData = await response.json();
     return {
+      isError: true,
       error: errorData.message || "Registration failed!",
     };
   }

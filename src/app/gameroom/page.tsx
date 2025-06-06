@@ -19,6 +19,8 @@ import GameEffects from "./components/GameEffects";
 import SlotGrid from "./components/SlotGrid";
 import StatsRow from "./components/StatsRow";
 
+import { Flex } from "@radix-ui/themes";
+import Leaderboard from "./components/LeaderBoard";
 import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
 import { useAnswer, useGameState } from "./hooks/useGameState";
@@ -29,8 +31,15 @@ export default function GameroomPage() {
   const gameroom = useAtomValue(gameRoomAtom);
 
   // Global state hooks
-  const { loading, roundName, isIntermission, timeRemaining, updateGameState } =
-    useGameState();
+  const {
+    loading,
+    roundName,
+    roundNumber,
+    isRoundBreak,
+    timeRemaining,
+    showCountDown,
+    updateGameState,
+  } = useGameState();
   const { clearAnswer, answer } = useAnswer();
 
   // Refs
@@ -61,14 +70,11 @@ export default function GameroomPage() {
       {loading && <Progress />}
       {!loading && (
         <div className={styles.container}>
-          <CountdownOverlay
-            show={isIntermission && timeRemaining === 5}
-            value={timeRemaining}
-          />
+          <CountdownOverlay show={showCountDown} value={timeRemaining} />
 
           <GameEffects animationState={{}} />
 
-          <main
+          <div
             ref={mainRef}
             className={`
               ${styles.main}
@@ -77,7 +83,7 @@ export default function GameroomPage() {
             <RoomHeader
               roundName={roundName}
               roomName={name!}
-              roundNumber={1}
+              roundNumber={roundNumber}
               totalRounds={10}
             />
 
@@ -86,21 +92,24 @@ export default function GameroomPage() {
             <StatsRow nameFlash={false} />
 
             <div className={styles.contentRow}>
-              <div
-                className={styles.slotContainer}
-                style={
-                  { "--room-color": "var(--neon-pink)" } as React.CSSProperties
-                }
-              >
-                <SlotGrid />
-              </div>
+              <Flex direction="column" gap="3">
+                <div
+                  className={styles.slotContainer}
+                  style={
+                    {
+                      "--room-color": "var(--neon-pink)",
+                    } as React.CSSProperties
+                  }
+                >
+                  {isRoundBreak ? <Leaderboard /> : <SlotGrid />}
+                </div>
+                <div className={styles.answerRow}>
+                  <AnswerForm onSubmit={handleSubmitAnswer} />
+                </div>
+              </Flex>
               <ChatContainer />
             </div>
-
-            <div className={styles.answerRow}>
-              <AnswerForm onSubmit={handleSubmitAnswer} />
-            </div>
-          </main>
+          </div>
         </div>
       )}
     </>

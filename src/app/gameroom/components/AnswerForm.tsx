@@ -11,10 +11,10 @@ interface AnswerFormProps {
 
 export default function AnswerForm({ onSubmit }: AnswerFormProps) {
   const { answer, setAnswer } = useAnswer();
-  const { timeRemaining, isIntermission } = useGameState();
+  const { timeRemaining, isRoundBreak } = useGameState();
 
   const timeExpired = timeRemaining === 0;
-  const isDisabled = timeExpired || isIntermission;
+  const isDisabled = timeExpired || isRoundBreak;
 
   return (
     <form className={styles.answerForm} onSubmit={onSubmit}>
@@ -23,7 +23,7 @@ export default function AnswerForm({ onSubmit }: AnswerFormProps) {
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
         className={styles.answerInput}
-        disabled={timeExpired || isIntermission}
+        disabled={timeExpired || isRoundBreak}
       />
       <Button
         type="submit"

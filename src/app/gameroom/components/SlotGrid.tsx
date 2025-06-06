@@ -1,22 +1,19 @@
 import styles from "../gameroom.module.css";
 import { useGameState } from "../hooks/useGameState";
+import { Slot } from "../types/state";
 import SlotTile from "./SlotTile";
 
 export default function SlotGrid() {
-  const { slots, timeRemaining } = useGameState();
-
-  // Calculate display state once for all tiles
-  const isTimeUp = timeRemaining === 0;
+  const { slots } = useGameState();
 
   return (
     <div className={styles.slotGrid}>
-      {slots.map((slot, i) => (
+      {slots.map((slot: Slot, i: number) => (
         <SlotTile
-          key={slot.slot_id || i}
+          key={slot.id || i}
           slot={slot}
-          entranceDelay={i * 33 + 100}
-          revealDelay={i * 33 + 200}
-          isTimeUp={isTimeUp}
+          entranceDelay={i * 100 - (i > 0 ? 88 : 0)}
+          revealDelay={i * 100 - (i > 0 ? 88 : 0)}
         />
       ))}
     </div>

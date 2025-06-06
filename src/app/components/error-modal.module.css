@@ -1,0 +1,305 @@
+/* Override Radix Dialog styles with retro theme */
+.dialogContent {
+  background-color: #0a0a1f !important;
+  border: 2px solid #ff3366 !important;
+  border-radius: 8px !important;
+  padding: 2rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 20px rgba(255, 51, 102, 0.7), 0 0 40px rgba(255, 51, 102, 0.4),
+    inset 0 0 20px rgba(255, 51, 102, 0.1) !important;
+  animation: errorPulse 2s infinite alternate !important;
+  color: white !important;
+}
+
+@keyframes errorPulse {
+  0% {
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.7),
+      0 0 40px rgba(255, 51, 102, 0.4), inset 0 0 20px rgba(255, 51, 102, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(255, 51, 102, 0.9),
+      0 0 60px rgba(255, 51, 102, 0.6), inset 0 0 30px rgba(255, 51, 102, 0.2);
+  }
+}
+
+.scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(255, 51, 102, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}
+
+.errorIcon {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.errorSymbol {
+  font-size: 4rem;
+  color: #ff3366;
+  text-shadow: 0 0 10px rgba(255, 51, 102, 0.8),
+    0 0 20px rgba(255, 51, 102, 0.6), 0 0 30px rgba(255, 51, 102, 0.4);
+  animation: errorIconFlicker 1.5s infinite alternate;
+}
+
+@keyframes errorIconFlicker {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(0.95);
+  }
+  75% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modalContent {
+  position: relative;
+  z-index: 2;
+}
+
+.errorTitle {
+  color: #fff !important;
+  text-shadow: 0 0 10px rgba(255, 51, 102, 0.7) !important;
+  font-family: var(--retro-font) !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  animation: titleGlitch 3s infinite !important;
+}
+
+@keyframes titleGlitch {
+  0%,
+  90%,
+  100% {
+    transform: translateX(0);
+  }
+  92% {
+    transform: translateX(-2px);
+  }
+  94% {
+    transform: translateX(2px);
+  }
+  96% {
+    transform: translateX(-1px);
+  }
+  98% {
+    transform: translateX(1px);
+  }
+}
+
+.errorMessage {
+  color: #ccc !important;
+  line-height: 1.6 !important;
+  font-family: var(--retro-font-alt) !important;
+}
+
+.errorCode {
+  font-size: 0.9rem;
+  color: #ff3366;
+  font-family: var(--retro-font);
+  letter-spacing: 1px;
+  background-color: rgba(255, 51, 102, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 51, 102, 0.3);
+  display: inline-block;
+}
+
+.modalActions {
+  position: relative;
+  z-index: 2;
+}
+
+.retryButton,
+.homeButton,
+.closeButton {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 4px !important;
+  font-size: 0.9rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  font-family: var(--retro-font) !important;
+  border: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+  color: white !important;
+}
+
+.retryButton {
+  background: linear-gradient(
+    45deg,
+    var(--neon-blue),
+    var(--neon-purple)
+  ) !important;
+  box-shadow: 0 0 10px rgba(0, 221, 255, 0.5) !important;
+}
+
+.retryButton:hover {
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.7), 0 0 25px rgba(0, 221, 255, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+.homeButton {
+  background: linear-gradient(
+    45deg,
+    var(--neon-green),
+    var(--neon-blue)
+  ) !important;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.5) !important;
+}
+
+.homeButton:hover {
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.7), 0 0 25px rgba(0, 255, 102, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+.closeButton {
+  background: linear-gradient(45deg, #666, #999) !important;
+  box-shadow: 0 0 10px rgba(153, 153, 153, 0.5) !important;
+}
+
+.closeButton:hover {
+  box-shadow: 0 0 15px rgba(153, 153, 153, 0.7),
+    0 0 25px rgba(153, 153, 153, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+.buttonIcon {
+  font-size: 1rem;
+}
+
+.glitchOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 51, 102, 0.1) 25%,
+    transparent 50%,
+    rgba(255, 51, 102, 0.1) 75%,
+    transparent 100%
+  );
+  animation: glitchSweep 4s infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes glitchSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .dialogContent {
+    padding: 1.5rem !important;
+    margin: 1rem !important;
+  }
+
+  .errorTitle {
+    font-size: 1.5rem !important;
+  }
+
+  .errorMessage {
+    font-size: 1rem !important;
+  }
+
+  .modalActions {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .retryButton,
+  .homeButton,
+  .closeButton {
+    width: 100% !important;
+    max-width: 200px !important;
+    justify-content: center !important;
+  }
+
+  .errorSymbol {
+    font-size: 3rem;
+  }
+}
+
+/* Add button press effect */
+.retryButton:active,
+.homeButton:active,
+.closeButton:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Add shine effect on hover */
+.retryButton:hover::after,
+.homeButton:hover::after,
+.closeButton:hover::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  animation: buttonShine 0.6s ease-out;
+}
+
+@keyframes buttonShine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Override Radix focus styles to match retro theme */
+.retryButton:focus-visible,
+.homeButton:focus-visible,
+.closeButton:focus-visible {
+  outline: 2px solid var(--neon-blue) !important;
+  outline-offset: 2px !important;
+}
