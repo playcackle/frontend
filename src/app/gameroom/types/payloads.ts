@@ -18,7 +18,8 @@ export type GameEvent =
   | "game_over"
   | "lobby_resetting_for_new_game"
   | "submission_feedback"
-  | "submit_answer";
+  | "submit_answer"
+  | "lobby_state_sync";
 
 export type ChatEvent =
   | "connection_success_chat"
@@ -78,7 +79,7 @@ export type NewRoundStartingPayload = {
   round_number: number;
   topic_name: string;
   round_duration_seconds: number;
-  answer_slots: Slot[];
+  active_slots: Slot[];
   round_end_timestamp_utc: string;
 };
 

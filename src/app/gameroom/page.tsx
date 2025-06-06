@@ -8,7 +8,7 @@ import styles from "./gameroom.module.css";
 // Import custom hooks
 import { useAtomValue } from "jotai";
 import Progress from "../loading";
-import { gameRoomAtom } from "../store/lobby";
+import { gameRoomAtom } from "../store/gameRoom";
 import ChatContainer from "./chat-container";
 import CountdownOverlay from "./components/CountdownOverlay";
 import RoomHeader from "./components/RoomHeader";
@@ -21,6 +21,7 @@ import StatsRow from "./components/StatsRow";
 
 import { Flex } from "@radix-ui/themes";
 import Leaderboard from "./components/LeaderBoard";
+import { useAnswerBubbles } from "./hooks/useAnswerBubbles";
 import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
 import { useAnswer, useGameState } from "./hooks/useGameState";
@@ -29,6 +30,8 @@ export default function GameroomPage() {
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
   const gameroom = useAtomValue(gameRoomAtom);
+  const { addAnswerBubble, bubbles, recentAnswers, removeBubble } =
+    useAnswerBubbles();
 
   // Global state hooks
   const {
@@ -56,6 +59,7 @@ export default function GameroomPage() {
   const { sendEvent } = useGameEvents(gameroom.game_ws_url, gameroom.token);
 
   const handleSubmitAnswer = (e: React.FormEvent) => {
+    addAnswerBubble(answer);
     e.preventDefault();
     submitAnswer(answer, sendEvent);
     clearAnswer();
@@ -104,7 +108,12 @@ export default function GameroomPage() {
                   {isRoundBreak ? <Leaderboard /> : <SlotGrid />}
                 </div>
                 <div className={styles.answerRow}>
-                  <AnswerForm onSubmit={handleSubmitAnswer} />
+                  <AnswerForm
+                    onSubmit={handleSubmitAnswer}
+                    bubbles={bubbles}
+                    onBubbleComplete={removeBubble}
+                    recentAnswers={recentAnswers}
+                  />
                 </div>
               </Flex>
               <ChatContainer />

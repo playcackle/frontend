@@ -1,0 +1,142 @@
+/* Answer bubbles styles */
+.bubblesContainer {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  height: 100px; /* Changed from 200px to 100px */
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 99999; /* Increased from 1000 to 9999 to ensure bubbles appear in front of everything */
+}
+
+.answerBubble {
+  position: absolute;
+  bottom: 0;
+  animation: bubbleFloat 1.5s ease-out forwards;
+  width: auto;
+  min-width: 120px;
+  max-width: 250px;
+  z-index: 99999; /* Increased from 1000 to 9999 */
+}
+
+.bubbleContent {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--neon-blue);
+  border-radius: 50px;
+  padding: 0.5rem 1rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bubbleText {
+  font-size: 0.9rem;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+  font-family: var(--retro-font);
+}
+
+.bubblePlayer {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: var(--retro-font-alt);
+}
+
+@keyframes bubbleFloat {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(-15px) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-40px) scale(1.05);
+  }
+  75% {
+    opacity: 0.2;
+    transform: translateY(-60px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px) scale(1.2);
+  }
+}
+
+/* Answer chips styles - moved below input */
+.answerChipsContainer {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: rgba(20, 20, 40, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chipsLabel {
+  font-size: 0.8rem;
+  color: var(--neon-blue);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: var(--retro-font);
+}
+
+.chipsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.answerChip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  background-color: #0a2744; /* Darker blue background */
+  color: white;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  animation: chipAppear 0.3s ease-out;
+}
+
+.answerChip:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.2);
+}
+
+.chipText {
+  font-weight: bold;
+  font-family: var(--retro-font);
+}
+
+.chipPlayer {
+  font-size: 0.7rem;
+  opacity: 0.8;
+  font-family: var(--retro-font-alt);
+}
+
+.answerInputContainer {
+  display: flex;
+  gap: 1rem;
+  position: relative; /* Add this for bubble positioning */
+}
+
+@keyframes chipAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

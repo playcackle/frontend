@@ -16,7 +16,7 @@ import { useAnimationState, useGameState } from "./useGameState";
 
 export const useGameEvents = (gameWsUrl: string, token: string) => {
   const { onEvent, sendEvent, isConnected } = useGameSocket(gameWsUrl, token);
-  const { updateGameState, slots, isBootstraped, gameState } = useGameState();
+  const { updateGameState, slots, gameState } = useGameState();
   const { updateAnimationState } = useAnimationState();
 
   const setAnimationWithClear = (animationUpdate: any, delay = 100) => {
@@ -41,6 +41,23 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
   useEffect(() => {
     // Lobby tick event
+    onEvent("lobby_state_sync", (data: LobbyTickPayload) => {
+      debugger;
+      updateGameState({
+        roundNumber: data.current_round,
+        playerCount: data.player_count,
+        timeRemaining: data.time_remaining_seconds ?? 0,
+        roundName: data.topic_name || "",
+        showCountDown:
+          data.time_remaining_seconds! < 6 &&
+          data.time_remaining_seconds! > 0 &&
+          (data.status === "ROUND_BREAK" ||
+            data.status === "POST_GAME_SHOWCASE"),
+        isRoundBreak: data.status === "ROUND_BREAK",
+        scores: data.scores,
+        slots: data.slots || [],
+      });
+    });
     onEvent("lobby_tick", (data: LobbyTickPayload) => {
       updateGameState({
         playerCount: data.player_count,
@@ -54,23 +71,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         isRoundBreak: data.status === "ROUND_BREAK",
         scores: data.scores,
       });
-
-      if (data.time_remaining_seconds! % 4 === 0) {
-        console.log("STATE: " + JSON.stringify(gameState));
-        console.log("ROOM TICK: " + JSON.stringify(data));
-      }
-      if (
-        (data.time_remaining_seconds! % 2 === 0 && !isBootstraped) ||
-        (slots.length === 0 && data.status !== "ROUND_BREAK")
-      ) {
-        updateGameState({
-          slots: data.slots,
-          scores: data.scores,
-          isBootstraped: true,
-        });
-        console.log("STATE: " + JSON.stringify(gameState));
-        console.log("ROOM TICK: " + JSON.stringify(data));
-      }
+      console.log("slots: " + JSON.stringify(slots));
     });
 
     // Round over events
@@ -93,15 +94,13 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
     // New round starting
     onEvent("new_round_started", (data: NewRoundStartingPayload) => {
-      debugger;
-      console.log("[Game WS] new_round_starting event received:", data);
       setAnimationWithClear({
         entranceAnimation: getRandomEntranceAnimation(),
       });
       updateGameState({
         isRoundBreak: false,
         roundName: data.topic_name,
-        slots: data.answer_slots,
+        slots: data.active_slots,
         roundNumber: data.round_number,
         showCountDown: false,
       });
@@ -115,6 +114,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     });
 
     onEvent("slot_snapped", (data: SlotSnappedPayload) => {
+      debugger;
       const slot = slots.find((x) => x.id === data.id);
       if (slot) {
         const otherSlots = slots.filter((x: Slot) => x.id !== data.id);
@@ -125,6 +125,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     // Submission feedback
     onEvent("submission_feedback", (data: SubmissionFeedbackPayload) => {
       if (data.status === "success") {
+        debugger;
         const animation = getRandomAttentionAnimation();
         updateAnimationState({
           attentionAnimation: animation,
@@ -137,14 +138,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         }
       }
     });
-  }, [
-    onEvent,
-    slots,
-    isBootstraped,
-    gameState,
-    updateGameState,
-    updateAnimationState,
-  ]);
+  }, [onEvent, slots, gameState, updateGameState, updateAnimationState]);
 
   return { sendEvent };
 };

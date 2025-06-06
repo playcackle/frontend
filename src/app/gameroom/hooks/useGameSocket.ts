@@ -125,7 +125,7 @@ export const useGameSocket = (baseUrl: string, token: string) => {
 
     // ========== CONNECTION EVENT HANDLERS ==========
 
-    socket.on("connect", () => {
+    socket.on("connect", (data) => {
       // Successful connection - reset everything
       setSocketState({
         isConnected: true,
@@ -186,12 +186,14 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       "waiting_for_players",
       "game_start_cancelled",
       "new_round_starting",
+      "new_round_started",
       "slot_snapped",
       "round_over",
       "break_starting",
       "game_over",
       "lobby_resetting_for_new_game",
       "submission_feedback",
+      "lobby_state_sync",
     ];
 
     // Set up the high-frequency event handler

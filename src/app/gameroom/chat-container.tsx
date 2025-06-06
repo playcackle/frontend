@@ -4,7 +4,7 @@ import { Button, Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
-import { gameRoomAtom } from "../store/lobby";
+import { gameRoomAtom } from "../store/gameRoom";
 import styles from "./gameroom.module.css";
 import { useChatSocket } from "./hooks/useChatWs";
 

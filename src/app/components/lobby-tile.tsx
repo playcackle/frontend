@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { joinGameroom } from "../actions/joinLobby";
 import { LobbyTile as Lobby } from "../models/lobby";
-import { gameRoomAtom } from "../store/lobby";
+import { gameRoomAtom } from "../store/gameRoom";
 import ErrorModal from "./error-modal";
 import styles from "./lobby-tile.module.css";
 
