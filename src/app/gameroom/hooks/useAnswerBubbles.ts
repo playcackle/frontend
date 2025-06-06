@@ -6,7 +6,6 @@ import type { AnswerChip } from "../components/answerChips/AnswerChips";
 
 export const useAnswerBubbles = () => {
   const [bubbles, setBubbles] = useState<BubbleAnswer[]>([]);
-  const [recentAnswers, setRecentAnswers] = useState<AnswerChip[]>([]);
 
   const addAnswerBubble = useCallback((text: string) => {
     const newBubble: BubbleAnswer = {
@@ -20,11 +19,6 @@ export const useAnswerBubbles = () => {
     };
 
     setBubbles((prev) => [...prev, newBubble]);
-
-    setRecentAnswers((prev) => {
-      const updated = [newChip, ...prev];
-      return updated.slice(0, 10); // Keep only last 10 answers
-    });
   }, []);
 
   const removeBubble = useCallback((id: string) => {
@@ -35,16 +29,10 @@ export const useAnswerBubbles = () => {
     setBubbles([]);
   }, []);
 
-  const clearRecentAnswers = useCallback(() => {
-    setRecentAnswers([]);
-  }, []);
-
   return {
     bubbles,
-    recentAnswers,
     addAnswerBubble,
     removeBubble,
     clearBubbles,
-    clearRecentAnswers,
   };
 };

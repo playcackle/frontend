@@ -710,6 +710,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   font-family: var(--retro-font);
+  height: 100%;
 }
 
 .answerButton:hover:not(:disabled) {

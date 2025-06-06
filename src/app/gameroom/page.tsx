@@ -24,14 +24,17 @@ import Leaderboard from "./components/LeaderBoard";
 import { useAnswerBubbles } from "./hooks/useAnswerBubbles";
 import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
-import { useAnswer, useGameState } from "./hooks/useGameState";
+import {
+  useAnswer,
+  useGameState,
+  useRecentAnswers,
+} from "./hooks/useGameState";
 
 export default function GameroomPage() {
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
   const gameroom = useAtomValue(gameRoomAtom);
-  const { addAnswerBubble, bubbles, recentAnswers, removeBubble } =
-    useAnswerBubbles();
+  const { addAnswerBubble, bubbles, removeBubble } = useAnswerBubbles();
 
   // Global state hooks
   const {
@@ -44,6 +47,8 @@ export default function GameroomPage() {
     updateGameState,
   } = useGameState();
   const { clearAnswer, answer } = useAnswer();
+  const { clearRecentAnswers, recentAnswers, setRecentAnswers } =
+    useRecentAnswers();
 
   // Refs
   const mainRef = useRef<HTMLDivElement>(null);
@@ -63,6 +68,9 @@ export default function GameroomPage() {
     e.preventDefault();
     submitAnswer(answer, sendEvent);
     clearAnswer();
+    setRecentAnswers((prev) =>
+      [...prev, { id: Math.random().toString(), text: answer }].slice(0, 10)
+    );
   };
 
   const handleSoundsLoaded = () => {
@@ -97,16 +105,20 @@ export default function GameroomPage() {
 
             <div className={styles.contentRow}>
               <Flex direction="column" gap="3">
-                <div
-                  className={styles.slotContainer}
-                  style={
-                    {
-                      "--room-color": "var(--neon-pink)",
-                    } as React.CSSProperties
-                  }
-                >
-                  {isRoundBreak ? <Leaderboard /> : <SlotGrid />}
-                </div>
+                {isRoundBreak ? (
+                  <Leaderboard />
+                ) : (
+                  <div
+                    className={styles.slotContainer}
+                    style={
+                      {
+                        "--room-color": "var(--neon-pink)",
+                      } as React.CSSProperties
+                    }
+                  >
+                    <SlotGrid />
+                  </div>
+                )}
                 <div className={styles.answerRow}>
                   <AnswerForm
                     onSubmit={handleSubmitAnswer}

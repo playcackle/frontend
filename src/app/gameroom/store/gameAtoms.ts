@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import { AnswerChip } from "../components/answerChips/AnswerChips";
 import { AnimationState, GameState, Slot } from "../types/state";
 
 const initGameState = {
@@ -13,13 +14,13 @@ const initGameState = {
   scores: [],
   finalScore: [],
   showCountDown: false,
-  recentAnswers: [],
 };
 // Core game state atoms
 export const gameStateAtom = atom<GameState>(initGameState);
 
 export const slotsAtom = atom<Slot[]>([]);
 export const answerAtom = atom<string>("");
+export const recentAnswersAtom = atom<AnswerChip[]>([]);
 
 // Animation state atoms
 export const animationStateAtom = atom<AnimationState>({

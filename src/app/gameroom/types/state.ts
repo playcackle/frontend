@@ -42,7 +42,6 @@ export type GameState = {
   scores: scores[];
   finalScore: FinalScore[];
   showCountDown: boolean;
-  recentAnswers: string[];
 };
 
 export type AnimationState = {
