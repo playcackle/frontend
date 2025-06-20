@@ -113,6 +113,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
     onEvent("slot_snapped", (data: SlotSnappedPayload) => {
       debugger;
+      console.log("slot snapped");
       updateGameState({
         slots: data.slots,
       });
@@ -120,6 +121,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
     // Submission feedback
     onEvent("submission_feedback", (data: SubmissionFeedbackPayload) => {
+      console.log("submission feedback");
       debugger;
       if (data.status === "success") {
         const animation = getRandomAttentionAnimation();
