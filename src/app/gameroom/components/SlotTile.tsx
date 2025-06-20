@@ -67,12 +67,6 @@ const SlotTile: React.FC<SlotTileProps> = ({
           <div className={styles.correctAnswer}>{slot.canonical_text}</div>
           {slot.snapped_by_display_name && (
             <div className={styles.playerBadge}>
-              <div
-                className={styles.playerBadgeAvatar}
-                style={{ background: "var(--neon-blue)" }}
-              >
-                {slot.snapped_by_display_name}
-              </div>
               <div className={styles.playerBadgeName}>
                 {slot.snapped_by_display_name}
               </div>

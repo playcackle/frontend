@@ -122,8 +122,8 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     // Submission feedback
     onEvent("submission_feedback", (data: SubmissionFeedbackPayload) => {
       console.log("submission feedback");
-      debugger;
       if (data.status === "success") {
+        debugger;
         const animation = getRandomAttentionAnimation();
         updateAnimationState({
           attentionAnimation: animation,
