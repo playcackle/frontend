@@ -64,8 +64,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       updateGameState({
         playerCount: data.player_count,
         timeRemaining: data.time_remaining_seconds ?? 0,
-        isRoundBreak: data.status === "ROUND_BREAK",
-        scores: data.scores,
       });
     });
 
