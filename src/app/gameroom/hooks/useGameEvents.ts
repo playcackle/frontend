@@ -57,14 +57,14 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
             data.status === "POST_GAME_SHOWCASE"),
         isRoundBreak: data.status === "ROUND_BREAK",
         scores: data.scores,
-        slots: data.slots || [],
+        slots: data.slots ?? [],
       });
     });
     onEvent("lobby_tick", (data: LobbyTickPayload) => {
       updateGameState({
         playerCount: data.player_count,
         timeRemaining: data.time_remaining_seconds ?? 0,
-        scores: data.scores,
+        scores: data.scores ?? [],
       });
     });
 
