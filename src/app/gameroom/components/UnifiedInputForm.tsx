@@ -31,10 +31,10 @@ export default function UnifiedInputForm({
 
   const timeExpired = timeRemaining === 0;
   const isAnswerMode = !isRoundBreak && !timeExpired;
-  const buttonText = isAnswerMode ? "Submit Answer" : "Send Message";
+  const buttonText = isAnswerMode ? "💡 Submit" : "💬 Send";
   const placeholderText = isAnswerMode 
-    ? "Enter your answer (visible to all players)..." 
-    : "Type a chat message...";
+    ? "Your answer..." 
+    : "Chat...";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,13 +47,11 @@ export default function UnifiedInputForm({
   return (
     <form className={styles.unifiedInputFormOnly} onSubmit={handleSubmit}>
       <Flex direction="column" style={{ width: "100%" }}>
-        {/* Show answer bubbles and recent answers only in answer mode */}
-        {isAnswerMode && (
-          <>
-            <AnswerBubbles bubbles={bubbles} onBubbleComplete={onBubbleComplete} />
-            <AnswerChips answers={recentAnswers} />
-          </>
-        )}
+        {/* Always show answer bubbles and recent answers to prevent layout shift */}
+        <div className={`${styles.answerAreaContainer} ${isAnswerMode ? styles.visible : styles.hidden}`}>
+          <AnswerBubbles bubbles={bubbles} onBubbleComplete={onBubbleComplete} />
+          <AnswerChips answers={recentAnswers} />
+        </div>
         
         <Flex direction="row" gap="2">
           <input

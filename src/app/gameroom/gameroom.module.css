@@ -1528,16 +1528,71 @@
   font-family: var(--retro-font);
   font-size: 0.9rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   min-width: 120px;
+  position: relative;
+  overflow: hidden;
 }
 
 .unifiedButton.answerButton {
   background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
 }
 
+.unifiedButton.answerButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 8px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.unifiedButton.answerButton:hover::before {
+  border-bottom-color: rgba(255, 255, 255, 0.6);
+}
+
 .unifiedButton.chatButton {
   background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+}
+
+.unifiedButton.chatButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.unifiedButton.chatButton::after {
+  content: '';
+  position: absolute;
+  top: 60%;
+  left: 18px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.unifiedButton.chatButton:hover::before {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.unifiedButton.chatButton:hover::after {
+  border-left-color: rgba(255, 255, 255, 0.6);
 }
 
 .unifiedButton.answerButton:hover:not(:disabled) {
@@ -1554,6 +1609,22 @@
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Smooth answer area transitions */
+.answerAreaContainer {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.answerAreaContainer.hidden {
+  max-height: 0;
+  opacity: 0.3;
+}
+
+.answerAreaContainer.visible {
+  max-height: 200px;
+  opacity: 1;
 }
 
 /* Animation keyframes for unified messages */

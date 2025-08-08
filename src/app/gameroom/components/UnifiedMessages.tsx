@@ -50,28 +50,28 @@ export default function UnifiedMessages() {
   const getMessagePrefix = (message: UnifiedMessage) => {
     switch (message.message_type) {
       case 'answer_attempt':
-        return '[ANSWER]';
+        return '💡';
       case 'successful_answer':
-        return `[✓ +${message.points_awarded}]`;
+        return `✅ +${message.points_awarded}`;
       case 'failed_answer':
-        return '[✗]';
+        return '❌';
       default:
-        return '';
+        return '💬';
     }
   };
 
   return (
     <div className={styles.unifiedMessagesContainer}>
       <div className={styles.unifiedHeader}>
-        <h3>{isRoundBreak ? "Chat Room" : "Live Answers & Chat"}</h3>
+        <h3>{isRoundBreak ? "💬 Chat" : "⚡ Live Feed"}</h3>
       </div>
       
       <div className={styles.messagesScrollArea}>
         {messages.length === 0 ? (
           <div className={styles.messagesEmpty}>
             {isRoundBreak 
-              ? "No messages yet. Start the conversation!" 
-              : "Answer submissions will appear here for all players to see..."
+              ? "💬 Start chatting!" 
+              : "⚡ Answers will appear here..."
             }
           </div>
         ) : (
