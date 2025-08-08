@@ -1,14 +1,11 @@
 "use client";
 
 import { Button, Flex } from "@radix-ui/themes";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import React from "react";
 import styles from "../gameroom.module.css";
 import { useGameState } from "../hooks/useGameState";
-import {
-  inputModeAtom,
-  unifiedInputAtom,
-} from "../store/gameAtoms";
+import { unifiedInputAtom } from "../store/gameAtoms";
 import AnswerBubbles, { BubbleAnswer } from "./answerChips/AnswerBubbles";
 import AnswerChips, { AnswerChip } from "./answerChips/AnswerChips";
 
@@ -27,7 +24,6 @@ export default function UnifiedInputForm({
 }: UnifiedInputFormProps) {
   const { timeRemaining, isRoundBreak } = useGameState();
   const [input, setInput] = useAtom(unifiedInputAtom);
-  const inputMode = useAtomValue(inputModeAtom);
 
   const timeExpired = timeRemaining === 0;
   const isAnswerMode = !isRoundBreak && !timeExpired;

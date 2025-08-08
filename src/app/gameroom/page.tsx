@@ -32,8 +32,7 @@ import {
 } from "./hooks/useGameState";
 import { 
   UnifiedMessage,
-  addUnifiedMessageAtom,
-  setInputModeAtom
+  addUnifiedMessageAtom
 } from "./store/gameAtoms";
 
 export default function GameroomPage() {
@@ -57,12 +56,6 @@ export default function GameroomPage() {
 
   // Unified message system
   const addUnifiedMessage = useSetAtom(addUnifiedMessageAtom);
-  const setInputMode = useSetAtom(setInputModeAtom);
-  
-  // Auto-set input mode based on game state
-  useEffect(() => {
-    setInputMode(isRoundBreak ? 'chat' : 'answer');
-  }, [isRoundBreak, setInputMode]);
 
   // Refs
   const mainRef = useRef<HTMLDivElement>(null);
@@ -82,7 +75,7 @@ export default function GameroomPage() {
     return url.replace(/\/(game|chat)$/, "");
   }
   const baseWsUrl = getBaseWsUrl(gameroom.game_ws_url);
-  const { messages: chatMessages, sendMessage: sendChatMessage } = useChatSocket(
+  const { sendMessage: sendChatMessage } = useChatSocket(
     baseWsUrl,
     gameroom.token
   );

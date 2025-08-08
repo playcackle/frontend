@@ -3,13 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSetAtom } from "jotai";
 import { io, Socket } from "socket.io-client";
-import { ChatEventPayloadMap } from "../types";
 import { UnifiedMessage, addUnifiedMessageAtom } from "../store/gameAtoms";
 
-type ChatMessage = ChatEventPayloadMap["new_message"];
-
 interface ChatState {
-  messages: ChatMessage[];
   error: string | null;
   isConnected: boolean;
 }
@@ -24,7 +20,6 @@ export const useChatSocket = (baseUrl: string, token: string) => {
   const socketRef = useRef<Socket | null>(null);
   const addUnifiedMessage = useSetAtom(addUnifiedMessageAtom);
   const [chatState, setChatState] = useState<ChatState>({
-    messages: [],
     error: null,
     isConnected: false,
   });
@@ -47,31 +42,11 @@ export const useChatSocket = (baseUrl: string, token: string) => {
       }));
     });
 
-    socket.on("new_message", (data: ChatMessage) => {
-      setChatState((prev) => ({
-        ...prev,
-        messages: [...prev.messages, data],
-      }));
-    });
 
     // UNIFIED INPUT SYSTEM: Handle unified messages from backend
     socket.on("unified_message", (data: UnifiedMessage) => {
-      // Add to unified message store for the new system
+      // Add to unified message store
       addUnifiedMessage(data);
-      
-      // Also keep legacy message handling for backwards compatibility
-      if (data.message_type === 'chat') {
-        const chatMessage: ChatMessage = {
-          player_id: data.player_id,
-          display_name: data.display_name,
-          text: data.text,
-          timestamp: data.timestamp
-        };
-        setChatState((prev) => ({
-          ...prev,
-          messages: [...prev.messages, chatMessage],
-        }));
-      }
     });
 
     socket.on("connection_success_chat", (data) => {

@@ -36,7 +36,6 @@ export const recentAnswersAtom = atom<AnswerChip[]>([]);
 // Unified message system atoms
 export const unifiedMessagesAtom = atom<UnifiedMessage[]>([]);
 export const unifiedInputAtom = atom<string>("");
-export const inputModeAtom = atom<'answer' | 'chat'>('chat');
 
 // Animation state atoms
 export const animationStateAtom = atom<AnimationState>({
@@ -93,9 +92,3 @@ export const clearUnifiedMessagesAtom = atom(
   }
 );
 
-export const setInputModeAtom = atom(
-  null,
-  (get, set, mode: 'answer' | 'chat') => {
-    set(inputModeAtom, mode);
-  }
-);
