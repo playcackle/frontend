@@ -10,6 +10,8 @@ const nextConfig = {
     unoptimized: true,
   },
   transpilePackages: ['jotai-devtools'],
+  // Enable standalone build for Docker
+  output: 'standalone',
 }
 
 export default nextConfig
