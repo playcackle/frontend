@@ -6,17 +6,20 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        # Build-time environment variables for Next.js
-        - NEXT_PUBLIC_LOBBY_MANAGER_URL=http://localhost:8001
-        - NEXT_PUBLIC_LOBBY_WS_BASE_URL=ws://localhost:8000
+        # Build-time environment variables for Next.js (update with your VPS IP)
+        - NEXT_PUBLIC_LOBBY_MANAGER_URL=http://YOUR_VPS_IP:8001
+        - NEXT_PUBLIC_LOBBY_WS_BASE_URL=ws://YOUR_VPS_IP:8000
     ports:
+      # Bind to all interfaces for external access
       - "0.0.0.0:3000:3000"
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
-      # Runtime environment variables
-      - NEXT_PUBLIC_LOBBY_MANAGER_URL=http://localhost:8001
-      - NEXT_PUBLIC_LOBBY_WS_BASE_URL=ws://localhost:8000
+      # Runtime environment variables (update with your VPS IP)
+      - NEXT_PUBLIC_LOBBY_MANAGER_URL=http://YOUR_VPS_IP:8001
+      - NEXT_PUBLIC_LOBBY_WS_BASE_URL=ws://YOUR_VPS_IP:8000
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000", "||", "exit", "1"]
