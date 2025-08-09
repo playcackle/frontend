@@ -77,9 +77,6 @@ export default function GameroomPage() {
       // Answer submission logic
       addAnswerBubble(message);
       submitAnswer(message, sendEvent);
-      setRecentAnswers((prev) =>
-        [...prev, { id: Math.random().toString(), text: message }].slice(0, 10)
-      );
 
       // Add to unified messages as answer attempt (visible to all)
       // This will be handled by backend cross-namespace emission
