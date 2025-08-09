@@ -3,7 +3,6 @@ import {
   animationStateAtom,
   answerAtom,
   gameStateAtom,
-  recentAnswersAtom,
   resetGameStateAtom,
   updateAnimationStateAtom,
   updateGameStateAtom,
@@ -31,18 +30,6 @@ export const useAnswer = () => {
     answer,
     setAnswer,
     clearAnswer,
-  };
-};
-
-export const useRecentAnswers = () => {
-  const [recentAnswers, setRecentAnswers] = useAtom(recentAnswersAtom);
-
-  const clearRecentAnswers = () => setRecentAnswers([]);
-
-  return {
-    recentAnswers,
-    setRecentAnswers,
-    clearRecentAnswers,
   };
 };
 

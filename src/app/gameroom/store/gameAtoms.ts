@@ -1,12 +1,15 @@
 import { atom } from "jotai";
-import { AnswerChip } from "../components/answerChips/AnswerChips";
-import { AnimationState, GameState, Slot } from "../types/state";
 import { ChatMessageData } from "../types/payloads";
+import { AnimationState, GameState, Slot } from "../types/state";
 
 // Unified message type for combining chat and answer attempts
 export type UnifiedMessage = ChatMessageData & {
-  message_type: 'chat' | 'answer_attempt' | 'successful_answer' | 'failed_answer';
-  submission_result?: 'success' | 'too_slow' | 'incorrect' | 'already_snapped';
+  message_type:
+    | "chat"
+    | "answer_attempt"
+    | "successful_answer"
+    | "failed_answer";
+  submission_result?: "success" | "too_slow" | "incorrect" | "already_snapped";
   points_awarded?: number;
   is_rare?: boolean;
   canonical_text?: string;
@@ -31,7 +34,6 @@ export const gameStateAtom = atom<GameState>(initGameState);
 
 export const slotsAtom = atom<Slot[]>([]);
 export const answerAtom = atom<string>("");
-export const recentAnswersAtom = atom<AnswerChip[]>([]);
 
 // Unified message system atoms
 export const unifiedMessagesAtom = atom<UnifiedMessage[]>([]);
@@ -85,10 +87,6 @@ export const addUnifiedMessageAtom = atom(
   }
 );
 
-export const clearUnifiedMessagesAtom = atom(
-  null,
-  (get, set) => {
-    set(unifiedMessagesAtom, []);
-  }
-);
-
+export const clearUnifiedMessagesAtom = atom(null, (get, set) => {
+  set(unifiedMessagesAtom, []);
+});

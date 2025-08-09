@@ -12,17 +12,12 @@ import {
   getRandomEntranceAnimation,
 } from "../utils";
 import { useGameSocket } from "./useGameSocket";
-import {
-  useAnimationState,
-  useGameState,
-  useRecentAnswers,
-} from "./useGameState";
+import { useAnimationState, useGameState } from "./useGameState";
 
 export const useGameEvents = (gameWsUrl: string, token: string) => {
   const { onEvent, sendEvent, isConnected } = useGameSocket(gameWsUrl, token);
   const { updateGameState, slots, gameState } = useGameState();
   const { updateAnimationState } = useAnimationState();
-  const { clearRecentAnswers } = useRecentAnswers();
 
   const setAnimationWithClear = (animationUpdate: any, delay = 100) => {
     updateAnimationState(animationUpdate);
@@ -76,7 +71,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         slots: [],
         scores: data.scores ?? [],
       });
-      clearRecentAnswers();
     });
 
     onEvent("round_starting_soon", () => {

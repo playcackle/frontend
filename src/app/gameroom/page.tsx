@@ -2,7 +2,7 @@
 
 import SoundEffects from "@/app/components/sound-effects";
 import { useSearchParams } from "next/navigation";
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import styles from "./gameroom.module.css";
 
 // Import custom hooks
@@ -11,8 +11,8 @@ import Progress from "../loading";
 import { gameRoomAtom } from "../store/gameRoom";
 import CountdownOverlay from "./components/CountdownOverlay";
 import RoomHeader from "./components/RoomHeader";
-import UnifiedMessages from "./components/UnifiedMessages";
 import UnifiedInputForm from "./components/UnifiedInputForm";
+import UnifiedMessages from "./components/UnifiedMessages";
 
 // Import optimized components
 import GameEffects from "./components/GameEffects";
@@ -22,18 +22,11 @@ import StatsRow from "./components/StatsRow";
 import { Flex } from "@radix-ui/themes";
 import Leaderboard from "./components/LeaderBoard";
 import { useAnswerBubbles } from "./hooks/useAnswerBubbles";
+import { useChatSocket } from "./hooks/useChatWs";
 import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
-import { useChatSocket } from "./hooks/useChatWs";
-import {
-  useAnswer,
-  useGameState,
-  useRecentAnswers,
-} from "./hooks/useGameState";
-import { 
-  UnifiedMessage,
-  addUnifiedMessageAtom
-} from "./store/gameAtoms";
+import { useGameState } from "./hooks/useGameState";
+import { addUnifiedMessageAtom } from "./store/gameAtoms";
 
 export default function GameroomPage() {
   const searchParams = useSearchParams();
@@ -51,8 +44,6 @@ export default function GameroomPage() {
     showCountDown,
     updateGameState,
   } = useGameState();
-  const { clearAnswer, answer } = useAnswer();
-  const { recentAnswers, setRecentAnswers } = useRecentAnswers();
 
   // Unified message system
   const addUnifiedMessage = useSetAtom(addUnifiedMessageAtom);
@@ -69,7 +60,7 @@ export default function GameroomPage() {
 
   // WebSocket connections
   const { sendEvent } = useGameEvents(gameroom.game_ws_url, gameroom.token);
-  
+
   // Chat socket connection
   function getBaseWsUrl(url: string) {
     return url.replace(/\/(game|chat)$/, "");
@@ -89,7 +80,7 @@ export default function GameroomPage() {
       setRecentAnswers((prev) =>
         [...prev, { id: Math.random().toString(), text: message }].slice(0, 10)
       );
-      
+
       // Add to unified messages as answer attempt (visible to all)
       // This will be handled by backend cross-namespace emission
     } else {
@@ -149,7 +140,6 @@ export default function GameroomPage() {
                     onSubmit={handleUnifiedSubmit}
                     bubbles={bubbles}
                     onBubbleComplete={removeBubble}
-                    recentAnswers={recentAnswers}
                   />
                 </div>
               </Flex>
