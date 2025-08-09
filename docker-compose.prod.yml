@@ -7,8 +7,8 @@ services:
       dockerfile: Dockerfile
       args:
         # Build-time environment variables for Next.js (update with your VPS IP)
-        - NEXT_PUBLIC_LOBBY_MANAGER_URL=http://YOUR_VPS_IP:8001
-        - NEXT_PUBLIC_LOBBY_WS_BASE_URL=ws://YOUR_VPS_IP:8000
+        - NEXT_PUBLIC_LOBBY_MANAGER_URL=http://host.docker.internal:8001
+        - NEXT_PUBLIC_LOBBY_WS_BASE_URL=ws://host.docker.internal:8000
     ports:
       # Bind to all interfaces for external access
       - "0.0.0.0:3000:3000"
@@ -16,8 +16,8 @@ services:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       # Runtime environment variables (update with your VPS IP)
-      - NEXT_PUBLIC_LOBBY_MANAGER_URL=http://YOUR_VPS_IP:8001
-      - NEXT_PUBLIC_LOBBY_WS_BASE_URL=ws://YOUR_VPS_IP:8000
+      - NEXT_PUBLIC_LOBBY_MANAGER_URL=http://host.docker.internal:8001
+      - NEXT_PUBLIC_LOBBY_WS_BASE_URL=ws://host.docker.internal:8000
       - PORT=3000
       - HOSTNAME=0.0.0.0
     restart: unless-stopped
@@ -27,6 +27,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 networks:
   default:
