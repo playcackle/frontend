@@ -17,6 +17,15 @@ export function AuthButtons() {
       </div>
 
       <div className={styles.buttonsContainer}>
+        <Link href="/login" className={styles.loginButton}>
+          <div className={styles.buttonContent}>
+            <span className={styles.buttonIcon}>🔑</span>
+            <div className={styles.buttonTextContainer}>
+              <span className={styles.buttonTitle}>LOGIN</span>
+              <span className={styles.buttonSubtitle}>Join the chaos!</span>
+            </div>
+          </div>
+        </Link>
         <Link href="/register" className={styles.signupButton}>
           <div className={styles.buttonContent}>
             <span className={styles.buttonIcon}>✨</span>
@@ -25,16 +34,6 @@ export function AuthButtons() {
               <span className={styles.buttonSubtitle}>
                 Create a new account
               </span>
-            </div>
-          </div>
-        </Link>
-
-        <Link href="/login" className={styles.loginButton}>
-          <div className={styles.buttonContent}>
-            <span className={styles.buttonIcon}>🔑</span>
-            <div className={styles.buttonTextContainer}>
-              <span className={styles.buttonTitle}>LOGIN</span>
-              <span className={styles.buttonSubtitle}>Join the chaos!</span>
             </div>
           </div>
         </Link>
