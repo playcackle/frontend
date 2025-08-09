@@ -24,7 +24,7 @@ export default function UnifiedInputForm({
 
   const timeExpired = timeRemaining === 0;
   const isAnswerMode = !isRoundBreak && !timeExpired;
-  const buttonText = isAnswerMode ? "💡 Submit" : "💬 Send";
+  const buttonText = isAnswerMode ? "Submit" : "Send";
   const placeholderText = isAnswerMode ? "Your answer..." : "Chat...";
 
   const handleSubmit = (e: React.FormEvent) => {

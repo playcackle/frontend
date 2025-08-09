@@ -441,11 +441,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
   border-radius: 16px;
   padding: 0.3rem 0.6rem;
   gap: 0.4rem;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4),
+    inset 0 0 10px rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
   position: relative;
   margin-top: 0.5rem;
@@ -459,13 +464,18 @@
 
 /* Add a shimmer effect to the badge */
 .playerBadge::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
   animation: badgeShimmer 2s ease-in-out 0.5s infinite;
   pointer-events: none;
 }
@@ -614,10 +624,6 @@
   font-family: var(--retro-font);
 }
 
-
-
-
-
 .answerRow {
   width: 100%;
 }
@@ -694,7 +700,8 @@
   50% {
     transform: scale(1.2) rotate(-1deg);
     filter: brightness(2.5) saturate(2);
-    box-shadow: 0 0 60px var(--neon-green), 0 0 120px var(--neon-green), 0 0 180px var(--neon-green);
+    box-shadow: 0 0 60px var(--neon-green), 0 0 120px var(--neon-green),
+      0 0 180px var(--neon-green);
   }
   75% {
     transform: scale(1.1) rotate(1deg);
@@ -722,7 +729,8 @@
   50% {
     transform: scale(1.25) rotate(1deg);
     filter: brightness(3) saturate(2.5);
-    box-shadow: 0 0 80px var(--neon-purple), 0 0 160px var(--neon-purple), 0 0 240px var(--neon-purple);
+    box-shadow: 0 0 80px var(--neon-purple), 0 0 160px var(--neon-purple),
+      0 0 240px var(--neon-purple);
   }
   75% {
     transform: scale(1.15) rotate(-1deg);
@@ -997,32 +1005,76 @@
 
 /* Intense screen shake for successful slot claims */
 @keyframes screenShake {
-  0% { transform: translateX(0) translateY(0); }
-  10% { transform: translateX(-8px) translateY(-4px) rotate(1deg); }
-  20% { transform: translateX(8px) translateY(4px) rotate(-1deg); }
-  30% { transform: translateX(-6px) translateY(6px) rotate(0.5deg); }
-  40% { transform: translateX(6px) translateY(-6px) rotate(-0.5deg); }
-  50% { transform: translateX(-4px) translateY(4px) rotate(1deg); }
-  60% { transform: translateX(4px) translateY(-4px) rotate(-1deg); }
-  70% { transform: translateX(-2px) translateY(2px) rotate(0.5deg); }
-  80% { transform: translateX(2px) translateY(-2px) rotate(-0.5deg); }
-  90% { transform: translateX(-1px) translateY(1px) rotate(0deg); }
-  100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  10% {
+    transform: translateX(-8px) translateY(-4px) rotate(1deg);
+  }
+  20% {
+    transform: translateX(8px) translateY(4px) rotate(-1deg);
+  }
+  30% {
+    transform: translateX(-6px) translateY(6px) rotate(0.5deg);
+  }
+  40% {
+    transform: translateX(6px) translateY(-6px) rotate(-0.5deg);
+  }
+  50% {
+    transform: translateX(-4px) translateY(4px) rotate(1deg);
+  }
+  60% {
+    transform: translateX(4px) translateY(-4px) rotate(-1deg);
+  }
+  70% {
+    transform: translateX(-2px) translateY(2px) rotate(0.5deg);
+  }
+  80% {
+    transform: translateX(2px) translateY(-2px) rotate(-0.5deg);
+  }
+  90% {
+    transform: translateX(-1px) translateY(1px) rotate(0deg);
+  }
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
 }
 
 /* Whole screen shake effect for major wins */
 @keyframes fullScreenShake {
-  0% { transform: translateX(0) translateY(0); }
-  10% { transform: translateX(-4px) translateY(-2px); }
-  20% { transform: translateX(4px) translateY(2px); }
-  30% { transform: translateX(-3px) translateY(3px); }
-  40% { transform: translateX(3px) translateY(-3px); }
-  50% { transform: translateX(-2px) translateY(2px); }
-  60% { transform: translateX(2px) translateY(-2px); }
-  70% { transform: translateX(-1px) translateY(1px); }
-  80% { transform: translateX(1px) translateY(-1px); }
-  90% { transform: translateX(0) translateY(0); }
-  100% { transform: translateX(0) translateY(0); }
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  10% {
+    transform: translateX(-4px) translateY(-2px);
+  }
+  20% {
+    transform: translateX(4px) translateY(2px);
+  }
+  30% {
+    transform: translateX(-3px) translateY(3px);
+  }
+  40% {
+    transform: translateX(3px) translateY(-3px);
+  }
+  50% {
+    transform: translateX(-2px) translateY(2px);
+  }
+  60% {
+    transform: translateX(2px) translateY(-2px);
+  }
+  70% {
+    transform: translateX(-1px) translateY(1px);
+  }
+  80% {
+    transform: translateX(1px) translateY(-1px);
+  }
+  90% {
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
 }
 
 /* Color burst flash overlay for successful answers */
@@ -1034,13 +1086,23 @@
   height: 100%;
   pointer-events: none;
   z-index: 150;
-  background: radial-gradient(circle at center, transparent 0%, var(--neon-green) 30%, transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    var(--neon-green) 30%,
+    transparent 70%
+  );
   opacity: 0;
   animation: colorBurst 1.2s ease-out forwards;
 }
 
 .colorBurstOverlay.bonus {
-  background: radial-gradient(circle at center, transparent 0%, var(--neon-purple) 30%, transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    var(--neon-purple) 30%,
+    transparent 70%
+  );
 }
 
 @keyframes colorBurst {
@@ -1145,7 +1207,8 @@
   border-radius: 50%;
   background: radial-gradient(circle, var(--neon-green) 0%, transparent 70%);
   box-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
-  animation: particleAnimation 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: particleAnimation 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    forwards;
 }
 
 .particlePurple {
@@ -1159,17 +1222,20 @@
     filter: brightness(2);
   }
   20% {
-    transform: translate(calc(var(--x) * 0.2), calc(var(--y) * 0.2)) scale(1.2) rotate(90deg);
+    transform: translate(calc(var(--x) * 0.2), calc(var(--y) * 0.2)) scale(1.2)
+      rotate(90deg);
     opacity: 1;
     filter: brightness(2.5);
   }
   50% {
-    transform: translate(calc(var(--x) * 0.6), calc(var(--y) * 0.6)) scale(1) rotate(180deg);
+    transform: translate(calc(var(--x) * 0.6), calc(var(--y) * 0.6)) scale(1)
+      rotate(180deg);
     opacity: 0.8;
     filter: brightness(2);
   }
   80% {
-    transform: translate(calc(var(--x) * 0.9), calc(var(--y) * 0.9)) scale(0.5) rotate(270deg);
+    transform: translate(calc(var(--x) * 0.9), calc(var(--y) * 0.9)) scale(0.5)
+      rotate(270deg);
     opacity: 0.3;
     filter: brightness(1.5);
   }
@@ -1592,11 +1658,12 @@
 }
 
 .unifiedButton.answerButton {
-  background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+  background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+  height: 100%;
 }
 
 .unifiedButton.answerButton::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 12px;
@@ -1618,7 +1685,7 @@
 }
 
 .unifiedButton.chatButton::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 12px;
@@ -1631,7 +1698,7 @@
 }
 
 .unifiedButton.chatButton::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 60%;
   left: 18px;
