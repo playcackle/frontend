@@ -20,7 +20,7 @@ const RoomHeader: React.FC<HeaderProps> = ({
         <span className={styles.roomName}>{roundName}</span>
       </h1>
       <div className={styles.roomDifficulty}>
-        {roomName} - Round {roundNumber}/{totalRounds}
+        {roomName} - Round {roundNumber}/{totalRounds || "?"}
       </div>
     </div>
   );

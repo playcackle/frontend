@@ -54,7 +54,13 @@ export const updateGameStateAtom = atom(
   null,
   (get, set, update: Partial<GameState>) => {
     const current = get(gameStateAtom);
-    set(gameStateAtom, { ...current, ...update });
+    // Ensure we preserve totalRounds if not explicitly provided in update
+    const merged = { ...current, ...update };
+    // Explicit preservation of totalRounds to prevent lobby_tick from clearing it
+    if (update.totalRounds === undefined && current.totalRounds !== undefined) {
+      merged.totalRounds = current.totalRounds;
+    }
+    set(gameStateAtom, merged);
   }
 );
 
