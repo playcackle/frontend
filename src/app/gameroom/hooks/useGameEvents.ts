@@ -101,6 +101,19 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       });
     });
 
+    // Lobby resetting for new game
+    onEvent("lobby_resetting_for_new_game", () => {
+      updateGameState({
+        roundNumber: 0,
+        roundName: "",
+        isRoundBreak: false,
+        slots: [],
+        scores: [],
+        finalScore: [],
+        showCountDown: false,
+      });
+    });
+
     onEvent("slot_snapped", (data: SlotSnappedPayload) => {
       updateGameState({
         slots: data.slots,
