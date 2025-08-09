@@ -13,7 +13,7 @@ WORKDIR /app
 COPY package.json package-lock.json* pnpm-lock.yaml* ./
 RUN \
     if [ -f pnpm-lock.yaml ]; then \
-        corepack enable pnpm && pnpm i --frozen-lockfile; \
+        corepack enable pnpm && pnpm i --no-frozen-lockfile; \
     elif [ -f package-lock.json ]; then \
         npm ci; \
     else \
@@ -35,6 +35,14 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Build arguments for Next.js environment variables
+ARG NEXT_PUBLIC_LOBBY_MANAGER_URL
+ARG NEXT_PUBLIC_LOBBY_WS_BASE_URL
+
+# Set environment variables for build
+ENV NEXT_PUBLIC_LOBBY_MANAGER_URL=$NEXT_PUBLIC_LOBBY_MANAGER_URL
+ENV NEXT_PUBLIC_LOBBY_WS_BASE_URL=$NEXT_PUBLIC_LOBBY_WS_BASE_URL
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -61,7 +69,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
+# Copy public folder (create empty one if it doesn't exist)  
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
