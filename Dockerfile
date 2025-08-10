@@ -37,12 +37,14 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build arguments for Next.js environment variables
-ARG BACKEND_URL
-ARG BACKEND_JOIN_URL
+ARG NEXTAUTH_URL=http://localhost:3000
+ARG AUTH_SECRET
 
-# Set environment variables for build
-ENV BACKEND_URL=$BACKEND_URL
-ENV BACKEND_JOIN_URL=$BACKEND_JOIN_URL
+# Set environment variables for build - use placeholder URLs since services aren't available during build
+ENV BACKEND_URL=http://placeholder:8001
+ENV BACKEND_JOIN_URL=http://placeholder:8000
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
+ENV AUTH_SECRET=$AUTH_SECRET
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry

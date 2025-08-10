@@ -6,31 +6,22 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        # Build-time environment variables for Next.js
-        - BACKEND_URL=http://host.docker.internal:8001
-        - BACKEND_JOIN_URL=http://host.docker.internal:8000
+        - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+        - AUTH_SECRET=${AUTH_SECRET:-Tyq8N0UATfZDomQLcUqxodFOLuedd87vRDfUV5Wq5r0=}
     ports:
-      - "0.0.0.0:3000:3000"
+      - "3000:3000"
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
-      # Runtime environment variables
-      - BACKEND_URL=http://host.docker.internal:8001
-      - BACKEND_JOIN_URL=http://host.docker.internal:8000
+      # Server-side URLs (inside container) - use host.docker.internal
+      - BACKEND_URL=${BACKEND_URL:-http://host.docker.internal:8001}
+      - BACKEND_JOIN_URL=${BACKEND_JOIN_URL:-http://host.docker.internal:8000}
+      # Client-side URLs (for browser) - use localhost
+      - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL:-http://localhost:8001}
+      - NEXT_PUBLIC_BACKEND_JOIN_URL=${NEXT_PUBLIC_BACKEND_JOIN_URL:-http://localhost:8000}
       # NextAuth configuration
-      - NEXTAUTH_URL=http://host.docker.internal:3000
-      - AUTH_SECRET=Tyq8N0UATfZDomQLcUqxodFOLuedd87vRDfUV5Wq5r0=
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000", "||", "exit", "1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - AUTH_SECRET=${AUTH_SECRET:-Tyq8N0UATfZDomQLcUqxodFOLuedd87vRDfUV5Wq5r0=}
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
-networks:
-  default:
-    name: snapscore_frontend
-    driver: bridge
+    restart: unless-stopped
