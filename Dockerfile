@@ -37,12 +37,12 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build arguments for Next.js environment variables
-ARG NEXT_PUBLIC_LOBBY_MANAGER_URL
-ARG NEXT_PUBLIC_LOBBY_WS_BASE_URL
+ARG BACKEND_URL
+ARG BACKEND_JOIN_URL
 
 # Set environment variables for build
-ENV NEXT_PUBLIC_LOBBY_MANAGER_URL=$NEXT_PUBLIC_LOBBY_MANAGER_URL
-ENV NEXT_PUBLIC_LOBBY_WS_BASE_URL=$NEXT_PUBLIC_LOBBY_WS_BASE_URL
+ENV BACKEND_URL=$BACKEND_URL
+ENV BACKEND_JOIN_URL=$BACKEND_JOIN_URL
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
