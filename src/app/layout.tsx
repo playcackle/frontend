@@ -1,6 +1,5 @@
 import CRTEffect from "@/app/components/crt-effect";
 import Header from "@/app/components/header";
-import SynthwaveBackground from "@/app/components/synthwave-background";
 import { Progress, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import "animate.css";
@@ -39,7 +38,7 @@ export default async function RootLayout({
             <div className="crt-content">
               <Provider>
                 <Suspense fallback={<Progress />}>
-                  <SynthwaveBackground />
+                  {/* <SynthwaveBackground /> */}
                   <Header session={session!} />
                   <main>{children}</main>
                 </Suspense>
