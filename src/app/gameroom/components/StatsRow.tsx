@@ -24,29 +24,6 @@ export default function StatsRow({ nameFlash }: StatsRowProps) {
         </div>
         <div className={styles.playersCount}>{playerCount} Players</div>
       </div>
-      {!isRoundBreak && (
-        <div className={styles.leaderboardTile}>
-          <h3 className={styles.statsTitle}>Leaderboard</h3>
-          <div className={styles.horizontalLeaderboard}>
-            {scores.slice(0, 10).map((player, index) => (
-              <div
-                key={player.player_id}
-                className={`${styles.leaderboardPlayer} ${
-                  player.display_name === "You" && nameFlash
-                    ? styles.nameFlash
-                    : ""
-                }`}
-              >
-                <div className={styles.playerRank}>{index + 1}</div>
-                <div className={styles.playerInfo}>
-                  <div className={styles.playerName}>{player.display_name}</div>
-                  <div className={styles.playerScore}>{player.score}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

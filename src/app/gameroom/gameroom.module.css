@@ -114,6 +114,7 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  width: 20vw;
 }
 
 .statsValue {
@@ -151,35 +152,35 @@
   }
 }
 
-.horizontalLeaderboard {
+.ingameLeaderboard {
+  width: 20vw;
   display: flex;
+  flex-direction: column;
   gap: 0.75rem;
   overflow-x: auto;
   overflow-y: hidden;
   flex: 2;
   width: 100%;
-  min-width: 66vw;
-  align-items: center;
   padding: 0.25rem 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 0, 170, 0.5) transparent;
 }
 
-.horizontalLeaderboard::-webkit-scrollbar {
+.ingameLeaderboard::-webkit-scrollbar {
   height: 4px;
 }
 
-.horizontalLeaderboard::-webkit-scrollbar-track {
+.ingameLeaderboard::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
 }
 
-.horizontalLeaderboard::-webkit-scrollbar-thumb {
+.ingameLeaderboard::-webkit-scrollbar-thumb {
   background: rgba(255, 0, 170, 0.5);
   border-radius: 2px;
 }
 
-.horizontalLeaderboard::-webkit-scrollbar-thumb:hover {
+.ingameLeaderboard::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 0, 170, 0.7);
 }
 
@@ -188,8 +189,6 @@
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
-  min-width: 80px;
-  max-width: 120px;
   padding: 0.5rem;
   border-radius: 6px;
   transition: all 0.3s ease;
@@ -251,21 +250,12 @@
 }
 
 .leaderboardPlayer .playerName {
+  font-weight: bold;
+  color: var(--white);
   font-size: 0.75rem;
-  font-weight: 600;
+  text-shadow: 0 0 5px rgba(255, 0, 170, 0.3);
   font-family: var(--retro-font-alt);
-  color: white;
   text-align: center;
-  width: 100%;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
-  line-height: 1.2;
-  max-height: 2.4rem;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }
 
 .leaderboardPlayer .playerScore {
@@ -275,7 +265,6 @@
   text-shadow: 0 0 5px rgba(255, 0, 170, 0.3);
   font-family: var(--retro-font-alt);
   text-align: center;
-  width: 100%;
 }
 
 .playerRank {
@@ -352,7 +341,7 @@
 /* Second row: Slots grid and chat */
 .contentRow {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
@@ -364,6 +353,7 @@
   box-shadow: 0 0 10px var(--neon-pink);
   border: 1px solid var(--neon-pink);
   backdrop-filter: blur(5px);
+  width: 35vw;
 }
 
 /* Update the slots grid to 2x5 layout (2 rows, 5 columns) */
@@ -634,7 +624,6 @@
   background-color: rgba(20, 20, 40, 0.7);
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(183, 0, 255, 0.5);
-  border: 1px solid rgba(183, 0, 255, 0.3);
   backdrop-filter: blur(5px);
   display: flex;
   flex-direction: column;
@@ -645,7 +634,7 @@
 .unifiedInputFormOnly {
   background-color: rgba(20, 20, 40, 0.7);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 0.5rem;
   box-shadow: 0 0 10px rgba(183, 0, 255, 0.5);
   border: 2px solid;
   border-image: linear-gradient(135deg, #b700ff, #00ddff) 1;
@@ -1680,7 +1669,7 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  min-width: 120px;
+  min-width: 50px;
   position: relative;
   overflow: hidden;
 }
