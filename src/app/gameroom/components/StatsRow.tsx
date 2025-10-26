@@ -7,13 +7,26 @@ interface StatsRowProps {
 }
 
 export default function StatsRow({ nameFlash }: StatsRowProps) {
-  const { playerCount, isRoundBreak, timeRemaining, scores } = useGameState();
+  const {
+    playerCount,
+    roundName,
+    roundNumber,
+    totalRounds,
+    isRoundBreak,
+    timeRemaining,
+    scores,
+  } = useGameState();
 
   return (
     <div className={styles.statsRow}>
       <div className={styles.statsTile}>
+        <h3 className={styles.statsTitle}>Looking for:</h3>
+        <div className={styles.statsValue}>{roundName}</div>
+        <p className={styles.statsTitle}>Example: (example value)</p>
+      </div>
+      <div className={styles.statsTile}>
         <h3 className={styles.statsTitle}>
-          {isRoundBreak ? "Intermission" : "Time Remaining"}
+          {isRoundBreak ? "Intermission" : "Time Remaining:"}
         </h3>
         <div
           className={`${styles.statsValue} ${
@@ -22,7 +35,16 @@ export default function StatsRow({ nameFlash }: StatsRowProps) {
         >
           {formatTime(timeRemaining)}
         </div>
-        <div className={styles.playersCount}>{playerCount} Players</div>
+      </div>
+      <div className={styles.statsTile}>
+        <h3 className={styles.statsTitle}>Active players:</h3>
+        <div className={styles.statsValue}>{playerCount}</div>
+      </div>
+      <div className={styles.statsTile}>
+        <h3 className={styles.statsTitle}>Round number:</h3>
+        <div className={styles.statsValue}>
+          {roundNumber} / {totalRounds}
+        </div>
       </div>
     </div>
   );

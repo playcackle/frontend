@@ -66,7 +66,6 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   border: 1px solid var(--room-color, var(--neon-pink));
-  margin-top: 0.8rem;
   font-family: var(--retro-font-alt);
 }
 
@@ -76,7 +75,7 @@
   display: flex;
   direction: row;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 0.75rem;
   height: 120px; /* Reduced height */
 }
 
@@ -94,13 +93,13 @@
   text-align: center;
   height: 100%; /* Ensure full height */
   overflow: hidden; /* Prevent overflow */
-  font-size: 0.9rem; /* Smaller font */
+  font-size: 0.8rem; /* Smaller font */
   margin-bottom: 0.5rem; /* Reduced margin */
   color: var(--neon-blue);
   text-transform: uppercase;
   letter-spacing: 1px;
   font-family: var(--retro-font);
-  min-width: 25vw;
+  min-width: 24%;
 }
 
 .leaderboardTile {
@@ -118,7 +117,7 @@
 }
 
 .statsValue {
-  font-size: 1.8rem; /* Smaller font */
+  font-size: 1.5rem; /* Smaller font */
   font-weight: bold;
   color: white;
   text-shadow: 0 0 10px rgba(0, 221, 255, 0.7);
@@ -628,6 +627,8 @@
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
+  margin-left: 4px;
+  min-width: 25vw;
 }
 
 /* Input form positioned where original answer form was */
