@@ -37,14 +37,14 @@ export default function StatsRow({ nameFlash }: StatsRowProps) {
         </div>
       </div>
       <div className={styles.statsTile}>
-        <h3 className={styles.statsTitle}>Active players:</h3>
-        <div className={styles.statsValue}>{playerCount}</div>
-      </div>
-      <div className={styles.statsTile}>
         <h3 className={styles.statsTitle}>Round number:</h3>
         <div className={styles.statsValue}>
           {roundNumber} / {totalRounds}
         </div>
+      </div>
+      <div className={styles.statsTile}>
+        <h3 className={styles.statsTitle}>Active players:</h3>
+        <div className={styles.statsValue}>{playerCount}</div>
       </div>
     </div>
   );

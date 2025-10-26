@@ -633,12 +633,6 @@
 
 /* Input form positioned where original answer form was */
 .unifiedInputFormOnly {
-  background-color: rgba(20, 20, 40, 0.7);
-  border-radius: 8px;
-  padding: 0.5rem;
-  box-shadow: 0 0 10px rgba(183, 0, 255, 0.5);
-  border: 2px solid;
-  border-image: linear-gradient(135deg, #b700ff, #00ddff) 1;
   backdrop-filter: blur(5px);
   display: flex;
   gap: 1rem;
@@ -1656,100 +1650,6 @@
 
 .unifiedInput.answerMode:focus {
   box-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
-}
-
-.unifiedButton {
-  height: 100%;
-  border: none;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: var(--retro-font);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  min-width: 50px;
-  position: relative;
-  overflow: hidden;
-}
-
-.unifiedButton.answerButton {
-  background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
-}
-
-.unifiedButton.answerButton::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-bottom: 8px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-}
-
-.unifiedButton.answerButton:hover::before {
-  border-bottom-color: rgba(255, 255, 255, 0.6);
-}
-
-.unifiedButton.chatButton {
-  background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
-}
-
-.unifiedButton.chatButton::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  width: 12px;
-  height: 8px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.unifiedButton.chatButton::after {
-  content: "";
-  position: absolute;
-  top: 60%;
-  left: 18px;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid transparent;
-  border-bottom: 3px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.unifiedButton.chatButton:hover::before {
-  border-color: rgba(255, 255, 255, 0.6);
-}
-
-.unifiedButton.chatButton:hover::after {
-  border-left-color: rgba(255, 255, 255, 0.6);
-}
-
-.unifiedButton.answerButton:hover:not(:disabled) {
-  box-shadow: 0 0 15px rgba(0, 255, 102, 0.7);
-  transform: translateY(-2px);
-}
-
-.unifiedButton.chatButton:hover:not(:disabled) {
-  box-shadow: 0 0 15px rgba(183, 0, 255, 0.7);
-  transform: translateY(-2px);
-}
-
-.unifiedButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
 }
 
 /* Smooth answer area transitions */
