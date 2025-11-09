@@ -21,7 +21,7 @@ export default function SlotGrid() {
           entranceDelay={`${i * 80}ms`}
           revealDelay={i * 100 - (i > 0 ? 88 : 0)}
           className={`${styles.slotTileVisible} ${
-            mounted ? styles.slotTileAnimation : ""
+            mounted && !slot.is_snapped ? styles.slotTileAnimation : ""
           }`}
         />
       ))}

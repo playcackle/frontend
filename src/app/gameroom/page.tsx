@@ -26,7 +26,7 @@ import { useChatSocket } from "./hooks/useChatWs";
 import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
 import { useGameState } from "./hooks/useGameState";
-import { addUnifiedMessageAtom } from "./store/gameAtoms";
+import { addUnifiedMessageAtom, animationStateAtom } from "./store/gameAtoms";
 
 export default function GameroomPage() {
   const searchParams = useSearchParams();
@@ -99,7 +99,7 @@ export default function GameroomPage() {
         <div className={styles.container}>
           <CountdownOverlay show={showCountDown} value={timeRemaining} />
 
-          <GameEffects animationState={{}} />
+          <GameEffects animationState={animationStateAtom} />
 
           <div
             ref={mainRef}
