@@ -4,16 +4,6 @@ export const SOUND_BONUS = "bonus" as const;
 export const SOUND_ERROR = "error" as const;
 export const SOUND_COUNTDOWN = "countdown" as const;
 
-// ANIMATIONS
-export const ENTRANCE_ANIMATIONS = [
-  "fadeIn",
-  "bounceIn",
-  "zoomIn",
-  "rotateIn",
-  "flipInX",
-  "flipInY",
-] as const;
-
 export const ATTENTION_ANIMATIONS = [
   "pulse",
   "bounce",
