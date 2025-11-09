@@ -568,7 +568,7 @@
   overflow: hidden;
   min-height: 60px; /* Increased minimum height */
   max-height: 100px; /* Increased maximum height */
-  opacity: 0;
+  opacity: 1;
 }
 
 .slotTileAnimation {

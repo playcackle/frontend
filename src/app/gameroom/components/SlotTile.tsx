@@ -17,6 +17,7 @@ interface SlotTileProps {
 const SlotTile: React.FC<SlotTileProps> = ({
   slot,
   entranceDelay = 0,
+  isBonus,
   className,
 }) => {
   const { data } = useSession();
