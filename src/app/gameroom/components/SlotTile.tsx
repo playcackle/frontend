@@ -10,13 +10,15 @@ interface SlotTileProps {
   slot: Slot;
   isBonus?: boolean;
   revealDelay: number;
-  entranceDelay: number;
+  entranceDelay: string;
+  className: string;
 }
 
 const SlotTile: React.FC<SlotTileProps> = ({
   slot,
   revealDelay = 0,
   entranceDelay = 0,
+  className,
 }) => {
   const { data } = useSession();
   // Only get animation state, not time-dependent state
@@ -80,10 +82,10 @@ const SlotTile: React.FC<SlotTileProps> = ({
   return (
     <div
       id={`slot-${slot.id}`}
-      className={tileClassNames}
+      className={`${tileClassNames} ${className}`}
       style={
         {
-          "--animate-delay": revealDelay || entranceDelay,
+          animationDelay: entranceDelay,
           "--room-color": displayState.roomColor,
         } as React.CSSProperties
       }
