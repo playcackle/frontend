@@ -19,19 +19,23 @@ export default function StatsRow({ nameFlash }: StatsRowProps) {
 
   return (
     <div className={styles.statsRow}>
-      <div className={styles.statsTile}>
-        <h3 className={styles.statsTitle}>Looking for:</h3>
-        <div className={styles.statsValue} style={{ fontSize: "14px" }}>
-          {roundName}
-        </div>
-        <p className={styles.statsTitle}>Example: (example value)</p>
-      </div>
-      <div className={styles.statsTile}>
-        <h3 className={styles.statsTitle}>Explaination text:</h3>
-        <p className={styles.statsValue} style={{ fontSize: "14px" }}>
-          We are looking for the stuff that is correct
-        </p>
-      </div>
+      {!isRoundBreak && (
+        <>
+          <div className={styles.statsTile}>
+            <h3 className={styles.statsTitle}>Looking for:</h3>
+            <div className={styles.statsValue} style={{ fontSize: "14px" }}>
+              {roundName}
+            </div>
+            <p className={styles.statsTitle}>Example: (example value)</p>
+          </div>
+          <div className={styles.statsTile}>
+            <h3 className={styles.statsTitle}>Explaination text:</h3>
+            <p className={styles.statsValue} style={{ fontSize: "14px" }}>
+              We are looking for the stuff that is correct
+            </p>
+          </div>
+        </>
+      )}
       <div className={styles.statsTile}>
         <h3 className={styles.statsTitle}>
           {isRoundBreak ? "Intermission" : "Time Remaining:"}
