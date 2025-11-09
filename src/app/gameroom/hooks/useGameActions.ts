@@ -196,8 +196,6 @@ export const useGameActions = () => {
         } else {
           const sound = getRandomSuccessSound();
           playSound(sound);
-          // Add a quick second sound for extra impact
-          setTimeout(() => playSound("ding"), 150);
         }
       } catch (error) {
         console.warn("Failed to play sound:", error);
