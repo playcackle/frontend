@@ -18,7 +18,7 @@ export type SoundType =
 // Audio context singleton to prevent multiple instances
 let globalAudioContext: AudioContext | null = null;
 
-const getOrCreateAudioContext = (): AudioContext | null => {
+const getOrCreateAudioContext = async (): Promise<AudioContext | null> => {
   if (typeof window === "undefined") return null;
 
   try {
@@ -35,9 +35,12 @@ const getOrCreateAudioContext = (): AudioContext | null => {
 
     // Resume the audio context if it's suspended (browser autoplay policy)
     if (globalAudioContext.state === "suspended") {
-      globalAudioContext.resume().catch((e) => {
+      try {
+        await globalAudioContext.resume();
+        console.log("AudioContext resumed successfully");
+      } catch (e) {
         console.warn("Could not resume audio context:", e);
-      });
+      }
     }
 
     return globalAudioContext;
@@ -49,9 +52,9 @@ const getOrCreateAudioContext = (): AudioContext | null => {
 
 // Sound generation functions (memoized outside component to prevent recreation)
 const createSoundGenerators = () => {
-  const playCelebratoryCorrectSound = () => {
+  const playCelebratoryCorrectSound = async () => {
     try {
-      const context = getOrCreateAudioContext();
+      const context = await getOrCreateAudioContext();
       if (!context) return;
 
       const now = context.currentTime;
@@ -104,9 +107,9 @@ const createSoundGenerators = () => {
     }
   };
 
-  const playEpicBonusSound = () => {
+  const playEpicBonusSound = async () => {
     try {
-      const context = getOrCreateAudioContext();
+      const context = await getOrCreateAudioContext();
       if (!context) return;
 
       const now = context.currentTime;
@@ -271,9 +274,9 @@ const createSoundGenerators = () => {
     }
   };
 
-  const playCelebratorySuccess1Sound = () => {
+  const playCelebratorySuccess1Sound = async () => {
     try {
-      const context = getOrCreateAudioContext();
+      const context = await getOrCreateAudioContext();
       if (!context) return;
 
       const now = context.currentTime;
@@ -338,9 +341,9 @@ const createSoundGenerators = () => {
     }
   };
 
-  const playCelebratorySuccess2Sound = () => {
+  const playCelebratorySuccess2Sound = async () => {
     try {
-      const context = getOrCreateAudioContext();
+      const context = await getOrCreateAudioContext();
       if (!context) return;
 
       const now = context.currentTime;
@@ -412,9 +415,9 @@ const createSoundGenerators = () => {
     }
   };
 
-  const playCelebratorySuccess3Sound = () => {
+  const playCelebratorySuccess3Sound = async () => {
     try {
-      const context = getOrCreateAudioContext();
+      const context = await getOrCreateAudioContext();
       if (!context) return;
 
       const now = context.currentTime;
@@ -511,9 +514,9 @@ const createSoundGenerators = () => {
     }
   };
 
-  const playTimeUpSound = () => {
+  const playTimeUpSound = async () => {
     try {
-      const context = getOrCreateAudioContext();
+      const context = await getOrCreateAudioContext();
       if (!context) return;
 
       const now = context.currentTime;
@@ -586,10 +589,11 @@ const createSoundGenerators = () => {
 const soundGenerators = createSoundGenerators();
 
 export default function SoundEffects({ onLoad }: SoundEffectProps) {
-  const isInitializedRef = useRef(false);
+  console.log("SoundEffects component mounted");
 
   // Memoized sound effect function to prevent recreation
   const playSoundEffect = useCallback((type: SoundType) => {
+    console.log(`playSoundEffect called with type: ${type}`);
     const generator = soundGenerators[type];
     if (generator) {
       generator();
@@ -601,19 +605,34 @@ export default function SoundEffects({ onLoad }: SoundEffectProps) {
 
   // Initialize audio context and expose global function
   useEffect(() => {
-    if (isInitializedRef.current) return;
+    console.log("SoundEffects useEffect running");
+
+    const handleUserInteraction = async () => {
+      try {
+        const context = await getOrCreateAudioContext();
+        if (context && context.state === "running") {
+          console.log("AudioContext ready after user interaction");
+          // Remove listeners once activated
+          document.removeEventListener("click", handleUserInteraction);
+          document.removeEventListener("keydown", handleUserInteraction);
+        }
+      } catch (e) {
+        console.error("Error resuming AudioContext on user interaction:", e);
+      }
+    };
 
     try {
       if (typeof window !== "undefined") {
-        // Initialize audio context
-        const context = getOrCreateAudioContext();
-        if (context) {
-          // Expose the sound effect function globally
-          (window as any).playSoundEffect = playSoundEffect;
+        console.log("Exposing playSoundEffect to window");
+        // Expose the sound effect function globally
+        (window as any).playSoundEffect = playSoundEffect;
 
-          isInitializedRef.current = true;
-          onLoad?.();
-        }
+        // Add user interaction listeners to resume AudioContext
+        document.addEventListener("click", handleUserInteraction);
+        document.addEventListener("keydown", handleUserInteraction);
+
+        console.log("SoundEffects initialized, calling onLoad");
+        onLoad?.();
       }
     } catch (e) {
       console.error("Error initializing Web Audio API:", e);
@@ -623,6 +642,8 @@ export default function SoundEffects({ onLoad }: SoundEffectProps) {
     return () => {
       if (typeof window !== "undefined") {
         delete (window as any).playSoundEffect;
+        document.removeEventListener("click", handleUserInteraction);
+        document.removeEventListener("keydown", handleUserInteraction);
       }
     };
   }, [playSoundEffect, onLoad]);
