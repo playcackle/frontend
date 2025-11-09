@@ -7,10 +7,7 @@ import {
   SlotSnappedPayload,
   SubmissionFeedbackPayload,
 } from "../types/payloads";
-import {
-  getRandomAttentionAnimation,
-  getRandomEntranceAnimation,
-} from "../utils";
+import { getRandomAttentionAnimation } from "../utils";
 import { useGameSocket } from "./useGameSocket";
 import { useAnimationState, useGameState } from "./useGameState";
 
@@ -22,9 +19,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const setAnimationWithClear = (animationUpdate: any, delay = 100) => {
     updateAnimationState(animationUpdate);
     setTimeout(() => {
-      if (animationUpdate.entranceAnimation !== undefined) {
-        updateAnimationState({ entranceAnimation: "" });
-      }
       if (animationUpdate.attentionAnimation !== undefined) {
         updateAnimationState({
           attentionAnimation: "",
@@ -82,9 +76,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
     // New round starting
     onEvent("new_round_started", (data: NewRoundStartedPayload) => {
-      setAnimationWithClear({
-        entranceAnimation: getRandomEntranceAnimation(),
-      });
       updateGameState({
         isRoundBreak: false,
         roundName: data.topic_name,

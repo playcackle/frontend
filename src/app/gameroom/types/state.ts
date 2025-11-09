@@ -46,7 +46,6 @@ export type GameState = {
 };
 
 export type AnimationState = {
-  entranceAnimation: string;
   attentionAnimation: string;
   slotId: string | null;
   showConfetti: boolean;

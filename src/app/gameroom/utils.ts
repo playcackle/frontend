@@ -1,8 +1,4 @@
-import {
-  ATTENTION_ANIMATIONS,
-  ENTRANCE_ANIMATIONS,
-  SOUND_SUCCESS,
-} from "./constants";
+import { ATTENTION_ANIMATIONS, SOUND_SUCCESS } from "./constants";
 import { SoundType } from "./types/state";
 
 /**
@@ -24,15 +20,6 @@ export const getRandomAttentionAnimation = (): string => {
     ATTENTION_ANIMATIONS[
       Math.floor(Math.random() * ATTENTION_ANIMATIONS.length)
     ]
-  }`;
-};
-
-/**
- * Get a random entrance animation
- */
-export const getRandomEntranceAnimation = (): string => {
-  return `animate__animated animate__${
-    ENTRANCE_ANIMATIONS[Math.floor(Math.random() * ENTRANCE_ANIMATIONS.length)]
   }`;
 };
 

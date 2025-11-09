@@ -19,7 +19,6 @@ const initialAnimationState: AnimationState = {
   particlePosition: null,
   isBonus: false,
   playerColor: "",
-  entranceAnimation: "",
   attentionAnimation: "",
   confettiPosition: null,
   showConfetti: false,
@@ -80,7 +79,6 @@ export const useGameActions = () => {
         setUpdateAnimationSet({
           attentionAnimation: "",
           slotId: "",
-          entranceAnimation: "",
         });
         timeoutId = null;
       }, 2000);
@@ -93,9 +91,6 @@ export const useGameActions = () => {
       setUpdateAnimationSet(animationUpdate);
 
       setTimeout(() => {
-        if (animationUpdate.entranceAnimation !== undefined) {
-          setUpdateAnimationSet({ entranceAnimation: "" });
-        }
         if (animationUpdate.attentionAnimation !== undefined) {
           setUpdateAnimationSet({
             attentionAnimation: "",
@@ -177,7 +172,6 @@ export const useGameActions = () => {
         slotId: slotId,
         isBonus,
         playerColor,
-        entranceAnimation,
         attentionAnimation,
         particlePosition,
         showConfetti,
@@ -215,14 +209,6 @@ export const useGameActions = () => {
     [setAnimationWithTimeout, applyDOMAnimation, resetAnimations]
   );
 
-  // Trigger entrance animations
-  const triggerEntranceAnimation = useCallback(
-    (animation: string) => {
-      setAnimationWithTimeout({ entranceAnimation: animation });
-    },
-    [setAnimationWithTimeout]
-  );
-
   // Get current animation state
   const getCurrentAnimationState = useCallback(() => {
     return animationState;
@@ -241,7 +227,6 @@ export const useGameActions = () => {
     submitAnswer,
     resetGameState,
     triggerCorrectAnswerEffects,
-    triggerEntranceAnimation,
     setAnimationWithTimeout,
     getCurrentAnimationState,
     animationState,
