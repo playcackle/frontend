@@ -352,13 +352,13 @@
   box-shadow: 0 0 10px var(--neon-pink);
   border: 1px solid var(--neon-pink);
   backdrop-filter: blur(5px);
-  width: 35vw;
+  width: 32vw;
 }
 
 /* Update the slots grid to 2x5 layout (2 rows, 5 columns) */
 .slotGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 5 columns */
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
   grid-template-rows: repeat(2, auto); /* 2 rows */
   gap: 1.5rem; /* Increased gap for larger tiles */
   width: 100%;
@@ -628,7 +628,7 @@
   flex-direction: column;
   transition: all 0.3s ease;
   margin-left: 4px;
-  min-width: 25vw;
+  min-width: 32vw;
 }
 
 /* Input form positioned where original answer form was */
