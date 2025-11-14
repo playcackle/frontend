@@ -34,8 +34,8 @@ export default function RegisterPage() {
     <Flex align="center" direction="column">
       <form ref={ref} onSubmit={handleSubmit} className={styles.formContainer}>
         <h1 className={styles.title}>
-          <span className={styles.neonText}>LOG</span>
-          <span className={styles.neonTextPink}>IN</span>
+          <span className={styles.neonText}>Back for more?</span>
+          <span className={styles.neonTextPink}>Didn’t expect that.</span>
         </h1>
 
         <Box className={styles.form}>
@@ -52,7 +52,7 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className={styles.input}
-                placeholder="robocop_1984"
+                placeholder="Type your name. Try not to mess it up."
                 required
               />
             </div>
@@ -71,14 +71,14 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={styles.input}
-                placeholder="••••••••"
+                placeholder="Your super-secret password… that you always forget."
                 required
               />
             </div>
           </div>
 
           <Button type="submit" className={styles.submitButton}>
-            Login
+            Fine, let’s go
           </Button>
         </Box>
       </form>

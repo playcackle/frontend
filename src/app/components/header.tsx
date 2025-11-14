@@ -21,20 +21,6 @@ export default function Header(props: Props) {
           </span>
         </Link>
       </div>
-      <nav className={styles.nav}>
-        {/* <ul className={styles.navList}>
-          <li>
-            <Link href="/about" className={styles.navLink}>
-              About
-            </Link>
-          </li>
-          <li>
-            <Link href="/leaderboard" className={styles.navLink}>
-              Leaderboard
-            </Link>
-          </li>
-        </ul> */}
-      </nav>
       <div className={styles.auth}>
         {session?.user && (
           <>
@@ -50,10 +36,10 @@ export default function Header(props: Props) {
         {!session?.user && (
           <>
             <Link href="/login" className={styles.loginLink}>
-              Login
+              Back for more
             </Link>
             <Link href="/register" className={styles.registerLink}>
-              Register
+              Join the greatness
             </Link>
           </>
         )}
