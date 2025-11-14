@@ -26,7 +26,7 @@ export default function AnswerReveal() {
       (x) =>
         ({
           id: x.id,
-          answer: x.text_preview,
+          answer: x.canonical_text,
           isRare: x.is_rare,
           isAnswered: x.is_snapped,
           answeredBy: x.snapped_by_display_name,
