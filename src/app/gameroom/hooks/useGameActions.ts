@@ -88,7 +88,7 @@ export const useGameActions = () => {
       isBonus: boolean = false,
       playerColor: string | null
     ) => {
-      const shouldShowConfetti = Math.random() < 0.4;
+      const shouldShowConfetti = false;
 
       // Calculate particle position based on DOM element
       let particlePosition = null;
