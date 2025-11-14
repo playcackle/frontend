@@ -17,26 +17,7 @@ export default function AnswerReveal() {
 
   const { slots } = useGameState();
 
-  const entranceAnimations = [
-    "animate__fadeInDown",
-    "animate__fadeInUp",
-    "animate__fadeInLeft",
-    "animate__fadeInRight",
-    "animate__bounceIn",
-    "animate__bounceInDown",
-    "animate__bounceInUp",
-    "animate__zoomIn",
-    "animate__zoomInDown",
-    "animate__zoomInUp",
-    "animate__slideInLeft",
-    "animate__slideInRight",
-    "animate__flipInX",
-    "animate__flipInY",
-    "animate__rotateIn",
-    "animate__lightSpeedInRight",
-    "animate__lightSpeedInLeft",
-    "animate__rollIn",
-  ];
+  const entranceAnimations = ["animate__slideInLeft"];
 
   useEffect(() => {
     const answers = slots.map(
