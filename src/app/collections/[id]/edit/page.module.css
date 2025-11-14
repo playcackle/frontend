@@ -1,0 +1,388 @@
+.container {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  position: relative;
+  z-index: 10;
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+}
+
+.title {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--retro-font);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.neonText {
+  color: #fff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff;
+  animation: neonPulse 1.5s ease-in-out infinite alternate;
+}
+
+.neonTextPink {
+  color: #fff;
+  text-shadow: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px #f0f, 0 0 40px #f0f;
+  animation: neonPulsePink 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes neonPulse {
+  from {
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
+  }
+  to {
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff, 0 0 80px #0ff;
+  }
+}
+
+@keyframes neonPulsePink {
+  from {
+    text-shadow: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px #f0f;
+  }
+  to {
+    text-shadow: 0 0 10px #f0f, 0 0 20px #f0f, 0 0 40px #f0f, 0 0 80px #f0f;
+  }
+}
+
+.content {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.formLabel {
+  color: var(--neon-blue);
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 10px rgba(0, 221, 255, 0.5);
+}
+
+.input {
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(0, 221, 255, 0.4);
+  color: white;
+  padding: 1rem;
+  font-family: var(--retro-font);
+  font-size: 1.25rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  max-width: 600px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.4);
+}
+
+.sectionsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  color: var(--neon-pink);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1.25rem;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+}
+
+/* Add styles for filter input */
+.filterInput {
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(0, 221, 255, 0.4);
+  color: white;
+  padding: 0.75rem;
+  font-family: var(--retro-font);
+  font-size: 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.filterInput:focus {
+  outline: none;
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.4);
+}
+
+.filterInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.availableRounds {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.availableRounds::-webkit-scrollbar {
+  width: 8px;
+}
+
+.availableRounds::-webkit-scrollbar-track {
+  background: rgba(20, 20, 40, 0.5);
+  border-radius: 4px;
+}
+
+.availableRounds::-webkit-scrollbar-thumb {
+  background: rgba(255, 0, 170, 0.5);
+  border-radius: 4px;
+}
+
+.roundCard {
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(0, 221, 255, 0.4);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.roundCard:hover {
+  border-color: rgba(0, 221, 255, 0.6);
+  box-shadow: 0 0 20px rgba(0, 221, 255, 0.3);
+  transform: translateX(4px);
+}
+
+.roundCardAdded {
+  opacity: 0.5;
+  border-color: rgba(100, 100, 100, 0.4);
+}
+
+.roundCardAdded:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.roundInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.roundName {
+  color: white;
+  font-size: 1.125rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.roundSlotCount {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+}
+
+.addRoundButton {
+  background: transparent;
+  border: 2px solid var(--neon-green);
+  color: var(--neon-green);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.addRoundButton:hover:not(:disabled) {
+  background: rgba(0, 255, 102, 0.2);
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+}
+
+.addRoundButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: rgba(100, 100, 100, 0.5);
+  color: rgba(150, 150, 150, 0.8);
+}
+
+.selectedRounds {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 600px;
+}
+
+.selectedRoundCard {
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(255, 0, 170, 0.4);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: move;
+  transition: all 0.3s ease;
+}
+
+.selectedRoundCard:hover {
+  border-color: rgba(255, 0, 170, 0.6);
+  box-shadow: 0 0 20px rgba(255, 0, 170, 0.3);
+  transform: translateY(-2px);
+}
+
+.dragging {
+  opacity: 0.5;
+  transform: scale(0.98);
+}
+
+.dragHandle {
+  color: var(--neon-blue);
+  font-size: 1.5rem;
+  cursor: grab;
+  user-select: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.orderBadge {
+  background: rgba(0, 221, 255, 0.2);
+  border: 2px solid var(--neon-blue);
+  color: var(--neon-blue);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(0, 221, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.removeButton {
+  background: transparent;
+  border: 2px solid rgba(255, 0, 0, 0.6);
+  color: rgba(255, 100, 100, 0.9);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.removeButton:hover {
+  background: rgba(255, 0, 0, 0.2);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+}
+
+.emptyMessage {
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  padding: 3rem;
+  font-style: italic;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.cancelButton {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.cancelButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.saveButton {
+  background: rgba(0, 221, 255, 0.2);
+  border: 2px solid var(--neon-blue);
+  color: var(--neon-blue);
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.3);
+}
+
+.saveButton:hover {
+  background: rgba(0, 221, 255, 0.3);
+  box-shadow: 0 0 25px rgba(0, 221, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1024px) {
+  .sectionsContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+}

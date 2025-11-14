@@ -44,6 +44,7 @@ export default function RegisterPage() {
           <span className={styles.neonText}>REG</span>
           <span className={styles.neonTextPink}>ISTER</span>
         </h1>
+        <p>So, a new challenger? Cute.</p>
 
         <Box className={styles.form}>
           <div className={styles.inputGroup}>
@@ -59,7 +60,7 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className={styles.input}
-                placeholder="RetroGamer85"
+                placeholder="Pick a username. Make it less embarrassing than your last one."
                 required
               />
             </div>
@@ -78,7 +79,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.input}
-                placeholder="your@email.com"
+                placeholder="Give me your email. I promise not to spam… much."
                 required
               />
             </div>
@@ -97,7 +98,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={styles.input}
-                placeholder="••••••••"
+                placeholder="A strong password. Yes, that means not ‘123456’."
                 required
               />
             </div>
