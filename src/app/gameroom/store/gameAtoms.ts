@@ -39,6 +39,7 @@ export const answerAtom = atom<string>("");
 // Unified message system atoms
 export const unifiedMessagesAtom = atom<UnifiedMessage[]>([]);
 export const unifiedInputAtom = atom<string>("");
+export const botBobLastMessageAtom = atom<UnifiedMessage | null>(null);
 
 export const animationStateAtom = atom<AnimationState>({
   attentionAnimation: "",
@@ -97,6 +98,11 @@ export const addUnifiedMessageAtom = atom(
     const current = get(unifiedMessagesAtom);
     const updated = [...current, message].slice(-100); // Keep last 100 messages
     set(unifiedMessagesAtom, updated);
+
+    // Update Bot Bob's last message if this is from Bot Bob
+    if (message.player_id === "botbob" || message.display_name.toLowerCase() === "botbob") {
+      set(botBobLastMessageAtom, message);
+    }
   }
 );
 

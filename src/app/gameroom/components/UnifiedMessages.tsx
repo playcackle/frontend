@@ -9,12 +9,16 @@ import { useGameState } from "../hooks/useGameState";
 import {
   UnifiedMessage,
   unifiedMessagesAtom,
+  botBobLastMessageAtom,
 } from "../store/gameAtoms";
+import PlayerAvatar from "./PlayerAvatar";
+import BotBobPinnedMessage from "./BotBobPinnedMessage";
 
 export default function UnifiedMessages() {
   const { data: session } = useSession();
   const { isRoundBreak } = useGameState();
   const messages = useAtomValue(unifiedMessagesAtom);
+  const botBobLastMessage = useAtomValue(botBobLastMessageAtom);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change
@@ -50,27 +54,26 @@ export default function UnifiedMessages() {
   const getMessagePrefix = (message: UnifiedMessage) => {
     switch (message.message_type) {
       case 'answer_attempt':
-        return '💡';
+        return '';
       case 'successful_answer':
-        return `✅ +${message.points_awarded}`;
+        return `+${message.points_awarded}`;
       case 'failed_answer':
-        return '❌';
+        return '';
       default:
-        return '💬';
+        return '';
     }
   };
 
   return (
     <div className={styles.unifiedMessagesContainer}>
-      <div className={styles.unifiedHeader}>
-        <h3>{isRoundBreak ? "💬 Chat" : "⚡ Live Feed"}</h3>
-      </div>
-      
+      {/* Pinned Bot Bob section replaces the header */}
+      <BotBobPinnedMessage message={botBobLastMessage} />
+
       <div className={styles.messagesScrollArea}>
         {messages.length === 0 ? (
           <div className={styles.messagesEmpty}>
-            {isRoundBreak 
-              ? "💬 Start chatting!" 
+            {isRoundBreak
+              ? "💬 Start chatting!"
               : "⚡ Answers will appear here..."
             }
           </div>
@@ -83,22 +86,31 @@ export default function UnifiedMessages() {
               }`}
             >
               <Flex direction="row" gap="2" align="center">
-                <span className={styles.messagePrefix}>
-                  {getMessagePrefix(msg)}
-                </span>
-                <span className={styles.messageUser}>{msg.display_name}</span>
-                <span className={styles.messageTime}>
-                  {formatTimestamp(msg.timestamp)}
-                </span>
+                <PlayerAvatar
+                  playerId={msg.player_id}
+                  displayName={msg.display_name}
+                  size="small"
+                />
+                <div className={styles.messageContentWrapper}>
+                  <Flex direction="row" gap="2" align="center">
+                    <span className={styles.messagePrefix}>
+                      {getMessagePrefix(msg)}
+                    </span>
+                    <span className={styles.messageUser}>{msg.display_name}</span>
+                    <span className={styles.messageTime}>
+                      {formatTimestamp(msg.timestamp)}
+                    </span>
+                  </Flex>
+                  <div className={styles.messageContent}>
+                    {msg.text}
+                    {msg.canonical_text && msg.canonical_text !== msg.text && (
+                      <span className={styles.canonicalAnswer}>
+                        {" "}→ "{msg.canonical_text}"
+                      </span>
+                    )}
+                  </div>
+                </div>
               </Flex>
-              <div className={styles.messageContent}>
-                {msg.text}
-                {msg.canonical_text && msg.canonical_text !== msg.text && (
-                  <span className={styles.canonicalAnswer}>
-                    {" "}→ "{msg.canonical_text}"
-                  </span>
-                )}
-              </div>
             </div>
           ))
         )}

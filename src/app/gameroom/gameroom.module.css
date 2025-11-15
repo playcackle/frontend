@@ -435,6 +435,7 @@
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   /* Add a minimum height to ensure the text has enough space */
   min-height: 2.5rem;
@@ -1629,4 +1630,177 @@
   100% {
     box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
   }
+}
+
+/* ============================
+   PLAYER AVATAR STYLES
+   ============================ */
+
+/* Avatar sizes */
+.avatarSmall {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.avatarMedium {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.avatarLarge {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+}
+
+/* Image-based avatar */
+.playerAvatarImage {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 221, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.playerAvatarImage:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.7);
+}
+
+/* Generated avatar (with initials) */
+.playerAvatarGenerated {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  font-family: var(--retro-font-alt);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.avatarSmall.playerAvatarGenerated {
+  font-size: 0.6rem;
+}
+
+.avatarMedium.playerAvatarGenerated {
+  font-size: 0.9rem;
+}
+
+.avatarLarge.playerAvatarGenerated {
+  font-size: 1.2rem;
+}
+
+.playerAvatarGenerated:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+/* ============================
+   BOT BOB PINNED MESSAGE STYLES
+   ============================ */
+
+.botBobPinned {
+  background: linear-gradient(
+    135deg,
+    rgba(183, 0, 255, 0.2) 0%,
+    rgba(0, 221, 255, 0.2) 100%
+  );
+  border-bottom: 2px solid rgba(183, 0, 255, 0.5);
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+  animation: botBobPinnedPulse 3s ease-in-out infinite alternate;
+}
+
+.botBobPinned::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: botBobShimmer 4s ease-in-out infinite;
+}
+
+@keyframes botBobPinnedPulse {
+  0% {
+    box-shadow: inset 0 0 10px rgba(183, 0, 255, 0.3);
+  }
+  100% {
+    box-shadow: inset 0 0 20px rgba(183, 0, 255, 0.5),
+      inset 0 0 30px rgba(0, 221, 255, 0.3);
+  }
+}
+
+@keyframes botBobShimmer {
+  0% {
+    left: -100%;
+  }
+  50%,
+  100% {
+    left: 100%;
+  }
+}
+
+.botBobPinnedContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.botBobName {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--neon-purple);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: var(--retro-font);
+  text-shadow: 0 0 10px rgba(183, 0, 255, 0.7);
+}
+
+.botBobText {
+  font-size: 0.85rem;
+  color: white;
+  line-height: 1.4;
+  font-family: var(--retro-font-alt);
+}
+
+/* ============================
+   MESSAGE CONTENT WRAPPER
+   ============================ */
+
+.messageContentWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+/* Adjust message styling to work with avatars */
+.unifiedMessage {
+  padding: 0.5rem;
+}
+
+.messageContent {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
