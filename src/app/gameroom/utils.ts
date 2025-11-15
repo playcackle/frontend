@@ -122,15 +122,14 @@ export const getPlayerAvatar = (
     };
   }
 
-  // Check if there's a custom avatar (for future use)
+  // Check if there's a custom avatar for this specific player
   // You can extend this to check for player-specific images
   // const customAvatarPath = `/images/avatars/${playerId}.png`;
+  // Add logic here to check if the file exists and return it
 
-  // For now, return generated avatar data
+  // Default to the generic player avatar
   return {
-    type: "generated",
-    value: displayName,
-    color: getPlayerColor(playerId),
-    initials: getInitials(displayName),
+    type: "image",
+    value: "/images/player_default.png",
   };
 };
