@@ -43,6 +43,8 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         playerCount: data.player_count,
         timeRemaining: data.time_remaining_seconds ?? 0,
         roundName: data.topic_name || "",
+        roundPrompt: data.topic_prompt,
+        roundExample: data.topic_example,
         showCountDown:
           data.time_remaining_seconds! < 5 &&
           data.time_remaining_seconds! > 0 &&
@@ -80,6 +82,8 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       updateGameState({
         isRoundBreak: false,
         roundName: data.topic_name,
+        roundPrompt: data.topic_prompt,
+        roundExample: data.topic_example,
         slots: data.slots,
         roundNumber: data.round_number,
         showCountDown: false,

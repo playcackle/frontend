@@ -34,6 +34,8 @@ export type GameState = {
   playerCount: number;
   timeRemaining: number;
   roundName: string;
+  roundPrompt?: string;
+  roundExample?: string;
   roundNumber: number;
   totalRounds: number;
   isRoundBreak: boolean;

@@ -11,6 +11,8 @@ export default function StatsRow({ nameFlash }: StatsRowProps) {
   const {
     playerCount,
     roundName,
+    roundPrompt,
+    roundExample,
     roundNumber,
     totalRounds,
     isRoundBreak,
@@ -65,12 +67,14 @@ export default function StatsRow({ nameFlash }: StatsRowProps) {
             <div className={styles.statsValue} style={{ fontSize: "14px" }}>
               {roundName}
             </div>
-            <p className={styles.statsTitle}>Example: (example value)</p>
+            {roundExample && (
+              <p className={styles.statsTitle}>Example: {roundExample}</p>
+            )}
           </div>
           <div className={styles.statsTile}>
-            <h3 className={styles.statsTitle}>Explaination text:</h3>
+            <h3 className={styles.statsTitle}>Explanation text:</h3>
             <p className={styles.statsValue} style={{ fontSize: "14px" }}>
-              We are looking for the stuff that is correct
+              {roundPrompt || "Answer with items from this category"}
             </p>
           </div>
         </>

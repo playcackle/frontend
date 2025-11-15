@@ -70,6 +70,8 @@ export type LobbySyncPayload = {
   time_remaining_seconds: number | null;
   player_count: number;
   topic_name: string | null;
+  topic_prompt?: string | null;
+  topic_example?: string | null;
   lobby_id: string;
   timestamp_utc: string;
   slots: Slot[];
@@ -85,6 +87,8 @@ export type LobbyTickPayload = {
 export type NewRoundStartedPayload = {
   round_number: number;
   topic_name: string;
+  topic_prompt?: string;
+  topic_example?: string;
   round_duration_seconds: number;
   slots: Slot[];
   round_end_timestamp_utc: string;
