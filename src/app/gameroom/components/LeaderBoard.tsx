@@ -1,19 +1,33 @@
 "use client";
 
+import {
+  Award,
+  BadgeCheck,
+  Crosshair,
+  Flame,
+  LucideIcon,
+  Repeat2,
+  Swords,
+  Target,
+  Timer,
+  TrendingUp,
+  Zap,
+} from "lucide-react";
+
 import { useGameState } from "../hooks/useGameState";
 import { Accolade } from "../types/state";
 import styles from "./leaderboard.module.css";
 
-// Map accolade types to emoji icons
-const ACCOLADE_ICONS: Record<string, string> = {
-  speed_demon: "⚡",
-  first_blood: "🎯",
-  sharpshooter: "🎯",
-  perfectionist: "💯",
-  machine_gun: "🔫",
-  snapping_spree: "🔥",
-  hot_streak: "🔥",
-  clutch_player: "⏱️",
+// Map accolade types to dedicated vector icons for a sharper look
+const ACCOLADE_ICONS: Record<string, LucideIcon> = {
+  speed_demon: Zap,
+  first_blood: Swords,
+  sharpshooter: Crosshair,
+  perfectionist: BadgeCheck,
+  machine_gun: Repeat2,
+  snapping_spree: Flame,
+  hot_streak: TrendingUp,
+  clutch_player: Timer,
 };
 
 export default function Leaderboard() {
@@ -47,20 +61,26 @@ export default function Leaderboard() {
                 </div>
                 {playerAccolades.length > 0 && (
                   <div className={styles.accoladesRow}>
-                    {playerAccolades.map((accolade, idx) => (
-                      <span
-                        key={idx}
-                        className={styles.accoladeBadge}
-                        title={accolade.description}
-                      >
-                        <span className={styles.accoladeIcon}>
-                          {ACCOLADE_ICONS[accolade.accolade_type] || "🏆"}
+                    {playerAccolades.map((accolade, idx) => {
+                      const IconComponent =
+                        ACCOLADE_ICONS[accolade.accolade_type] || Award;
+
+                      return (
+                        <span
+                          key={idx}
+                          className={styles.accoladeBadge}
+                          title={accolade.description}
+                        >
+                          <IconComponent
+                            aria-hidden="true"
+                            className={styles.accoladeIcon}
+                          />
+                          <span className={styles.accoladeTitle}>
+                            {accolade.title}
+                          </span>
                         </span>
-                        <span className={styles.accoladeTitle}>
-                          {accolade.title}
-                        </span>
-                      </span>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
