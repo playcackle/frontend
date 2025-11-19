@@ -27,6 +27,7 @@ const initGameState = {
   soundsLoaded: false,
   slots: [],
   scores: [],
+  accolades: [],
   finalScore: [],
   showCountDown: false,
 };

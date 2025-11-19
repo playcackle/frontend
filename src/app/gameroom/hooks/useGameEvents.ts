@@ -55,6 +55,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     updateGameState({
       isRoundBreak: true,
       scores: data.scores ?? [],
+        accolades: data.accolades ?? [],
     });
   });
 
@@ -71,6 +72,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       slots: data.slots,
       roundNumber: data.round_number,
       showCountDown: false,
+        accolades: [], // Clear accolades for new round
     });
   });
 
