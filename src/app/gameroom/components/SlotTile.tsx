@@ -88,7 +88,9 @@ const SlotTile: React.FC<SlotTileProps> = ({ slot, className }) => {
         </div>
       );
     }
-    return <div className={styles.questionMark}>?</div>;
+    return (
+      <div className={styles.questionMark}>{slot.is_rare ? "2x" : "?"}</div>
+    );
   }, [
     displayState.shouldShowContent,
     slot.canonical_text,
