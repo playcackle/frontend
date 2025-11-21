@@ -1343,12 +1343,6 @@
   }
 }
 
-/* Bonus confetti styles */
-.bonusConfetti {
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-  filter: brightness(1.2);
-}
-
 /* Add a special glow effect for bonus slots */
 .bonusTile.answered {
   animation: bonusGlow 2s ease-in-out infinite alternate;

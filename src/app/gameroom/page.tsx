@@ -14,7 +14,6 @@ import UnifiedInputForm from "./components/UnifiedInputForm";
 import UnifiedMessages from "./components/UnifiedMessages";
 
 // Import optimized components
-import GameEffects from "./components/GameEffects";
 import SlotGrid from "./components/SlotGrid";
 import StatsRow from "./components/StatsRow";
 
@@ -133,8 +132,6 @@ export default function GameroomPage() {
       {!loading && (
         <div className={styles.container}>
           <CountdownOverlay show={showCountDown} value={timeRemaining} />
-
-          <GameEffects animationState={animationStateAtom} />
 
           <div
             ref={mainRef}

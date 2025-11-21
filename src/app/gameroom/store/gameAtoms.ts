@@ -45,9 +45,6 @@ export const botBobLastMessageAtom = atom<UnifiedMessage | null>(null);
 export const animationStateAtom = atom<AnimationState>({
   attentionAnimation: "",
   slotId: null,
-  showConfetti: false,
-  confettiPosition: null,
-  particlePosition: null,
   showGlitter: false,
   isBonus: false,
   playerColor: "",
@@ -83,9 +80,6 @@ export const resetGameStateAtom = atom(null, (get, set) => {
   set(animationStateAtom, {
     attentionAnimation: "",
     slotId: null,
-    showConfetti: false,
-    confettiPosition: null,
-    particlePosition: null,
     showGlitter: false,
     isBonus: false,
     playerColor: "",

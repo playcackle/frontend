@@ -54,9 +54,6 @@ export const useGameActions = () => {
           attentionAnimation: "",
           slotId: null,
           showGlitter: false,
-          showConfetti: false,
-          confettiPosition: null,
-          particlePosition: null,
           isBonus: false,
           playerColor: "",
         });
@@ -88,35 +85,7 @@ export const useGameActions = () => {
       isBonus: boolean = false,
       playerColor: string | null
     ) => {
-      const shouldShowConfetti = Math.random() < 0.4;
-
-      let particlePosition = null;
-      let confettiPosition = null;
       const element = document.getElementById(`slot-${slotId}`) as HTMLElement;
-      debugger;
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        particlePosition = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2,
-        };
-        // Position confetti 60px above the top of the slot tile for better visibility
-        confettiPosition = {
-          x: rect.left,
-          y: rect.top - 60,
-        };
-      } else {
-        console.warn("[v0] Slot element not found for:", slotId);
-        // Fallback position
-        particlePosition = {
-          x: window.innerWidth / 2,
-          y: window.innerHeight / 2,
-        };
-        confettiPosition = {
-          x: window.innerWidth / 2,
-          y: window.innerHeight / 2 - 50,
-        };
-      }
 
       // ENHANCED: Add color burst overlay effect
       const colorBurstOverlay = document.createElement("div");
@@ -162,9 +131,6 @@ export const useGameActions = () => {
         attentionAnimation: animation,
         isBonus,
         playerColor: playerColor || "",
-        particlePosition,
-        confettiPosition,
-        showConfetti: shouldShowConfetti,
         showGlitter: true,
       });
 

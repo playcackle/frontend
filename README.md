@@ -42,6 +42,7 @@ docker-compose down
 ## 🏗️ Architecture
 
 ### Tech Stack
+
 - **Next.js 15** with React 19
 - **TypeScript** for type safety
 - **Jotai** for atomic state management
@@ -50,6 +51,7 @@ docker-compose down
 - **CSS Modules** for styling
 
 ### Key Features
+
 - Real-time multiplayer trivia gameplay
 - WebSocket-based game state synchronization
 - Synthwave/80s retro aesthetic
@@ -73,17 +75,19 @@ src/
 ## 🎮 Game Features
 
 ### Real-time Gameplay
+
 - Live trivia rounds with slot-based answers
 - WebSocket synchronization across all players
 - Dynamic scoring and leaderboards
 
 ### Visual Effects
+
 - Particle explosions on correct answers
 - Screen shake effects for big wins
 - Neon glow animations and transitions
-- Confetti celebrations
 
 ### State Management
+
 - Atomic state updates with Jotai
 - Optimized re-renders
 - Persistent game state across connections
@@ -107,6 +111,7 @@ NODE_ENV=development
 ### Docker Environment
 
 The Docker setup includes:
+
 - Production-optimized builds with standalone output
 - Development mode with hot reloading
 - Multi-stage builds for smaller images
@@ -127,9 +132,11 @@ The frontend handles these real-time events:
 ## 🎨 Styling
 
 ### CSS Modules
+
 Each component uses scoped CSS modules for styling isolation.
 
 ### Design System
+
 - Synthwave color palette (neon pinks, cyans, purples)
 - Custom animations and transitions
 - Responsive breakpoints
@@ -175,6 +182,7 @@ The frontend connects to these backend services:
 ### Docker Production
 
 The included Docker setup provides:
+
 - Optimized production builds
 - Standalone Next.js output
 - Security hardening (non-root user)

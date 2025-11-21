@@ -8,7 +8,6 @@ import {
   LucideIcon,
   Repeat2,
   Swords,
-  Target,
   Timer,
   TrendingUp,
   Zap,

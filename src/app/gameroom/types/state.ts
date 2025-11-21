@@ -60,15 +60,12 @@ export type GameState = {
 export type AnimationState = {
   attentionAnimation: string;
   slotId: string | null;
-  showConfetti: boolean;
-  confettiPosition: { x: number; y: number } | null;
   showGlitter: boolean;
   nameFlash: boolean;
   shake: boolean;
   colorFlash: boolean;
   zoomEffect: boolean;
   rotateEffect: boolean;
-  particlePosition: { x: number; y: number } | null;
   isBonus: boolean;
   playerColor: string | null;
 };
