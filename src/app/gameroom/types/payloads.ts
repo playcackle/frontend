@@ -2,7 +2,7 @@
 // Base Types
 // ========================
 
-import { FinalScore, PodiumPlayer, Scores, Slot } from "./state";
+import { Accolade, FinalScore, PodiumPlayer, Scores, Slot } from "./state";
 
 export type GameEvent =
   | "connection_success"
@@ -117,6 +117,7 @@ export type RoundOverPayload = {
   message: string;
   unrevealed_answers: UnrevealedAnswer[];
   scores: Scores[];
+  accolades: Accolade[];
   break_duration_seconds: number;
 };
 

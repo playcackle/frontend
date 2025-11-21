@@ -30,6 +30,15 @@ export type PodiumPlayer = {
   score: number;
 };
 
+export type Accolade = {
+  accolade_type: string;
+  player_id: string;
+  player_display_name: string;
+  title: string;
+  description: string;
+  metric_value: number;
+};
+
 export type GameState = {
   playerCount: number;
   timeRemaining: number;
@@ -43,6 +52,7 @@ export type GameState = {
   soundsLoaded: boolean;
   slots: Slot[];
   scores: Scores[];
+  accolades: Accolade[];
   finalScore: FinalScore[];
   showCountDown: boolean;
 };
