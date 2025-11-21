@@ -40,6 +40,7 @@ export default function GameroomPage() {
     showCountDown,
     updateGameState,
     scores,
+    roundName,
   } = useGameState();
 
   // Refs
@@ -143,11 +144,11 @@ export default function GameroomPage() {
           ${animationState.rotateEffect ? styles.rotateEffect : ""}
             `}
           >
-            <RoomHeader roomName={name!} />
+            <RoomHeader roomName={roundName} />
 
             <SoundEffects onLoad={onSoundsLoaded} />
 
-            <StatsRow nameFlash={false} />
+            <StatsRow />
 
             <div className={styles.contentRow}>
               <Flex direction="column" gap="3">

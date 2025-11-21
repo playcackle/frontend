@@ -132,7 +132,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         totalRounds: data.total_rounds,
         playerCount: data.player_count,
         timeRemaining: data.time_remaining_seconds ?? 0,
-        roundName: data.topic_name || "",
+        roundName: data.topic_name,
         showCountDown:
           data.time_remaining_seconds! < 5 &&
           data.time_remaining_seconds! > 0 &&
