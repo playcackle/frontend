@@ -44,7 +44,7 @@ export default async function RootLayout({
             <div className="crt-content">
               <Provider>
                 <Suspense fallback={<Progress />}>
-                  <SynthwaveBackground animated={!false} />
+                  <SynthwaveBackground animated={false} />
                   <Header session={session!} />
                   <main>{children}</main>
                 </Suspense>
