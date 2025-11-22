@@ -142,7 +142,7 @@ export default function TopicsPage() {
               </div>
               <div className={styles.topicMeta}>
                 <span className={styles.slotCount}>
-                  📚 {topic.slot_count || 0} slots
+                  {topic.slot_count || 0} slots
                 </span>
                 <div className={styles.topicActions}>
                   <button

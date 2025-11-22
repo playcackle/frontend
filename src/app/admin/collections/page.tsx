@@ -142,7 +142,7 @@ export default function CollectionsPage() {
                 </div>
                 <div className={styles.cardFooter}>
                   <span className={styles.topicCount}>
-                    📚 {collection.topic_count || 0} topics
+                    {collection.topic_count || 0} topics
                   </span>
                 </div>
               </div>

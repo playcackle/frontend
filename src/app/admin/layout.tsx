@@ -12,9 +12,9 @@ export default function AdminLayout({
   const router = useRouter();
 
   const navItems = [
-    { path: "/admin/collections", label: "COLLECTIONS", icon: "📚" },
-    { path: "/admin/topics", label: "TOPICS", icon: "🎯" },
-    { path: "/admin/lobbies", label: "LOBBIES", icon: "🎮" },
+    { path: "/admin/collections", label: "COLLECTIONS" },
+    { path: "/admin/topics", label: "TOPICS" },
+    { path: "/admin/lobbies", label: "GAMEROOMS" },
   ];
 
   return (
@@ -36,7 +36,6 @@ export default function AdminLayout({
               }`}
               onClick={() => router.push(item.path)}
             >
-              <span className={styles.navIcon}>{item.icon}</span>
               <span className={styles.navLabel}>{item.label}</span>
             </button>
           ))}
