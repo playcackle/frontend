@@ -1,20 +1,12 @@
 .container {
-  min-height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
+  padding: 2rem;
   color: white;
+  min-height: 100%;
 }
 
-.content {
-  max-width: 640px;
+.header {
+  margin-bottom: 2rem;
   text-align: center;
-  border: 2px solid rgba(255, 0, 255, 0.4);
-  padding: 2.5rem 2rem;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.35);
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.2);
 }
 
 .title {
@@ -23,7 +15,7 @@
   line-height: 1.1;
   text-transform: uppercase;
   font-family: "Orbitron", sans-serif;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .neonText {
@@ -38,8 +30,235 @@
   display: block;
 }
 
-.message {
+.subtitle {
   font-size: 1.1rem;
   color: #cfcfcf;
+  margin-top: 0.5rem;
+}
+
+/* Error State */
+.errorContainer {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.errorBox {
+  background: rgba(255, 0, 0, 0.1);
+  border: 2px solid rgba(255, 0, 0, 0.5);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 500px;
+}
+
+.errorBox h3 {
+  color: #ff4444;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.errorBox p {
+  color: #ffaaaa;
+  margin-bottom: 1.5rem;
+}
+
+.retryButton {
+  background: linear-gradient(135deg, #ff0080, #ff4488);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  box-shadow: 0 0 20px rgba(255, 0, 128, 0.4);
+}
+
+.retryButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 0, 128, 0.6);
+}
+
+/* Loading State */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 0;
+  color: #00ffff;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 255, 255, 0.2);
+  border-top: 4px solid #00ffff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingContainer p {
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px #00ffff;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 5rem 2rem;
+}
+
+.emptyMessage {
+  font-size: 1.2rem;
+  color: #999;
   line-height: 1.6;
+}
+
+/* Lobbies Grid */
+.lobbiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.lobbyCard {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 0, 255, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.1);
+}
+
+.lobbyCard:hover {
+  border-color: rgba(255, 0, 255, 0.6);
+  box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.lobbyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lobbyTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #00ffff;
+  text-shadow: 0 0 10px #00ffff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lobbyId {
+  font-size: 0.9rem;
+  color: #999;
+  text-shadow: none;
+  font-weight: 400;
+  font-family: monospace;
+}
+
+.statusBadge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #000;
+  box-shadow: 0 0 15px currentColor;
+  letter-spacing: 0.5px;
+}
+
+.lobbyInfo {
+  margin-bottom: 1.5rem;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+}
+
+.infoLabel {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.infoValue {
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.lobbyActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.configureButton,
+.resetButton {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  border: none;
+}
+
+.configureButton {
+  background: linear-gradient(135deg, #00ffff, #0088ff);
+  color: #000;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
+
+.configureButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+}
+
+.resetButton {
+  background: linear-gradient(135deg, #ff0080, #ff4488);
+  color: white;
+  box-shadow: 0 0 15px rgba(255, 0, 128, 0.4);
+}
+
+.resetButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 0, 128, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lobbiesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
 }

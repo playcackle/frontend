@@ -96,6 +96,43 @@ export type SlotAliasCreate = {
   alias_text: string;
 };
 
+export type GameConfigurationParameters = {
+  num_rounds?: number;
+  round_duration?: number;
+  round_break_duration?: number;
+  max_normal_slots?: number;
+  max_rare_slots?: number;
+  min_players_to_start?: number;
+  game_start_delay?: number;
+  new_game_wait_duration?: number;
+  points_normal_slot?: number;
+  points_rare_slot?: number;
+  max_players?: number;
+};
+
+export type Lobby = {
+  lobby_id: string;
+  status: string;
+  player_count: number;
+  collection_id: number | null;
+  collection_name: string | null;
+  configuration: GameConfigurationParameters | null;
+};
+
+export type LobbyConfigurationUpdate = {
+  parameters?: GameConfigurationParameters;
+  apply_mode: 'immediate' | 'on_next_reset';
+};
+
+export type LobbyCollectionUpdate = {
+  collection_id: number;
+  apply_immediately: boolean;
+};
+
+export type LobbyResetRequest = {
+  reason?: string;
+};
+
 // ============================================================================
 // Collections API
 // ============================================================================
@@ -370,5 +407,132 @@ export const aliasesApi = {
       const error = await res.json();
       throw new Error(error.detail || 'Failed to delete alias');
     }
+  },
+};
+
+// ============================================================================
+// Lobbies API
+// ============================================================================
+
+export const lobbiesApi = {
+  /**
+   * Get all active lobbies
+   */
+  async getAll(): Promise<Lobby[]> {
+    const res = await fetch(`${API_BASE_URL}/admin/lobbies`);
+    if (!res.ok) throw new Error('Failed to fetch lobbies');
+    const data = await res.json();
+    return data.lobbies;
+  },
+
+  /**
+   * Get a single lobby with configuration
+   */
+  async getById(lobbyId: string): Promise<Lobby> {
+    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}`);
+    if (!res.ok) throw new Error(`Failed to fetch lobby ${lobbyId}`);
+    return res.json();
+  },
+
+  /**
+   * Update lobby configuration in the database
+   */
+  async updateConfig(
+    lobbyId: string,
+    config: GameConfigurationParameters
+  ): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/config`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to update lobby configuration');
+    }
+    return res.json();
+  },
+
+  /**
+   * Change lobby collection in the database
+   */
+  async changeCollection(lobbyId: string, collectionId: number): Promise<any> {
+    const res = await fetch(
+      `${API_BASE_URL}/admin/lobbies/${lobbyId}/collection?collection_id=${collectionId}`,
+      {
+        method: 'PUT',
+      }
+    );
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to change lobby collection');
+    }
+    return res.json();
+  },
+
+  /**
+   * Reconfigure a running gameroom instance
+   */
+  async reconfigure(
+    lobbyId: string,
+    update: LobbyConfigurationUpdate
+  ): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/reconfigure`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(update),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to reconfigure gameroom');
+    }
+    return res.json();
+  },
+
+  /**
+   * Change collection for a running gameroom
+   */
+  async changeGameroomCollection(
+    lobbyId: string,
+    update: LobbyCollectionUpdate
+  ): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/change-collection`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(update),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to change gameroom collection');
+    }
+    return res.json();
+  },
+
+  /**
+   * Force reset a gameroom
+   */
+  async forceReset(lobbyId: string, reason?: string): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/force-reset`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason }),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to force reset gameroom');
+    }
+    return res.json();
+  },
+
+  /**
+   * Get live gameroom configuration
+   */
+  async getGameroomConfig(lobbyId: string): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/gameroom-config`);
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to get gameroom configuration');
+    }
+    return res.json();
   },
 };
