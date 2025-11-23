@@ -117,6 +117,7 @@ export type Lobby = {
   collection_id: number | null;
   collection_name: string | null;
   configuration: GameConfigurationParameters | null;
+  admin_base_url?: string | null;
 };
 
 export type LobbyConfigurationUpdate = {
