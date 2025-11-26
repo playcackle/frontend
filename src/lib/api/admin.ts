@@ -134,6 +134,30 @@ export type LobbyResetRequest = {
   reason?: string;
 };
 
+export type HostSettings = {
+  enabled: boolean;
+  display_name: string;
+  welcome_message_enabled: boolean;
+  hints_enabled: boolean;
+  hint_delay_seconds: number;
+  hint_interval_seconds: number;
+  urgency_enabled: boolean;
+  urgency_time_left_seconds: number;
+  urgency_interval_seconds: number;
+};
+
+export type HostSettingsUpdate = {
+  enabled?: boolean;
+  display_name?: string;
+  welcome_message_enabled?: boolean;
+  hints_enabled?: boolean;
+  hint_delay_seconds?: number;
+  hint_interval_seconds?: number;
+  urgency_enabled?: boolean;
+  urgency_time_left_seconds?: number;
+  urgency_interval_seconds?: number;
+};
+
 // ============================================================================
 // Collections API
 // ============================================================================
@@ -533,6 +557,40 @@ export const lobbiesApi = {
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.detail || 'Failed to get gameroom configuration');
+    }
+    return res.json();
+  },
+};
+
+// ============================================================================
+// Host Settings API (via Lobby Manager proxy)
+// ============================================================================
+
+export const hostSettingsApi = {
+  /**
+   * Get host settings for a gameroom
+   */
+  async get(lobbyId: string): Promise<HostSettings> {
+    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/host/settings`);
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to fetch host settings');
+    }
+    return res.json();
+  },
+
+  /**
+   * Update host settings for a gameroom
+   */
+  async update(lobbyId: string, updates: HostSettingsUpdate): Promise<HostSettings> {
+    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/host/settings`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to update host settings');
     }
     return res.json();
   },
