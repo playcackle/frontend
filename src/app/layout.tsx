@@ -3,7 +3,6 @@ import { Progress, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import "animate.css";
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import { headers } from "next/headers";
 import type React from "react";
 import { Suspense } from "react";
@@ -22,7 +21,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
   const headersList = await headers();
   const pathname =
     headersList.get("x-invoke-path") || headersList.get("referer");
@@ -45,7 +43,7 @@ export default async function RootLayout({
               <Provider>
                 <Suspense fallback={<Progress />}>
                   <SynthwaveBackground animated={false} />
-                  <Header session={session!} />
+                  <Header />
                   <main>{children}</main>
                 </Suspense>
               </Provider>

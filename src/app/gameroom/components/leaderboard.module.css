@@ -190,9 +190,12 @@
   min-width: 200px;
   max-width: 250px;
   box-shadow: 0 0 15px rgba(255, 0, 170, 0.6), 0 4px 6px rgba(0, 0, 0, 0.3);
-  z-index: 100000;
+  /* Significantly increased z-index to appear above all page elements */
+  z-index: 9999;
   pointer-events: none;
   animation: fadeInPopover 0.2s ease;
+  /* Added backdrop-filter for better visibility */
+  backdrop-filter: blur(10px);
 }
 
 @keyframes fadeInPopover {

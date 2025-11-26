@@ -1,17 +1,13 @@
 "use client";
 
 import { Button } from "@radix-ui/themes";
-import { Session } from "next-auth";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import styles from "./header.module.css";
 
-type Props = {
-  session: Session;
-};
+export default function Header() {
+  const { data: session } = useSession();
 
-export default function Header(props: Props) {
-  const { session } = props;
   return (
     <header className={styles.header}>
       <div className={styles.logo}>

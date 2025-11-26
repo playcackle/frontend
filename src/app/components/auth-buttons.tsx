@@ -9,8 +9,7 @@ export function AuthButtons() {
       <div className={styles.authMessage}>
         <h2 className={styles.authTitle}>Join the Cackle Quiz Revolution!!</h2>
         <p className={styles.authDescription}>
-          Sign up or log in to access our rad collection quiz of everything
-          between 80's music and classic pub quizes
+          Join the greatness or get back to access
         </p>
       </div>
 
@@ -19,8 +18,8 @@ export function AuthButtons() {
           <div className={styles.buttonContent}>
             <span className={styles.buttonIcon}>🔑</span>
             <div className={styles.buttonTextContainer}>
-              <span className={styles.buttonTitle}>LOGIN</span>
-              <span className={styles.buttonSubtitle}>Join the chaos!</span>
+              <span className={styles.buttonTitle}>BACK FOR MORE</span>
+              <span className={styles.buttonSubtitle}>Couldnt get enough!</span>
             </div>
           </div>
         </Link>
@@ -28,7 +27,7 @@ export function AuthButtons() {
           <div className={styles.buttonContent}>
             <span className={styles.buttonIcon}>✨</span>
             <div className={styles.buttonTextContainer}>
-              <span className={styles.buttonTitle}>SIGN UP</span>
+              <span className={styles.buttonTitle}>JOIN THE GREATNESS</span>
               <span className={styles.buttonSubtitle}>
                 Create a new account
               </span>
