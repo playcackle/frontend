@@ -5,9 +5,11 @@ import { useState, useEffect } from "react";
 import {
   lobbiesApi,
   collectionsApi,
+  hostSettingsApi,
   type Lobby,
   type Collection,
   type GameConfigurationParameters,
+  type HostSettings,
 } from "@/lib/api/admin";
 import * as Slider from "@radix-ui/react-slider";
 import * as Select from "@radix-ui/react-select";
@@ -43,6 +45,11 @@ export default function LobbyDetailPage() {
   const [selectedCollection, setSelectedCollection] = useState<number | null>(null);
   const [applyMode, setApplyMode] = useState<"on_next_reset" | "immediate">("on_next_reset");
 
+  // Host settings state
+  const [hostSettings, setHostSettings] = useState<HostSettings | null>(null);
+  const [hostSettingsLoading, setHostSettingsLoading] = useState(false);
+  const [hostSettingsSaving, setHostSettingsSaving] = useState(false);
+
   useEffect(() => {
     loadData();
   }, [lobbyId]);
@@ -68,11 +75,48 @@ export default function LobbyDetailPage() {
       if (lobbyData.collection_id) {
         setSelectedCollection(lobbyData.collection_id);
       }
+
+      // Load host settings
+      loadHostSettings();
     } catch (err) {
       console.error("Failed to load lobby:", err);
       setError(err instanceof Error ? err.message : "Failed to load lobby");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadHostSettings = async () => {
+    try {
+      setHostSettingsLoading(true);
+      const settings = await hostSettingsApi.get(lobbyId);
+      setHostSettings(settings);
+    } catch (err) {
+      console.error("Failed to load host settings:", err);
+      // Don't set error state, just log it - host settings are optional
+    } finally {
+      setHostSettingsLoading(false);
+    }
+  };
+
+  const updateHostSetting = async <K extends keyof HostSettings>(
+    key: K,
+    value: HostSettings[K]
+  ) => {
+    if (!hostSettings) return;
+
+    try {
+      setHostSettingsSaving(true);
+      const updated = await hostSettingsApi.update(lobbyId, {
+        [key]: value,
+      });
+      setHostSettings(updated);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to update host setting");
+      // Revert the change in UI
+      loadHostSettings();
+    } finally {
+      setHostSettingsSaving(false);
     }
   };
 
@@ -370,6 +414,137 @@ export default function LobbyDetailPage() {
           />
         </div>
       </div>
+
+      {/* Host Settings (BotBob) */}
+      {hostSettings && (
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>
+            Host Settings (BotBob)
+            {hostSettingsLoading && <span className={styles.loadingBadge}>Loading...</span>}
+          </h2>
+
+          <div className={styles.hostSettingsGrid}>
+            {/* Enable/Disable Host */}
+            <div className={styles.toggleControl}>
+              <label className={styles.toggleLabel}>
+                <input
+                  type="checkbox"
+                  checked={hostSettings.enabled}
+                  onChange={(e) => updateHostSetting("enabled", e.target.checked)}
+                  disabled={hostSettingsSaving}
+                  className={styles.checkbox}
+                />
+                Enable Host
+              </label>
+            </div>
+
+            {/* Welcome Message */}
+            <div className={styles.toggleControl}>
+              <label className={styles.toggleLabel}>
+                <input
+                  type="checkbox"
+                  checked={hostSettings.welcome_message_enabled}
+                  onChange={(e) =>
+                    updateHostSetting("welcome_message_enabled", e.target.checked)
+                  }
+                  disabled={hostSettingsSaving || !hostSettings.enabled}
+                  className={styles.checkbox}
+                />
+                Show Welcome Message
+              </label>
+            </div>
+
+            {/* Hints Enabled */}
+            <div className={styles.toggleControl}>
+              <label className={styles.toggleLabel}>
+                <input
+                  type="checkbox"
+                  checked={hostSettings.hints_enabled}
+                  onChange={(e) => updateHostSetting("hints_enabled", e.target.checked)}
+                  disabled={hostSettingsSaving || !hostSettings.enabled}
+                  className={styles.checkbox}
+                />
+                Enable Hints
+              </label>
+            </div>
+          </div>
+
+          {/* Hint Timing */}
+          {hostSettings.hints_enabled && (
+            <div className={styles.parameterGrid}>
+              <ParameterSlider
+                label="Initial Hint Delay"
+                value={hostSettings.hint_delay_seconds}
+                onChange={(value) => updateHostSetting("hint_delay_seconds", value)}
+                min={10}
+                max={120}
+                unit="seconds"
+              />
+              <ParameterSlider
+                label="Normal Hint Interval"
+                value={hostSettings.hint_interval_seconds}
+                onChange={(value) => updateHostSetting("hint_interval_seconds", value)}
+                min={10}
+                max={120}
+                unit="seconds"
+              />
+            </div>
+          )}
+
+          {/* Urgency Mode */}
+          {hostSettings.hints_enabled && (
+            <>
+              <div className={styles.toggleControl}>
+                <label className={styles.toggleLabel}>
+                  <input
+                    type="checkbox"
+                    checked={hostSettings.urgency_enabled}
+                    onChange={(e) => updateHostSetting("urgency_enabled", e.target.checked)}
+                    disabled={hostSettingsSaving || !hostSettings.enabled}
+                    className={styles.checkbox}
+                  />
+                  Enable Urgency Mode
+                </label>
+              </div>
+
+              {hostSettings.urgency_enabled && (
+                <div className={styles.parameterGrid}>
+                  <ParameterSlider
+                    label="Urgency Time Threshold"
+                    value={hostSettings.urgency_time_left_seconds}
+                    onChange={(value) =>
+                      updateHostSetting("urgency_time_left_seconds", value)
+                    }
+                    min={15}
+                    max={180}
+                    unit="seconds"
+                  />
+                  <ParameterSlider
+                    label="Urgency Hint Interval"
+                    value={hostSettings.urgency_interval_seconds}
+                    onChange={(value) =>
+                      updateHostSetting("urgency_interval_seconds", value)
+                    }
+                    min={5}
+                    max={60}
+                    unit="seconds"
+                  />
+                </div>
+              )}
+
+              {hostSettings.urgency_enabled && (
+                <div className={styles.urgencyDescription}>
+                  <p>
+                    When ≤{hostSettings.urgency_time_left_seconds}s remain in a round, hints
+                    will be sent every {hostSettings.urgency_interval_seconds}s instead of
+                    every {hostSettings.hint_interval_seconds}s.
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {/* Action Buttons */}
       <div className={styles.actionButtons}>
