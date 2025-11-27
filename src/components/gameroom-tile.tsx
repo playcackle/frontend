@@ -18,14 +18,25 @@ export default function GameroomTile(props: GameroomTileProps) {
   const { data } = useSession();
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const setGameroom = useSetAtom(gameRoomAtom);
 
   const handleClick = async () => {
-    const gameRoom = await joinGameroom(data?.user.id);
-    if (gameRoom.isError) {
+    if (!data?.user?.id) {
+      setErrorMessage("Please sign in to join a gameroom.");
       setShowModal(true);
       return;
     }
+    const gameRoom = await joinGameroom({
+      lobbyId: gameroom.lobby_id,
+      playerId: data.user.id,
+    });
+    if ("isError" in gameRoom) {
+      setErrorMessage(gameRoom.error);
+      setShowModal(true);
+      return;
+    }
+    setErrorMessage(undefined);
     setGameroom(gameRoom);
     router.push(`/gameroom?name=${gameroom.collection_name}`);
   };
@@ -51,6 +62,7 @@ export default function GameroomTile(props: GameroomTileProps) {
         onOpenChange={(change) => setShowModal(change)}
         open={showModal}
         title="Unable to join gameroom"
+        message={errorMessage ?? "Unable to join. Please try again."}
       />
     </div>
   );
