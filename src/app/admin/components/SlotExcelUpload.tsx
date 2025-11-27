@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { topicsApi, type CSVUploadResponse } from "@/lib/api/admin";
-import styles from "./SlotCSVUpload.module.css";
+import { topicsApi, type ExcelUploadResponse } from "@/lib/api/admin";
+import styles from "./SlotExcelUpload.module.css";
 
-interface SlotCSVUploadProps {
+interface SlotExcelUploadProps {
   onUploadComplete?: () => void;
 }
 
-export default function SlotCSVUpload({ onUploadComplete }: SlotCSVUploadProps) {
+export default function SlotExcelUpload({ onUploadComplete }: SlotExcelUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [result, setResult] = useState<CSVUploadResponse | null>(null);
+  const [result, setResult] = useState<ExcelUploadResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [updateExisting, setUpdateExisting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

@@ -165,7 +165,7 @@ export type TopicUploadResult = {
   aliases_created: number;
 };
 
-export type CSVUploadResponse = {
+export type ExcelUploadResponse = {
   status: string;
   message: string;
   topics_created: number;
@@ -354,7 +354,7 @@ export const topicsApi = {
       collectionIds?: number[];
       updateExisting?: boolean;
     }
-  ): Promise<CSVUploadResponse> {
+  ): Promise<ExcelUploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -374,7 +374,7 @@ export const topicsApi = {
       throw new Error(error.detail || 'Failed to upload Excel file');
     }
 
-    const result: CSVUploadResponse = await res.json();
+    const result: ExcelUploadResponse = await res.json();
     return result;
   },
 };

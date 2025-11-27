@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { topicsApi, collectionsApi, type Topic, type Collection } from "@/lib/api/admin";
-import SlotCSVUpload from "../components/SlotCSVUpload";
+import SlotExcelUpload from "../components/SlotExcelUpload";
 import styles from "./page.module.css";
 
 export default function TopicsPage() {
@@ -105,10 +105,10 @@ export default function TopicsPage() {
         </button>
       </div>
 
-      {/* CSV Upload Section */}
+      {/* Excel Upload Section */}
       {showUpload && (
         <div className={styles.uploadSection}>
-          <SlotCSVUpload onUploadComplete={() => {
+          <SlotExcelUpload onUploadComplete={() => {
             loadData();
             setShowUpload(false);
           }} />
