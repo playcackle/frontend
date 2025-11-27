@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { register } from "../actions/register";
+import { register } from "../../actions/register";
 import styles from "../login/auth.module.css";
 
 export default function RegisterPage() {

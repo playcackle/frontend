@@ -1,7 +1,7 @@
 "use client";
 
+import LoadingGrid from "@/components/loading-grid";
 import { useEffect, useState } from "react";
-import LoadingGrid from "./components/loading-grid";
 import styles from "./loading.module.css";
 
 const Progress = () => {

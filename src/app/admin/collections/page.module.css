@@ -7,48 +7,72 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: bold;
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--retro-font);
+  letter-spacing: 4px;
+  text-transform: uppercase;
   margin: 0;
-  font-family: 'Orbitron', sans-serif;
 }
 
 .neonText {
-  color: #00ffff;
-  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
-  display: block;
+  color: #fff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff;
+  animation: neonPulse 1.5s ease-in-out infinite alternate;
 }
 
 .neonTextPink {
-  color: #ff00ff;
-  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
-  display: block;
+  color: #fff;
+  text-shadow: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px #f0f, 0 0 40px #f0f;
+  animation: neonPulsePink 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes neonPulse {
+  from {
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
+  }
+  to {
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff, 0 0 80px #0ff;
+  }
+}
+
+@keyframes neonPulsePink {
+  from {
+    text-shadow: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px #f0f;
+  }
+  to {
+    text-shadow: 0 0 10px #f0f, 0 0 20px #f0f, 0 0 40px #f0f, 0 0 80px #f0f;
+  }
 }
 
 .createButton {
-  padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, #ff00ff 0%, #ff0080 100%);
-  border: none;
-  color: white;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  background: rgba(0, 221, 255, 0.1);
+  border: 2px solid var(--neon-blue);
+  color: var(--neon-blue);
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 2px;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 221, 255, 0.3);
   border-radius: 4px;
-  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
 }
 
 .createButton:hover {
+  background: rgba(0, 221, 255, 0.2);
+  box-shadow: 0 0 20px rgba(0, 221, 255, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.8), 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .createButton:active {
@@ -67,7 +91,7 @@
 .error p {
   color: #ff6666;
   margin: 0 0 1rem 0;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
 }
 
 .retryButton {
@@ -75,7 +99,7 @@
   background: rgba(255, 0, 0, 0.3);
   border: 2px solid #ff0000;
   color: #fff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -90,7 +114,7 @@
   text-align: center;
   padding: 4rem 2rem;
   color: #00ffff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
 }
 
 .spinner {
@@ -116,18 +140,18 @@
 }
 
 .collectionCard {
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(255, 0, 255, 0.5);
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(255, 0, 170, 0.4);
   border-radius: 8px;
   padding: 1.5rem;
+  box-shadow: 0 0 15px rgba(255, 0, 170, 0.2);
   transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
 }
 
 .collectionCard:hover {
-  transform: translateY(-5px);
-  border-color: #ff00ff;
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
+  border-color: rgba(255, 0, 170, 0.6);
+  box-shadow: 0 0 25px rgba(255, 0, 170, 0.4);
+  transform: translateY(-2px);
 }
 
 .cardHeader {
@@ -139,12 +163,13 @@
 }
 
 .collectionName {
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: #fff;
+  font-size: 1.5rem;
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
   margin: 0 0 0.5rem 0;
-  font-family: 'Orbitron', sans-serif;
-  text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: var(--retro-font);
 }
 
 .collectionDesc {
@@ -166,7 +191,7 @@
   border: 2px solid;
   background: transparent;
   color: currentColor;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
@@ -202,7 +227,7 @@
 
 .topicCount {
   color: #00ffff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -211,7 +236,7 @@
   text-align: center;
   padding: 4rem 2rem;
   color: #888;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
 }
 
 .emptyState p:first-child {
@@ -251,7 +276,7 @@
 }
 
 .modalTitle {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 1.5rem;
   color: #ff00ff;
   text-shadow: 0 0 15px #ff00ff;
@@ -266,7 +291,7 @@
 .formGroup label {
   display: block;
   color: #00ffff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -310,7 +335,7 @@
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
   color: #fff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;

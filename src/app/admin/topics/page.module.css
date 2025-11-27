@@ -14,9 +14,10 @@
   line-height: 1;
   display: flex;
   flex-direction: column;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--retro-font);
   letter-spacing: 4px;
   text-transform: uppercase;
+  margin: 0 0 2rem 0;
 }
 
 .neonText {
@@ -49,46 +50,41 @@
   }
 }
 
-/* Filter Section */
 .filterSection {
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(0, 255, 255, 0.4);
-  border-radius: 8px;
-  padding: 1.5rem;
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 .filterLabel {
-  color: #00ffff;
+  color: rgba(0, 221, 255, 1);
   text-transform: uppercase;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   letter-spacing: 2px;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
-  white-space: nowrap;
+  font-family: var(--retro-font);
 }
 
 .filterSelect {
-  flex: 1;
-  max-width: 400px;
-  background: rgba(20, 20, 40, 0.8);
-  border: 2px solid rgba(0, 221, 255, 0.4);
+  background: rgba(20, 20, 40, 0.6);
+  border: 2px solid rgba(0, 221, 255, 0.3);
   color: white;
-  padding: 0.75rem;
-  font-family: 'Orbitron', sans-serif;
+  padding: 0.75rem 1rem;
+  font-family: var(--retro-font);
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-width: 200px;
 }
 
 .filterSelect:focus {
   outline: none;
-  border-color: #00ffff;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  border-color: rgba(0, 221, 255, 1);
+  box-shadow: 0 0 10px rgba(0, 221, 255, 0.3);
 }
 
 .filterSelect option {
@@ -96,7 +92,6 @@
   color: white;
 }
 
-/* Topics List */
 .topicsList {
   display: flex;
   flex-direction: column;
@@ -104,21 +99,22 @@
 }
 
 .topicCard {
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(0, 255, 255, 0.3);
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(255, 0, 170, 0.4);
   border-radius: 8px;
   padding: 1.5rem;
+  box-shadow: 0 0 15px rgba(255, 0, 170, 0.2);
+  transition: all 0.3s ease;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 2rem;
-  transition: all 0.3s ease;
+  gap: 1rem;
 }
 
 .topicCard:hover {
-  border-color: #00ffff;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-  transform: translateX(5px);
+  border-color: rgba(255, 0, 170, 0.6);
+  box-shadow: 0 0 25px rgba(255, 0, 170, 0.4);
+  transform: translateY(-2px);
 }
 
 .topicInfo {
@@ -130,18 +126,19 @@
 
 .topicName {
   font-size: 1.5rem;
-  font-weight: bold;
-  color: #00ffff;
-  margin: 0;
-  font-family: 'Orbitron', sans-serif;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  color: rgba(255, 0, 170, 1);
+  text-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: var(--retro-font);
 }
 
 .collectionName {
-  color: #ff00ff;
+  color: rgba(255, 0, 255, 1);
   font-size: 0.9rem;
   margin: 0;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--retro-font);
 }
 
 .topicPrompt {
@@ -158,9 +155,9 @@
 }
 
 .slotCount {
-  color: #00ffff;
+  color: rgba(0, 221, 255, 1);
   font-size: 0.9rem;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--retro-font);
   font-weight: 600;
 }
 
@@ -174,18 +171,20 @@
   padding: 0.5rem 1rem;
   border: 2px solid;
   background: transparent;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--retro-font);
   font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 4px;
   white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .viewButton {
-  border-color: #ff00ff;
-  color: #ff00ff;
+  border-color: rgba(255, 0, 255, 1);
+  color: rgba(255, 0, 255, 1);
 }
 
 .viewButton:hover {
@@ -194,8 +193,8 @@
 }
 
 .deleteButton {
-  border-color: #ff0080;
-  color: #ff0080;
+  border-color: rgba(255, 0, 128, 1);
+  color: rgba(255, 0, 128, 1);
 }
 
 .deleteButton:hover {
@@ -203,24 +202,25 @@
   box-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
 }
 
-/* Empty State */
 .emptyState {
   text-align: center;
   padding: 4rem 2rem;
   color: #888;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--retro-font);
 }
 
 .clearFilterButton {
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
   background: rgba(0, 255, 255, 0.1);
-  border: 2px solid #00ffff;
-  color: #00ffff;
-  font-family: 'Orbitron', sans-serif;
+  border: 2px solid rgba(0, 221, 255, 1);
+  color: rgba(0, 221, 255, 1);
+  font-family: var(--retro-font);
   font-weight: 600;
   cursor: pointer;
   border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .clearFilterButton:hover {
@@ -228,13 +228,12 @@
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
 
-/* Loading/Error */
 .loading,
 .error {
   text-align: center;
   padding: 4rem 2rem;
-  color: #00ffff;
-  font-family: 'Orbitron', sans-serif;
+  color: rgba(0, 221, 255, 1);
+  font-family: var(--retro-font);
 }
 
 .spinner {
@@ -242,7 +241,7 @@
   height: 60px;
   margin: 0 auto 1.5rem;
   border: 4px solid rgba(0, 255, 255, 0.3);
-  border-top-color: #00ffff;
+  border-top-color: rgba(0, 221, 255, 1);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -263,13 +262,13 @@
   background: rgba(255, 0, 0, 0.2);
   border: 2px solid #ff0000;
   color: #fff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--retro-font);
   font-weight: 600;
   cursor: pointer;
   border-radius: 4px;
+  text-transform: uppercase;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .filterSection {
     flex-direction: column;

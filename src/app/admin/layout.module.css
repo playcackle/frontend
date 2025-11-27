@@ -1,3 +1,12 @@
+.container {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
 .adminContainer {
   display: flex;
   min-height: 100vh;
@@ -5,6 +14,61 @@
   position: relative;
   z-index: 10;
   padding-top: 80px; /* Account for header */
+}
+
+/* Replaced sidebar styles with tabbed navigation styles */
+.tabNav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  border-bottom: 2px solid rgba(255, 0, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(255, 0, 255, 0.2);
+  background: rgba(10, 10, 31, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.tab {
+  background: transparent;
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  color: rgba(0, 255, 255, 0.8);
+  padding: 1rem 2rem;
+  font-family: var(--retro-font);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab:hover {
+  background: rgba(0, 255, 255, 0.1);
+  border-color: rgba(0, 255, 255, 0.6);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.tab.active {
+  background: rgba(0, 255, 255, 0.2);
+  border-color: #00ffff;
+  color: #00ffff;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 10px #00ffff;
+}
+
+.tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #00ffff;
+  box-shadow: 0 0 10px #00ffff;
 }
 
 .sidebar {
@@ -29,7 +93,7 @@
   font-weight: bold;
   text-align: center;
   margin: 0;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
 }
 
 .neonText {
@@ -60,7 +124,7 @@
   border: none;
   border-left: 3px solid transparent;
   color: #fff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -95,7 +159,7 @@
   background: rgba(0, 255, 255, 0.1);
   border: 2px solid #00ffff;
   color: #00ffff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -113,6 +177,11 @@
 .mainContent {
   flex: 1;
   padding: 2rem;
+  position: relative;
+  z-index: 10;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
   overflow-y: auto;
 }
 
@@ -136,4 +205,38 @@
 .navItems::-webkit-scrollbar-thumb:hover,
 .mainContent::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 0, 255, 0.7);
+}
+
+/* Scrollbar styling */
+.mainContent::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mainContent::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.mainContent::-webkit-scrollbar-thumb {
+  background: rgba(255, 0, 255, 0.5);
+  border-radius: 4px;
+}
+
+.mainContent::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 0, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .tabNav {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .tab {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .mainContent {
+    padding: 1rem;
+  }
 }

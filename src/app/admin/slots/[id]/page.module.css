@@ -1,32 +1,36 @@
 .container {
   min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
   color: white;
+  display: flex;
+  flex-direction: column;
 }
 
 .main {
-  padding: 0;
-  max-width: 1200px;
+  position: relative;
+  z-index: 10;
+  padding: 2rem;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  flex: 1;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  margin-bottom: 3rem;
 }
 
 .title {
-  font-size: 3rem;
+  font-size: 4rem;
   font-weight: 800;
   line-height: 1;
   display: flex;
-  flex-direction: column;
-  font-family: 'Orbitron', sans-serif;
+  gap: 1rem;
+  font-family: var(--retro-font);
   letter-spacing: 4px;
   text-transform: uppercase;
 }
@@ -62,24 +66,28 @@
 }
 
 .backButton {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
   padding: 0.75rem 1.5rem;
-  background: rgba(0, 255, 255, 0.1);
-  border: 2px solid #00ffff;
-  color: #00ffff;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
+  font-size: 1rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 2px;
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 4px;
-  font-size: 0.95rem;
 }
 
 .backButton:hover {
-  background: rgba(0, 255, 255, 0.2);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .content {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -87,10 +95,11 @@
 
 /* Metadata Section */
 .metadataSection {
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(0, 255, 255, 0.4);
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(0, 221, 255, 0.4);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.2);
 }
 
 .metadataDisplay {
@@ -102,11 +111,11 @@
 
 .slotCanonical {
   font-size: 2rem;
-  font-weight: bold;
-  color: #00ffff;
-  margin: 0 0 0.5rem 0;
-  font-family: 'Orbitron', sans-serif;
-  text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+  color: var(--neon-blue);
+  text-shadow: 0 0 10px rgba(0, 221, 255, 0.5);
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -119,7 +128,7 @@
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.75rem;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-weight: 700;
   letter-spacing: 1px;
   box-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
@@ -138,21 +147,23 @@
 }
 
 .editMetadataButton {
-  padding: 0.5rem 1rem;
-  background: rgba(255, 0, 255, 0.1);
-  border: 2px solid #ff00ff;
-  color: #ff00ff;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
+  background: transparent;
+  border: 2px solid var(--neon-green);
+  color: var(--neon-green);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 4px;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .editMetadataButton:hover {
-  background: rgba(255, 0, 255, 0.2);
-  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+  background: rgba(0, 255, 102, 0.2);
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
 }
 
 /* Edit Form */
@@ -168,14 +179,12 @@
 }
 
 .formLabel {
-  color: #00ffff;
+  color: var(--neon-blue);
   text-transform: uppercase;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   letter-spacing: 2px;
   margin-bottom: 0.5rem;
   text-shadow: 0 0 10px rgba(0, 221, 255, 0.5);
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
 }
 
 .checkboxLabel {
@@ -186,7 +195,7 @@
   text-transform: uppercase;
   font-size: 0.9rem;
   letter-spacing: 2px;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-weight: 600;
   cursor: pointer;
   margin-top: 0.5rem;
@@ -203,17 +212,17 @@
   background: rgba(20, 20, 40, 0.8);
   border: 2px solid rgba(0, 221, 255, 0.4);
   color: white;
-  padding: 0.875rem;
-  font-family: inherit;
-  font-size: 1.1rem;
-  border-radius: 6px;
+  padding: 0.75rem;
+  font-family: var(--retro-font);
+  font-size: 1rem;
+  border-radius: 4px;
   transition: all 0.3s ease;
 }
 
 .input:focus {
   outline: none;
-  border-color: #00ffff;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.4);
 }
 
 .editActions {
@@ -227,7 +236,7 @@
 .saveButton {
   padding: 0.75rem 2rem;
   border: 2px solid;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -237,46 +246,63 @@
 }
 
 .cancelButton {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.3);
-  color: #fff;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
 }
 
 .cancelButton:hover {
   background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .saveButton {
-  background: linear-gradient(135deg, #ff00ff 0%, #ff0080 100%);
-  border-color: #ff00ff;
-  color: white;
-  box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+  background: rgba(0, 221, 255, 0.2);
+  border: 2px solid var(--neon-blue);
+  color: var(--neon-blue);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.3);
 }
 
 .saveButton:hover {
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.7);
+  background: rgba(0, 221, 255, 0.3);
+  box-shadow: 0 0 25px rgba(0, 221, 255, 0.5);
   transform: translateY(-2px);
 }
 
 /* Aliases Section */
 .aliasesSection {
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(255, 0, 255, 0.4);
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(255, 0, 170, 0.4);
   border-radius: 8px;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 0 15px rgba(255, 0, 170, 0.2);
 }
 
 .sectionTitle {
-  color: #ff00ff;
+  color: var(--neon-pink);
   text-transform: uppercase;
-  font-size: 1.2rem;
   letter-spacing: 2px;
-  margin: 0;
-  text-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
-  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem 0;
+  text-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+  font-family: "Orbitron", sans-serif;
   font-weight: 700;
 }
 
@@ -287,21 +313,21 @@
 }
 
 .aliasInput {
-  flex: 1;
   background: rgba(20, 20, 40, 0.8);
   border: 2px solid rgba(0, 221, 255, 0.4);
   color: white;
-  padding: 0.875rem;
-  font-family: 'Orbitron', sans-serif;
+  padding: 0.75rem;
+  font-family: var(--retro-font);
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: 4px;
   transition: all 0.3s ease;
+  flex: 1;
 }
 
 .aliasInput:focus {
   outline: none;
-  border-color: #00ffff;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.4);
 }
 
 .aliasInput::placeholder {
@@ -309,22 +335,23 @@
 }
 
 .addButton {
+  background: transparent;
+  border: 2px solid var(--neon-green);
+  color: var(--neon-green);
   padding: 0.75rem 1.5rem;
-  background: rgba(0, 255, 255, 0.1);
-  border: 2px solid #00ffff;
-  color: #00ffff;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 4px;
-  font-size: 0.95rem;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .addButton:hover {
-  background: rgba(0, 255, 255, 0.2);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  background: rgba(0, 255, 102, 0.2);
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
 }
 
 /* Aliases List */
@@ -353,55 +380,54 @@
 }
 
 .aliasCard {
-  background: rgba(0, 0, 0, 0.6);
-  border: 2px solid rgba(0, 255, 255, 0.3);
+  background: rgba(20, 20, 40, 0.5);
+  border: 1px solid rgba(255, 0, 170, 0.3);
   border-radius: 6px;
-  padding: 1rem 1.25rem;
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   transition: all 0.3s ease;
 }
 
 .aliasCard:hover {
-  border-color: #00ffff;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-  transform: translateX(5px);
+  border-color: rgba(255, 0, 170, 0.5);
+  box-shadow: 0 0 15px rgba(255, 0, 170, 0.2);
+  transform: translateX(4px);
 }
 
 .aliasText {
   flex: 1;
   color: #fff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-weight: 600;
   font-size: 1.05rem;
 }
 
 .deleteButton {
-  padding: 0.5rem 1rem;
-  border: 2px solid #ff0080;
   background: transparent;
-  color: #ff0080;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
-  font-size: 0.85rem;
+  border: 2px solid rgba(255, 0, 0, 0.6);
+  color: rgba(255, 100, 100, 0.9);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 4px;
-  white-space: nowrap;
 }
 
 .deleteButton:hover {
-  background: rgba(255, 0, 128, 0.2);
-  box-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
+  background: rgba(255, 0, 0, 0.2);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
 }
 
 .emptyMessage {
   color: #888;
   text-align: center;
   padding: 2rem;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
 }
 
 /* Loading/Error states */
@@ -410,7 +436,7 @@
   text-align: center;
   padding: 4rem 2rem;
   color: #00ffff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
 }
 
 .spinner {
@@ -439,7 +465,7 @@
   background: rgba(255, 0, 0, 0.2);
   border: 2px solid #ff0000;
   color: #fff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-weight: 600;
   cursor: pointer;
   border-radius: 4px;

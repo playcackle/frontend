@@ -12,22 +12,45 @@
 .title {
   font-size: 3rem;
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--retro-font);
+  letter-spacing: 4px;
   text-transform: uppercase;
-  font-family: "Orbitron", sans-serif;
-  margin-bottom: 0.5rem;
+  margin: 0 0 1rem 0;
 }
 
 .neonText {
-  color: #00ffff;
-  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+  color: #fff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff;
+  animation: neonPulse 1.5s ease-in-out infinite alternate;
   display: block;
 }
 
 .neonTextPink {
-  color: #ff00ff;
-  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+  color: #fff;
+  text-shadow: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px #f0f, 0 0 40px #f0f;
+  animation: neonPulsePink 1.5s ease-in-out infinite alternate;
   display: block;
+}
+
+@keyframes neonPulse {
+  from {
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
+  }
+  to {
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff, 0 0 80px #0ff;
+  }
+}
+
+@keyframes neonPulsePink {
+  from {
+    text-shadow: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px #f0f;
+  }
+  to {
+    text-shadow: 0 0 10px #f0f, 0 0 20px #f0f, 0 0 40px #f0f, 0 0 80px #f0f;
+  }
 }
 
 .subtitle {
@@ -104,8 +127,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loadingContainer p {
@@ -134,17 +161,17 @@
 }
 
 .lobbyCard {
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(255, 0, 255, 0.3);
-  border-radius: 12px;
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(255, 0, 170, 0.4);
+  border-radius: 8px;
   padding: 1.5rem;
+  box-shadow: 0 0 15px rgba(255, 0, 170, 0.2);
   transition: all 0.3s ease;
-  box-shadow: 0 0 20px rgba(255, 0, 255, 0.1);
 }
 
 .lobbyCard:hover {
-  border-color: rgba(255, 0, 255, 0.6);
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+  border-color: rgba(255, 0, 170, 0.6);
+  box-shadow: 0 0 25px rgba(255, 0, 170, 0.4);
   transform: translateY(-2px);
 }
 
@@ -158,10 +185,13 @@
 }
 
 .lobbyTitle {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #00ffff;
-  text-shadow: 0 0 10px #00ffff;
+  font-size: 1.25rem;
+  color: rgba(0, 221, 255, 1);
+  text-shadow: 0 0 10px rgba(0, 221, 255, 0.5);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: var(--retro-font);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -220,36 +250,33 @@
 .configureButton,
 .resetButton {
   flex: 1;
+  background: transparent;
+  border: 2px solid rgba(0, 221, 255, 1);
+  color: rgba(0, 221, 255, 1);
   padding: 0.75rem 1rem;
-  border-radius: 6px;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-family: var(--retro-font);
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  border: none;
-}
-
-.configureButton {
-  background: linear-gradient(135deg, #00ffff, #0088ff);
-  color: #000;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+  border-radius: 4px;
+  font-weight: 600;
 }
 
 .configureButton:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+  background: rgba(0, 221, 255, 0.2);
+  box-shadow: 0 0 10px rgba(0, 221, 255, 0.4);
 }
 
 .resetButton {
-  background: linear-gradient(135deg, #ff0080, #ff4488);
-  color: white;
-  box-shadow: 0 0 15px rgba(255, 0, 128, 0.4);
+  border-color: rgba(255, 0, 0, 0.6);
+  color: rgba(255, 100, 100, 0.9);
 }
 
 .resetButton:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(255, 0, 128, 0.6);
+  background: rgba(255, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
 }
 
 /* Responsive */

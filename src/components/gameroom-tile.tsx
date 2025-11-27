@@ -1,17 +1,16 @@
 "use client";
 
+import { joinGameroom } from "@/actions/joinGameroom";
+import { gameRoomAtom } from "@/app/store/gameRoom";
 import { useSetAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { joinGameroom } from "../actions/joinGameroom";
-import { GameroomTile } from "../models/gameroom";
-import { gameRoomAtom } from "../store/gameRoom";
 import ErrorModal from "./error-modal";
 import styles from "./gameroom-tile.module.css";
 
 export type GameroomTileProps = {
-  gameroom: GameroomTile;
+  gameroom: any;
 };
 
 export default function GameroomTile(props: GameroomTileProps) {

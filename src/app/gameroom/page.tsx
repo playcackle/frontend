@@ -1,6 +1,6 @@
 "use client";
 
-import SoundEffects from "@/app/components/sound-effects";
+import SoundEffects from "@/components/sound-effects";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./gameroom.module.css";
 

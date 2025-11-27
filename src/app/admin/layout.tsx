@@ -1,57 +1,44 @@
-"use client";
+"use client"
 
-import { usePathname, useRouter } from "next/navigation";
-import styles from "./layout.module.css";
+import type React from "react"
+
+import { usePathname, useRouter } from "next/navigation"
+import styles from "./layout.module.css"
+import SynthwaveBackground from "@/components/synthwave-background"
+import Header from "@/components/header"
 
 export default function AdminLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const pathname = usePathname();
-  const router = useRouter();
+  const pathname = usePathname()
+  const router = useRouter()
 
   const navItems = [
     { path: "/admin/collections", label: "COLLECTIONS" },
     { path: "/admin/topics", label: "TOPICS" },
     { path: "/admin/lobbies", label: "GAMEROOMS" },
-  ];
+  ]
 
   return (
-    <div className={styles.adminContainer}>
-      <nav className={styles.sidebar}>
-        <div className={styles.sidebarHeader}>
-          <h1 className={styles.adminTitle}>
-            <span className={styles.neonText}>ADMIN</span>
-            <span className={styles.neonTextPink}>PANEL</span>
-          </h1>
-        </div>
+    <div className={styles.container}>
+      <SynthwaveBackground />
+      <Header />
 
-        <div className={styles.navItems}>
-          {navItems.map((item) => (
-            <button
-              key={item.path}
-              className={`${styles.navItem} ${
-                pathname.startsWith(item.path) ? styles.active : ""
-              }`}
-              onClick={() => router.push(item.path)}
-            >
-              <span className={styles.navLabel}>{item.label}</span>
-            </button>
-          ))}
-        </div>
-
-        <div className={styles.sidebarFooter}>
+      <nav className={styles.tabNav}>
+        {navItems.map((item) => (
           <button
-            className={styles.backButton}
-            onClick={() => router.push("/")}
+            key={item.path}
+            className={`${styles.tab} ${pathname.startsWith(item.path) ? styles.active : ""}`}
+            onClick={() => router.push(item.path)}
           >
-            ← BACK TO GAME
+            {item.label}
           </button>
-        </div>
+        ))}
       </nav>
 
       <main className={styles.mainContent}>{children}</main>
     </div>
-  );
+  )
 }

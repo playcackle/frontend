@@ -1,4 +1,5 @@
-import Header from "@/app/components/header";
+import Header from "@/components/header";
+import SynthwaveBackground from "@/components/synthwave-background";
 import { Progress, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import "animate.css";
@@ -6,7 +7,6 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import type React from "react";
 import { Suspense } from "react";
-import SynthwaveBackground from "./components/synthwave-background";
 import "./globals.css";
 import { Provider } from "./provider";
 

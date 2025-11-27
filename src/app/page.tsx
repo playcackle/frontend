@@ -1,7 +1,7 @@
-import GameroomTileComponent from "@/app/components/gameroom-tile";
+import { AuthButtons } from "@/components/auth-buttons";
+import GameroomTileComponent from "@/components/gameroom-tile";
+import SettingsControls from "@/components/settings-controls"; // Import the new component
 import { getServerSession } from "next-auth";
-import { AuthButtons } from "./components/auth-buttons";
-import SettingsControls from "./components/settings-controls"; // Import the new component
 import styles from "./page.module.css";
 
 export default async function Home() {
