@@ -158,6 +158,26 @@ export type HostSettingsUpdate = {
   urgency_interval_seconds?: number;
 };
 
+export type TopicUploadResult = {
+  topic_name: string;
+  topic_id: number;
+  slots_created: number;
+  aliases_created: number;
+};
+
+export type CSVUploadResponse = {
+  status: string;
+  message: string;
+  topics_created: number;
+  topics_updated: number;
+  total_slots_created: number;
+  total_aliases_created: number;
+  collection_id: number | null;
+  collection_name: string | null;
+  details: TopicUploadResult[];
+  errors: string[];
+};
+
 // ============================================================================
 // Collections API
 // ============================================================================
@@ -319,6 +339,32 @@ export const topicsApi = {
       const error = await res.json();
       throw new Error(error.detail || 'Failed to delete topic');
     }
+  },
+
+  /**
+   * Upload topics from a CSV file
+   */
+  async uploadCSV(
+    file: File,
+    collectionIds: number[],
+    updateExisting: boolean = false
+  ): Promise<CSVUploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('collection_ids', collectionIds.join(','));
+    formData.append('update_existing', updateExisting.toString());
+
+    const res = await fetch(`${API_BASE_URL}/admin/topics/upload-csv`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to upload CSV');
+    }
+
+    return res.json();
   },
 };
 
