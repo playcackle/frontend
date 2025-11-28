@@ -2,7 +2,17 @@
  * API client for admin CRUD operations
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_LOBBY_MANAGER_URL || 'http://localhost:8001';
+const DEFAULT_MANAGER_URL = "http://dummy:8001";
+
+const getApiBaseUrl = (): string => {
+  if (typeof window !== "undefined" && window.__ENV?.NEXT_PUBLIC_LOBBY_MANAGER_URL) {
+    return window.__ENV.NEXT_PUBLIC_LOBBY_MANAGER_URL;
+  }
+  return process.env.NEXT_PUBLIC_LOBBY_MANAGER_URL || DEFAULT_MANAGER_URL;
+};
+
+const apiFetch = (path: string, init?: RequestInit) =>
+  fetch(`${getApiBaseUrl()}${path}`, init);
 
 // ============================================================================
 // Types
@@ -190,7 +200,7 @@ export const collectionsApi = {
    * Get all collections
    */
   async getAll(): Promise<Collection[]> {
-    const res = await fetch(`${API_BASE_URL}/admin/collections`);
+    const res = await apiFetch(`/admin/collections`);
     if (!res.ok) throw new Error('Failed to fetch collections');
     return res.json();
   },
@@ -199,7 +209,7 @@ export const collectionsApi = {
    * Get a single collection with all topics
    */
   async getById(id: number): Promise<CollectionDetail> {
-    const res = await fetch(`${API_BASE_URL}/admin/collections/${id}`);
+    const res = await apiFetch(`/admin/collections/${id}`);
     if (!res.ok) throw new Error(`Failed to fetch collection ${id}`);
     return res.json();
   },
@@ -208,7 +218,7 @@ export const collectionsApi = {
    * Create a new collection
    */
   async create(data: CollectionCreate): Promise<Collection> {
-    const res = await fetch(`${API_BASE_URL}/admin/collections`, {
+    const res = await apiFetch(`/admin/collections`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -224,7 +234,7 @@ export const collectionsApi = {
    * Update a collection
    */
   async update(id: number, data: CollectionUpdate): Promise<Collection> {
-    const res = await fetch(`${API_BASE_URL}/admin/collections/${id}`, {
+    const res = await apiFetch(`/admin/collections/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -240,7 +250,7 @@ export const collectionsApi = {
    * Delete a collection
    */
   async delete(id: number): Promise<void> {
-    const res = await fetch(`${API_BASE_URL}/admin/collections/${id}`, {
+    const res = await apiFetch(`/admin/collections/${id}`, {
       method: 'DELETE',
     });
     if (!res.ok) {
@@ -253,7 +263,7 @@ export const collectionsApi = {
    * Add a topic to a collection
    */
   async addTopic(collectionId: number, topicId: number): Promise<CollectionDetail> {
-    const res = await fetch(`${API_BASE_URL}/admin/collections/${collectionId}/topics`, {
+    const res = await apiFetch(`/admin/collections/${collectionId}/topics`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ topic_id: topicId }),
@@ -266,7 +276,7 @@ export const collectionsApi = {
    * Remove a topic from a collection
    */
   async removeTopic(collectionId: number, topicId: number): Promise<void> {
-    const res = await fetch(`${API_BASE_URL}/admin/collections/${collectionId}/topics/${topicId}`, {
+    const res = await apiFetch(`/admin/collections/${collectionId}/topics/${topicId}`, {
       method: 'DELETE',
     });
     if (!res.ok) throw new Error('Failed to remove topic from collection');
@@ -283,9 +293,9 @@ export const topicsApi = {
    */
   async getAll(collectionId?: number): Promise<Topic[]> {
     const url = collectionId
-      ? `${API_BASE_URL}/admin/topics?collection_id=${collectionId}`
-      : `${API_BASE_URL}/admin/topics`;
-    const res = await fetch(url);
+      ? `/admin/topics?collection_id=${collectionId}`
+      : `/admin/topics`;
+    const res = await apiFetch(url);
     if (!res.ok) throw new Error('Failed to fetch topics');
     return res.json();
   },
@@ -294,7 +304,7 @@ export const topicsApi = {
    * Get a single topic with all slots
    */
   async getById(id: number): Promise<TopicDetail> {
-    const res = await fetch(`${API_BASE_URL}/admin/topics/${id}`);
+    const res = await apiFetch(`/admin/topics/${id}`);
     if (!res.ok) throw new Error(`Failed to fetch topic ${id}`);
     return res.json();
   },
@@ -303,7 +313,7 @@ export const topicsApi = {
    * Create a new topic
    */
   async create(data: TopicCreate): Promise<Topic> {
-    const res = await fetch(`${API_BASE_URL}/admin/topics`, {
+    const res = await apiFetch(`/admin/topics`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -319,7 +329,7 @@ export const topicsApi = {
    * Update a topic
    */
   async update(id: number, data: TopicUpdate): Promise<Topic> {
-    const res = await fetch(`${API_BASE_URL}/admin/topics/${id}`, {
+    const res = await apiFetch(`/admin/topics/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -335,7 +345,7 @@ export const topicsApi = {
    * Delete a topic
    */
   async delete(id: number): Promise<void> {
-    const res = await fetch(`${API_BASE_URL}/admin/topics/${id}`, {
+    const res = await apiFetch(`/admin/topics/${id}`, {
       method: 'DELETE',
     });
     if (!res.ok) {
@@ -367,7 +377,7 @@ export const topicsApi = {
 
     formData.append('update_existing', (options?.updateExisting ?? false).toString());
 
-    const res = await fetch(`${API_BASE_URL}/admin/upload-slots`, {
+    const res = await apiFetch(`/admin/upload-slots`, {
       method: 'POST',
       body: formData,
     });
@@ -391,7 +401,7 @@ export const slotsApi = {
    * Get all slots for a topic
    */
   async getByTopic(topicId: number): Promise<Slot[]> {
-    const res = await fetch(`${API_BASE_URL}/admin/topics/${topicId}/slots`);
+    const res = await apiFetch(`/admin/topics/${topicId}/slots`);
     if (!res.ok) throw new Error('Failed to fetch slots');
     return res.json();
   },
@@ -400,7 +410,7 @@ export const slotsApi = {
    * Get a single slot with all aliases
    */
   async getById(id: number): Promise<SlotDetail> {
-    const res = await fetch(`${API_BASE_URL}/admin/slots/${id}`);
+    const res = await apiFetch(`/admin/slots/${id}`);
     if (!res.ok) throw new Error(`Failed to fetch slot ${id}`);
     return res.json();
   },
@@ -409,7 +419,7 @@ export const slotsApi = {
    * Create a new slot
    */
   async create(topicId: number, data: SlotCreate): Promise<Slot> {
-    const res = await fetch(`${API_BASE_URL}/admin/topics/${topicId}/slots`, {
+    const res = await apiFetch(`/admin/topics/${topicId}/slots`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -425,7 +435,7 @@ export const slotsApi = {
    * Update a slot
    */
   async update(id: number, data: SlotUpdate): Promise<Slot> {
-    const res = await fetch(`${API_BASE_URL}/admin/slots/${id}`, {
+    const res = await apiFetch(`/admin/slots/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -441,7 +451,7 @@ export const slotsApi = {
    * Delete a slot
    */
   async delete(id: number): Promise<void> {
-    const res = await fetch(`${API_BASE_URL}/admin/slots/${id}`, {
+    const res = await apiFetch(`/admin/slots/${id}`, {
       method: 'DELETE',
     });
     if (!res.ok) {
@@ -460,7 +470,7 @@ export const aliasesApi = {
    * Get all aliases for a slot
    */
   async getBySlot(slotId: number): Promise<SlotAlias[]> {
-    const res = await fetch(`${API_BASE_URL}/admin/slots/${slotId}/aliases`);
+    const res = await apiFetch(`/admin/slots/${slotId}/aliases`);
     if (!res.ok) throw new Error('Failed to fetch aliases');
     return res.json();
   },
@@ -469,7 +479,7 @@ export const aliasesApi = {
    * Create a new alias
    */
   async create(slotId: number, data: SlotAliasCreate): Promise<SlotAlias> {
-    const res = await fetch(`${API_BASE_URL}/admin/slots/${slotId}/aliases`, {
+    const res = await apiFetch(`/admin/slots/${slotId}/aliases`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -485,7 +495,7 @@ export const aliasesApi = {
    * Delete an alias
    */
   async delete(aliasId: number): Promise<void> {
-    const res = await fetch(`${API_BASE_URL}/admin/slots/aliases/${aliasId}`, {
+    const res = await apiFetch(`/admin/slots/aliases/${aliasId}`, {
       method: 'DELETE',
     });
     if (!res.ok) {
@@ -504,7 +514,7 @@ export const lobbiesApi = {
    * Get all active lobbies
    */
   async getAll(): Promise<Lobby[]> {
-    const res = await fetch(`${API_BASE_URL}/admin/lobbies`);
+    const res = await apiFetch(`/admin/lobbies`);
     if (!res.ok) throw new Error('Failed to fetch lobbies');
     const data = await res.json();
     return data.lobbies;
@@ -514,7 +524,7 @@ export const lobbiesApi = {
    * Get a single lobby with configuration
    */
   async getById(lobbyId: string): Promise<Lobby> {
-    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}`);
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}`);
     if (!res.ok) throw new Error(`Failed to fetch lobby ${lobbyId}`);
     return res.json();
   },
@@ -526,7 +536,7 @@ export const lobbiesApi = {
     lobbyId: string,
     config: GameConfigurationParameters
   ): Promise<any> {
-    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/config`, {
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/config`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(config),
@@ -543,7 +553,7 @@ export const lobbiesApi = {
    */
   async changeCollection(lobbyId: string, collectionId: number): Promise<any> {
     const res = await fetch(
-      `${API_BASE_URL}/admin/lobbies/${lobbyId}/collection?collection_id=${collectionId}`,
+      `${getApiBaseUrl()}/admin/lobbies/${lobbyId}/collection?collection_id=${collectionId}`,
       {
         method: 'PUT',
       }
@@ -562,7 +572,7 @@ export const lobbiesApi = {
     lobbyId: string,
     update: LobbyConfigurationUpdate
   ): Promise<any> {
-    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/reconfigure`, {
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/reconfigure`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(update),
@@ -581,7 +591,7 @@ export const lobbiesApi = {
     lobbyId: string,
     update: LobbyCollectionUpdate
   ): Promise<any> {
-    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/change-collection`, {
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/change-collection`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(update),
@@ -597,7 +607,7 @@ export const lobbiesApi = {
    * Force reset a gameroom
    */
   async forceReset(lobbyId: string, reason?: string): Promise<any> {
-    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/force-reset`, {
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/force-reset`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ reason }),
@@ -613,7 +623,7 @@ export const lobbiesApi = {
    * Get live gameroom configuration
    */
   async getGameroomConfig(lobbyId: string): Promise<any> {
-    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/gameroom-config`);
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/gameroom-config`);
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.detail || 'Failed to get gameroom configuration');
@@ -631,7 +641,7 @@ export const hostSettingsApi = {
    * Get host settings for a gameroom
    */
   async get(lobbyId: string): Promise<HostSettings> {
-    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/host/settings`);
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/host/settings`);
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.detail || 'Failed to fetch host settings');
@@ -643,7 +653,7 @@ export const hostSettingsApi = {
    * Update host settings for a gameroom
    */
   async update(lobbyId: string, updates: HostSettingsUpdate): Promise<HostSettings> {
-    const res = await fetch(`${API_BASE_URL}/admin/lobbies/${lobbyId}/host/settings`, {
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/host/settings`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updates),
