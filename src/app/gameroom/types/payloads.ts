@@ -183,13 +183,15 @@ export type EventPayloadMap = {
   waiting_for_players: WaitingForPlayersPayload;
   game_start_cancelled: GameStartCancelledPayload;
   lobby_tick: LobbyTickPayload;
-  new_round_starting: NewRoundStartedPayload;
+  round_starting_soon: RoundStartinSoonPayload;
+  new_round_started: NewRoundStartedPayload;
   slot_snapped: SlotSnappedPayload;
   round_over: RoundOverPayload;
   break_starting: BreakStartingPayload;
   game_over: GameOverPayload;
   lobby_resetting_for_new_game: LobbyResettingForNewGamePayload;
   submission_feedback: SubmissionFeedbackPayload;
+  lobby_state_sync: LobbySyncPayload;
   submit_answer: any;
 };
 

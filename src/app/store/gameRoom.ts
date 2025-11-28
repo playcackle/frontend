@@ -1,4 +1,4 @@
-import { GameroomConnection } from "@/app/models/gameroom";
+import { LobbyJoinSuccess } from "@/actions/joinGameroom";
 import { atom } from "jotai";
 
-export const gameRoomAtom = atom<GameroomConnection | null>(null);
+export const gameRoomAtom = atom<LobbyJoinSuccess | null>(null);

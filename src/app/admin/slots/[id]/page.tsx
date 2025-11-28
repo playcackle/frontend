@@ -61,7 +61,7 @@ export default function SlotDetailPage() {
       await slotsApi.update(slotId, {
         canonical_text: canonicalText,
         prompt: prompt,
-        bot_bob_clue: bobClue || null,
+        bot_bob_clue: bobClue || undefined,
         is_rare: isRare,
       });
       setEditingSlot(false);

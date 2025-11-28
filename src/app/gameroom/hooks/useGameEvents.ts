@@ -6,6 +6,7 @@ import {
   RoundOverPayload,
   SlotSnappedPayload,
   SubmissionFeedbackPayload,
+  GameOverPayload,
 } from "../types/payloads";
 import { getRandomAttentionAnimation } from "../utils";
 import { useGameActions } from "./useGameActions";
@@ -80,7 +81,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     });
   });
 
-  const handleGameOverRef = useRef((data: any) => {
+  const handleGameOverRef = useRef((data: GameOverPayload) => {
     updateGameState({
       finalScore: data.final_scores,
     });
@@ -156,19 +157,27 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   }, [updateGameState, triggerCorrectAnswerEffects]);
 
   useEffect(() => {
-    onEvent("lobby_state_sync", (data) => handleLobbySyncRef.current(data));
-    onEvent("lobby_tick", (data) => handleLobbyTickRef.current(data));
-    onEvent("round_over", (data) => handleRoundOverRef.current(data));
+    onEvent("lobby_state_sync", (data: LobbySyncPayload) =>
+      handleLobbySyncRef.current(data)
+    );
+    onEvent("lobby_tick", (data: LobbyTickPayload) =>
+      handleLobbyTickRef.current(data)
+    );
+    onEvent("round_over", (data: RoundOverPayload) =>
+      handleRoundOverRef.current(data)
+    );
     onEvent("round_starting_soon", () => handleRoundStartingSoonRef.current());
-    onEvent("new_round_started", (data) =>
+    onEvent("new_round_started", (data: NewRoundStartedPayload) =>
       handleNewRoundStartedRef.current(data)
     );
-    onEvent("game_over", (data) => handleGameOverRef.current(data));
+    onEvent("game_over", (data: any) => handleGameOverRef.current(data));
     onEvent("lobby_resetting_for_new_game", () =>
       handleLobbyResettingRef.current()
     );
-    onEvent("slot_snapped", (data) => handleSlotSnappedRef.current(data));
-    onEvent("submission_feedback", (data) =>
+    onEvent("slot_snapped", (data: SlotSnappedPayload) =>
+      handleSlotSnappedRef.current(data)
+    );
+    onEvent("submission_feedback", (data: SubmissionFeedbackPayload) =>
       handleSubmissionFeedbackRef.current(data)
     );
   }, [onEvent]);

@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from "react";
 import type { BubbleAnswer } from "../components/answerChips/AnswerBubbles";
-import type { AnswerChip } from "../components/answerChips/AnswerChips";
 
 export const useAnswerBubbles = () => {
   const [bubbles, setBubbles] = useState<BubbleAnswer[]>([]);
@@ -10,11 +9,6 @@ export const useAnswerBubbles = () => {
   const addAnswerBubble = useCallback((text: string) => {
     const newBubble: BubbleAnswer = {
       id: `bubble-${Date.now()}-${Math.random()}`,
-      text,
-    };
-
-    const newChip: AnswerChip = {
-      id: `chip-${Date.now()}-${Math.random()}`,
       text,
     };
 

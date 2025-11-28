@@ -46,6 +46,11 @@ export const animationStateAtom = atom<AnimationState>({
   attentionAnimation: "",
   slotId: null,
   showGlitter: false,
+  nameFlash: false,
+  shake: false,
+  colorFlash: false,
+  zoomEffect: false,
+  rotateEffect: false,
   isBonus: false,
   playerColor: "",
 });
@@ -81,6 +86,11 @@ export const resetGameStateAtom = atom(null, (get, set) => {
     attentionAnimation: "",
     slotId: null,
     showGlitter: false,
+    nameFlash: false,
+    shake: false,
+    colorFlash: false,
+    zoomEffect: false,
+    rotateEffect: false,
     isBonus: false,
     playerColor: "",
   });

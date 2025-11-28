@@ -6,7 +6,7 @@ type JoinPayload = {
   joinBaseUrl?: string | null;
 };
 
-type LobbyJoinSuccess = {
+export type LobbyJoinSuccess = {
   player_id: string;
   token: string;
   game_ws_url: string;

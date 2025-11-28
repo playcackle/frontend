@@ -111,7 +111,7 @@ export default function ErrorModal({
               Go Home
             </Button>
 
-            <Dialog.Close asChild>
+            <Dialog.Close>
               <Button className={styles.closeButton} size="3">
                 <span className={styles.buttonIcon}>✕</span>
                 Close

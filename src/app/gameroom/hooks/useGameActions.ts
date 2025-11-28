@@ -5,6 +5,7 @@ import {
   resetGameStateAtom,
   updateAnimationStateAtom,
 } from "../store/gameAtoms";
+import type { GameEvent } from "../types/payloads";
 import { getRandomSuccessSound, playSound } from "../utils";
 
 export const useGameActions = () => {
@@ -159,7 +160,7 @@ export const useGameActions = () => {
 
   const submitAnswer = (
     answer: string,
-    sendEvent: (event: string, data: any) => void
+    sendEvent: (event: GameEvent, data: string) => void
   ) => {
     if (!answer.trim()) return;
     sendEvent("submit_answer", answer);

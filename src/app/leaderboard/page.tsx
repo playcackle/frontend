@@ -1,6 +1,6 @@
 "use client";
 
-import SynthwaveBackground from "@/app/components/synthwave-background";
+import SynthwaveBackground from "@/components/synthwave-background";
 import { Button } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
 import pageStyles from "../page.module.css";

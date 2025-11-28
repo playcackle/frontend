@@ -17,7 +17,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { EventPayloadMap, GameEvent } from "../types";
+import { EventPayloadMap, GameEvent } from "../types/payloads";
 import { debounce } from "../utils";
 
 type EventListener<T extends GameEvent> = (data: EventPayloadMap[T]) => void;

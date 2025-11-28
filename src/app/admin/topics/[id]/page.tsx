@@ -63,8 +63,8 @@ export default function TopicDetailPage() {
     try {
       await topicsApi.update(topicId, {
         name: topicName,
-        prompt: topicPrompt || null,
-        example_text: topicExample || null,
+        prompt: topicPrompt || undefined,
+        example_text: topicExample || undefined,
       });
       setEditingMetadata(false);
       loadData();
@@ -83,7 +83,7 @@ export default function TopicDetailPage() {
       await slotsApi.create(topicId, {
         canonical_text: newSlotCanonical,
         prompt: newSlotPrompt,
-        bot_bob_clue: newSlotBobClue || null,
+        bot_bob_clue: newSlotBobClue || undefined,
         is_rare: newSlotIsRare,
         topic_id: topicId,
       });
