@@ -2,28 +2,12 @@
  * API client for admin CRUD operations
  */
 
-const DEFAULT_MANAGER_URL = "http://dummy:8001";
-
-const getRuntimeEnv = () => {
-  if (typeof window !== "undefined" && window.__ENV) {
-    return window.__ENV;
-  }
-  if (typeof globalThis !== "undefined" && (globalThis as any).__ENV) {
-    return (globalThis as any).__ENV;
-  }
-  return undefined;
+const apiFetch = (path: string, init?: RequestInit) => {
+  const normalizedPath = path.startsWith("/admin")
+    ? path
+    : `/admin${path.startsWith("/") ? path : `/${path}`}`;
+  return fetch(`/api${normalizedPath}`, init);
 };
-
-const getApiBaseUrl = (): string => {
-  const runtimeEnv = getRuntimeEnv();
-  if (runtimeEnv?.NEXT_PUBLIC_LOBBY_MANAGER_URL) {
-    return runtimeEnv.NEXT_PUBLIC_LOBBY_MANAGER_URL;
-  }
-  return DEFAULT_MANAGER_URL;
-};
-
-const apiFetch = (path: string, init?: RequestInit) =>
-  fetch(`${getApiBaseUrl()}${path}`, init);
 
 // ============================================================================
 // Types
@@ -563,12 +547,9 @@ export const lobbiesApi = {
    * Change lobby collection in the database
    */
   async changeCollection(lobbyId: string, collectionId: number): Promise<any> {
-    const res = await fetch(
-      `${getApiBaseUrl()}/admin/lobbies/${lobbyId}/collection?collection_id=${collectionId}`,
-      {
-        method: 'PUT',
-      }
-    );
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/collection?collection_id=${collectionId}`, {
+      method: 'PUT',
+    });
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.detail || 'Failed to change lobby collection');

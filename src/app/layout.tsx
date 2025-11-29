@@ -5,7 +5,6 @@ import "@radix-ui/themes/styles.css";
 import "animate.css";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import Script from "next/script";
 import type React from "react";
 import { Suspense } from "react";
 import "./globals.css";
@@ -28,27 +27,8 @@ export default async function RootLayout({
 
   const isGameroom = pathname?.includes("gameroom");
   const isAdmin = pathname?.includes("/admin");
-  const runtimeEnv = {
-    NEXT_PUBLIC_LOBBY_MANAGER_URL:
-      process.env.NEXT_PUBLIC_LOBBY_MANAGER_URL ?? "",
-  };
-
-  if (typeof globalThis !== "undefined") {
-    (globalThis as any).__ENV = {
-      ...(globalThis as any).__ENV,
-      ...runtimeEnv,
-    };
-  }
-
   return (
     <html lang="en">
-      <head>
-        <Script id="runtime-env" strategy="beforeInteractive">
-          {`window.__ENV = Object.assign(window.__ENV || {}, ${JSON.stringify(
-            runtimeEnv
-          )});`}
-        </Script>
-      </head>
       <body
         style={{
           backgroundColor: "#0a0a1f",
