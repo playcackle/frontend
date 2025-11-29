@@ -19,12 +19,15 @@ const buildTargetUrl = (segments: string[], search: string) => {
   return `${BACKEND_BASE_URL}/admin${suffix}${search}`;
 };
 
+const HOP_BY_HOP_HEADERS = ["connection", "proxy-connection", "keep-alive", "upgrade", "transfer-encoding"];
+
 const forwardRequest = async (req: NextRequest, context: RouteContext) => {
   const segments = await resolvePathSegments(context);
   const targetUrl = buildTargetUrl(segments, req.nextUrl.search);
 
   const headers = new Headers(req.headers);
   headers.set("host", new URL(BACKEND_BASE_URL).host);
+  HOP_BY_HOP_HEADERS.forEach((header) => headers.delete(header));
   headers.delete("content-length");
 
   const init: RequestInit = {
