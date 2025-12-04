@@ -1,10 +1,10 @@
 .container {
-  min-height: 90vh;
   position: relative;
   overflow-x: hidden;
   color: white;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .main {
@@ -19,6 +19,7 @@
   flex: 1;
   overflow-y: auto;
   box-sizing: border-box;
+  min-height: 0;
 }
 
 .gameTitle {
@@ -75,7 +76,7 @@
   direction: row;
   justify-content: center;
   gap: 1rem;
-  height: 105px; /* Reduced height */
+  max-height: 105px; /* Reduced height */
 }
 
 .statsTile {
@@ -110,8 +111,8 @@
   backdrop-filter: blur(5px);
   display: flex;
   flex-direction: column;
-  height: 100%;
   overflow: hidden;
+  min-height: 0;
 }
 
 .statsValue {
@@ -161,6 +162,7 @@
   padding: 0.25rem 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 0, 170, 0.5) transparent;
+  min-height: 0;
 }
 
 .ingameLeaderboard::-webkit-scrollbar {
@@ -391,6 +393,7 @@
   display: grid;
   grid-template-columns: 4fr 3fr 2fr;
   gap: 1rem;
+  min-height: 0;
 }
 
 .slotContainer {
@@ -401,6 +404,7 @@
   box-shadow: 0 0 10px var(--neon-pink);
   border: 1px solid var(--neon-pink);
   backdrop-filter: blur(5px);
+  min-height: 0;
 }
 
 /* Update the slots grid to 2x5 layout (2 rows, 5 columns) */
@@ -410,6 +414,7 @@
   grid-template-rows: repeat(2, auto); /* 2 rows */
   gap: 1.5rem; /* Increased gap for larger tiles */
   width: 100%;
+  min-height: 0;
 }
 
 /* New styles for the answered content with correct answer and player badge */
@@ -620,10 +625,11 @@
   aspect-ratio: 1 / 0.8; /* Maintained aspect ratio for horizontal layout */
   position: relative;
   overflow: hidden;
-  min-height: 60px; /* Increased minimum height */
-  max-height: 100px; /* Increased maximum height */
-  opacity: 1;
+  min-height: 0;
   width: 100%;
+  height: 100%;
+  opacity: 1;
+  aspect-ratio: 1 / 0.8; /* Maintained aspect ratio for horizontal layout */
 }
 
 .slotTile:hover:not(.answered) {
@@ -673,7 +679,6 @@
 
 /* Updated: Messages container in chat position */
 .unifiedMessagesContainer {
-  height: 600px; /* Taller than original */
   background-color: rgba(20, 20, 40, 0.7);
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(183, 0, 255, 0.5);
@@ -682,6 +687,8 @@
   flex-direction: column;
   transition: all 0.3s ease;
   margin-left: 4px;
+  min-height: 0;
+  max-height: 60vh;
 }
 
 /* Input form positioned where original answer form was */
@@ -1260,7 +1267,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  max-height: 520px; /* Increased for taller container */
   scroll-behavior: smooth;
   min-height: 0;
   scrollbar-width: thin;
