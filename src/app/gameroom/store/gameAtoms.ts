@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { ChatMessageData } from "../types/payloads";
-import { AnimationState, GameState, Slot } from "../types/state";
+import { AnimationState, GameState } from "../types/state";
 
 // Unified message type for combining chat and answer attempts
 export type UnifiedMessage = ChatMessageData & {
@@ -37,7 +37,9 @@ export const gameStateAtom = atom<GameState>(initGameState);
 // Derived atoms - allows components to subscribe to only specific pieces of state
 // This prevents unnecessary re-renders when unrelated state changes
 export const playerCountAtom = atom((get) => get(gameStateAtom).playerCount);
-export const timeRemainingAtom = atom((get) => get(gameStateAtom).timeRemaining);
+export const timeRemainingAtom = atom(
+  (get) => get(gameStateAtom).timeRemaining
+);
 export const roundNameAtom = atom((get) => get(gameStateAtom).roundName);
 export const roundPromptAtom = atom((get) => get(gameStateAtom).roundPrompt);
 export const roundExampleAtom = atom((get) => get(gameStateAtom).roundExample);
@@ -50,7 +52,9 @@ export const slotsAtom = atom((get) => get(gameStateAtom).slots);
 export const scoresAtom = atom((get) => get(gameStateAtom).scores);
 export const accoladesAtom = atom((get) => get(gameStateAtom).accolades);
 export const finalScoreAtom = atom((get) => get(gameStateAtom).finalScore);
-export const showCountDownAtom = atom((get) => get(gameStateAtom).showCountDown);
+export const showCountDownAtom = atom(
+  (get) => get(gameStateAtom).showCountDown
+);
 
 export const answerAtom = atom<string>("");
 
