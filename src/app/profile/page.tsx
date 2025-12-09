@@ -33,20 +33,18 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  }, [session?.user?.id]);
+  }, [user?.id]);
 
   useEffect(() => {
-    console.log("Profile page effect:", { status, userId: session?.user?.id });
-
-    if (status === "unauthenticated") {
+    if (!authLoading && !user) {
       router.push("/login");
       return;
     }
 
-    if (status === "authenticated" && session?.user?.id) {
+    if (user?.id) {
       loadProfile();
     }
-  }, [status, session, router, loadProfile]);
+  }, [authLoading, user?.id, router, loadProfile]);
 
   console.log("Profile page render:", { loading, error, hasProfile: !!profile });
 

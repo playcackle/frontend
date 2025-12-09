@@ -70,7 +70,7 @@ export default function UnifiedMessages() {
               className={`${styles.unifiedMessage} ${getMessageTypeClass(
                 msg.message_type
               )} ${
-                msg.player_id === session?.user.id ? styles.ownMessage : ""
+                msg.player_id === user?.id ? styles.ownMessage : ""
               }`}
             >
               <Flex direction="row" gap="2" align="center">

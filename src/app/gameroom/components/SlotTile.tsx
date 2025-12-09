@@ -44,14 +44,14 @@ const SlotTile: React.FC<SlotTileProps> = ({ slot, className }) => {
   const displayState = useMemo(() => {
     const shouldShowContent = slot.is_snapped;
     const shouldShowAttention =
-      slot.is_snapped && slot.snapped_by_player_id === data?.user.id;
+      slot.is_snapped && slot.snapped_by_player_id === user?.id;
 
     return {
       shouldShowContent,
       shouldShowAttention,
       roomColor: slot.is_snapped ? "var(--neon-purple)" : "var(--neon-pink)",
     };
-  }, [slot.is_snapped, slot.snapped_by_player_id, data?.user.id]);
+  }, [slot.is_snapped, slot.snapped_by_player_id, user?.id]);
 
   const tileClassNames = useMemo(
     () =>
