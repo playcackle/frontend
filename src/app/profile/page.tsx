@@ -1,30 +1,30 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useUser } from "@/hooks/useUser";
 import { useEffect, useState, useCallback } from "react";
 import { playersApi, type PlayerProfileStats } from "@/lib/api/players";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading } = useUser();
   const router = useRouter();
   const [profile, setProfile] = useState<PlayerProfileStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const loadProfile = useCallback(async () => {
-    if (!session?.user?.id) {
+    if (!user?.id) {
       console.log("loadProfile: No user ID");
       return;
     }
 
-    console.log("loadProfile: Starting for user", session.user.id);
+    console.log("loadProfile: Starting for user", user.id);
 
     try {
       setLoading(true);
       setError(null);
-      const data = await playersApi.getProfile(session.user.id);
+      const data = await playersApi.getProfile(user.id);
       console.log("loadProfile: Received data", data);
       setProfile(data);
     } catch (err) {

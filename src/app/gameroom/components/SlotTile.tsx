@@ -1,7 +1,7 @@
 "use client";
 
 import { useAtomValue } from "jotai";
-import { useSession } from "next-auth/react";
+import { useUser } from "@/hooks/useUser";
 import React, { useMemo, useRef } from "react";
 import styles from "../gameroom.module.css";
 import { animationStateAtom } from "../store/gameAtoms";
@@ -16,7 +16,7 @@ interface SlotTileProps {
 }
 
 const SlotTile: React.FC<SlotTileProps> = ({ slot, className }) => {
-  const { data } = useSession();
+  const { user } = useUser();
   const animationState = useAtomValue(animationStateAtom);
 
   const hasAnimated = useRef(false);
