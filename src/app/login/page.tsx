@@ -5,6 +5,7 @@ import { AtSign, Lock } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import styles from "../login/auth.module.css";
 
 export default function LoginPage() {
@@ -20,17 +21,19 @@ export default function LoginPage() {
     let isMounted = true;
 
     // If already signed in (e.g., email link), bounce to home
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
       if (!isMounted) return;
-      if (user) {
+      if (data.user) {
         router.replace("/");
       }
-    });
+    };
+    checkUser();
 
     // Redirect as soon as Supabase reports SIGNED_IN
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
+    } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       if (!isMounted) return;
       if (event === "SIGNED_IN") {
         router.replace("/");
