@@ -19,7 +19,7 @@ export default function RegisterPage() {
   const [usernameError, setUsernameError] = useState("");
   const router = useRouter();
   const ref = useRef<HTMLFormElement>(null);
-  const usernameCheckTimeout = useRef<NodeJS.Timeout>();
+  const usernameCheckTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Real-time username validation
   const checkUsernameAvailability = async (username: string) => {
