@@ -14,7 +14,6 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [warning, setWarning] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const ref = useRef<HTMLFormElement>(null);
@@ -22,7 +21,6 @@ export default function RegisterPage() {
   const handleSubmit = async (formData: FormData) => {
     setError(""); // Clear previous errors
     setSuccess("");
-    setWarning("");
     setLoading(true);
 
     try {
@@ -36,9 +34,6 @@ export default function RegisterPage() {
       if (result?.message) {
         // Email confirmation required
         setSuccess(result.message);
-        if (result?.warning) {
-          setWarning(result.warning);
-        }
         setName("");
         setEmail("");
         setPassword("");
@@ -97,21 +92,6 @@ export default function RegisterPage() {
             }}
           >
             ✅ {success}
-          </div>
-        )}
-
-        {warning && (
-          <div
-            style={{
-              color: "#ffb400",
-              backgroundColor: "rgba(255, 180, 0, 0.1)",
-              padding: "10px",
-              borderRadius: "5px",
-              marginBottom: "10px",
-              border: "1px solid #ffb400",
-            }}
-          >
-            ⚠️ {warning}
           </div>
         )}
 
