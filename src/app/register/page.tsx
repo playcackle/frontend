@@ -15,7 +15,9 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+  const [usernameStatus, setUsernameStatus] = useState<
+    "idle" | "checking" | "available" | "taken"
+  >("idle");
   const [usernameError, setUsernameError] = useState("");
   const router = useRouter();
   const ref = useRef<HTMLFormElement>(null);
@@ -39,8 +41,11 @@ export default function RegisterPage() {
     setUsernameError("");
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_LOBBY_MANAGER_URL || "http://localhost:8001";
-      const response = await fetch(`${backendUrl}/players/check-username/${encodeURIComponent(username)}`);
+      const backendUrl =
+        process.env.NEXT_PUBLIC_LOBBY_MANAGER_URL || "http://localhost:8001";
+      const response = await fetch(
+        `${backendUrl}/players/check-username/${encodeURIComponent(username)}`
+      );
 
       if (response.ok) {
         setUsernameStatus("available");
@@ -57,7 +62,9 @@ export default function RegisterPage() {
     } catch (err) {
       console.error("Error checking username:", err);
       setUsernameStatus("idle");
-      setUsernameError("Could not connect to server. Please check your connection.");
+      setUsernameError(
+        "Could not connect to server. Please check your connection."
+      );
     }
   };
 
@@ -101,17 +108,21 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_LOBBY_MANAGER_URL || "http://localhost:8001";
+      const backendUrl =
+        process.env.NEXT_PUBLIC_LOBBY_MANAGER_URL || "http://localhost:8001";
 
       // Pre-flight check: Verify both username and email are available
-      const checkResponse = await fetch(`${backendUrl}/players/check-availability`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: formData.get("name"),
-          email: formData.get("email")
-        })
-      });
+      const checkResponse = await fetch(
+        `${backendUrl}/players/check-availability`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: formData.get("name"),
+            email: formData.get("email"),
+          }),
+        }
+      );
 
       if (!checkResponse.ok) {
         const errorData = await checkResponse.json().catch(() => ({}));
@@ -158,10 +169,9 @@ export default function RegisterPage() {
         suppressHydrationWarning
       >
         <h1 className={styles.title}>
-          <span className={styles.neonText}>REG</span>
-          <span className={styles.neonTextPink}>ISTER</span>
+          <span className={styles.neonText}>So, a new chall</span>
+          <span className={styles.neonTextPink}>enger? Cute.</span>
         </h1>
-        <p style={{ color: "white" }}>So, a new challenger? Cute.</p>
 
         {error && (
           <div
@@ -217,28 +227,40 @@ export default function RegisterPage() {
                 maxLength={30}
                 style={{
                   borderColor:
-                    usernameStatus === "taken" ? "#ff0055" :
-                    usernameStatus === "available" ? "#00ff88" :
-                    undefined
+                    usernameStatus === "taken"
+                      ? "#ff0055"
+                      : usernameStatus === "available"
+                      ? "#00ff88"
+                      : undefined,
                 }}
               />
               {usernameStatus === "checking" && (
-                <span style={{ fontSize: "12px", color: "#888", marginLeft: "8px" }}>
+                <span
+                  style={{ fontSize: "12px", color: "#888", marginLeft: "8px" }}
+                >
                   Checking...
                 </span>
               )}
               {usernameStatus === "available" && (
-                <span style={{ fontSize: "12px", color: "#00ff88", marginLeft: "8px" }}>
+                <span
+                  style={{
+                    fontSize: "12px",
+                    color: "#00ff88",
+                    marginLeft: "8px",
+                  }}
+                >
                   ✓ Available
                 </span>
               )}
             </div>
             {usernameError && (
-              <div style={{
-                color: "#ff0055",
-                fontSize: "12px",
-                marginTop: "4px"
-              }}>
+              <div
+                style={{
+                  color: "#ff0055",
+                  fontSize: "12px",
+                  marginTop: "4px",
+                }}
+              >
                 {usernameError}
               </div>
             )}

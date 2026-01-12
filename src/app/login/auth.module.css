@@ -18,6 +18,8 @@
   letter-spacing: 4px;
   text-transform: uppercase;
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .neonText {
