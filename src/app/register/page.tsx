@@ -68,7 +68,7 @@ export default function RegisterPage() {
           <span className={styles.neonText}>REG</span>
           <span className={styles.neonTextPink}>ISTER</span>
         </h1>
-        <p>So, a new challenger? Cute.</p>
+        <p style={{ color: "white" }}>So, a new challenger? Cute.</p>
 
         {error && (
           <div
