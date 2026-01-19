@@ -258,3 +258,10 @@
     padding: 0.1rem 0.2rem;
   }
 }
+
+.trophyIcon {
+  color: #ffd700;
+  filter: drop-shadow(0 0 6px #ffd700);
+  vertical-align: middle;
+  margin-right: 2px;
+}
