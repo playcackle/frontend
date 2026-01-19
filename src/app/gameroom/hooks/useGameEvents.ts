@@ -85,7 +85,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const handleGameOverRef = useRef((data: GameOverPayload) => {
     updateGameState({
       finalScore: data.final_scores,
-      scores: data.final_scores,
       isPostGameShowcase: true,
       playerAccolades: data.player_accolades ?? [],
       showCountDown: false,
