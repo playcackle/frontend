@@ -2,7 +2,9 @@
   background-color: rgba(20, 20, 40, 0.8);
   border-radius: 8px;
   padding: clamp(0.5rem, 1.5vh, 1rem);
-  box-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink),
+  box-shadow:
+    0 0 5px var(--neon-pink),
+    0 0 10px var(--neon-pink),
     inset 0 0 5px rgba(255, 0, 150, 0.3);
   border: 1px solid rgba(255, 0, 150, 0.3);
   height: 100%;
@@ -43,7 +45,8 @@
   /* Added slide-in animation */
   transform: translateX(-100%);
   opacity: 0;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+  transition:
+    transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     opacity 0.4s ease;
 }
 
@@ -58,19 +61,22 @@
   opacity: 1;
 }
 
-.answerItem.rareAnswer {
-  border-left: 3px solid #b744ff;
-  background-color: rgba(183, 68, 255, 0.1);
+/* Non-answered questions - pink/default */
+.answerItem:not(.answeredAnswer) {
+  border-left: 3px solid var(--neon-pink);
+  background-color: rgba(10, 10, 30, 0.5);
 }
 
-.answerItem.rareAnswer .questionNumber {
-  color: #b744ff;
+.answerItem:not(.answeredAnswer) .questionNumber {
+  color: var(--neon-pink);
 }
 
-.answerItem.rareAnswer .answerText {
-  text-shadow: 0 0 5px rgba(183, 68, 255, 0.5);
+.answerItem:not(.answeredAnswer) .answerText {
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 0 5px rgba(255, 0, 150, 0.3);
 }
 
+/* Answered questions - green */
 .answerItem.answeredAnswer {
   border-left: 3px solid #00ff88;
   background-color: rgba(0, 255, 136, 0.15);
@@ -81,7 +87,27 @@
 }
 
 .answerItem.answeredAnswer .answerText {
+  color: white;
   text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);
+}
+
+/* Rare answers - purple (overrides both answered and non-answered) */
+.answerItem.rareAnswer {
+  border-left: 3px solid #b744ff !important;
+  background-color: rgba(183, 68, 255, 0.15) !important;
+}
+
+.answerItem.rareAnswer .questionNumber {
+  color: #b744ff !important;
+}
+
+.answerItem.rareAnswer .answerText {
+  text-shadow: 0 0 5px rgba(183, 68, 255, 0.5) !important;
+}
+
+/* Rare + answered gets a special glow */
+.answerItem.rareAnswer.answeredAnswer {
+  box-shadow: 0 0 8px rgba(183, 68, 255, 0.4);
 }
 
 .questionNumber {
