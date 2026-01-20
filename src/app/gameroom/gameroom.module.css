@@ -27,7 +27,9 @@
   font-size: 2rem;
   margin-bottom: 0.5rem;
   color: white;
-  text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+  text-shadow:
+    0 0 10px var(--neon-blue),
+    0 0 20px var(--neon-blue);
   font-family: var(--retro-font);
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -38,7 +40,8 @@
   display: block;
   font-size: 1.8rem;
   color: white;
-  text-shadow: 0 0 10px var(--room-color, var(--neon-pink)),
+  text-shadow:
+    0 0 10px var(--room-color, var(--neon-pink)),
     0 0 20px var(--room-color, var(--neon-pink));
   font-family: var(--retro-font);
   line-height: 1.4;
@@ -144,7 +147,9 @@
     text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
   }
   50% {
-    text-shadow: 0 0 20px rgba(255, 204, 0, 1), 0 0 30px rgba(255, 204, 0, 0.7);
+    text-shadow:
+      0 0 20px rgba(255, 204, 0, 1),
+      0 0 30px rgba(255, 204, 0, 0.7);
   }
   100% {
     text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
@@ -344,7 +349,9 @@
   font-weight: bold;
   color: white;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 0 5px rgba(0, 0, 0, 0.5),
+    inset 0 0 10px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
   position: relative;
   overflow: hidden;
@@ -367,7 +374,8 @@
 
 .leaderboardItem:hover .playerAvatar {
   transform: scale(1.1);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3),
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.3),
     inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -443,7 +451,9 @@
   font-size: 0.85rem; /* Increased from 0.75rem for better visibility */
   font-weight: bold;
   color: white;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow for depth */
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.7),
+    0 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow for depth */
   font-family: var(--retro-font);
   max-width: 100%;
   overflow: hidden;
@@ -503,8 +513,10 @@
   border-radius: 16px;
   padding: 0.4rem 0.7rem; /* Slightly larger padding */
   gap: 0.4rem;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
-    inset 0 0 15px rgba(255, 255, 255, 0.15), 0 4px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow for depth */
+  box-shadow:
+    0 0 20px rgba(255, 255, 255, 0.5),
+    inset 0 0 15px rgba(255, 255, 255, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow for depth */
   border: 2px solid rgba(255, 255, 255, 0.4); /* Slightly more opaque border */
   position: relative;
   margin-top: 0.5rem;
@@ -738,18 +750,24 @@
   25% {
     transform: scale(1.15) rotate(2deg);
     filter: brightness(2) saturate(1.5);
-    box-shadow: 0 0 40px var(--neon-green), 0 0 80px var(--neon-green);
+    box-shadow:
+      0 0 40px var(--neon-green),
+      0 0 80px var(--neon-green);
   }
   50% {
     transform: scale(1.2) rotate(-1deg);
     filter: brightness(2.5) saturate(2);
-    box-shadow: 0 0 60px var(--neon-green), 0 0 120px var(--neon-green),
+    box-shadow:
+      0 0 60px var(--neon-green),
+      0 0 120px var(--neon-green),
       0 0 180px var(--neon-green);
   }
   75% {
     transform: scale(1.1) rotate(1deg);
     filter: brightness(2) saturate(1.5);
-    box-shadow: 0 0 40px var(--neon-green), 0 0 80px var(--neon-green);
+    box-shadow:
+      0 0 40px var(--neon-green),
+      0 0 80px var(--neon-green);
   }
   100% {
     transform: scale(1);
@@ -767,18 +785,24 @@
   25% {
     transform: scale(1.2) rotate(-2deg);
     filter: brightness(2.5) saturate(2);
-    box-shadow: 0 0 50px var(--neon-purple), 0 0 100px var(--neon-purple);
+    box-shadow:
+      0 0 50px var(--neon-purple),
+      0 0 100px var(--neon-purple);
   }
   50% {
     transform: scale(1.25) rotate(1deg);
     filter: brightness(3) saturate(2.5);
-    box-shadow: 0 0 80px var(--neon-purple), 0 0 160px var(--neon-purple),
+    box-shadow:
+      0 0 80px var(--neon-purple),
+      0 0 160px var(--neon-purple),
       0 0 240px var(--neon-purple);
   }
   75% {
     transform: scale(1.15) rotate(-1deg);
     filter: brightness(2.5) saturate(2);
-    box-shadow: 0 0 50px var(--neon-purple), 0 0 100px var(--neon-purple);
+    box-shadow:
+      0 0 50px var(--neon-purple),
+      0 0 100px var(--neon-purple);
   }
   100% {
     transform: scale(1);
@@ -788,12 +812,16 @@
 }
 
 .correctPulse {
-  animation: pulse 0.8s ease-in-out 3, screenShake 0.4s ease-in-out 2;
+  animation:
+    pulse 0.8s ease-in-out 3,
+    screenShake 0.4s ease-in-out 2;
   z-index: 10;
 }
 
 .bonusTile.correctPulse {
-  animation: pulsePurple 0.8s ease-in-out 3, screenShake 0.4s ease-in-out 2;
+  animation:
+    pulsePurple 0.8s ease-in-out 3,
+    screenShake 0.4s ease-in-out 2;
   z-index: 10;
 }
 
@@ -1094,7 +1122,9 @@
   height: 12px;
   border-radius: 50%;
   background: radial-gradient(circle, var(--neon-green) 0%, transparent 70%);
-  box-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+  box-shadow:
+    0 0 10px var(--neon-green),
+    0 0 20px var(--neon-green);
   animation: particleAnimation 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
     forwards;
 }
@@ -1209,10 +1239,14 @@
 
 @keyframes bonusGlow {
   0% {
-    box-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple);
+    box-shadow:
+      0 0 10px var(--neon-purple),
+      0 0 20px var(--neon-purple);
   }
   100% {
-    box-shadow: 0 0 20px var(--neon-purple), 0 0 40px var(--neon-purple),
+    box-shadow:
+      0 0 20px var(--neon-purple),
+      0 0 40px var(--neon-purple),
       0 0 60px var(--neon-purple);
   }
 }
@@ -1258,7 +1292,9 @@
     rgba(183, 0, 255, 1) 0%,
     rgba(0, 221, 255, 0.8) 100%
   );
-  box-shadow: 0 0 15px rgba(183, 0, 255, 0.8), 0 0 20px rgba(0, 221, 255, 0.5);
+  box-shadow:
+    0 0 15px rgba(183, 0, 255, 0.8),
+    0 0 20px rgba(0, 221, 255, 0.5);
 }
 
 .messagesEmpty {
@@ -1345,11 +1381,11 @@
   border-top: 1px solid rgba(183, 0, 255, 0.3);
   transition: border-color 0.3s ease;
 }
-
 .unifiedInput {
   flex: 1;
   padding: 1rem;
   border-radius: 4px;
+  border: 2px solid transparent;
   border-image: linear-gradient(135deg, #b700ff, #00ddff) 1;
   background-color: rgba(0, 0, 0, 0.3);
   color: white;
@@ -1359,6 +1395,7 @@
 }
 
 .unifiedInput::before {
+  content: "";
   position: absolute;
   top: -2px;
   left: -2px;
@@ -1374,45 +1411,69 @@
 }
 
 .unifiedInput.answerMode {
-  border-color: rgba(0, 255, 102, 0.3);
+  border-image: linear-gradient(135deg, #b700ff, #3b82f6) 1;
   font-size: 1.1rem;
   font-family: var(--retro-font);
 }
 
 .unifiedInput.chatMode {
-  border-color: rgba(183, 0, 255, 0.3);
+  border-image: linear-gradient(135deg, #b700ff, #00ddff) 1;
 }
 
 .unifiedInput:focus {
   outline: none;
-  box-shadow: 0 0 15px rgba(183, 0, 255, 0.7), 0 0 30px rgba(183, 0, 255, 0.4);
-  border-color: rgba(183, 0, 255, 0.8);
+  box-shadow:
+    0 0 15px rgba(183, 0, 255, 0.7),
+    0 0 30px rgba(59, 130, 246, 0.4);
+  border-image: linear-gradient(135deg, #b700ff, #00ddff) 1;
   animation: inputFocusPulse 2s ease-in-out infinite;
   caret-color: #b700ff;
 }
 
 .unifiedInput.answerMode:focus {
-  box-shadow: 0 0 15px rgba(0, 255, 102, 0.7), 0 0 30px rgba(0, 255, 102, 0.4);
-  border-color: rgba(0, 255, 102, 0.8);
-  animation: inputFocusPulseGreen 2s ease-in-out infinite;
-  caret-color: #00ff66;
+  box-shadow:
+    0 0 15px rgba(183, 0, 255, 0.7),
+    0 0 30px rgba(59, 130, 246, 0.4);
+  border-image: linear-gradient(135deg, #b700ff, #3b82f6) 1;
+  animation: inputFocusPulsePurpleBlue 2s ease-in-out infinite;
+  caret-color: #7c3aed;
 }
 
 @keyframes inputFocusPulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(183, 0, 255, 0.7), 0 0 30px rgba(183, 0, 255, 0.4);
+  0%,
+  100% {
+    box-shadow:
+      0 0 15px rgba(183, 0, 255, 0.7),
+      0 0 30px rgba(0, 221, 255, 0.4);
   }
   50% {
-    box-shadow: 0 0 25px rgba(183, 0, 255, 0.9), 0 0 50px rgba(183, 0, 255, 0.6);
+    box-shadow:
+      0 0 25px rgba(183, 0, 255, 0.9),
+      0 0 50px rgba(0, 221, 255, 0.6);
   }
 }
 
-@keyframes inputFocusPulseGreen {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(0, 255, 102, 0.7), 0 0 30px rgba(0, 255, 102, 0.4);
+@keyframes inputFocusPulsePurpleBlue {
+  0%,
+  100% {
+    box-shadow:
+      0 0 15px rgba(183, 0, 255, 0.7),
+      0 0 30px rgba(59, 130, 246, 0.4);
   }
   50% {
-    box-shadow: 0 0 25px rgba(0, 255, 102, 0.9), 0 0 50px rgba(0, 255, 102, 0.6);
+    box-shadow:
+      0 0 25px rgba(183, 0, 255, 0.9),
+      0 0 50px rgba(59, 130, 246, 0.6);
+  }
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
 }
 
