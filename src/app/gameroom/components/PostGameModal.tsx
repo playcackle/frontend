@@ -64,7 +64,36 @@ export default function PostgameAccolades({
   const [topAccolades, setTopAccolades] = useState<TopAccolade[]>(
     getTopAccolades(accolades),
   );
-  const accoladesLengthRef = useRef(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const accoladesRef = useRef<TopAccolade[]>([]);
+
+  const goToNextSlide = useCallback(() => {
+    const total = accoladesRef.current.length;
+    setCurrentSlide((prev) => {
+      if (prev + 1 >= total) {
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+        setTimeout(() => {
+          onComplete?.();
+        }, 1000);
+        return prev;
+      }
+      return prev + 1;
+    });
+    setIsAnimating(false);
+    setTimeout(() => setIsAnimating(true), 50);
+  }, [onComplete]);
+
+  const goToPrevSlide = useCallback(() => {
+    setCurrentSlide((prev) => {
+      if (prev <= 0) return prev;
+      return prev - 1;
+    });
+    setIsAnimating(false);
+    setTimeout(() => setIsAnimating(true), 50);
+  }, []);
 
   const fireConfetti = useCallback(() => {
     const duration = 3000;
@@ -106,8 +135,8 @@ export default function PostgameAccolades({
   useEffect(() => {
     if (isOpen && accolades.length > 0) {
       const generatedAccolades = getTopAccolades(accolades);
+      accoladesRef.current = generatedAccolades;
       setTopAccolades(generatedAccolades);
-      accoladesLengthRef.current = generatedAccolades.length;
       setCurrentSlide(0);
       setIsAnimating(true);
 
@@ -119,27 +148,24 @@ export default function PostgameAccolades({
   }, [isOpen, accolades, fireConfetti]);
 
   useEffect(() => {
-    if (!isOpen || accolades.length === 0) return;
+    if (!isOpen || accoladesRef.current.length === 0) return;
 
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => {
-        const next = prev + 1;
-        if (next >= accolades.length) {
-          clearInterval(timer);
-          setTimeout(() => {
-            onComplete?.();
-          }, 1000);
-          return prev;
-        }
-        setIsAnimating(false);
-        setTimeout(() => setIsAnimating(true), 50);
-        return next;
-      });
+    // Clear any existing timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    timerRef.current = setInterval(() => {
+      goToNextSlide();
     }, SLIDE_DURATION);
 
-    return () => clearInterval(timer);
-  }, [isOpen, topAccolades.length, onComplete]);
-
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [isOpen, goToNextSlide]);
   const currentAccolade = topAccolades[currentSlide];
 
   const IconComponent = currentAccolade?.accolade?.icon || Award;
@@ -203,8 +229,24 @@ export default function PostgameAccolades({
               )}
             </div>
 
-            <div className={styles.slideCounter}>
-              {currentSlide + 1} / {accolades.length}
+            <div className={styles.navigation}>
+              <button
+                className={styles.navButton}
+                onClick={goToPrevSlide}
+                disabled={currentSlide === 0}
+              >
+                PREV
+              </button>
+              <span className={styles.slideCounter}>
+                {currentSlide + 1} / {accolades.length}
+              </span>
+              <button
+                className={styles.navButton}
+                onClick={goToNextSlide}
+                disabled={currentSlide === accolades.length - 1}
+              >
+                NEXT
+              </button>
             </div>
 
             <button className={styles.skipButton} onClick={onClose}>

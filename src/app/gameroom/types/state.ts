@@ -1,3 +1,5 @@
+import { PlayerAccolade } from "./payloads";
+
 export type Slot = {
   id: string;
   points: number;
@@ -9,7 +11,7 @@ export type Slot = {
   is_rare: boolean;
 };
 
-export type Scores = {
+export type Score = {
   player_id: string;
   display_name: string;
   score: number;
@@ -52,10 +54,10 @@ export type GameState = {
   loading: boolean;
   soundsLoaded: boolean;
   slots: Slot[];
-  scores: Scores[];
+  scores: Score[];
   accolades: Accolade[];
   finalScore: FinalScore[];
-  playerAccolades: import("./payloads").PlayerAccolades[];
+  playerAccolades: PlayerAccolade[];
   showCountDown: boolean;
 };
 
@@ -71,11 +73,3 @@ export type AnimationState = {
   isBonus: boolean;
   playerColor: string | null;
 };
-
-export type SoundType =
-  | "correct"
-  | "bonus"
-  | "success1"
-  | "success2"
-  | "success3"
-  | "timeUp";

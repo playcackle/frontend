@@ -6,7 +6,11 @@ import {
   updateAnimationStateAtom,
 } from "../store/gameAtoms";
 import type { GameEvent } from "../types/payloads";
-import { getRandomSuccessSound, playSound } from "../utils";
+import {
+  getRandomBonusSound,
+  getRandomSuccessSound,
+  playSound,
+} from "../utils";
 
 export const useGameActions = () => {
   const setAnswer = useSetAtom(answerAtom);
@@ -30,7 +34,7 @@ export const useGameActions = () => {
         "animate__zoom",
         "animate__rotate",
         "animate__flash",
-        "animate__glitter"
+        "animate__glitter",
       );
 
       // Apply the new animation class
@@ -41,7 +45,7 @@ export const useGameActions = () => {
         element.classList.remove(...animationType.split(" "));
       }, 2000);
     },
-    []
+    [],
   );
 
   const resetAnimations = useMemo(() => {
@@ -76,7 +80,7 @@ export const useGameActions = () => {
         }
       }, timeout);
     },
-    [updateAnimationState]
+    [updateAnimationState],
   );
 
   const triggerCorrectAnswerEffects = useCallback(
@@ -84,7 +88,7 @@ export const useGameActions = () => {
       slotId: string,
       animation: string,
       isBonus: boolean = false,
-      playerColor: string | null
+      playerColor: string | null,
     ) => {
       const element = document.getElementById(`slot-${slotId}`) as HTMLElement;
 
@@ -140,14 +144,13 @@ export const useGameActions = () => {
 
       // ENHANCED: Play appropriate sound with enhanced volume/effects
       try {
+        let sound;
         if (isBonus) {
-          playSound("bonus");
-          // Double sound for bonus slots
-          setTimeout(() => playSound("bonus"), 200);
+          sound = getRandomBonusSound();
         } else {
-          const sound = getRandomSuccessSound();
-          playSound(sound);
+          sound = getRandomSuccessSound();
         }
+        playSound(sound);
       } catch (error) {
         console.warn("Failed to play sound:", error);
       }
@@ -155,12 +158,12 @@ export const useGameActions = () => {
       // Reset animations after completion
       resetAnimations();
     },
-    [updateAnimationState, applyDOMAnimation, resetAnimations]
+    [updateAnimationState, applyDOMAnimation, resetAnimations],
   );
 
   const submitAnswer = (
     answer: string,
-    sendEvent: (event: GameEvent, data: string) => void
+    sendEvent: (event: GameEvent, data: string) => void,
   ) => {
     if (!answer.trim()) return;
     sendEvent("submit_answer", answer);

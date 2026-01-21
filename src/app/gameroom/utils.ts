@@ -1,5 +1,10 @@
-import { ATTENTION_ANIMATIONS, SOUND_SUCCESS } from "./constants";
-import type { SoundType } from "./types/state";
+import { SoundType } from "../../components/sound-effects";
+import {
+  ATTENTION_ANIMATIONS,
+  SOUND_BONUS,
+  SOUND_SNAPPED,
+  SOUND_SUCCESS,
+} from "./constants";
 
 /**
  * Format time as MM:SS
@@ -27,9 +32,19 @@ export const getRandomAttentionAnimation = (): string => {
  * Get a random success sound
  */
 export const getRandomSuccessSound = (): SoundType => {
-  return SOUND_SUCCESS[
-    Math.floor(Math.random() * SOUND_SUCCESS.length)
-  ] as SoundType;
+  return SOUND_SUCCESS[Math.floor(Math.random() * SOUND_SUCCESS.length)];
+};
+/**
+ * Get a random bonus sound
+ */
+export const getRandomBonusSound = (): SoundType => {
+  return SOUND_BONUS[Math.floor(Math.random() * SOUND_BONUS.length)];
+};
+/**
+ * Get a random snapped sound
+ */
+export const getRandomSnappedSound = (): SoundType => {
+  return SOUND_SNAPPED[Math.floor(Math.random() * SOUND_SNAPPED.length)];
 };
 
 /**
@@ -56,7 +71,7 @@ export const playSound = (type: SoundType): void => {
  */
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
 
@@ -108,7 +123,7 @@ export const getInitials = (displayName: string): string => {
  */
 export const getPlayerAvatar = (
   playerId: string,
-  displayName: string
+  displayName: string,
 ): {
   type: "image" | "generated";
   value: string;

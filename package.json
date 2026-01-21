@@ -16,6 +16,7 @@
     "animate.css": "latest",
     "autoprefixer": "^10.4.22",
     "bcryptjs": "^3.0.3",
+    "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "cmdk": "1.1.1",
     "date-fns": "4.1.0",
@@ -33,6 +34,7 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^24",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",

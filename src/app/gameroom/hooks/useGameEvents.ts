@@ -1,14 +1,18 @@
 import { useEffect, useRef } from "react";
 import {
+  GameOverPayload,
   LobbySyncPayload,
   LobbyTickPayload,
   NewRoundStartedPayload,
   RoundOverPayload,
   SlotSnappedPayload,
   SubmissionFeedbackPayload,
-  GameOverPayload,
 } from "../types/payloads";
-import { getRandomAttentionAnimation } from "../utils";
+import {
+  getRandomAttentionAnimation,
+  getRandomSnappedSound,
+  playSound,
+} from "../utils";
 import { useGameActions } from "./useGameActions";
 import { useGameSocket } from "./useGameSocket";
 import { useGameState } from "./useGameState";
@@ -61,6 +65,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       scores: data.scores ?? [],
       accolades: data.accolades ?? [],
     });
+    playSound("timeUp");
   });
 
   const handleRoundStartingSoonRef = useRef(() => {
@@ -80,6 +85,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       showCountDown: false,
       accolades: [], // Clear accolades for new round
     });
+    playSound("newRound");
   });
 
   const handleGameOverRef = useRef((data: GameOverPayload) => {
@@ -90,6 +96,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       showCountDown: false,
       timeRemaining: 0,
     });
+    playSound("timeUp");
   });
 
   const handleLobbyResettingRef = useRef(() => {
@@ -113,6 +120,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       slots: data.slots,
       scores: data.scores,
     });
+    playSound(getRandomSnappedSound());
   });
 
   const handleSubmissionFeedbackRef = useRef(
@@ -128,7 +136,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         // Trigger visual and audio effects
         triggerCorrectAnswerEffects(data.id!, animation, isBonus, playerColor);
       }
-    }
+    },
   );
 
   useEffect(() => {
@@ -165,27 +173,27 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
   useEffect(() => {
     onEvent("lobby_state_sync", (data: LobbySyncPayload) =>
-      handleLobbySyncRef.current(data)
+      handleLobbySyncRef.current(data),
     );
     onEvent("lobby_tick", (data: LobbyTickPayload) =>
-      handleLobbyTickRef.current(data)
+      handleLobbyTickRef.current(data),
     );
     onEvent("round_over", (data: RoundOverPayload) =>
-      handleRoundOverRef.current(data)
+      handleRoundOverRef.current(data),
     );
     onEvent("round_starting_soon", () => handleRoundStartingSoonRef.current());
     onEvent("new_round_started", (data: NewRoundStartedPayload) =>
-      handleNewRoundStartedRef.current(data)
+      handleNewRoundStartedRef.current(data),
     );
     onEvent("game_over", (data: any) => handleGameOverRef.current(data));
     onEvent("lobby_resetting_for_new_game", () =>
-      handleLobbyResettingRef.current()
+      handleLobbyResettingRef.current(),
     );
     onEvent("slot_snapped", (data: SlotSnappedPayload) =>
-      handleSlotSnappedRef.current(data)
+      handleSlotSnappedRef.current(data),
     );
     onEvent("submission_feedback", (data: SubmissionFeedbackPayload) =>
-      handleSubmissionFeedbackRef.current(data)
+      handleSubmissionFeedbackRef.current(data),
     );
   }, [onEvent]);
 

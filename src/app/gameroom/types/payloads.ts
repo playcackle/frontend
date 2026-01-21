@@ -2,7 +2,7 @@
 // Base Types
 // ========================
 
-import { Accolade, FinalScore, PodiumPlayer, Scores, Slot } from "./state";
+import { Accolade, FinalScore, PodiumPlayer, Score, Slot } from "./state";
 
 export type GameEvent =
   | "connection_success"
@@ -75,13 +75,14 @@ export type LobbySyncPayload = {
   lobby_id: string;
   timestamp_utc: string;
   slots: Slot[];
-  scores: Scores[];
+  scores: Score[];
+  accolades: PlayerAccolade[];
 };
 
 export type LobbyTickPayload = {
   time_remaining_seconds: number | null;
   player_count: number;
-  scores: Scores[];
+  scores: Score[];
 };
 
 export type NewRoundStartedPayload = {
@@ -103,7 +104,7 @@ export type SlotSnappedPayload = {
   player_score: number;
   is_round_over: boolean;
   slots: Slot[];
-  scores: Scores[];
+  scores: Score[];
 };
 
 export type UnrevealedAnswer = {
@@ -116,7 +117,7 @@ export type RoundOverPayload = {
   round_number: number;
   message: string;
   unrevealed_answers: UnrevealedAnswer[];
-  scores: Scores[];
+  scores: Score[];
   accolades: Accolade[];
   break_duration_seconds: number;
 };
@@ -134,10 +135,10 @@ export type GameOverPayload = {
   final_scores: FinalScore[];
   post_game_showcase_duration_seconds: number;
   new_game_cycle_start_timestamp_utc: string;
-  player_accolades: PlayerAccolades[];
+  player_accolades: PlayerAccolade[];
 };
 
-export type PlayerAccolades = {
+export type PlayerAccolade = {
   player_id: string;
   display_name: string;
   score: number;

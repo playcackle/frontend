@@ -22,7 +22,9 @@ export default async function Home({
 }) {
   const gamerooms = await fetchGamerooms();
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // Handle auth errors from email confirmation (searchParams is a Promise in Next.js 16+)
   const params = await searchParams;
@@ -39,30 +41,41 @@ export default async function Home({
         </h1>
 
         {authError && (
-          <div style={{
-            color: "#ff0055",
-            backgroundColor: "rgba(255, 0, 85, 0.1)",
-            padding: "15px 20px",
-            borderRadius: "8px",
-            marginTop: "20px",
-            border: "1px solid #ff0055",
-            maxWidth: "600px",
-            margin: "20px auto"
-          }}>
-            <div style={{ fontSize: "18px", marginBottom: "10px" }}>⚠️ Email Link Expired</div>
+          <div
+            style={{
+              color: "#ff0055",
+              backgroundColor: "rgba(255, 0, 85, 0.1)",
+              padding: "15px 20px",
+              borderRadius: "8px",
+              marginTop: "20px",
+              border: "1px solid #ff0055",
+              maxWidth: "600px",
+              margin: "20px auto",
+            }}
+          >
+            <div style={{ fontSize: "18px", marginBottom: "10px" }}>
+              ⚠️ Email Link Expired
+            </div>
             <div style={{ fontSize: "14px", marginBottom: "15px" }}>
-              {errorDescription?.replace(/\+/g, " ") || "Your email confirmation link has expired."}
+              {errorDescription?.replace(/\+/g, " ") ||
+                "Your email confirmation link has expired."}
             </div>
             <div style={{ fontSize: "14px" }}>
               Please{" "}
-              <Link href="/register" style={{ color: "#00ff88", textDecoration: "underline" }}>
+              <Link
+                href="/register"
+                style={{ color: "#00ff88", textDecoration: "underline" }}
+              >
                 sign up again
-              </Link>
-              {" "}to get a new confirmation email, or{" "}
-              <Link href="/login" style={{ color: "#00ff88", textDecoration: "underline" }}>
+              </Link>{" "}
+              to get a new confirmation email, or{" "}
+              <Link
+                href="/login"
+                style={{ color: "#00ff88", textDecoration: "underline" }}
+              >
                 try logging in
-              </Link>
-              {" "}if you already confirmed.
+              </Link>{" "}
+              if you already confirmed.
             </div>
           </div>
         )}
@@ -70,9 +83,9 @@ export default async function Home({
       {user ? (
         <section className={styles.lobbiesSection}>
           <div className={styles.lobbiesContainer}>
-	            {gamerooms.map((x: LobbyInfo, i: number) => (
-	              <GameroomTileComponent gameroom={x} key={i} />
-	            ))}
+            {gamerooms.map((x: LobbyInfo, i: number) => (
+              <GameroomTileComponent gameroom={x} key={i} />
+            ))}
           </div>
         </section>
       ) : (
@@ -101,6 +114,7 @@ async function fetchGamerooms(): Promise<LobbyInfo[]> {
     });
 
     if (!response.ok) {
+      console.error(response.text());
       throw new Error(`Error fetching lobbies: ${response.status}`);
     }
 

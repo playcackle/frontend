@@ -313,14 +313,46 @@
   }
 }
 
-.slideCounter {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.navButton {
+  background: transparent;
+  border: 2px solid var(--neon-blue);
+  color: var(--neon-blue);
+  padding: 0.75rem 1.5rem;
   font-family: var(--retro-font);
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
   letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.navButton:hover:not(:disabled) {
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+.navButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.slideCounter {
+  font-family: var(--retro-font);
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 2px;
+  min-width: 60px;
+  text-align: center;
 }
 
 .skipButton {
