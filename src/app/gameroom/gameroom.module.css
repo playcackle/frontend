@@ -582,13 +582,6 @@
   }
 }
 
-/* Add a subtle hover effect to the player badge */
-.playerBadge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  transition: all 0.3s ease;
-}
-
 /* Enhance the player badge avatar with a subtle pulse */
 .playerBadgeAvatar {
   width: 20px; /* Increased from 18px */
@@ -649,20 +642,10 @@
   opacity: 1;
 }
 
-.slotTile:hover:not(.answered) {
-  transform: translateY(-5px);
-  box-shadow: 0 0 15px var(--room-color, rgba(255, 0, 170, 0.7));
-  filter: brightness(1.2);
-}
-
 .bonusTile {
   background-color: var(--neon-purple);
   border-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-.bonusTile:hover:not(.answered) {
-  box-shadow: 0 0 15px var(--neon-purple);
 }
 
 .answered {
@@ -674,11 +657,6 @@
   justify-content: center;
   border: 2px solid rgba(0, 255, 136, 0.5); /* Added green border to indicate answered state */
   box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); /* Green glow for answered tiles */
-}
-
-.answered:hover {
-  transform: none;
-  filter: brightness(1);
 }
 
 /* Make slot mark larger */

@@ -1,7 +1,7 @@
 "use client";
 
-import { useAtomValue } from "jotai";
 import { useUser } from "@/hooks/useUser";
+import { useAtomValue } from "jotai";
 import React, { useMemo, useRef } from "react";
 import styles from "../gameroom.module.css";
 import { animationStateAtom } from "../store/gameAtoms";
@@ -49,7 +49,7 @@ const SlotTile: React.FC<SlotTileProps> = ({ slot, className }) => {
     return {
       shouldShowContent,
       shouldShowAttention,
-      roomColor: slot.is_snapped ? "var(--neon-purple)" : "var(--neon-pink)",
+      slotColor: slot.is_snapped ? "var(--neon-purple)" : "var(--neon-pink)",
     };
   }, [slot.is_snapped, slot.snapped_by_player_id, user?.id]);
 
@@ -70,7 +70,7 @@ const SlotTile: React.FC<SlotTileProps> = ({ slot, className }) => {
       shouldPulse,
       animationState.attentionAnimation,
       displayState.shouldShowAttention,
-    ]
+    ],
   );
 
   const content = useMemo(() => {
@@ -103,7 +103,7 @@ const SlotTile: React.FC<SlotTileProps> = ({ slot, className }) => {
       className={`${tileClassNames} ${className}`}
       style={
         {
-          "--room-color": displayState.roomColor,
+          "--room-color": displayState.slotColor,
         } as React.CSSProperties
       }
     >

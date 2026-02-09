@@ -37,7 +37,7 @@ export default async function RootLayout({
           overflow: "hidden",
         }}
       >
-        <Theme>
+        <Theme appearance="dark" hasBackground={false}>
           <div className="crt-container">
             <div className="crt-content">
               <Provider>
