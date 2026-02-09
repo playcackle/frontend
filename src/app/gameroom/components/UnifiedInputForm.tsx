@@ -66,7 +66,6 @@ export default function UnifiedInputForm({
             className={`${styles.unifiedInput} ${
               isAnswerMode ? styles.answerMode : styles.chatMode
             }`}
-            disabled={timeExpired && !isRoundBreak}
           />
         </Flex>
       </Flex>
