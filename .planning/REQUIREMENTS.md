@@ -60,28 +60,28 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| STATE-01 | — | Pending |
-| STATE-02 | — | Pending |
-| STATE-03 | — | Pending |
-| ONBRD-01 | — | Pending |
-| ONBRD-02 | — | Pending |
-| ONBRD-03 | — | Pending |
-| ONBRD-04 | — | Pending |
-| ONBRD-05 | — | Pending |
-| LAND-01 | — | Pending |
-| LAND-02 | — | Pending |
-| LAND-03 | — | Pending |
-| LAND-04 | — | Pending |
-| LAND-05 | — | Pending |
-| CHAT-01 | — | Pending |
-| CHAT-02 | — | Pending |
-| CHAT-03 | — | Pending |
+| STATE-01 | Phase 1 | Pending |
+| STATE-02 | Phase 1 | Pending |
+| STATE-03 | Phase 1 | Pending |
+| CHAT-01 | Phase 2 | Pending |
+| CHAT-02 | Phase 2 | Pending |
+| CHAT-03 | Phase 2 | Pending |
+| ONBRD-01 | Phase 3 | Pending |
+| ONBRD-02 | Phase 3 | Pending |
+| ONBRD-03 | Phase 3 | Pending |
+| ONBRD-04 | Phase 3 | Pending |
+| ONBRD-05 | Phase 3 | Pending |
+| LAND-01 | Phase 4 | Pending |
+| LAND-02 | Phase 4 | Pending |
+| LAND-03 | Phase 4 | Pending |
+| LAND-04 | Phase 4 | Pending |
+| LAND-05 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16 ⚠️
+- Mapped to phases: 16
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-02-25 after initial definition*
+*Last updated: 2026-02-25 after roadmap creation*
