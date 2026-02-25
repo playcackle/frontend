@@ -443,7 +443,6 @@
   height: 100%;
   padding: 0.5rem;
   background: rgba(0, 0, 0, 0.4);
-  border-radius: 6px;
 }
 
 .correctAnswer {
@@ -509,18 +508,13 @@
     rgba(0, 0, 0, 0.9) 0%,
     rgba(30, 30, 60, 0.85) 100%
   ); /* Darker, more contrasted background */
-  border-radius: 16px;
+  border-radius: 2px;
   padding: 0.4rem 0.7rem; /* Slightly larger padding */
   gap: 0.4rem;
-  box-shadow:
-    0 0 20px rgba(255, 255, 255, 0.5),
-    inset 0 0 15px rgba(255, 255, 255, 0.15),
-    0 4px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow for depth */
-  border: 2px solid rgba(255, 255, 255, 0.4); /* Slightly more opaque border */
   position: relative;
   margin-top: 0.5rem;
+  width: 100%;
   z-index: 2;
-  max-width: 90%;
   align-self: center;
   animation: badgeAppear 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
   backdrop-filter: blur(10px);
@@ -541,7 +535,6 @@
     rgba(255, 255, 255, 0.3) 50%,
     transparent 70%
   );
-  animation: badgeShimmer 2s ease-in-out 0.5s infinite;
   pointer-events: none;
 }
 
@@ -562,24 +555,10 @@
   left: -2px;
   right: -2px;
   bottom: -2px;
-  border-radius: 14px;
   background: transparent;
   z-index: -1;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
   opacity: 0;
-  animation: badgeGlow 2s ease-in-out 0.6s infinite alternate;
-}
-
-/* Add a subtle glow animation */
-@keyframes badgeGlow {
-  0% {
-    opacity: 0.2;
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-  }
-  100% {
-    opacity: 0.6;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-  }
 }
 
 /* Enhance the player badge avatar with a subtle pulse */
@@ -594,7 +573,6 @@
   font-weight: bold;
   color: white;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.2);
   font-family: var(--retro-font-alt);
   animation: avatarPulse 3s ease-in-out 1s infinite alternate;
@@ -630,7 +608,6 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  cursor: pointer;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
@@ -1327,7 +1304,6 @@
 }
 
 .messageUser {
-  font-weight: bold;
   color: var(--neon-blue);
   font-size: 0.8rem;
 }
@@ -1339,8 +1315,9 @@
 }
 
 .messageContent {
-  margin-top: 0.25rem;
-  line-height: 1.4;
+  margin-bottom: 0.25rem;
+  line-height: 1;
+  font-size: 1.1rem;
 }
 
 .canonicalAnswer {
@@ -1565,7 +1542,6 @@
 
 .botBobName {
   font-size: 0.85rem;
-  font-weight: bold;
   color: var(--neon-purple);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1574,9 +1550,10 @@
 }
 
 .botBobText {
-  font-size: 0.85rem;
+  font-weight: bold;
+  font-size: 1.1rem;
   color: white;
-  line-height: 1.4;
+  line-height: 1.1;
   font-family: var(--retro-font-alt);
 }
 

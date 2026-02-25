@@ -2,6 +2,7 @@ import { PlayerAccolade } from "./payloads";
 
 export type Slot = {
   id: string;
+  points_awarded: number;
   points: number;
   is_snapped: boolean;
   snapped_by_player_id: string | null;
