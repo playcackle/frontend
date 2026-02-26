@@ -129,11 +129,19 @@ export const useGameSocket = (baseUrl: string, token: string) => {
 
     socket.on("connect", () => {
       // Successful connection - reset everything
-      setSocketState({
-        isConnected: true,
-        connectionStatus: "connected",
-        error: null,
-        reconnectAttempts: 0,
+      setSocketState((prev) => {
+        const isReconnect = prev.reconnectAttempts > 0;
+        if (isReconnect) {
+          // Request current server state on reconnects
+          // Backend listens for this event and responds with lobby_state_sync
+          socket.emit("request_state_sync");
+        }
+        return {
+          isConnected: true,
+          connectionStatus: "connected",
+          error: null,
+          reconnectAttempts: 0,
+        };
       });
       clearReconnectTimeout();
     });
