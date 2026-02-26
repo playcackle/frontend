@@ -8,7 +8,7 @@
 ### State Sync
 
 - [ ] **STATE-01**: Client automatically re-syncs to current game state when round transitions to intermission — no manual rejoin required
-- [ ] **STATE-02**: If game state is lost or stale during a transition, a loading/reconnecting indicator is shown (never display stale state silently)
+- [x] **STATE-02**: If game state is lost or stale during a transition, a loading/reconnecting indicator is shown (never display stale state silently)
 - [ ] **STATE-03**: Client can recover to the correct game phase (intermission, lobby, round) after any WebSocket reconnection
 
 ### Onboarding
@@ -61,7 +61,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | STATE-01 | Phase 1 | Pending |
-| STATE-02 | Phase 1 | Pending |
+| STATE-02 | Phase 1 | Complete |
 | STATE-03 | Phase 1 | Pending |
 | CHAT-01 | Phase 2 | Pending |
 | CHAT-02 | Phase 2 | Pending |
