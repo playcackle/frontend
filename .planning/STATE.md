@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-25)
 
 **Core value:** Players must always know where they are in the game and what their actions mean — reliable state, readable feedback, and visible progress are what keep them coming back.
-**Current focus:** Phase 1 — State Sync
+**Current focus:** Phase 2 — Chat UX
 
 ## Current Position
 
-Phase: 1 of 4 (State Sync)
-Plan: 2 of ? in current phase
+Phase: 2 of 4 (Chat UX)
+Plan: 1 of 2 in current phase
 Status: In progress
-Last activity: 2026-02-26 — Completed plan 01-02: reconnect state sync + round_over sync + handleLobbySyncRef fix
+Last activity: 2026-02-27 — Completed plan 02-01: Chat UX CSS classes for message-type visual differentiation
 
-Progress: [██░░░░░░░░] 20%
+Progress: [███░░░░░░░] 30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 3
 - Average duration: 2 min
-- Total execution time: 4 min
+- Total execution time: 5 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-state-sync | 2 | 4 min | 2 min |
+| 02-chat-ux | 1 | 1 min | 1 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-02 (2 min)
+- Last 5 plans: 01-01 (2 min), 01-02 (2 min), 02-01 (1 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -50,6 +51,9 @@ Recent decisions affecting current work:
 - [01-02]: Emit request_state_sync inside setSocketState functional updater — safe when socket is connected, synchronous before state commit
 - [01-02]: Use sendEventRef (ref-capture pattern) to call sendEvent from handleRoundOverRef without stale closure risk
 - [01-02]: Cast sendEventRef.current for request_state_sync — event not in EventPayloadMap, backend silently ignores unknown events
+- [02-01]: Use .ownSuccessfulAnswerMessage combined class with !important to override .ownMessage !important — safer than removing !important from .ownMessage
+- [02-01]: Keep .chatMessage border-left-color unchanged — .botBobMessage differentiated via higher background opacity (0.12 vs 0.05) not color change
+- [02-01]: Use :global(.performance-mode) CSS guard at CSS layer for animation suppression — no React-level atom reads needed for CSS-only animations
 
 ### Pending Todos
 
@@ -61,6 +65,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-26
-Stopped at: Completed 01-02-PLAN.md — reconnect state sync + round_over sync + handleLobbySyncRef fix
+Last session: 2026-02-27
+Stopped at: Completed 02-01-PLAN.md — Chat UX CSS classes for message-type visual differentiation
 Resume file: None

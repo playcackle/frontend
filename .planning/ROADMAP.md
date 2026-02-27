@@ -44,7 +44,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — CSS classes for all message type variants (botBobMessage, duplicateMessage, badge classes, performance-mode guards) (CHAT-01, CHAT-02, CHAT-03)
+- [x] 02-01-PLAN.md — CSS classes for all message type variants (botBobMessage, duplicateMessage, badge classes, performance-mode guards) (CHAT-01, CHAT-02, CHAT-03)
 - [ ] 02-02-PLAN.md — Refactor getMessageTypeClass + add getMessageBadge + render badges in UnifiedMessages.tsx (CHAT-01, CHAT-02, CHAT-03)
 
 ### Phase 3: Onboarding
@@ -79,6 +79,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. State Sync | 2/2 | Complete   | 2026-02-26 |
-| 2. Chat UX | 0/2 | Planned | - |
+| 2. Chat UX | 1/2 | In progress | - |
 | 3. Onboarding | 0/? | Not started | - |
 | 4. Landing Page | 0/? | Not started | - |
