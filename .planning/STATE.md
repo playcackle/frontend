@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 2 of 4 (Chat UX)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-27 — Completed plan 02-01: Chat UX CSS classes for message-type visual differentiation
+Plan: 2 of 2 in current phase
+Status: Complete — pending verification
+Last activity: 2026-03-02 — Completed plan 02-02: getMessageTypeClass refactor + badge rendering + color scheme tuning
 
-Progress: [███░░░░░░░] 30%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 2 min
-- Total execution time: 5 min
+- Total execution time: 7 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-state-sync | 2 | 4 min | 2 min |
-| 02-chat-ux | 1 | 1 min | 1 min |
+| 02-chat-ux | 2 | 3 min | 1.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-02 (2 min), 02-01 (1 min)
+- Last 5 plans: 01-01 (2 min), 01-02 (2 min), 02-01 (1 min), 02-02 (2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -54,6 +54,8 @@ Recent decisions affecting current work:
 - [02-01]: Use .ownSuccessfulAnswerMessage combined class with !important to override .ownMessage !important — safer than removing !important from .ownMessage
 - [02-01]: Keep .chatMessage border-left-color unchanged — .botBobMessage differentiated via higher background opacity (0.12 vs 0.05) not color change
 - [02-01]: Use :global(.performance-mode) CSS guard at CSS layer for animation suppression — no React-level atom reads needed for CSS-only animations
+- [02-02]: getMessageTypeClass accepts full UnifiedMessage — Bot Bob branch precedes message_type switch since Bot Bob sends type "chat"
+- [02-02]: Color scheme: correct=neon-green (consistent with answered slot tiles), duplicate=orange, own-wrong=neutral (ownFailedAnswerMessage resets .ownMessage !important)
 
 ### Pending Todos
 
@@ -65,6 +67,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-27
-Stopped at: Completed 02-01-PLAN.md — Chat UX CSS classes for message-type visual differentiation
+Last session: 2026-03-02
+Stopped at: Completed 02-02-PLAN.md — all Phase 2 plans done, awaiting verification
 Resume file: None
