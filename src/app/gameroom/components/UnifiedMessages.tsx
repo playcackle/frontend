@@ -46,15 +46,9 @@ export default function UnifiedMessages() {
     }
     switch (msg.message_type) {
       case "answer_attempt":
-        // already_snapped is distinct from wrong/too_slow — muted amber, not red
-        if (msg.submission_result === "already_snapped") {
-          return styles.duplicateMessage;
-        }
-        return styles.answerMessage;
+        return styles.duplicateMessage; // only already_snapped reaches here (wrong answers are filtered)
       case "successful_answer":
         return styles.successfulAnswerMessage;
-      case "failed_answer":
-        return styles.failedAnswerMessage;
       default:
         return styles.chatMessage;
     }
@@ -73,20 +67,19 @@ export default function UnifiedMessages() {
               : "⚡ Answers will appear here..."}
           </div>
         ) : (
-          messages.map((msg, index) => (
+          messages.filter((msg) =>
+            msg.message_type !== "failed_answer" &&
+            !(msg.message_type === "answer_attempt" && msg.submission_result !== "already_snapped")
+          ).map((msg, index) => (
             <div
               key={index}
               className={`${styles.unifiedMessage} ${getMessageTypeClass(msg)} ${
                 msg.player_id === user?.id
                   ? msg.message_type === "successful_answer"
                     ? styles.ownSuccessfulAnswerMessage
-                    : msg.message_type === "failed_answer" ||
-                      (msg.message_type === "answer_attempt" &&
-                        msg.submission_result !== "already_snapped")
-                    ? styles.ownFailedAnswerMessage
                     : msg.message_type === "chat"
                     ? styles.ownMessage
-                    : "" // answer_attempt already_snapped — orange from .duplicateMessage preserved
+                    : "" // duplicate — orange from .duplicateMessage preserved
                   : ""
               }`}
             >

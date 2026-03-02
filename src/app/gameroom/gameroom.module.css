@@ -1288,11 +1288,6 @@
   animation: correctAnswerGlow 1s ease-out;
 }
 
-.failedAnswerMessage {
-  border-left-color: #ff4444;
-  background-color: rgba(255, 0, 0, 0.05);
-  opacity: 0.8;
-}
 
 .messagePrefix {
   font-weight: bold;
@@ -1582,10 +1577,10 @@
    CHAT MESSAGE TYPE VARIANTS
    ============================ */
 
-/* Bot Bob message in scrolling feed — purple border matches chatMessage hue, slightly stronger bg */
+/* Bot Bob message in scrolling feed — blue, distinct from player chat (purple) */
 .botBobMessage {
-  border-left-color: var(--neon-purple);
-  background-color: rgba(183, 0, 255, 0.05);
+  border-left-color: var(--neon-blue);
+  background-color: rgba(0, 221, 255, 0.05);
 }
 
 /* Duplicate / already-snapped attempt — orange border, muted */
@@ -1602,12 +1597,6 @@
   border-left-color: var(--neon-green) !important;
 }
 
-/* Combined class: own message that is a wrong answer — resets .ownMessage blue to neutral */
-.ownFailedAnswerMessage {
-  background-color: rgba(0, 0, 0, 0.2) !important;
-  border-left-color: rgba(255, 255, 255, 0.15) !important;
-  box-shadow: none !important;
-}
 
 /* Performance mode: suppress successfulAnswerMessage glow animation */
 :global(.performance-mode) .successfulAnswerMessage {
