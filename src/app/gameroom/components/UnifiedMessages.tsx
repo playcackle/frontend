@@ -67,11 +67,7 @@ export default function UnifiedMessages() {
               : "⚡ Answers will appear here..."}
           </div>
         ) : (
-          messages.filter((msg) => {
-            if (msg.player_id === user?.id) return true;
-            return msg.message_type !== "failed_answer" &&
-              !(msg.message_type === "answer_attempt" && msg.submission_result !== "already_snapped");
-          }).map((msg, index) => (
+          messages.map((msg, index) => (
             <div
               key={index}
               className={`${styles.unifiedMessage} ${getMessageTypeClass(msg)} ${
