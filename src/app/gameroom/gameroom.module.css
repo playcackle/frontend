@@ -1612,53 +1612,6 @@
   box-shadow: none !important;
 }
 
-/* Badge base — small pill label prefix before message content */
-.messageBadge {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.6rem;
-  font-family: var(--retro-font);
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  padding: 0.1rem 0.3rem;
-  border-radius: 2px;
-  text-transform: uppercase;
-  vertical-align: middle;
-  margin-right: 0.3rem;
-  flex-shrink: 0;
-  line-height: 1;
-}
-
-/* BOT badge — purple to match botBobMessage */
-.messageBadgeBot {
-  background-color: rgba(183, 0, 255, 0.3);
-  color: var(--neon-purple);
-  border: 1px solid rgba(183, 0, 255, 0.5);
-  text-shadow: 0 0 6px rgba(183, 0, 255, 0.7);
-}
-
-/* CORRECT badge — green to match successfulAnswerMessage */
-.messageBadgeCorrect {
-  background-color: rgba(0, 255, 102, 0.2);
-  color: var(--neon-green);
-  border: 1px solid rgba(0, 255, 102, 0.5);
-  text-shadow: 0 0 6px rgba(0, 255, 102, 0.7);
-}
-
-/* TAKEN badge — amber to match duplicateMessage */
-.messageBadgeDuplicate {
-  background-color: rgba(255, 140, 0, 0.2);
-  color: #FF8C00;
-  border: 1px solid rgba(255, 140, 0, 0.4);
-}
-
-/* MISS badge — red to match failedAnswerMessage */
-.messageBadgeFailed {
-  background-color: rgba(255, 68, 68, 0.2);
-  color: #ff4444;
-  border: 1px solid rgba(255, 68, 68, 0.3);
-}
-
 /* Performance mode: suppress successfulAnswerMessage glow animation */
 :global(.performance-mode) .successfulAnswerMessage {
   animation: none;

@@ -4,7 +4,6 @@ import { Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
 import { useUser } from "@/hooks/useUser";
 import { useEffect, useRef } from "react";
-import React from "react";
 import styles from "../gameroom.module.css";
 import {
   botBobLastMessageAtom,
@@ -61,39 +60,6 @@ export default function UnifiedMessages() {
     }
   };
 
-  /** Returns a badge element for non-chat message types, or null for plain chat. */
-  const getMessageBadge = (msg: UnifiedMessage): React.ReactNode | null => {
-    if (msg.player_id === "botbob" || msg.display_name.toLowerCase() === "botbob") {
-      return (
-        <span className={`${styles.messageBadge} ${styles.messageBadgeBot}`}>
-          BOT
-        </span>
-      );
-    }
-    if (msg.message_type === "successful_answer") {
-      return (
-        <span className={`${styles.messageBadge} ${styles.messageBadgeCorrect}`}>
-          CORRECT
-        </span>
-      );
-    }
-    if (msg.message_type === "answer_attempt" && msg.submission_result === "already_snapped") {
-      return (
-        <span className={`${styles.messageBadge} ${styles.messageBadgeDuplicate}`}>
-          TAKEN
-        </span>
-      );
-    }
-    if (msg.message_type === "failed_answer" || msg.message_type === "answer_attempt") {
-      return (
-        <span className={`${styles.messageBadge} ${styles.messageBadgeFailed}`}>
-          MISS
-        </span>
-      );
-    }
-    return null;
-  };
-
   return (
     <div className={styles.unifiedMessagesContainer}>
       {/* Pinned Bot Bob section replaces the header */}
@@ -131,7 +97,6 @@ export default function UnifiedMessages() {
                   size="small"
                 />
                 <div className={styles.messageContentWrapper}>
-                  {getMessageBadge(msg)}
                   <Flex direction="row" gap="2" align="center">
                     <span className={styles.messageUser}>
                       {msg.display_name}
