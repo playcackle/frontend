@@ -1422,13 +1422,13 @@
 /* Animation keyframes for unified messages */
 @keyframes correctAnswerGlow {
   0% {
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 8px rgba(0, 255, 102, 0.2);
   }
   50% {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 20px rgba(0, 255, 102, 0.6);
   }
   100% {
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 8px rgba(0, 255, 102, 0.2);
   }
 }
 /* ============================
