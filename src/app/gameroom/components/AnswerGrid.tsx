@@ -10,22 +10,24 @@ interface AnswerGridProps {
 
 export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
   const totalAnswers = slots.length;
-  const snappedSlots = slots.filter((s) => s.is_snapped);
-  const foundCount = snappedSlots.length;
+  const snappedMap = new Map(slots.filter((s) => s.is_snapped).map((s) => [s.id, s]));
+  const foundCount = snappedMap.size;
   const remaining = totalAnswers - foundCount;
 
   const prevFoundCount = useRef(foundCount);
   const [newlyFound, setNewlyFound] = useState<Set<string>>(new Set());
+  const [snappedOrder, setSnappedOrder] = useState<string[]>(() =>
+    slots.filter((s) => s.is_snapped).map((s) => s.id),
+  );
 
   useEffect(() => {
     if (foundCount > prevFoundCount.current) {
-      const latest = new Set(
-        slots
-          .filter((s) => s.is_snapped)
-          .slice(prevFoundCount.current)
-          .map((s) => s.id),
-      );
-      setNewlyFound(latest);
+      const newIds = slots
+        .filter((s) => s.is_snapped)
+        .slice(prevFoundCount.current)
+        .map((s) => s.id);
+      setSnappedOrder((prev) => [...prev, ...newIds]);
+      setNewlyFound(new Set(newIds));
       const t = setTimeout(() => setNewlyFound(new Set()), 800);
       prevFoundCount.current = foundCount;
       return () => clearTimeout(t);
@@ -127,11 +129,13 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
       </div>
 
       {/* Found answer chips */}
-      {snappedSlots.length > 0 && (
+      {foundCount > 0 && (
         <div className={styles.answerChipGrid}>
-          {snappedSlots.map((slot) => {
+          {snappedOrder.flatMap((id) => {
+            const slot = snappedMap.get(id);
+            if (!slot) return [];
             const isNew = newlyFound.has(slot.id);
-            return (
+            return [
               <div
                 key={slot.id}
                 className={`${styles.answerChip} ${slot.is_rare ? styles.answerChipBonus : ""} ${isNew ? styles.answerChipNew : ""}`}
@@ -144,8 +148,8 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
                     {slot.snapped_by_display_name}
                   </span>
                 )}
-              </div>
-            );
+              </div>,
+            ];
           })}
         </div>
       )}
