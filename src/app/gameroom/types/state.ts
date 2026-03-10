@@ -2,6 +2,7 @@ import { PlayerAccolade } from "./payloads";
 
 export type Slot = {
   id: string;
+  points_awarded: number;
   points: number;
   is_snapped: boolean;
   snapped_by_player_id: string | null;
@@ -9,6 +10,7 @@ export type Slot = {
   text_preview: string;
   canonical_text: string;
   is_rare: boolean;
+  failed_attempts: number;
 };
 
 export type Score = {

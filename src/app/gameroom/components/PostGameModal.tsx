@@ -170,7 +170,7 @@ export default function PostgameAccolades({
 
   const IconComponent = currentAccolade?.accolade?.icon || Award;
 
-  if (!currentAccolade) return null;
+  if (!currentAccolade || !currentAccolade.accolade) return null;
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -247,11 +247,10 @@ export default function PostgameAccolades({
               >
                 NEXT
               </button>
+              <button className={styles.skipButton} onClick={onClose}>
+                SKIP THE DRAMA
+              </button>
             </div>
-
-            <button className={styles.skipButton} onClick={onClose}>
-              SKIP THE DRAMA
-            </button>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

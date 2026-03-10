@@ -1,17 +1,17 @@
 "use client";
 
+import { useUser } from "@/hooks/useUser";
 import { Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
-import { useUser } from "@/hooks/useUser";
 import { useEffect, useRef } from "react";
 import styles from "../gameroom.module.css";
 import {
   botBobLastMessageAtom,
   isRoundBreakAtom,
   unifiedMessagesAtom,
+  type UnifiedMessage,
 } from "../store/gameAtoms";
 import BotBobPinnedMessage from "./BotBobPinnedMessage";
-import PlayerAvatar from "./PlayerAvatar";
 
 export default function UnifiedMessages() {
   const { user } = useUser();
@@ -38,14 +38,24 @@ export default function UnifiedMessages() {
     }
   };
 
-  const getMessageTypeClass = (messageType: string) => {
-    switch (messageType) {
+  const getMessageTypeClass = (msg: UnifiedMessage): string => {
+    // Bot Bob detection must precede message_type switch — Bot Bob sends type "chat"
+    if (
+      msg.player_id === "botbob" ||
+      msg.display_name.toLowerCase() === "botbob"
+    ) {
+      return styles.botBobMessage;
+    }
+    debugger;
+    switch (msg.message_type) {
       case "answer_attempt":
-        return styles.answerMessage;
+        if (msg.submission_result === "already_snapped")
+          return styles.duplicateMessage;
+        if (msg.submission_result === "success")
+          return styles.successfulAnswerMessage;
+        return styles.chatMessage;
       case "successful_answer":
         return styles.successfulAnswerMessage;
-      case "failed_answer":
-        return styles.failedAnswerMessage;
       default:
         return styles.chatMessage;
     }
@@ -67,18 +77,17 @@ export default function UnifiedMessages() {
           messages.map((msg, index) => (
             <div
               key={index}
-              className={`${styles.unifiedMessage} ${getMessageTypeClass(
-                msg.message_type
-              )} ${
-                msg.player_id === user?.id ? styles.ownMessage : ""
+              className={`${styles.unifiedMessage} ${getMessageTypeClass(msg)} ${
+                msg.player_id === user?.id
+                  ? msg.message_type === "successful_answer"
+                    ? styles.ownSuccessfulAnswerMessage
+                    : msg.message_type === "chat"
+                      ? styles.ownMessage
+                      : "" // duplicate — orange from .duplicateMessage preserved
+                  : ""
               }`}
             >
               <Flex direction="row" gap="2" align="center">
-                <PlayerAvatar
-                  playerId={msg.player_id}
-                  displayName={msg.display_name}
-                  size="small"
-                />
                 <div className={styles.messageContentWrapper}>
                   <Flex direction="row" gap="2" align="center">
                     <span className={styles.messageUser}>

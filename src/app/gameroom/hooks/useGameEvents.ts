@@ -18,7 +18,7 @@ import { useGameSocket } from "./useGameSocket";
 import { useGameState } from "./useGameState";
 
 export const useGameEvents = (gameWsUrl: string, token: string) => {
-  const { onEvent, sendEvent, isConnected } = useGameSocket(gameWsUrl, token);
+  const { onEvent, sendEvent, isConnected, connectionStatus } = useGameSocket(gameWsUrl, token);
   const { updateGameState, slots } = useGameState();
   const { triggerCorrectAnswerEffects } = useGameActions();
 
@@ -27,9 +27,15 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     slotsRef.current = slots;
   }, [slots]);
 
+  const sendEventRef = useRef(sendEvent);
   useEffect(() => {
-    updateGameState({ loading: !isConnected });
-  }, [isConnected, updateGameState]);
+    sendEventRef.current = sendEvent;
+  }, [sendEvent]);
+
+  useEffect(() => {
+    const isUncertain = !isConnected || connectionStatus === "reconnecting";
+    updateGameState({ loading: isUncertain });
+  }, [isConnected, connectionStatus, updateGameState]);
 
   const handleLobbySyncRef = useRef((data: LobbySyncPayload) => {
     updateGameState({
@@ -48,6 +54,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       isPostGameShowcase: data.status === "POST_GAME_SHOWCASE",
       scores: data.scores ?? [],
       slots: data.slots ?? [],
+      loading: false, // Clear loading gate once we have confirmed state
     });
   });
 
@@ -66,6 +73,8 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       accolades: data.accolades ?? [],
     });
     playSound("timeUp");
+    // Request full state snapshot to populate slots for AnswerReveal
+    (sendEventRef.current as (e: string, d: any) => void)("request_state_sync", undefined);
   });
 
   const handleRoundStartingSoonRef = useRef(() => {
@@ -155,8 +164,10 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           (data.status === "ROUND_BREAK" ||
             data.status === "POST_GAME_SHOWCASE"),
         isRoundBreak: data.status === "ROUND_BREAK",
+        isPostGameShowcase: data.status === "POST_GAME_SHOWCASE", // Keep in sync with initial ref
         scores: data.scores ?? [],
         slots: data.slots ?? [],
+        loading: false, // Clear loading gate once we have confirmed state
       });
     };
 
@@ -197,5 +208,5 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     );
   }, [onEvent]);
 
-  return { sendEvent };
+  return { sendEvent, connectionStatus };
 };

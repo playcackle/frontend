@@ -10,43 +10,40 @@ import SlotTile from "./SlotTile";
 
 function SlotGrid() {
   const slots = useAtomValue(slotsAtom);
-  const [isChipView, setIsChipView] = useState(false);
+  const [useGridLayout, setUseGridLayout] = useState(false);
 
   return (
-    <div className={styles.slotGridWrapper}>
-      {/* Toggle button */}
-      <div className={styles.slotGridToggleRow}>
+    <div>
+      <div className={styles.layoutToggleRow}>
+        <span className={styles.layoutToggleLabel}>LAYOUT</span>
         <button
-          className={`${styles.viewToggleBtn} ${!isChipView ? styles.viewToggleBtnActive : ""}`}
-          onClick={() => setIsChipView(false)}
-          aria-pressed={!isChipView}
-          title="Tile view"
+          type="button"
+          className={`${styles.layoutToggleBtn} ${!useGridLayout ? styles.layoutToggleActive : ""}`}
+          onClick={() => setUseGridLayout(false)}
+          aria-pressed={!useGridLayout}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <rect x="1" y="1" width="6" height="6" rx="1" />
-            <rect x="9" y="1" width="6" height="6" rx="1" />
-            <rect x="1" y="9" width="6" height="6" rx="1" />
-            <rect x="9" y="9" width="6" height="6" rx="1" />
-          </svg>
-          Tiles
+          TILES
         </button>
-        <button
-          className={`${styles.viewToggleBtn} ${isChipView ? styles.viewToggleBtnActive : ""}`}
-          onClick={() => setIsChipView(true)}
-          aria-pressed={isChipView}
-          title="List view"
+        <div
+          className={styles.layoutToggleTrack}
+          onClick={() => setUseGridLayout((v) => !v)}
+          aria-hidden="true"
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <circle cx="8" cy="4" r="6" />
-            <rect x="1" y="10" width="14" height="2" rx="1" />
-            <rect x="1" y="13.5" width="10" height="2" rx="1" />
-          </svg>
-          Progress
+          <div
+            className={`${styles.layoutToggleThumb} ${useGridLayout ? styles.layoutToggleThumbOn : ""}`}
+          />
+        </div>
+        <button
+          type="button"
+          className={`${styles.layoutToggleBtn} ${useGridLayout ? styles.layoutToggleActive : ""}`}
+          onClick={() => setUseGridLayout(true)}
+          aria-pressed={useGridLayout}
+        >
+          GRID
         </button>
       </div>
-
-      {isChipView ? (
-        <AnswerGrid />
+      {useGridLayout ? (
+        <AnswerGrid slots={slots} />
       ) : (
         <div className={styles.slotGrid}>
           {slots.map((slot: Slot, i: number) => (

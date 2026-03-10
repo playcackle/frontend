@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_BASE_URL = process.env.LOBBY_MANAGER_INTERNAL_URL || "http://localhost:8001";
+const PLAYER_SERVICE_URL = process.env.PLAYER_SERVICE_URL || "http://localhost:8004";
 
 type RouteParams = { path?: string[] };
 type RouteContext = { params: RouteParams } | { params: Promise<{ path: string[] }> };
@@ -16,7 +16,7 @@ const resolvePathSegments = async (context: RouteContext): Promise<string[]> => 
 
 const buildTargetUrl = (segments: string[], search: string) => {
   const suffix = segments.length ? `/${segments.join("/")}` : "";
-  return `${BACKEND_BASE_URL}/players${suffix}${search}`;
+  return `${PLAYER_SERVICE_URL}/players${suffix}${search}`;
 };
 
 const HOP_BY_HOP_HEADERS = ["connection", "proxy-connection", "keep-alive", "upgrade", "transfer-encoding"];
@@ -26,7 +26,7 @@ const forwardRequest = async (req: NextRequest, context: RouteContext) => {
   const targetUrl = buildTargetUrl(segments, req.nextUrl.search);
 
   const headers = new Headers(req.headers);
-  headers.set("host", new URL(BACKEND_BASE_URL).host);
+  headers.set("host", new URL(PLAYER_SERVICE_URL).host);
   HOP_BY_HOP_HEADERS.forEach((header) => headers.delete(header));
   headers.delete("content-length");
 

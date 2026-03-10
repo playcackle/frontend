@@ -1,18 +1,18 @@
 "use client";
 
-import { useAtomValue } from "jotai";
 import React, { useEffect, useRef, useState } from "react";
-import styles from "../gameroom.module.css";
-import { slotsAtom } from "../store/gameAtoms";
 import { Slot } from "../types/state";
+import styles from "./AnswerGrid.module.css";
 
-const AnswerGrid: React.FC = () => {
-  const slots = useAtomValue(slotsAtom);
+interface AnswerGridProps {
+  slots: Slot[];
+}
 
-  const totalSlots = slots.length;
+export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
+  const totalAnswers = slots.length;
   const snappedSlots = slots.filter((s) => s.is_snapped);
   const foundCount = snappedSlots.length;
-  const remaining = totalSlots - foundCount;
+  const remaining = totalAnswers - foundCount;
 
   const prevFoundCount = useRef(foundCount);
   const [newlyFound, setNewlyFound] = useState<Set<string>>(new Set());
@@ -23,7 +23,7 @@ const AnswerGrid: React.FC = () => {
         slots
           .filter((s) => s.is_snapped)
           .slice(prevFoundCount.current)
-          .map((s) => s.id)
+          .map((s) => s.id),
       );
       setNewlyFound(latest);
       const t = setTimeout(() => setNewlyFound(new Set()), 800);
@@ -35,7 +35,7 @@ const AnswerGrid: React.FC = () => {
 
   const radius = 44;
   const circumference = 2 * Math.PI * radius;
-  const fillPct = totalSlots > 0 ? foundCount / totalSlots : 0;
+  const fillPct = totalAnswers > 0 ? foundCount / totalAnswers : 0;
   const strokeDash = circumference * fillPct;
 
   return (
@@ -67,7 +67,7 @@ const AnswerGrid: React.FC = () => {
           </svg>
           <div className={styles.progressRingLabel}>
             <span className={styles.progressRingCount}>{foundCount}</span>
-            <span className={styles.progressRingTotal}>/ {totalSlots}</span>
+            <span className={styles.progressRingTotal}>/ {totalAnswers}</span>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ const AnswerGrid: React.FC = () => {
           <p className={styles.answerGridStatusTitle}>
             {foundCount === 0
               ? "No answers found yet"
-              : foundCount === totalSlots
+              : foundCount === totalAnswers
                 ? "All answers found!"
                 : `${foundCount} answer${foundCount !== 1 ? "s" : ""} found`}
           </p>
@@ -87,19 +87,39 @@ const AnswerGrid: React.FC = () => {
 
           {/* Mini dot indicators per slot */}
           <div className={styles.answerDotRow}>
-            {slots.map((slot: Slot) => {
-              const dotClass = slot.is_snapped
-                ? slot.is_rare
-                  ? styles.answerDotBonus
-                  : styles.answerDotFound
-                : styles.answerDotEmpty;
+            {slots.map((slot) => {
+              const attempts = slot.failed_attempts ?? 0;
+              const heatLevel = slot.is_snapped
+                ? "found"
+                : attempts >= 10
+                  ? "inferno"
+                  : attempts >= 6
+                    ? "hot"
+                    : attempts >= 3
+                      ? "warm"
+                      : attempts >= 1
+                        ? "cool"
+                        : "empty";
+              const showFlame = !slot.is_snapped && attempts >= 6;
 
               return (
                 <div
                   key={slot.id}
-                  className={`${styles.answerDot} ${dotClass}`}
-                  title={slot.canonical_text || undefined}
-                />
+                  className={`${styles.answerDot} ${styles[`answerDot_${heatLevel}`]} ${slot.is_rare && slot.is_snapped ? styles.answerDotBonus : ""}`}
+                  title={
+                    attempts > 0
+                      ? `${attempts} failed attempt${attempts !== 1 ? "s" : ""}`
+                      : undefined
+                  }
+                >
+                  {showFlame && (
+                    <span
+                      className={`${styles.dotFlame} ${heatLevel === "inferno" ? styles.dotFlameInferno : ""}`}
+                    >
+                      🔥
+                    </span>
+                  )}
+                </div>
               );
             })}
           </div>
@@ -109,18 +129,12 @@ const AnswerGrid: React.FC = () => {
       {/* Found answer chips */}
       {snappedSlots.length > 0 && (
         <div className={styles.answerChipGrid}>
-          {snappedSlots.map((slot: Slot) => {
+          {snappedSlots.map((slot) => {
             const isNew = newlyFound.has(slot.id);
             return (
               <div
                 key={slot.id}
-                className={[
-                  styles.answerChip,
-                  slot.is_rare ? styles.answerChipBonus : "",
-                  isNew ? styles.answerChipNew : "",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
+                className={`${styles.answerChip} ${slot.is_rare ? styles.answerChipBonus : ""} ${isNew ? styles.answerChipNew : ""}`}
               >
                 <span className={styles.answerChipText}>
                   {slot.canonical_text}
@@ -141,7 +155,7 @@ const AnswerGrid: React.FC = () => {
         <div className={styles.answerGridPlaceholder}>
           <p>
             Type answers in the chat to fill this up. There are{" "}
-            <strong>{totalSlots}</strong> answers to find.
+            <strong>{totalAnswers}</strong> answers to find.
           </p>
         </div>
       )}

@@ -142,10 +142,14 @@
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.18s ease, visibility 0.18s ease;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
   z-index: 100;
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 12px rgba(0, 221, 255, 0.15);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.5),
+    0 0 12px rgba(0, 221, 255, 0.15);
   white-space: normal;
 }
 
@@ -501,7 +505,6 @@
   height: 100%;
   padding: 0.5rem;
   background: rgba(0, 0, 0, 0.4);
-  border-radius: 6px;
 }
 
 .correctAnswer {
@@ -567,18 +570,13 @@
     rgba(0, 0, 0, 0.9) 0%,
     rgba(30, 30, 60, 0.85) 100%
   ); /* Darker, more contrasted background */
-  border-radius: 16px;
+  border-radius: 2px;
   padding: 0.4rem 0.7rem; /* Slightly larger padding */
   gap: 0.4rem;
-  box-shadow:
-    0 0 20px rgba(255, 255, 255, 0.5),
-    inset 0 0 15px rgba(255, 255, 255, 0.15),
-    0 4px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow for depth */
-  border: 2px solid rgba(255, 255, 255, 0.4); /* Slightly more opaque border */
   position: relative;
   margin-top: 0.5rem;
+  width: 100%;
   z-index: 2;
-  max-width: 90%;
   align-self: center;
   animation: badgeAppear 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
   backdrop-filter: blur(10px);
@@ -599,7 +597,6 @@
     rgba(255, 255, 255, 0.3) 50%,
     transparent 70%
   );
-  animation: badgeShimmer 2s ease-in-out 0.5s infinite;
   pointer-events: none;
 }
 
@@ -620,24 +617,10 @@
   left: -2px;
   right: -2px;
   bottom: -2px;
-  border-radius: 14px;
   background: transparent;
   z-index: -1;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
   opacity: 0;
-  animation: badgeGlow 2s ease-in-out 0.6s infinite alternate;
-}
-
-/* Add a subtle glow animation */
-@keyframes badgeGlow {
-  0% {
-    opacity: 0.2;
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-  }
-  100% {
-    opacity: 0.6;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-  }
 }
 
 /* Enhance the player badge avatar with a subtle pulse */
@@ -652,7 +635,6 @@
   font-weight: bold;
   color: white;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.2);
   font-family: var(--retro-font-alt);
   animation: avatarPulse 3s ease-in-out 1s infinite alternate;
@@ -688,7 +670,6 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  cursor: pointer;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
@@ -1289,7 +1270,7 @@
 
 .messagesScrollArea {
   flex: 1;
-  padding: 1rem;
+  padding: 0.5rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -1343,6 +1324,7 @@
 
 .unifiedMessage {
   padding: 0.25rem;
+  padding-left: 0.5rem;
   border-radius: 6px;
   font-size: 0.7rem;
   animation: messageAppear 0.3s ease-out;
@@ -1364,16 +1346,9 @@
 }
 
 .successfulAnswerMessage {
-  border-left-color: #ffd700;
-  background-color: rgba(255, 215, 0, 0.1);
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+  border-left-color: var(--neon-green);
+  background-color: rgba(0, 255, 102, 0.05);
   animation: correctAnswerGlow 1s ease-out;
-}
-
-.failedAnswerMessage {
-  border-left-color: #ff4444;
-  background-color: rgba(255, 0, 0, 0.05);
-  opacity: 0.8;
 }
 
 .messagePrefix {
@@ -1385,7 +1360,6 @@
 }
 
 .messageUser {
-  font-weight: bold;
   color: var(--neon-blue);
   font-size: 0.8rem;
 }
@@ -1397,8 +1371,9 @@
 }
 
 .messageContent {
-  margin-top: 0.25rem;
-  line-height: 1.4;
+  margin-bottom: 0.25rem;
+  line-height: 1;
+  font-size: 1.1rem;
 }
 
 .canonicalAnswer {
@@ -1509,13 +1484,13 @@
 /* Animation keyframes for unified messages */
 @keyframes correctAnswerGlow {
   0% {
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 8px rgba(0, 255, 102, 0.2);
   }
   50% {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 20px rgba(0, 255, 102, 0.6);
   }
   100% {
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 8px rgba(0, 255, 102, 0.2);
   }
 }
 /* ============================
@@ -1599,7 +1574,7 @@
    ============================ */
 
 .botBobPinned {
-  border-bottom: 2px solid rgba(183, 0, 255, 0.5);
+  border-bottom: 2px solid rgba(0, 191, 255, 0.5);
   padding: 0.5rem;
   position: relative;
   overflow: hidden;
@@ -1623,18 +1598,18 @@
 
 .botBobName {
   font-size: 0.85rem;
-  font-weight: bold;
-  color: var(--neon-purple);
+  color: #00bfff;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-family: var(--retro-font);
-  text-shadow: 0 0 10px rgba(183, 0, 255, 0.7);
+  text-shadow: 0 0 10px rgba(0, 191, 255, 0.7);
 }
 
 .botBobText {
-  font-size: 0.85rem;
+  font-weight: bold;
+  font-size: 1.1rem;
   color: white;
-  line-height: 1.4;
+  line-height: 1.1;
   font-family: var(--retro-font-alt);
 }
 
@@ -1660,251 +1635,104 @@
   overflow-wrap: break-word;
 }
 
-/* ── SlotGrid wrapper & view toggle ──────────────────────── */
-.slotGridWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
+/* ============================
+   CHAT MESSAGE TYPE VARIANTS
+   ============================ */
+
+/* Bot Bob message in scrolling feed — blue, distinct from player chat (purple) */
+.botBobMessage {
+  border-left-color: var(--neon-blue);
+  background-color: rgba(0, 221, 255, 0.05);
 }
 
-.slotGridToggleRow {
-  display: flex;
-  gap: 0.5rem;
-  flex-shrink: 0;
+/* Duplicate / already-snapped attempt — orange border, muted */
+.duplicateMessage {
+  border-left-color: #ff8c00;
+  background-color: rgba(255, 140, 0, 0.05);
+  opacity: 0.75;
 }
 
-.viewToggleBtn {
+/* Combined class: own message that is also a correct answer — green wins over blue tint */
+/* Addresses: .ownMessage uses !important so successfulAnswerMessage green is suppressed without this */
+.ownSuccessfulAnswerMessage {
+  background-color: rgba(0, 255, 102, 0.05) !important;
+  border-left-color: var(--neon-green) !important;
+}
+
+/* Performance mode: suppress successfulAnswerMessage glow animation */
+:global(.performance-mode) .successfulAnswerMessage {
+  animation: none;
+}
+
+/* Performance mode: suppress botBobMessage inset glow */
+:global(.performance-mode) .botBobMessage {
+  box-shadow: none;
+}
+
+/* ── Layout toggle ─────────────────────────────────────────── */
+.layoutToggleRow {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.5);
-  font-family: var(--retro-font-alt);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.layoutToggleLabel {
+  font-family: var(--retro-font);
   font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+}
+
+.layoutToggleBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.4);
+  padding: 0.3rem 0.9rem;
+  border-radius: 4px;
+  font-family: var(--retro-font);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.viewToggleBtn:hover {
+.layoutToggleBtn.layoutToggleActive {
   border-color: var(--neon-pink);
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 0, 170, 0.1);
+  color: var(--neon-pink);
+  text-shadow: 0 0 8px rgba(255, 0, 170, 0.7);
+  box-shadow: 0 0 8px rgba(255, 0, 170, 0.3);
 }
 
-.viewToggleBtnActive {
-  border-color: var(--neon-pink);
-  background: rgba(255, 0, 170, 0.15);
-  color: white;
-  box-shadow: 0 0 8px rgba(255, 0, 170, 0.4);
-}
-
-/* ── AnswerGrid layout ─────────────────────────────────────── */
-.answerGridContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  width: 100%;
-  overflow-y: auto;
-  min-height: 0;
-}
-
-.answerGridHero {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.progressRingWrapper {
+.layoutToggleTrack {
+  width: 42px;
+  height: 22px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
+  cursor: pointer;
+  transition: background 0.3s ease;
   flex-shrink: 0;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.progressRingSvg {
+.layoutToggleThumb {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
 }
 
-.progressRingFill {
-  transition: stroke-dashoffset 0.5s ease;
-  filter: drop-shadow(0 0 6px var(--neon-pink));
-}
-
-.progressRingLabel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1;
-  gap: 2px;
-}
-
-.progressRingCount {
-  font-family: var(--retro-font);
-  font-size: 2.2rem;
-  font-weight: bold;
-  color: white;
-  text-shadow: 0 0 10px var(--neon-pink);
-  line-height: 1;
-}
-
-.progressRingTotal {
-  font-family: var(--retro-font-alt);
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.answerGridStatus {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  flex: 1;
-  min-width: 0;
-}
-
-.answerGridStatusTitle {
-  font-family: var(--retro-font);
-  font-size: 0.95rem;
-  color: white;
-  text-shadow: 0 0 8px var(--neon-pink);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 0;
-}
-
-.answerGridStatusSub {
-  font-family: var(--retro-font-alt);
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin: 0;
-}
-
-/* ── Dot indicators ───────────────────────────────────────── */
-.answerDotRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 0.4rem;
-}
-
-.answerDot {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  border: 1px solid transparent;
-  transition: background 0.4s ease, box-shadow 0.4s ease;
-}
-
-.answerDotEmpty {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.answerDotFound {
+.layoutToggleThumb.layoutToggleThumbOn {
+  transform: translateX(20px);
   background: var(--neon-pink);
-  border-color: var(--neon-pink);
-  box-shadow: 0 0 6px rgba(255, 0, 170, 0.7);
-}
-
-.answerDotBonus {
-  background: var(--neon-purple);
-  border-color: var(--neon-purple);
-  box-shadow: 0 0 6px rgba(183, 0, 255, 0.7);
-}
-
-/* ── Answer chips ─────────────────────────────────────────── */
-.answerChipGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.answerChip {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0.4rem 0.75rem;
-  border-radius: 10px;
-  border: 1px solid var(--neon-pink);
-  background: rgba(255, 0, 170, 0.12);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: chipAppear 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
-.answerChipBonus {
-  border-color: var(--neon-purple);
-  background: rgba(183, 0, 255, 0.12);
-}
-
-.answerChipNew {
-  transform: scale(1.1);
-  box-shadow: 0 0 18px rgba(255, 0, 170, 0.8);
-}
-
-.answerChipBonus.answerChipNew {
-  box-shadow: 0 0 18px rgba(183, 0, 255, 0.8);
-}
-
-.answerChipText {
-  font-family: var(--retro-font);
-  font-size: 0.75rem;
-  font-weight: bold;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  line-height: 1.2;
-}
-
-.answerChipPlayer {
-  font-family: var(--retro-font-alt);
-  font-size: 0.62rem;
-  color: rgba(255, 255, 255, 0.55);
-  line-height: 1.2;
-  white-space: nowrap;
-}
-
-@keyframes chipAppear {
-  from {
-    opacity: 0;
-    transform: scale(0.6) translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* Placeholder */
-.answerGridPlaceholder {
-  border: 1px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  padding: 1.25rem;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.answerGridPlaceholder p {
-  font-family: var(--retro-font-alt);
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.4);
-  margin: 0;
-}
-
-.answerGridPlaceholder strong {
-  color: white;
+  box-shadow: 0 0 6px rgba(255, 0, 170, 0.8);
 }
