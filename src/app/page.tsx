@@ -5,6 +5,7 @@ import OnboardingModal from "@/components/onboarding-modal";
 import SettingsControls from "@/components/settings-controls";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import HomeLeaderboard from "../components/home-leaderboard";
 import styles from "./page.module.css";
 
 type LobbyInfo = {
@@ -95,7 +96,8 @@ export default async function Home({
               <section className={styles.section}>
                 <div className={styles.sectionHeader}>
                   <h2 className={styles.sectionTitle}>
-                    <span className={styles.sectionTitleAccent}>Your</span> Stats
+                    <span className={styles.sectionTitleAccent}>Your</span>{" "}
+                    Stats
                   </h2>
                   <Link href="/profile" className={styles.seeAllLink}>
                     Full Profile

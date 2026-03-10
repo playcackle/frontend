@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from "react"
-import * as Dialog from "@radix-ui/react-dialog"
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
-import { useRouter } from "next/navigation"
-import styles from "./onboarding-modal.module.css"
+import * as Dialog from "@radix-ui/react-dialog";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import styles from "./onboarding-modal.module.css";
 
 const STEPS = [
   {
@@ -17,7 +17,7 @@ const STEPS = [
     id: 2,
     icon: "#",
     title: "Round Topic",
-    body: "Each game has 12 rounds. Every round has a topic. Type answers that fit the topic.",
+    body: "Each game has X rounds. Every round has a topic. Type answers that fit the topic.",
   },
   {
     id: 3,
@@ -43,45 +43,50 @@ const STEPS = [
     title: "Beat the Clock",
     body: "Every room has a countdown timer. Find as many answers as you can before time runs out. Then watch the leaderboard explode.",
   },
-]
+];
 
 interface OnboardingModalProps {
-  show: boolean
+  show: boolean;
 }
 
 export default function OnboardingModal({ show }: OnboardingModalProps) {
-  const [open, setOpen] = useState(false)
-  const [step, setStep] = useState(0)
-  const [animating, setAnimating] = useState(false)
-  const router = useRouter()
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (show) {
-      const t = setTimeout(() => setOpen(true), 600)
-      return () => clearTimeout(t)
+      const t = setTimeout(() => setOpen(true), 600);
+      return () => clearTimeout(t);
     }
-  }, [show])
+  }, [show]);
 
   const dismiss = () => {
-    setOpen(false)
+    setOpen(false);
     // Remove the onboarding query param without adding to history
-    router.replace("/")
-  }
+    router.replace("/");
+  };
 
   const goTo = (next: number) => {
-    if (animating) return
-    setAnimating(true)
+    if (animating) return;
+    setAnimating(true);
     setTimeout(() => {
-      setStep(next)
-      setAnimating(false)
-    }, 180)
-  }
+      setStep(next);
+      setAnimating(false);
+    }, 180);
+  };
 
-  const current = STEPS[step]
-  const isLast = step === STEPS.length - 1
+  const current = STEPS[step];
+  const isLast = step === STEPS.length - 1;
 
   return (
-    <Dialog.Root open={open} onOpenChange={(v) => { if (!v) dismiss() }}>
+    <Dialog.Root
+      open={open}
+      onOpenChange={(v) => {
+        if (!v) dismiss();
+      }}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className={styles.overlay} />
         <Dialog.Content className={styles.content} aria-describedby={undefined}>
@@ -103,7 +108,9 @@ export default function OnboardingModal({ show }: OnboardingModalProps) {
           </div>
 
           {/* Step content */}
-          <div className={`${styles.stepBody} ${animating ? styles.stepBodyHidden : styles.stepBodyVisible}`}>
+          <div
+            className={`${styles.stepBody} ${animating ? styles.stepBodyHidden : styles.stepBodyVisible}`}
+          >
             <div className={styles.stepIcon} aria-hidden="true">
               {current.icon}
             </div>
@@ -112,7 +119,11 @@ export default function OnboardingModal({ show }: OnboardingModalProps) {
           </div>
 
           {/* Progress dots */}
-          <div className={styles.dots} role="tablist" aria-label="Onboarding steps">
+          <div
+            className={styles.dots}
+            role="tablist"
+            aria-label="Onboarding steps"
+          >
             {STEPS.map((s, i) => (
               <button
                 type="button"
@@ -163,5 +174,5 @@ export default function OnboardingModal({ show }: OnboardingModalProps) {
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  )
+  );
 }
