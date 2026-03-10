@@ -30,6 +30,10 @@ export default function UnifiedInputForm({
   const [input, setInput] = useAtom(unifiedInputAtom);
   const { clearAnswer } = useAnswer();
   const [profanityError, setProfanityError] = useState(false);
+  const [repeatError, setRepeatError] = useState(false);
+  const recentAnswers = React.useRef<string[]>([]);
+
+  const REPEAT_LIMIT = 5;
 
   const timeExpired = timeRemaining === 0;
   const isAnswerMode = !isRoundBreak && !timeExpired;
@@ -37,8 +41,9 @@ export default function UnifiedInputForm({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
-    // Clear error as soon as the user edits the input
+    // Clear errors as soon as the user edits the input
     if (profanityError) setProfanityError(false);
+    if (repeatError) setRepeatError(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -51,10 +56,25 @@ export default function UnifiedInputForm({
       return;
     }
 
+    // Block if the last REPEAT_LIMIT submissions were the same answer
+    const normalised = trimmed.toLowerCase();
+    const recent = recentAnswers.current;
+    if (
+      recent.length >= REPEAT_LIMIT &&
+      recent.slice(-REPEAT_LIMIT).every((a) => a === normalised)
+    ) {
+      setRepeatError(true);
+      return;
+    }
+
+    // Track this submission; keep only the last REPEAT_LIMIT entries
+    recentAnswers.current = [...recent, normalised].slice(-REPEAT_LIMIT);
+
     onSubmit(trimmed, isAnswerMode);
     setInput("");
     clearAnswer();
     setProfanityError(false);
+    setRepeatError(false);
   };
 
   return (
@@ -78,6 +98,11 @@ export default function UnifiedInputForm({
               Abusive or racist language is not allowed.
             </span>
           )}
+          {repeatError && (
+            <span className={styles.profanityError}>
+              You cannot send the same answer more than {REPEAT_LIMIT} times in a row.
+            </span>
+          )}
           <Flex direction="row" gap="2">
             <input
               type="text"
@@ -86,7 +111,7 @@ export default function UnifiedInputForm({
               placeholder={placeholderText}
               className={`${styles.unifiedInput} ${
                 isAnswerMode ? styles.answerMode : styles.chatMode
-              } ${profanityError ? styles.inputError : ""}`}
+              } ${profanityError || repeatError ? styles.inputError : ""}`}
             />
           </Flex>
         </Flex>
