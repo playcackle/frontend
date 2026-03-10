@@ -1372,7 +1372,6 @@
 
 .messageContent {
   margin-bottom: 0.25rem;
-  margin-left: 0.25rem;
   line-height: 1;
   font-size: 1.1rem;
 }
@@ -1624,6 +1623,7 @@
   flex-direction: column;
   gap: 0.25rem;
   min-width: 0;
+  padding-left: 0.25rem;
 }
 
 /* Adjust message styling to work with avatars */
