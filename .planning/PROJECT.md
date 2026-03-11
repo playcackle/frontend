@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A real-time multiplayer quiz/trivia game platform built on Next.js 16 with Socket.IO. Players join game rooms, answer questions through a shared chat feed, and compete on live leaderboards. The platform serves returning players through a progression system and new players through onboarding.
+A real-time multiplayer quiz/trivia game platform built on Next.js 16 with Socket.IO. Players join game rooms, answer questions through a shared chat feed, and compete on live leaderboards. The platform serves returning players through a progression system and new players through onboarding. v1.0 shipped reliable state sync, readable chat feedback, user onboarding, and a rich player stats landing page.
 
 ## Core Value
 
@@ -21,31 +21,35 @@ Players must always know where they are in the game and what their actions mean 
 - ✓ Leaderboard with animated rank changes — existing
 - ✓ Performance mode toggle (reduced effects) — existing
 - ✓ Round lifecycle events (new_round_started, round_over, game_over) — existing
+- ✓ Client auto-recovers game state at round→intermission transition — v1.0
+- ✓ Reconnecting indicator shown when game state is uncertain — v1.0
+- ✓ Client recovers to correct game phase after WebSocket reconnection — v1.0
+- ✓ Chat message type differentiation: correct answers, Bot Bob hints, duplicate attempts — v1.0
+- ✓ New user onboarding walkthrough modal with screenshots, skippable, shown only once — v1.0
+- ✓ Landing page player card with Progresjonsscore, high scores, playstyle dashboard, global leaderboard — v1.0
 
 ### Active
 
-- [ ] Fix round→intermission state sync: client recovers current game state automatically without rejoining
-- [ ] Onboarding flow for new users: multi-step walkthrough with screenshots, skippable
-- [ ] Landing page redesign: player card with Progresjonsscore, high scores (daily/weekly/monthly/yearly), playstyle dashboard with percentile per category, global leaderboard
-- [ ] Chat message type differentiation: correct answers, Bot Bob hints, and duplicate/already-answered attempts visually distinguished via colors or animations
+(Define next milestone requirements with `/gsd:new-milestone`)
 
 ### Out of Scope
 
 - Backend game logic changes — frontend-only project, game server is external
 - Mobile native app — web-first
 - New game modes — scope limited to UX and reliability improvements
+- Leaderboard filtering by friends — v2 social features deferred
 
 ## Context
 
-**Codebase:** Next.js 16 App Router, React 19, TypeScript, Jotai atoms, Socket.IO client 4.8, Supabase auth, Radix UI, GSAP for animations. See `.planning/codebase/` for full analysis.
+**Current state (v1.0):** ~13,000 LOC TypeScript. Next.js 16 App Router, React 19, TypeScript, Jotai atoms, Socket.IO client 4.8, Supabase auth, Radix UI, GSAP for animations. See `.planning/codebase/` for full analysis.
 
 **Real-time architecture:** Two separate WebSocket connections — `useGameSocket` for game events, `useChatSocket` for messaging. Game state stored in `gameStateAtom`; messages in `unifiedMessagesAtom`. Events flow through `useGameEvents` hook which updates atoms.
 
-**Known state sync issue:** The client loses current game state at round→intermission transition. The `round_over` event or the subsequent intermission state is not reaching the client cleanly, and there is no recovery path (no re-request mechanism). The existing `lobby_state_sync` event may be the hook for recovery.
+**State sync:** `round_over` and reconnect both emit `request_state_sync`; `lobby_state_sync` response delivers full game state. Client always lands in correct phase.
 
-**Message types:** The `UnifiedMessage` type already has a `message_type` field distinguishing `chat`, `answer_attempt`, `successful_answer`, `failed_answer`. Visual differentiation between these types needs to be surfaced in the UI.
+**Message types:** `UnifiedMessage.message_type` drives visual differentiation in `UnifiedMessages.tsx`. `getMessageTypeClass()` and `getMessageBadge()` handle all variants. CSS classes in `gameroom.module.css`.
 
-**Progression:** Some player stats exist in the backend. The Progresjonsscore system and per-category percentile data need to be surfaced via new API endpoints and displayed on the landing page.
+**Progression:** Player stats (Progresjonsscore, category percentiles, high scores) are fetched from Supabase/backend at landing page load and displayed in the player card component.
 
 ## Constraints
 
@@ -57,9 +61,13 @@ Players must always know where they are in the game and what their actions mean 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Use `lobby_state_sync` event for state recovery | Already exists in event system — extend rather than add new events | — Pending |
-| Visual differentiation via existing `message_type` field | `UnifiedMessage` already categorizes messages — add styling layer | — Pending |
-| Player card data fetched from Supabase/backend at page load | Progression data already partially tracked server-side | — Pending |
+| Use `lobby_state_sync` event for state recovery | Already exists in event system — extend rather than add new events | ✓ Good — clean, no new backend events needed |
+| Visual differentiation via existing `message_type` field | `UnifiedMessage` already categorizes messages — add styling layer | ✓ Good — zero schema changes |
+| Player card data fetched from Supabase/backend at page load | Progression data already partially tracked server-side | ✓ Good — implemented in v1.0 |
+| Use initializeSocketRef for circular useCallback dependency | Ref indirection breaks scheduleReconnect ↔ initializeSocket circular dep | ✓ Good — minimal invasive change |
+| Functional setSocketState for async state reads | Eliminates stale closure risk in reconnect callbacks | ✓ Good — pattern adopted throughout hooks |
+| Correct answers = neon green (not gold) | Consistent with slot tiles which use `--neon-green` for answered state | ✓ Good — coherent "green = success" visual language |
+| Own failed answer = neutral (not blue) | `.ownFailedAnswerMessage` resets `.ownMessage` blue !important | ✓ Good — avoids confusing blue styling for wrong answers |
 
 ---
-*Last updated: 2026-02-25 after initialization*
+*Last updated: 2026-03-11 after v1.0 milestone*
