@@ -1,228 +1,216 @@
 # Architecture
 
-**Analysis Date:** 2026-02-25
+**Analysis Date:** 2026-03-11
 
 ## Pattern Overview
 
-**Overall:** Next.js 16 full-stack application with real-time game engine integration and state management via Jotai
+**Overall:** Hybrid Server/Client Component Architecture with Real-Time WebSocket Communication
 
 **Key Characteristics:**
-- Server-first architecture with Next.js App Router
-- Real-time WebSocket connections for game state synchronization
-- Atomic state management with Jotai for UI reactivity
-- Server actions for authentication and server-side operations
-- Supabase for authentication and identity
-- External backend API (Lobby Manager) for game logic and WebSocket coordination
+- Next.js 16 App Router with server-side rendering and API proxying
+- Client-side state management using Jotai (atomic state) for real-time game state
+- WebSocket-based game event streaming via Socket.IO
+- Supabase authentication with server-side session management
+- Multi-service backend proxy pattern (Lobby Manager, Content Service, Player Service, Gameroom instances)
 
 ## Layers
 
-**Presentation Layer:**
-- Purpose: Render UI components and handle user interactions
-- Location: `src/components/`, `src/app/*/page.tsx`, `src/app/*/layout.tsx`
-- Contains: React components, page layouts, modal dialogs, buttons
-- Depends on: State management atoms, hooks, styling
-- Used by: Next.js routing and layout system
+**Server Layer (Server Components & API Routes):**
+- Purpose: Initial page rendering, authentication, layout setup, API proxying to backend services
+- Location: `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/api/`, `src/proxy.ts`
+- Contains: Server components, metadata, layouts, request forwarding
+- Depends on: Supabase (SSR client), environment variables for backend URLs
+- Used by: All pages and client components for authenticated access
+
+**Data Access & Integration Layer:**
+- Purpose: Communicate with backend microservices and Supabase
+- Location: `src/lib/api/admin.ts`, `src/lib/api/players.ts`, `src/lib/supabase/`
+- Contains: Typed API clients with methods for collections, topics, slots, lobbies, player profiles, generation
+- Depends on: Fetch API, environment configuration
+- Used by: Server components, client hooks, admin pages
 
 **State Management Layer:**
-- Purpose: Manage client-side application state using atomic state pattern
-- Location: `src/app/gameroom/store/gameAtoms.ts`, `src/app/store/gameRoom.ts`, `src/atoms/performance-atom.ts`
-- Contains: Jotai atoms for game state, animation state, messages, performance settings
-- Depends on: Jotai library
-- Used by: Components via `useAtomValue()`, `useSetAtom()`, `useAtom()`
+- Purpose: Centralized real-time game state and UI state
+- Location: `src/app/gameroom/store/gameAtoms.ts`, `src/atoms/performance-atom.ts`, `src/app/store/gameRoom.ts`
+- Contains: Jotai atoms for game state, animations, messages, performance settings
+- Depends on: Jotai library, localStorage (for persistence)
+- Used by: All gameroom components and hooks
 
-**Hooks Layer:**
-- Purpose: Encapsulate complex logic and side effects for reuse across components
-- Location: `src/app/gameroom/hooks/`, `src/hooks/`
-- Contains: Custom React hooks for game actions, socket management, user authentication, game events
-- Key files: `useGameSocket.ts`, `useChatSocket.ts`, `useGameEvents.ts`, `useGameActions.ts`, `useGameState.ts`, `useUser.ts`
-- Depends on: State atoms, Socket.IO client, Supabase client
-- Used by: Page components and other hooks
+**WebSocket Communication Layer:**
+- Purpose: Real-time game events and chat messages
+- Location: `src/app/gameroom/hooks/useGameSocket.ts`, `src/app/gameroom/hooks/useChatWs.ts`
+- Contains: Socket.IO connection management with reconnection logic, event listeners, debouncing
+- Depends on: Socket.IO client, game state atoms
+- Used by: Game page to maintain connection and dispatch events
 
-**Server Actions Layer:**
-- Purpose: Handle server-side operations with secure context
-- Location: `src/actions/`
-- Contains: Authentication (signup, signin, signout), lobby joining operations
-- Key files: `auth.ts`, `joinGameroom.ts`
-- Depends on: Supabase server client, Next.js revalidation
-- Used by: Form submissions, client-side user actions
+**Business Logic Layer:**
+- Purpose: Game-specific behavior, animations, input handling, event processing
+- Location: `src/app/gameroom/hooks/useGameActions.ts`, `src/app/gameroom/hooks/useGameEvents.ts`, `src/app/gameroom/hooks/useGameState.ts`
+- Contains: Custom hooks for action submission, event processing, animation triggering
+- Depends on: Jotai atoms, Sound Effects component, DOM manipulation
+- Used by: Gameroom page and components
 
-**API Integration Layer:**
-- Purpose: Interface with external services (Supabase, WebSocket, Lobby Manager)
-- Location: `src/lib/supabase/`, `src/app/gameroom/hooks/useGameSocket.ts`, `src/app/gameroom/hooks/useChatSocket.ts`
-- Contains: Supabase client instances (server/client), Socket.IO initialization, API endpoints
-- Depends on: Supabase SDK, Socket.IO client, environment variables
-- Used by: Server actions, hooks, server components
+**Components Layer:**
+- Purpose: UI rendering and user interaction
+- Location: `src/components/`, `src/app/gameroom/components/`, `src/app/admin/`
+- Contains: React components for rendering game UI, forms, modals, lists
+- Depends on: Component libraries (Radix UI), Jotai atoms, CSS modules
+- Used by: Pages and other components
 
-**Types Layer:**
-- Purpose: Centralize TypeScript type definitions for consistency and maintainability
-- Location: `src/types/`, `src/app/gameroom/types/`
-- Contains: Type definitions for state, WebSocket events, payloads, game entities
-- Key files: `state.ts` (GameState, Slot, Score), `payloads.ts` (EventPayloadMap, game events)
-- Used by: All layers for type safety
+**Styling & Animation:**
+- Purpose: Visual effects, animations, themes
+- Location: `src/styles/`, `src/app/globals.css`, `.module.css` files
+- Contains: CSS modules, global styles, Radix UI theming
+- Depends on: Animate.css, GSAP, custom CSS animations
+- Used by: Components
 
 ## Data Flow
 
-**Authentication Flow:**
+**Home Page Load (Authenticated User):**
 
-1. User fills signup/login form on `/register` or `/login`
-2. Form submission triggers server action (`src/actions/auth.ts`)
-3. Server action calls Supabase auth API
-4. On success, session stored in cookies via middleware
-5. Supabase SSR client (`src/lib/supabase/server.ts`) manages cookie-based session
-6. Root layout checks session and renders authenticated UI
+1. Server-side: `layout.tsx` creates Supabase client and fetches user
+2. Server-side: `page.tsx` fetches available lobbies from backend via `fetchGamerooms()`
+3. Server-side: Renders home page with lobby list, user stats, leaderboard
+4. Client-side: `Provider` wraps app with Jotai provider
+5. Client-side: Home components fetch additional data (stats, leaderboard via API calls)
 
-**Game Join & Initialization Flow:**
+**Game Room Entry:**
 
-1. Authenticated user on home page sees game lobbies (fetched in `src/app/page.tsx`)
-2. User clicks gameroom tile → triggers `joinGameroom()` server action
-3. Server action posts to Lobby Manager backend API
-4. Backend returns token, game_ws_url, chat_ws_url
-5. Response stored in `gameRoomAtom` (global Jotai atom at `src/app/store/gameRoom.ts`)
-6. User navigated to `/gameroom` page
-7. Page initializes WebSocket connections via `useGameSocket()` and `useChatSocket()`
+1. User navigates to `/gameroom/[id]`
+2. Page loads `gameRoomAtom` which should contain selected lobby info
+3. Server middleware authenticates session via `proxy.ts`
+4. Page initializes WebSocket connections via `useGameSocket()` and `useChatWs()`
+5. Socket emits `connection_success` event, updates `gameStateAtom`
 
-**Real-Time Game State Flow:**
+**Slot Snapped (Core Game Loop):**
 
-1. WebSocket connection established to game server via `useGameSocket()` hook
-2. Game server emits events: `lobby_tick`, `new_round_started`, `slot_snapped`, `round_over`, `game_over`
-3. Event handlers in `useGameEvents()` hook receive payloads
-4. Payloads update Jotai atoms via `updateGameStateAtom` action
-5. Components subscribed to atoms via `useAtomValue()` re-render automatically
-6. Player submits answer via `UnifiedInputForm` component
-7. `useGameActions()` debounced submit function sends answer through socket
-8. Backend broadcasts slot snap events; UI updates with animation state
+1. Backend sends `slot_snapped` event via game WebSocket
+2. `useGameEvents()` hook receives payload and dispatches it
+3. Event updates `gameStateAtom` with new slot state, scores, and accolades
+4. Animations triggered via `updateAnimationStateAtom` and `useGameActions.triggerCorrectAnswerEffects()`
+5. Sound effects play if performance mode enabled
+6. Components re-render only affected parts (React optimization)
 
-**Messaging Flow:**
+**Answer Submission:**
 
-1. Unified messaging system combining chat and answer attempts
-2. Chat messages received via chat WebSocket → stored in `unifiedMessagesAtom`
-3. Answer attempts submitted → locally added to `unifiedMessagesAtom` immediately (optimistic UI)
-4. Both message types rendered by `UnifiedMessages` component
-5. Bot Bob messages tracked separately via `botBobLastMessageAtom` for pinned message display
+1. User types in `UnifiedInputForm` and submits
+2. Form clears input, calls `submitAnswer()` from `useGameActions`
+3. `useGameActions` sends `submit_answer` event via game socket
+4. Backend validates and responds with `submission_feedback` payload
+5. Feedback contains status: success/incorrect/too_slow/already_snapped
+6. Event handler in `useGameEvents` processes feedback and may trigger animations
+
+**Admin Content Management:**
+
+1. Admin navigates to `/admin/collections`, `/admin/topics`, etc.
+2. Server component calls `collectionsApi.getAll()`, `topicsApi.getAll()` etc.
+3. Forms for CRUD operations use `collectionsApi.create()`, `.update()`, `.delete()`
+4. Excel file uploads use `topicsApi.uploadExcel()`
+5. AI content generation via `generationApi.generateTopic()`
 
 **State Management:**
 
-- **Global State:** Jotai atoms in `src/app/gameroom/store/gameAtoms.ts` and `src/app/store/gameRoom.ts`
-  - `gameStateAtom`: Core game state (scores, slots, round info)
-  - `animationStateAtom`: UI animation triggers (screen shake, flash, zoom)
-  - `unifiedMessagesAtom`: Chat and answer messages
-  - `gameRoomAtom`: Current game room connection info
-  - Derived atoms for specific properties to optimize re-renders
-
-- **Local Component State:** React `useState()` for UI-only state like input forms, animations
-  - `previousPositionsRef`: Track leaderboard rank changes for animation triggers
-  - `playerAnimations`: Map of animation states per player
-
-- **Persistent State:** localStorage via `atomWithStorage()` utility
-  - `performanceModeAtom`: User performance preference (reduced effects)
-  - `performanceConfiguredAtom`: Whether user completed performance setup
+- **Derived atoms:** Components subscribe to specific game state slices (playerCount, timeRemaining, etc.) to prevent unnecessary re-renders
+- **Message system:** Unified messages atom combines chat and answer attempts
+- **Animation state:** Separate from game state for cleaner updates
+- **Reset atoms:** Action atoms that perform bulk state resets (e.g., at game end)
 
 ## Key Abstractions
 
-**Event System (Socket.IO + Jotai):**
-- Purpose: Decouple game server events from UI rendering
-- Examples: `useGameSocket()` (game logic), `useChatSocket()` (messaging)
-- Pattern: Event listeners registered in listeners map, debouncing for high-frequency events, optimistic error handling
+**Unified Messages System:**
+- Purpose: Combine chat messages and answer attempt feedback into single feed
+- Examples: `src/app/gameroom/store/gameAtoms.ts` (UnifiedMessage type), `src/app/gameroom/components/UnifiedMessages.tsx`
+- Pattern: Type union with discriminated `message_type` field; single atom with add/clear actions
 
-**Message Abstraction:**
-- Purpose: Unify chat messages and answer attempts into single stream
-- Examples: `UnifiedMessage` type combining `ChatMessageData` with submission metadata
-- Pattern: `message_type` field distinguishes message source (chat, answer_attempt, successful_answer, failed_answer)
+**API Client Pattern:**
+- Purpose: Typed, error-handling HTTP communication with backend services
+- Examples: `src/lib/api/admin.ts`, `src/lib/api/players.ts`
+- Pattern: Fetch wrapper with baseUrl, error parsing, return types for each operation
 
-**Game State Selectors:**
-- Purpose: Allow components to subscribe to specific state pieces without subscribing to entire game state
-- Examples: `timeRemainingAtom`, `scoresAtom`, `isRoundBreakAtom` derived from `gameStateAtom`
-- Pattern: Jotai derived atoms using `atom((get) => get(gameStateAtom).property)`
+**Socket.IO Event Listener Management:**
+- Purpose: Type-safe event handling with debouncing and reconnection
+- Examples: `src/app/gameroom/hooks/useGameSocket.ts`, `src/app/gameroom/hooks/useChatWs.ts`
+- Pattern: Listener map with Set, memoized event handler functions, cleanup in useEffect
 
-**Performance Mode Toggle:**
-- Purpose: Reduce animations and effects on lower-end devices
-- Examples: `performanceModeAtom`, `setPerformancePreferenceAtom` action atom
-- Pattern: User preference stored in localStorage, applied as body CSS class, checked in component conditionals
+**Animation Trigger Pattern:**
+- Purpose: Orchestrate DOM animations, sound effects, and state updates
+- Examples: `src/app/gameroom/hooks/useGameActions.ts` (triggerCorrectAnswerEffects)
+- Pattern: Create overlay divs, apply CSS classes, remove after animation completes, reset state
+
+**Jotai Atom Pattern:**
+- Purpose: Atomic state updates with derived atoms to optimize re-renders
+- Examples: `src/app/gameroom/store/gameAtoms.ts`
+- Pattern: Base atom + derived read-only atoms + action atoms for writes
 
 ## Entry Points
 
-**Root Layout (`src/app/layout.tsx`):**
-- Location: `src/app/layout.tsx`
-- Triggers: Application startup, page navigation
-- Responsibilities: Wraps entire app with providers (Jotai, Radix UI Theme), renders header and background, handles CRT effect styling
-
-**Home Page (`src/app/page.tsx`):**
+**Home Page:**
 - Location: `src/app/page.tsx`
-- Triggers: User navigates to `/` after authentication
-- Responsibilities: Fetches gamerooms from Lobby Manager API, displays tiles for joining, handles auth errors from email confirmation
+- Triggers: User navigates to `/`, authenticated or not
+- Responsibilities: Fetch lobbies, display game list, user stats, leaderboard, auth buttons
 
-**Gameroom Page (`src/app/gameroom/page.tsx`):**
+**Game Room Page:**
 - Location: `src/app/gameroom/page.tsx`
-- Triggers: User joins a gameroom from lobby
-- Responsibilities: Initializes WebSocket connections, renders game UI with slots and leaderboard, manages unified messaging, handles answer submissions
+- Triggers: User joins a lobby
+- Responsibilities: Initialize WebSocket connections, render game UI, handle real-time updates
 
-**Auth Routes (`src/app/auth/callback/route.ts`, `/register`, `/login`):**
-- Location: `src/app/auth/`, `src/app/register/`, `src/app/login/`
-- Triggers: Email confirmation callback, registration form, login form
-- Responsibilities: Handle Supabase callback URL processing, display auth forms, handle signup/signin server actions
+**Admin Pages:**
+- Location: `src/app/admin/collections/`, `src/app/admin/topics/`, etc.
+- Triggers: Admin user navigates to `/admin/*`
+- Responsibilities: Display content management UI, handle CRUD operations
 
-**Provider Component (`src/app/provider.tsx`):**
-- Location: `src/app/provider.tsx`
-- Triggers: Wraps all client-side content in layout
-- Responsibilities: Initializes Jotai provider, renders performance modal, initializes performance settings
+**API Proxy Routes:**
+- Location: `src/app/api/players/[...path]/route.ts`, `src/app/api/admin/[...path]/route.ts`
+- Triggers: Any fetch to `/api/players/*` or `/api/admin/*`
+- Responsibilities: Forward requests to backend services with proper URL rewriting
+
+**Auth Routes:**
+- Location: `src/app/auth/callback` (OAuth callback), `src/app/login`, `src/app/register`
+- Triggers: User authentication flow
+- Responsibilities: Handle OAuth callbacks, login/signup forms
 
 ## Error Handling
 
-**Strategy:** Multi-layer error handling with user-facing feedback and console logging
+**Strategy:** Error boundary approach with fallback UI, console logging, user-facing error modals
 
 **Patterns:**
 
-1. **Authentication Errors:**
-   - Captured in signup/signin server actions
-   - Error message returned to client form
-   - Email expiration errors displayed in hero section with helpful links to retry signup/login
-
-2. **WebSocket Connection Errors:**
-   - Connection attempt managed by `useGameSocket()` with exponential backoff
-   - Max 5 reconnection attempts with delays up to 30 seconds
-   - Error state tracked in `socketState` for UI display
-   - Debounced error logging to prevent console spam
-
-3. **API Errors:**
-   - Lobby join failures caught and returned as `{ isError: true, error: string }`
-   - Game submissions debounced to prevent spam and accidental double-submission
-   - Submission feedback received via `submission_feedback` WebSocket event
-
-4. **Component-Level Errors:**
-   - Loading states managed via `loadingAtom` and `loadingAtom` checks in components
-   - Progress/spinner displayed during async operations
-   - Missing gameroom data triggers fallback "Loading gameroom..." message
+- **API errors:** Try/catch in API clients, throw with descriptive message, caught in pages/hooks
+- **Socket errors:** Reconnection attempts with exponential backoff, error state in `useGameSocket`
+- **Validation errors:** Form validation in UI layer, server-side validation in API layer
+- **Component errors:** Error boundary wrapper not visible (implicit graceful degradation)
+- **Socket connection:** Fallback to null state if not connected, shows loading indicator
 
 ## Cross-Cutting Concerns
 
 **Logging:**
-- Console logging with debouncing for high-frequency events
-- Errors logged via `debouncedErrorLog()` function in socket management
-- WebSocket connection state logged on connect/disconnect
+- Pattern: Console.log/warn/error in hooks and utilities
+- Debouncedly log socket errors to prevent spam
+- Performance metrics logged via `PerformanceInitializer` component
 
 **Validation:**
-- Form validation via React Hook Form with Zod resolver patterns (setup in auth components)
-- Type-safe event payloads enforced via TypeScript `EventPayloadMap`
-- Environment variable existence checks in Supabase client creation
+- React Hook Form for client-side validation (admin forms)
+- Server-side validation in backend services
+- Type safety via TypeScript throughout
 
 **Authentication:**
-- Managed by Supabase auth service
-- Session stored in secure cookies
-- SSR-aware client creation (`src/lib/supabase/server.ts`) vs browser client (`src/lib/supabase/client.ts`)
-- User state monitored via `useUser()` hook for authentication changes
+- Supabase Auth via SSR client (`src/lib/supabase/server.ts`)
+- Client-side auth state in `useUser()` hook
+- Session refresh on page navigation via middleware proxy
+- Protected routes via server-side auth checks
 
 **Performance Optimization:**
-- Debouncing on high-frequency events: `lobby_tick` (50ms), submissions (100ms), error logging (1000ms)
-- Atomic state selectors prevent unnecessary re-renders
-- Lazy loading of heavy components (animations, sound effects)
-- Memoization of socket instances and listeners
+- Debouncing high-frequency events (lobby ticks) in game socket
+- Derived atoms prevent unnecessary re-renders
+- Lazy loading for admin pages
+- CSS module scoping prevents style conflicts
+- Performance mode toggle to disable animations and sounds
 
 **Real-Time Synchronization:**
-- WebSocket connections for game server events
-- Optimistic UI updates for player actions (answers, messages)
-- Fallback to polling on WebSocket failure (via reconnection logic)
-- State sync via `lobby_state_sync` event for consistency checks
+- Socket.IO for game events (one-way from server to client)
+- Chat WebSocket for chat messages (bidirectional)
+- State synced via `lobby_state_sync` event on connection
 
 ---
 
-*Architecture analysis: 2026-02-25*
+*Architecture analysis: 2026-03-11*

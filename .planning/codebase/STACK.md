@@ -1,158 +1,94 @@
-# Technology Stack
+# STACK.md — Technology Stack
 
-**Analysis Date:** 2026-02-25
+## Runtime & Language
 
-## Languages
+- **Runtime:** Node.js (via Next.js)
+- **Language:** TypeScript 5.x (strict mode enabled)
+- **Target:** ES6, module resolution: bundler
+- **Path aliases:** `@/*` → `./src/*`
 
-**Primary:**
-- TypeScript 5.x - All source code including React components, server actions, and route handlers
-- TSX - React component files throughout `src/app/` and `src/components/`
-- JavaScript - Configuration files (next.config.mjs, postcss.config.mjs)
+## Framework
 
-**Secondary:**
-- CSS Modules - Component-scoped styling (`.module.css` files)
-- HTML - Standard markup via React/JSX
+- **Next.js** `^16.0.10` — App Router, standalone output (`output: 'standalone'`)
+- **React** `19.2.1` / **React DOM** `19.2.1`
+- Build: `next build`, Dev: `next dev`, Start: `next start`
 
-## Runtime
+## State Management
 
-**Environment:**
-- Node.js 20 (Alpine Linux in Docker)
-- Browser runtime (React 19)
+- **Jotai** `^2.15.2` — atom-based global state, no context providers beyond `JotaiProvider`
+  - `atomWithStorage` for localStorage persistence (performance preferences)
+  - `jotai-devtools` `^0.5.3` for development debugging
+  - Derived/selector atoms for fine-grained subscriptions
 
-**Package Manager:**
-- npm
-- Lockfile: `package-lock.json` present
+## UI & Styling
 
-## Frameworks
+- **Radix UI Themes** (`@radix-ui/themes latest`, `radix-ui ^1.4.3`) — dark theme, `appearance="dark"`
+- **Radix UI** primitives: `@radix-ui/react-dialog`, `@radix-ui/react-visually-hidden`
+- **CSS Modules** — per-component `.module.css` files
+- **Tailwind CSS** with `autoprefixer ^10.4.22`, `postcss ^8`
+- **Lucide React** `^0.555.0` — icon library
+- **next-themes** `^0.4.6` — theme switching
 
-**Core:**
-- Next.js 16.0.10 - Full-stack React framework with App Router
-  - Standalone output mode enabled for Docker deployment
-  - Server Components for auth flow
-  - Server Actions for Supabase operations
-  - Route handlers for API proxying
+## Animation & Audio
 
-**UI/Component:**
-- React 19.2.1 - UI library
-- React DOM 19.2.1 - React rendering
+- **GSAP** `^3.13.0` — game animations
+- **Animate.css** `latest` — CSS animation classes (e.g., `animate__animated animate__*`)
+- **canvas-confetti** `^1.9.4` — confetti effects
+- Custom Web Audio API usage via `window.playSoundEffect` global
+- Audio files in `public/audio/` (`.wav`, `.mp3`)
 
-**State Management:**
-- Jotai 2.15.2 - Minimal atoms-based state management
-- Jotai DevTools 0.5.3 - Development utilities for atom debugging
+## Networking
 
-**Form Handling:**
-- React Hook Form 5.2.2 - Form state and validation
-- @hookform/resolvers 5.2.2 - Validation schema integration
+- **Socket.IO Client** `^4.8.1` — WebSocket connections for game state and chat
+  - Two separate socket connections per game session: game socket + chat socket (`/chat` namespace)
+  - Custom reconnect logic with exponential backoff (max 5 attempts, max 30s delay)
+  - 50ms debounce on `lobby_tick`, 100ms debounce on `sendEvent`
 
-**UI Component Libraries:**
-- Radix UI 1.4.3 - Headless UI primitives
-- @radix-ui/themes latest - Pre-styled theme components
+## Authentication
 
-**Animations:**
-- GSAP 3.13.0 - JavaScript animation library
-- animate.css latest - CSS animation utilities
-- canvas-confetti 1.9.4 - Confetti animation effects
+- **Supabase** (`@supabase/supabase-js ^2.87.1`, `@supabase/ssr ^0.8.0`) — auth + database
+  - `createBrowserClient` for client-side (singleton pattern)
+  - `createServerClient` for Server Components/Actions/Route Handlers
+- **next-auth** `^4.24.13` — also present but Supabase is primary auth
+- **bcryptjs** `^3.0.3` — password hashing
 
-**Real-time Communication:**
-- Socket.io-client 4.8.1 - WebSocket client for game state sync
+## Forms & Validation
 
-**Date/Time:**
-- date-fns 4.1.0 - Date manipulation utilities
+- **@hookform/resolvers** `^5.2.2`
+- **input-otp** `1.4.2`
+- **cmdk** `1.1.1` — command palette component
 
-**UI Components:**
-- Lucide React 0.555.0 - Icon library
-- cmdk 1.1.1 - Command/search interface
-- input-otp 1.4.2 - One-time password input
-- class-variance-authority 0.7.1 - Component variant management
+## Utilities
 
-**Theming:**
-- next-themes 0.4.6 - Dark/light mode support
+- **date-fns** `4.1.0` — date formatting
+- **class-variance-authority** `^0.7.1` — conditional class utilities
 
-**Utilities:**
-- bcryptjs 3.0.3 - Password hashing (used in auth flow)
+## Dev Dependencies
 
-## Testing
-
-**Runner:**
-- Not detected
-
-**Assertion Library:**
-- Not detected
-
-## Build/Dev Tools
-
-**Bundler/Build:**
-- Next.js (includes Webpack)
-- autoprefixer 10.4.22 - CSS vendor prefixing
-
-**CSS Processing:**
-- PostCSS 8.x - CSS transformation pipeline
-
-**Type Checking:**
-- TypeScript 5.x compiler
-
-**Linting:**
-- ESLint - configured (see `.eslintrc*` files)
-
-## Key Dependencies
-
-**Critical:**
-- @supabase/supabase-js 2.87.1 - PostgreSQL database client and auth
-- @supabase/ssr 0.8.0 - Server-side rendering support for Supabase sessions
-- socket.io-client 4.8.1 - WebSocket connection to game backend
-- React 19.2.1 - Core UI framework
-
-**Infrastructure:**
-- next 16.0.10 - Server and build infrastructure
-- jotai 2.15.2 - Application state container
-- react-hook-form 5.2.2 - Form submission handling
+- `@types/node ^24`, `@types/react 19.2.7`, `@types/react-dom 19.2.3`
+- `@types/canvas-confetti ^1.9.0`
 
 ## Configuration
 
-**Environment:**
+- `next.config.mjs` — `output: 'standalone'` for Docker
+- `tsconfig.json` — strict mode, incremental build, Next.js plugin
+- `postcss.config.mjs` — Tailwind + autoprefixer
+- `.env.local` for local secrets (not committed)
 
-The application uses environment variables for runtime configuration:
+## Environment Variables
 
-**Public (baked into client bundle):**
-- `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anonymous key
-- `NEXT_PUBLIC_LOBBY_MANAGER_URL` - Game lobby backend URL (default: `http://localhost:8001`)
-- `NEXT_PUBLIC_SITE_URL` - Frontend base URL for auth callbacks
+| Variable | Usage |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL (client + server) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key (client + server) |
+| `NEXT_PUBLIC_LOBBY_MANAGER_URL` | Lobby manager WebSocket/HTTP base URL |
+| `NEXT_PUBLIC_SITE_URL` | Site URL for auth email redirects |
+| `LOBBY_MANAGER_INTERNAL_URL` | Internal URL for admin proxy (default: `http://localhost:8001`) |
+| `CONTENT_SERVICE_URL` | Content service URL (default: `http://localhost:8003`) |
+| `PLAYER_SERVICE_URL` | Player service URL (default: `http://localhost:8004`) |
 
-**Server-side only:**
-- `LOBBY_MANAGER_INTERNAL_URL` - Internal backend URL for server-to-server requests (default: `http://localhost:8001`)
-- `BACKEND_URL` - Alternative backend URL fallback
+## Docker
 
-**Legacy/temporary:**
-- `NEXTAUTH_URL` - NextAuth configuration (being phased out)
-- `AUTH_SECRET` - NextAuth secret (being phased out)
-
-See `.env.local` file for local development configuration (values not exposed).
-
-**Build:**
-- `next.config.mjs`: Enables standalone output mode for containerized deployment
-- `tsconfig.json`:
-  - Target: ES6
-  - Module: ESNext
-  - Path aliases: `@/*` → `./src/*`
-  - Strict mode enabled
-  - JSX: react-jsx
-- `postcss.config.mjs`: Empty plugins configuration (using CSS Modules directly)
-
-## Platform Requirements
-
-**Development:**
-- Node.js 20 or higher
-- npm package manager
-- macOS/Linux/Windows with standard development tools
-
-**Production:**
-- Node.js 20 Alpine Docker image
-- Docker or container runtime
-- Environment variables configured at deployment
-- 3000 port exposed (configured via `EXPOSE 3000` in Dockerfile)
-- Standalone Next.js build (no separate server dependency)
-
----
-
-*Stack analysis: 2026-02-25*
+- `Dockerfile` present, `docker-compose.yml` present, `.dockerignore` present
+- Standalone Next.js output for minimal Docker image
+- `README.docker.md`, `README.docker.simple.md` for deployment docs

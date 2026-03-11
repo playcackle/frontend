@@ -1,195 +1,162 @@
-# Coding Conventions
+# CONVENTIONS.md — Coding Conventions
 
-**Analysis Date:** 2026-02-25
+## Naming
 
-## Naming Patterns
+| Entity | Convention | Example |
+|---|---|---|
+| Components | PascalCase | `UnifiedInputForm`, `SlotGrid`, `RoomHeader` |
+| Hooks | camelCase with `use` prefix | `useGameSocket`, `useChatSocket`, `useGameState` |
+| Atoms | camelCase with `Atom` suffix | `gameStateAtom`, `unifiedMessagesAtom` |
+| Action atoms | camelCase with `Atom` suffix | `updateGameStateAtom`, `addUnifiedMessageAtom` |
+| Types/Interfaces | PascalCase | `GameState`, `AnimationState`, `LobbyJoinSuccess` |
+| Event payload types | PascalCase + `Payload` suffix | `LobbySyncPayload`, `SlotSnappedPayload` |
+| CSS Modules files | kebab-case + `.module.css` | `gameroom.module.css`, `answer-chip.module.css` |
+| Server actions | camelCase verbs | `signIn`, `signOut`, `signUp`, `joinGameroom` |
+| Constants | UPPER_SNAKE_CASE | `MAX_RECONNECT_ATTEMPTS`, `RECONNECT_DELAY_BASE` |
+| Directories | kebab-case | `src/app/gameroom/`, `src/lib/supabase/` |
 
-**Files:**
-- Component files: PascalCase (e.g., `LeaderBoard.tsx`, `UnifiedInputForm.tsx`)
-- Utility/hook files: camelCase (e.g., `useGameState.ts`, `useGameSocket.ts`)
-- Type files: camelCase with descriptive names (e.g., `state.ts`, `payloads.ts`)
-- CSS module files: camelCase.module.css (e.g., `gameroom.module.css`, `answerChip.module.css`)
-- Atom/store files: camelCase (e.g., `gameAtoms.ts`, `performance-atom.ts`)
+## File Organization
 
-**Functions:**
-- Arrow functions: preferred style throughout codebase
-- Hook functions: useXxx pattern for React hooks (e.g., `useGameState`, `useGameSocket`)
-- Utility functions: camelCase (e.g., `formatTime`, `getPlayerColor`, `debounce`)
-- Private helper functions: camelCase without prefix
+- Co-located CSS modules: `ComponentName.tsx` → `componentName.module.css` or `ComponentName.module.css`
+- Feature-scoped hooks: `src/app/gameroom/hooks/use*.ts`
+- Feature-scoped types: `src/app/gameroom/types/`
+- Feature-scoped store: `src/app/gameroom/store/`
+- Global shared components: `src/components/`
+- Global atoms: `src/atoms/`
+- Global hooks: `src/hooks/`
+- Supabase clients: `src/lib/supabase/client.ts` (browser) + `server.ts` (SSR)
+- API clients: `src/lib/api/admin.ts`, `players.ts`
+- Server actions: `src/actions/`
 
-**Variables:**
-- Constants: UPPER_SNAKE_CASE for true constants (e.g., `MAX_RECONNECT_ATTEMPTS`, `RECONNECT_DELAY_BASE`, `PERFORMANCE_STORAGE_KEY`)
-- State variables: camelCase (e.g., `isConnected`, `socketState`, `playerAnimations`)
-- Type instances: camelCase (e.g., `gameState`, `animationState`, `scores`)
+## Component Patterns
 
-**Types:**
-- Type definitions: PascalCase (e.g., `GameState`, `SocketState`, `UnifiedMessage`)
-- Mapped types: PascalCase (e.g., `EventPayloadMap`, `ChatEventPayloadMap`)
-- Union types: PascalCase (e.g., `GameEvent`, `ChatEvent`)
+### "use client" directive
+All interactive components have `"use client"` at the top:
+```tsx
+"use client";
+import { useAtomValue } from "jotai";
+```
 
-## Code Style
+Server Components (layouts, page.tsx files that only fetch data) omit this.
 
-**Formatting:**
-- No explicit formatter configured in package.json
-- Consistent 2-space indentation observed
-- Semicolons used throughout
-- Double quotes for strings (e.g., `"use client"`, `"jotai"`)
+### Functional components with explicit return types (implicit via React.FC or inferred)
+```tsx
+export default function GameroomPage() { ... }
+export const Provider = ({ children }: Props) => { ... };
+```
 
-**Linting:**
-- ESLint configured: `"lint": "eslint ."` in package.json
-- No `.eslintrc` file found - using default Next.js ESLint config
-- TypeScript strict mode enabled in `tsconfig.json`
-
-**Type Safety:**
-- TypeScript strict mode: `"strict": true` in `tsconfig.json`
-- All exported functions have explicit type annotations
-- JSDoc comments for functions: used consistently
-- Type imports using `type` keyword where appropriate (e.g., `import type { User } from "@supabase/supabase-js"`)
-
-## Import Organization
-
-**Order:**
-1. External libraries and packages (React, Next.js, third-party)
-   - `import React from "react"`
-   - `import { useAtomValue } from "jotai"`
-   - `import { io, Socket } from "socket.io-client"`
-
-2. Type imports from external packages
-   - `import type { User, Session } from "@supabase/supabase-js"`
-   - `import type { LucideIcon } from "lucide-react"`
-
-3. Internal imports using path aliases
-   - `import { useAnswer } from "../hooks/useGameState"`
-   - `import { gameStateAtom } from "../store/gameAtoms"`
-   - `import styles from "./gameroom.module.css"`
-
-4. Component imports
-   - `import SlotGrid from "./components/SlotGrid"`
-   - `import Leaderboard from "./components/LeaderBoard"`
-
-**Path Aliases:**
-- `@/*` maps to `./src/*` (configured in `tsconfig.json`)
-- Used extensively in hooks and utilities: `import { createClient } from "@/lib/supabase/client"`
-- Relative imports used within same directory structure for local dependencies
-
-## Error Handling
-
-**Patterns:**
-- Try-catch blocks for async operations: Used in API calls and socket management
-- Error throwing: `throw new Error('message')` pattern for API failures (see `src/lib/api/admin.ts`)
-- Error logging: `console.error()` with debouncing to prevent spam (see `useGameSocket.ts` line 63)
-- Error state in state management: `error: string | null` in socket state
-- Graceful degradation: Early returns for null/undefined checks
-
-**Error Types:**
-```typescript
-// Socket connection errors
-if (!socket?.connected) {
-  console.warn(`Cannot send ${event}: socket not connected`);
-  return false;
-}
-
-// API errors with detail extraction
-if (!res.ok) {
-  const error = await res.json();
-  throw new Error(error.detail || 'Failed to create collection');
-}
-
-// Listener errors wrapped in try-catch
-try {
-  callback(data);
-} catch (error) {
-  debouncedErrorLog("Error in listener:", error);
+### Props typing with inline interfaces
+```tsx
+interface SocketState {
+  isConnected: boolean;
+  connectionStatus: "connecting" | "connected" | "disconnected" | "error" | "reconnecting";
+  error: string | null;
+  reconnectAttempts: number;
 }
 ```
 
-## Logging
+## Imports
 
-**Framework:** `console` (no dedicated logging library)
+**Order convention (implicit):**
+1. React and hooks
+2. Third-party libraries
+3. Internal aliases (`@/components/...`, `@/lib/...`, `@/atoms/...`)
+4. Relative imports (`./hooks/...`, `../types/...`)
 
-**Patterns:**
-- `console.error()`: Error conditions and failures
-- `console.warn()`: Warning conditions (e.g., socket not connected)
-- Error logs are debounced to prevent console spam: `debounce((message: string, error?: any) => { console.error(message, error); }, 1000)`
-- Server-side context checks: `if (typeof window === "undefined") return;` before DOM access
-- No production-level logging framework detected
+**Path aliases** (`@/*` → `src/*`):
+```ts
+import { createClient } from "@/lib/supabase/client";
+import { gameRoomAtom } from "@/app/store/gameRoom";
+```
 
-## Comments
+## State Management Patterns
 
-**When to Comment:**
-- JSDoc for exported functions: 1-3 line descriptions
-- Complex algorithms: Explained with inline comments
-- Non-obvious business logic: Documented for maintainability
-- Section headers: Used to organize code blocks
-  - Example: `// ==================== CONNECTION MANAGEMENT ====================`
+### Jotai atom composition
+```ts
+// Base atom
+export const gameStateAtom = atom<GameState>(initGameState);
 
-**JSDoc/TSDoc:**
-- Format: Standard JSDoc with single-line descriptions
-  - `/** * Format time as MM:SS */`
-  - `/** * Get a random attention animation */`
-  - `/** * Play a sound effect */`
-- Parameter documentation: Not extensively used, parameters are self-documenting through TypeScript types
-- Return type documentation: Implicit through TypeScript return types
+// Derived/selector atoms (prevent unnecessary re-renders)
+export const slotsAtom = atom((get) => get(gameStateAtom).slots);
 
-**Section Organization:**
-- Large files organized with comment section headers:
-  - `// ==================== STATE ====================`
-  - `// ==================== LIFECYCLE MANAGEMENT ====================`
-  - `// ==================== PUBLIC API ====================`
+// Write-only action atoms
+export const updateGameStateAtom = atom(null, (get, set, update: Partial<GameState>) => {
+  set(gameStateAtom, { ...get(gameStateAtom), ...update });
+});
+```
 
-## Function Design
+### Consuming atoms in components
+```tsx
+const slots = useAtomValue(slotsAtom);           // read-only
+const [answer, setAnswer] = useAtom(answerAtom); // read + write
+const updateState = useSetAtom(updateGameStateAtom); // write-only
+```
 
-**Size:**
-- Small utility functions: 5-15 lines (e.g., `formatTime`, `getInitials`)
-- Custom hooks: 20-50 lines (e.g., `useAnswer`, `useAnimationState`)
-- Complex hooks: 100+ lines acceptable (e.g., `useGameSocket` is 300+ lines with detailed event handling)
+## Error Handling
 
-**Parameters:**
-- Arrow functions with explicit types: `const formatTime = (seconds: number): string => {}`
-- Destructured props in components: `function AccoladeChip({ accolade }: { accolade: Accolade }) {}`
-- Generic type parameters for reusable functions: `function debounce<T extends (...args: any[]) => any>(func: T, wait: number)`
+- Server actions return `{ error: string }` objects on failure (not throws)
+- WebSocket errors set error state on the hook, not thrown
+- `@ts-ignore` used in `src/app/gameroom/utils.ts` for `window.playSoundEffect` (global function pattern)
+- Console logging: `console.error` for errors, `console.log` for connection events
+- No global error boundary in the app currently
 
-**Return Values:**
-- Explicit return types in function signatures: `export const formatTime = (seconds: number): string => {}`
-- Object returns with typed structure: Returns in hooks return object with named properties
-- Early returns: Used extensively for guard clauses (e.g., `if (!isMounted) return;`)
+## Debouncing Pattern
 
-## Module Design
+Custom `debounce` utility in `src/app/gameroom/utils.ts`:
+```ts
+export function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
+  let timeout: NodeJS.Timeout | null = null;
+  return (...args: Parameters<T>) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+```
 
-**Exports:**
-- Named exports: Used for utilities and types
-  - `export const formatTime = ...`
-  - `export type GameState = {...}`
-  - `export const useAnswer = () => {...}`
-- Default exports: Used primarily for React components
-  - `export default function Leaderboard() {}`
-  - `export default React.memo(SlotGrid)`
+Used for: `lobby_tick` handler (50ms), `sendEvent` (100ms), error logging (1000ms).
 
-**Barrel Files:**
-- Not extensively used in this codebase
-- Direct imports from specific files preferred
-- Import from directories imports default export only
+## Ref Patterns
 
-**React Component Patterns:**
-- Functional components: Exclusive pattern, no class components
-- Memoization: Used strategically for performance
-  - `export default React.memo(SlotGrid)`
-  - `export default React.memo(SlotTile, (prevProps, nextProps) => {...})`
-- "use client" directive: Used in components with interactivity (hooks, state, events)
-- Props destructuring: Direct in function parameters with type definition
+### Mutable handler refs to avoid stale closures
+```ts
+const handleLobbySyncRef = useRef((data: LobbySyncPayload) => { ... });
+useEffect(() => {
+  handleLobbySyncRef.current = (data) => { ... }; // update on dependency change
+}, [updateGameState]);
 
-**State Management:**
-- Jotai atoms: Preferred for global state
-- Derived atoms: Created for performance optimization (prevents re-renders)
-  - Example: `playerCountAtom` derived from `gameStateAtom`
-- Action atoms: Write-only atoms for state updates (Jotai pattern)
-- Local React state: `useState` for UI-specific state (animations, form inputs)
+// Register once with stable wrapper
+onEvent("lobby_state_sync", (data) => handleLobbySyncRef.current(data));
+```
 
-**Constants Organization:**
-- File-level constants: Declared at top of files
-- Mapping constants: Objects for lookups (e.g., `ACCOLADE_ICONS`)
-- Configuration constants: MAX/MIN values declared early in functions
+### `initializeSocketRef` pattern (for self-referential callbacks)
+```ts
+const initializeSocketRef = useRef<() => void>(() => {});
+useEffect(() => { initializeSocketRef.current = initializeSocket; }, [initializeSocket]);
+// scheduleReconnect calls initializeSocketRef.current() without circular dep
+```
 
----
+## CSS / Styling Patterns
 
-*Convention analysis: 2026-02-25*
+- CSS Modules for component styles
+- CSS custom properties (variables): `--room-color`, `--neon-pink`
+- Global styles: `src/app/globals.css`, `src/styles/globals.css`
+- Radix UI Themes for component library base
+- Conditional class application via template literals:
+```tsx
+className={`${styles.main} ${animationState.shake ? styles.screenShake : ""}`}
+```
+- Animate.css integration via class strings:
+```ts
+`animate__animated animate__${ATTENTION_ANIMATIONS[...]}`
+```
+
+## TypeScript Conventions
+
+- Strict mode enabled (`"strict": true`)
+- Union types for state enums (not TypeScript enums):
+```ts
+type ConnectionStatus = "connecting" | "connected" | "disconnected" | "error" | "reconnecting";
+```
+- `as any` used in places (admin API proxy params resolution)
+- Optional chaining: `data.time_remaining_seconds ?? 0`
+- Non-null assertion: `process.env.NEXT_PUBLIC_SUPABASE_URL!` in server client
