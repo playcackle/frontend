@@ -50,7 +50,10 @@ export default async function Home({
             <span className={styles.neonText}>CAC</span>
             <span className={styles.neonTextPink}>KLE</span>
           </h1>
-          <p className={styles.tagline}>Race. Claim. Win.</p>
+          <p className={styles.tagline}>
+            Welcome to Cackle - trivia reinvented! Jump into a game room and get
+            started
+          </p>
 
           {authError && (
             <div className={styles.authErrorBanner}>
