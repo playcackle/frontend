@@ -52,7 +52,7 @@ export default function GameroomTile(props: GameroomTileProps) {
       <h3 className={styles.lobbyName}>{gameroom.collection_name}</h3>
       <div className={styles.lobbyCapacity}>
         <span className={styles.capacityText}>
-          {25 - gameroom.player_count} slots available
+          {25 - gameroom.player_count} seats open
         </span>
         <div className={styles.capacityBar}>
           <div
