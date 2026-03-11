@@ -28,9 +28,24 @@ Players must always know where they are in the game and what their actions mean 
 - ✓ New user onboarding walkthrough modal with screenshots, skippable, shown only once — v1.0
 - ✓ Landing page player card with Progresjonsscore, high scores, playstyle dashboard, global leaderboard — v1.0
 
+## Current Milestone: v1.1 Audit
+
+**Goal:** Systematically audit the codebase across code quality, performance, architecture, and type safety — producing a prioritized findings report to drive v1.2 improvements.
+
+**Target deliverables:**
+- Code quality findings (duplication, complexity, component size, naming)
+- Performance findings (re-renders, bundle size, slow paths, animation overhead)
+- Architecture findings (hook boundaries, state management patterns, data flow)
+- Type safety findings (any/unknown usage, missing types, unsafe assertions)
+- Consolidated prioritized remediation report
+
 ### Active
 
-(Define next milestone requirements with `/gsd:new-milestone`)
+- [ ] Audit codebase for code quality issues (duplication, complexity, naming, component size)
+- [ ] Audit codebase for performance issues (re-renders, bundle size, slow paths)
+- [ ] Audit codebase for architectural concerns (hook boundaries, state management, data flow)
+- [ ] Audit codebase for type safety gaps (any/unknown, missing types, unsafe assertions)
+- [ ] Produce consolidated findings report with prioritized remediation recommendations
 
 ### Out of Scope
 
@@ -70,4 +85,4 @@ Players must always know where they are in the game and what their actions mean 
 | Own failed answer = neutral (not blue) | `.ownFailedAnswerMessage` resets `.ownMessage` blue !important | ✓ Good — avoids confusing blue styling for wrong answers |
 
 ---
-*Last updated: 2026-03-11 after v1.0 milestone*
+*Last updated: 2026-03-11 after v1.1 milestone start*
