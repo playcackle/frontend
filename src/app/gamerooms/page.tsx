@@ -25,7 +25,7 @@ export default async function GameroomsPage() {
 
   const gamerooms = await fetchGamerooms();
 
-  return <GameroomsClient gamerooms={gamerooms} />;
+  return <GameroomsClient initialGamerooms={gamerooms} />;
 }
 
 async function fetchGamerooms(): Promise<LobbyInfo[]> {

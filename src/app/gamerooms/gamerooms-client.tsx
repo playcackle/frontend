@@ -6,35 +6,27 @@ import Link from "next/link";
 import styles from "./gamerooms.module.css";
 import { useRealtimeLobbies, type LobbyInfo } from "@/hooks/useRealtimeLobbies";
 
-type Props = { gamerooms: LobbyInfo[] };
+type Props = { initialGamerooms: LobbyInfo[] };
 
 type SortKey = "name" | "players_asc" | "players_desc" | "availability";
 type StatusFilter = "all" | "open" | "in_progress" | "full";
 
-const STATUS_LABELS: Record<string, string> = {
-  open: "Open",
-  in_progress: "In Progress",
-  full: "Full",
-  waiting: "Waiting",
-};
-
-const MAX_PLAYERS = 25;
-
 function getRoomStatus(room: LobbyInfo): StatusFilter {
-  if (room.player_count >= MAX_PLAYERS) return "full";
-  if (room.status === "in_progress" || room.status === "playing") return "in_progress";
+  const maxPlayers = room.max_players ?? 25;
+  if (room.player_count >= maxPlayers) return "full";
+  if (room.status === "IN_ROUND" || room.status === "ROUND_BREAK" || room.status === "POST_GAME_SHOWCASE") return "in_progress";
   return "open";
 }
 
-export default function GameroomsClient({ gamerooms }: Props) {
+export default function GameroomsClient({ initialGamerooms }: Props) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortKey, setSortKey] = useState<SortKey>("availability");
 
-  const lobbyData = useRealtimeLobbies(gamerooms);
+  const gamerooms = useRealtimeLobbies(initialGamerooms);
 
   const filtered = useMemo(() => {
-    let list = lobbyData.filter((r) => {
+    let list = gamerooms.filter((r) => {
       const matchesSearch = r.collection_name
         .toLowerCase()
         .includes(search.toLowerCase());
@@ -51,13 +43,13 @@ export default function GameroomsClient({ gamerooms }: Props) {
       if (sortKey === "players_asc") return a.player_count - b.player_count;
       if (sortKey === "players_desc") return b.player_count - a.player_count;
       // availability: most open slots first
-      return (
-        (MAX_PLAYERS - b.player_count) - (MAX_PLAYERS - a.player_count)
-      );
+      const maxA = a.max_players ?? 25;
+      const maxB = b.max_players ?? 25;
+      return (maxA - b.player_count) - (maxB - a.player_count);
     });
 
     return list;
-  }, [lobbyData, search, statusFilter, sortKey]);
+  }, [gamerooms, search, statusFilter, sortKey]);
 
   const STATUS_OPTS: { key: StatusFilter; label: string }[] = [
     { key: "all", label: "All" },
@@ -86,7 +78,7 @@ export default function GameroomsClient({ gamerooms }: Props) {
             <span className={styles.titleAccentPink}>rooms</span>
           </h1>
           <p className={styles.roomCount}>
-            {filtered.length} of {lobbyData.length} rooms
+            {filtered.length} of {gamerooms.length} rooms
           </p>
         </div>
       </div>
@@ -161,11 +153,11 @@ export default function GameroomsClient({ gamerooms }: Props) {
       {filtered.length === 0 ? (
         <div className={styles.emptyState}>
           <p className={styles.emptyStateText}>
-            {lobbyData.length === 0
+            {gamerooms.length === 0
               ? "No game rooms available right now. Check back soon!"
               : "No rooms match your filters."}
           </p>
-          {lobbyData.length > 0 && search && (
+          {gamerooms.length > 0 && search && (
             <button
               className={styles.clearFiltersBtn}
               onClick={() => { setSearch(""); setStatusFilter("all"); }}
@@ -177,18 +169,7 @@ export default function GameroomsClient({ gamerooms }: Props) {
       ) : (
         <div className={styles.gameroomsGrid}>
           {filtered.map((room) => (
-            <div key={room.lobby_id} className={styles.tileWrapper}>
-              <GameroomTile gameroom={room} />
-              {room.status && (
-                <span
-                  className={`${styles.statusBadge} ${
-                    styles[`status_${getRoomStatus(room)}`]
-                  }`}
-                >
-                  {STATUS_LABELS[room.status] ?? room.status}
-                </span>
-              )}
-            </div>
+            <GameroomTile key={room.lobby_id} gameroom={room} />
           ))}
         </div>
       )}

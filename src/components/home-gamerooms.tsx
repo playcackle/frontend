@@ -3,22 +3,14 @@
 import GameroomTile from "@/components/gameroom-tile";
 import Link from "next/link";
 import styles from "@/app/page.module.css";
-
-type LobbyInfo = {
-  lobby_id: string;
-  collection_name: string;
-  status: string;
-  player_count: number;
-  join_base_url?: string | null;
-  game_ws_url?: string | null;
-  chat_ws_url?: string | null;
-};
+import { useRealtimeLobbies, type LobbyInfo } from "@/hooks/useRealtimeLobbies";
 
 type Props = { gamerooms: LobbyInfo[] };
 
 const PREVIEW_COUNT = 4;
 
-export default function HomeGamerooms({ gamerooms }: Props) {
+export default function HomeGamerooms({ gamerooms: initialGamerooms }: Props) {
+  const gamerooms = useRealtimeLobbies(initialGamerooms);
   const preview = gamerooms.slice(0, PREVIEW_COUNT);
 
   if (gamerooms.length === 0) {

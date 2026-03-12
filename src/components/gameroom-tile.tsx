@@ -20,6 +20,24 @@ export type GameroomTileProps = {
   };
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  WAITING: "Waiting",
+  IN_ROUND: "In Round",
+  ROUND_BREAK: "Break",
+  POST_GAME_SHOWCASE: "Finished",
+  waiting: "Waiting",
+  in_progress: "In Progress",
+  playing: "Playing",
+  open: "Open",
+  full: "Full",
+};
+
+function getStatusClass(status: string, playerCount: number, maxPlayers: number): string {
+  if (playerCount >= maxPlayers) return "full";
+  if (status === "IN_ROUND" || status === "ROUND_BREAK" || status === "POST_GAME_SHOWCASE") return "in_progress";
+  return "open";
+}
+
 export default function GameroomTile(props: GameroomTileProps) {
   const { gameroom } = props;
   const { user } = useUser();
@@ -27,6 +45,9 @@ export default function GameroomTile(props: GameroomTileProps) {
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const setGameroom = useSetAtom(gameRoomAtom);
+
+  const maxPlayers = gameroom.max_players ?? 25;
+  const statusClass = getStatusClass(gameroom.status, gameroom.player_count, maxPlayers);
 
   const handleClick = async () => {
     if (!user?.id) {
@@ -52,15 +73,20 @@ export default function GameroomTile(props: GameroomTileProps) {
   return (
     <div className={styles.lobbyCard} onClick={handleClick}>
       <h3 className={styles.lobbyName}>{gameroom.collection_name}</h3>
+      <div className={styles.statusBadgeWrapper}>
+        <span className={`${styles.statusBadge} ${styles[`status_${statusClass}`]}`}>
+          {STATUS_LABELS[gameroom.status] ?? gameroom.status}
+        </span>
+      </div>
       <div className={styles.lobbyCapacity}>
         <span className={styles.capacityText}>
-          {(gameroom.max_players ?? 25) - gameroom.player_count} / {gameroom.max_players ?? 25} seats open
+          {maxPlayers - gameroom.player_count} / {maxPlayers} seats open
         </span>
         <div className={styles.capacityBar}>
           <div
             className={styles.capacityFill}
             style={{
-              width: `${(gameroom.player_count / (gameroom.max_players ?? 25)) * 100}%`,
+              width: `${(gameroom.player_count / maxPlayers) * 100}%`,
               backgroundColor: "--neon-pink",
             }}
           ></div>
