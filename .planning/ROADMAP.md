@@ -49,4 +49,4 @@ Plans:
 | 2. Chat UX | v1.0 | 2/2 | Complete | 2026-03-02 |
 | 3. Onboarding | v1.0 | 1/1 | Complete | 2026-03-11 |
 | 4. Landing Page | v1.0 | 1/1 | Complete | 2026-03-11 |
-| 5. Codebase Audit | v1.1 | 0/2 | In progress | - |
+| 5. Codebase Audit | 1/2 | In Progress|  | - |
