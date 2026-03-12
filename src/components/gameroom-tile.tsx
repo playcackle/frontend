@@ -13,7 +13,9 @@ export type GameroomTileProps = {
   gameroom: {
     lobby_id: string;
     collection_name: string;
+    status: string;
     player_count: number;
+    max_players?: number | null;
     join_base_url?: string | null;
   };
 };
@@ -52,13 +54,13 @@ export default function GameroomTile(props: GameroomTileProps) {
       <h3 className={styles.lobbyName}>{gameroom.collection_name}</h3>
       <div className={styles.lobbyCapacity}>
         <span className={styles.capacityText}>
-          {25 - gameroom.player_count} seats open
+          {(gameroom.max_players ?? 25) - gameroom.player_count} / {gameroom.max_players ?? 25} seats open
         </span>
         <div className={styles.capacityBar}>
           <div
             className={styles.capacityFill}
             style={{
-              width: `${(gameroom.player_count / 25) * 100}%`,
+              width: `${(gameroom.player_count / (gameroom.max_players ?? 25)) * 100}%`,
               backgroundColor: "--neon-pink",
             }}
           ></div>

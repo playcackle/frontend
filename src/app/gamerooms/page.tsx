@@ -7,6 +7,7 @@ type LobbyInfo = {
   collection_name: string;
   status: string;
   player_count: number;
+  max_players?: number | null;
   join_base_url?: string | null;
   game_ws_url?: string | null;
   chat_ws_url?: string | null;

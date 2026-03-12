@@ -4,14 +4,7 @@ import { useState, useMemo } from "react";
 import GameroomTile from "@/components/gameroom-tile";
 import Link from "next/link";
 import styles from "./gamerooms.module.css";
-
-type LobbyInfo = {
-  lobby_id: string;
-  collection_name: string;
-  status: string;
-  player_count: number;
-  join_base_url?: string | null;
-};
+import { useRealtimeLobbies, type LobbyInfo } from "@/hooks/useRealtimeLobbies";
 
 type Props = { gamerooms: LobbyInfo[] };
 
@@ -38,8 +31,10 @@ export default function GameroomsClient({ gamerooms }: Props) {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortKey, setSortKey] = useState<SortKey>("availability");
 
+  const lobbyData = useRealtimeLobbies(gamerooms);
+
   const filtered = useMemo(() => {
-    let list = gamerooms.filter((r) => {
+    let list = lobbyData.filter((r) => {
       const matchesSearch = r.collection_name
         .toLowerCase()
         .includes(search.toLowerCase());
@@ -62,7 +57,7 @@ export default function GameroomsClient({ gamerooms }: Props) {
     });
 
     return list;
-  }, [gamerooms, search, statusFilter, sortKey]);
+  }, [lobbyData, search, statusFilter, sortKey]);
 
   const STATUS_OPTS: { key: StatusFilter; label: string }[] = [
     { key: "all", label: "All" },
@@ -91,7 +86,7 @@ export default function GameroomsClient({ gamerooms }: Props) {
             <span className={styles.titleAccentPink}>rooms</span>
           </h1>
           <p className={styles.roomCount}>
-            {filtered.length} of {gamerooms.length} rooms
+            {filtered.length} of {lobbyData.length} rooms
           </p>
         </div>
       </div>
@@ -166,11 +161,11 @@ export default function GameroomsClient({ gamerooms }: Props) {
       {filtered.length === 0 ? (
         <div className={styles.emptyState}>
           <p className={styles.emptyStateText}>
-            {gamerooms.length === 0
+            {lobbyData.length === 0
               ? "No game rooms available right now. Check back soon!"
               : "No rooms match your filters."}
           </p>
-          {gamerooms.length > 0 && search && (
+          {lobbyData.length > 0 && search && (
             <button
               className={styles.clearFiltersBtn}
               onClick={() => { setSearch(""); setStatusFilter("all"); }}
