@@ -2,6 +2,7 @@
 
 import GameroomTile from "@/components/gameroom-tile";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import styles from "@/app/page.module.css";
 
 type LobbyInfo = {
@@ -14,11 +15,30 @@ type LobbyInfo = {
   chat_ws_url?: string | null;
 };
 
-type Props = { gamerooms: LobbyInfo[] };
+type Props = { initialGamerooms: LobbyInfo[] };
 
 const PREVIEW_COUNT = 4;
+const POLL_INTERVAL_MS = 20_000;
 
-export default function HomeGamerooms({ gamerooms }: Props) {
+async function fetchGamerooms(): Promise<LobbyInfo[]> {
+  const baseUrl = process.env.NEXT_PUBLIC_LOBBY_MANAGER_URL;
+  if (!baseUrl) return [];
+  const res = await fetch(`${baseUrl}/lobbies`);
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export default function HomeGamerooms({ initialGamerooms }: Props) {
+  const [gamerooms, setGamerooms] = useState<LobbyInfo[]>(initialGamerooms);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const updated = await fetchGamerooms();
+      setGamerooms(updated);
+    }, POLL_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, []);
+
   const preview = gamerooms.slice(0, PREVIEW_COUNT);
 
   if (gamerooms.length === 0) {

@@ -91,7 +91,7 @@ export default async function Home({
                   Browse All
                 </Link>
               </div>
-              <HomeGamerooms gamerooms={gamerooms} />
+              <HomeGamerooms initialGamerooms={gamerooms} />
             </section>
 
             {/* Right column: Stats + Leaderboard stacked */}
