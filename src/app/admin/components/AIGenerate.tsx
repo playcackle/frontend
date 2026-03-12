@@ -81,12 +81,14 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
     setStep("generating");
     setStatusMessage("Generating witty topic prompt...");
 
+    // Use recommended_slots from estimate if available, otherwise default to 30
+    const slotsToGenerate = estimate?.recommended_slots || 30;
+
     try {
-      // Note: We use name as both topic name and research prompt for now
       const result = await generationApi.generateTopic({
         name,
         example,
-        num_slots: numSlots,
+        num_slots: slotsToGenerate,
       });
 
       setGenerationResult(result);
@@ -142,6 +144,7 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
           prompt: slot.prompt,
           bot_bob_clue: slot.bot_bob_clue || undefined,
           is_rare: slot.is_rare,
+          aliases: slot.aliases || [],
         }))
       );
 
@@ -210,53 +213,39 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
           </div>
 
           <div className={styles.formField}>
-            <label className={styles.label}>Number of Slots</label>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <input
-                type="number"
-                className={styles.input}
-                value={numSlots}
-                onChange={(e) => {
-                  setNumSlots(parseInt(e.target.value) || 30);
-                  setEstimate(null);
-                }}
-                min={10}
-                max={100}
-                style={{ width: '100px' }}
-              />
               <button
                 type="button"
                 className={styles.estimateButton}
                 onClick={handleEstimate}
                 disabled={!name.trim() || !example.trim() || estimating}
               >
-                {estimating ? "⏳..." : "📊 Check Size"}
+                {estimating ? "⏳ Checking topic size..." : "📊 Check Size"}
               </button>
+              {estimate && (
+                <span style={{ color: estimate.is_too_large ? '#ff6b6b' : '#00ff00' }}>
+                  {estimate.is_too_large 
+                    ? `⚠️ ~${estimate.item_count} items (too large)` 
+                    : `✅ ~${estimate.item_count} items → ${estimate.recommended_slots} slots`}
+                </span>
+              )}
             </div>
-            {estimate && (
-              <div className={estimate.is_too_large ? styles.estimateWarning : styles.estimateResult}>
-                {estimate.is_too_large ? (
-                  <>
-                    {'⚠️'} Topic too large: ~{estimate.item_count} items. Consider narrowing down:
-                    <ul className={styles.suggestionsList}>
-                      {estimate.suggestions.map((s, i) => (
-                        <li key={i}>
-                          <button 
-                            type="button"
-                            className={styles.suggestionButton}
-                            onClick={() => { setName(s); setEstimate(null); }}
-                          >
-                            {s}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : (
-                  <span style={{ color: '#00ff00' }}>
-                    {'✅'} Topic size OK: ~{estimate.item_count} items - {estimate.reasoning}
-                  </span>
-                )}
+            {estimate && estimate.is_too_large && (
+              <div className={styles.estimateWarning}>
+                Topic too large. Consider narrowing:
+                <ul className={styles.suggestionsList}>
+                  {estimate.suggestions.map((s, i) => (
+                    <li key={i}>
+                      <button 
+                        type="button"
+                        className={styles.suggestionButton}
+                        onClick={() => { setName(s); setEstimate(null); }}
+                      >
+                        {s}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
@@ -315,7 +304,10 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
                   type="text"
                   className={styles.slotAliases}
                   value={slot.aliases?.join(", ") || ""}
-                  onChange={(e) => handleSlotEdit(index, "aliases", e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
+                  onChange={(e) => {
+                    const vals = e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean);
+                    handleSlotEdit(index, "aliases", vals);
+                  }}
                   placeholder="Aliases (comma sep)"
                 />
                 <label className={styles.rareCheckbox}>

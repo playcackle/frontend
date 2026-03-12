@@ -78,6 +78,7 @@ export type SlotCreate = {
   bot_bob_clue?: string;
   is_rare: boolean;
   topic_id: number;
+  aliases?: string[];
 };
 
 export type SlotUpdate = {
@@ -554,8 +555,10 @@ export type TopicPromptResponse = {
 
 export type EstimateSlotsResponse = {
   item_count: number | "unknown";
+  category_size: "small" | "medium" | "large";
   is_too_large: boolean;
   can_generate: boolean;
+  recommended_slots: number;
   reasoning: string;
   suggestions: string[];
 };
