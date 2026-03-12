@@ -27,25 +27,19 @@ Players must always know where they are in the game and what their actions mean 
 - ✓ Chat message type differentiation: correct answers, Bot Bob hints, duplicate attempts — v1.0
 - ✓ New user onboarding walkthrough modal with screenshots, skippable, shown only once — v1.0
 - ✓ Landing page player card with Progresjonsscore, high scores, playstyle dashboard, global leaderboard — v1.0
+- ✓ Codebase audited across 4 dimensions (code quality, performance, architecture, type safety) — v1.1
+- ✓ 41 findings documented in prioritized FINDINGS.md with impact/effort ratings and concrete remediation — v1.1
+- ✓ 2 confirmed runtime bugs surfaced: Rules of Hooks violation (crash risk) and answer reveal animation never firing — v1.1
 
-## Current Milestone: v1.1 Audit
+### Active (v1.2 targets — to be defined in /gsd:new-milestone)
 
-**Goal:** Systematically audit the codebase across code quality, performance, architecture, and type safety — producing a prioritized findings report to drive v1.2 improvements.
-
-**Target deliverables:**
-- Code quality findings (duplication, complexity, component size, naming)
-- Performance findings (re-renders, bundle size, slow paths, animation overhead)
-- Architecture findings (hook boundaries, state management patterns, data flow)
-- Type safety findings (any/unknown usage, missing types, unsafe assertions)
-- Consolidated prioritized remediation report
-
-### Active
-
-- [ ] Audit codebase for code quality issues (duplication, complexity, naming, component size)
-- [ ] Audit codebase for performance issues (re-renders, bundle size, slow paths)
-- [ ] Audit codebase for architectural concerns (hook boundaries, state management, data flow)
-- [ ] Audit codebase for type safety gaps (any/unknown, missing types, unsafe assertions)
-- [ ] Produce consolidated findings report with prioritized remediation recommendations
+Top candidates from `FINDINGS.md` priority table:
+- Fix Rules of Hooks violation in `page.tsx` — crash risk (FINDING-A01)
+- Fix answer reveal animation — type mismatch means it has never fired (FINDING-T10)
+- Gate all effects in `triggerCorrectAnswerEffects` on `performanceModeAtom` (FINDING-P06)
+- Consolidate dual performance mode systems (`performance-atom.ts` vs `performance-context.tsx`) (FINDING-A06)
+- Replace `useGameState()` calls with granular atom selectors across 4 components (FINDING-P01–P04)
+- Fix `onEvent` cleanup discard in `useGameEvents` — listener accumulation (FINDING-Q13/A09)
 
 ### Out of Scope
 
@@ -56,7 +50,7 @@ Players must always know where they are in the game and what their actions mean 
 
 ## Context
 
-**Current state (v1.0):** ~13,000 LOC TypeScript. Next.js 16 App Router, React 19, TypeScript, Jotai atoms, Socket.IO client 4.8, Supabase auth, Radix UI, GSAP for animations. See `.planning/codebase/` for full analysis.
+**Current state (v1.1):** ~13,000 LOC TypeScript. Next.js 16 App Router, React 19, TypeScript, Jotai atoms, Socket.IO client 4.8, Supabase auth, Radix UI, GSAP for animations. See `.planning/codebase/` for full analysis. See `.planning/phases/05-codebase-audit/FINDINGS.md` for the full audit report with 41 findings and a 45-entry remediation priority table.
 
 **Real-time architecture:** Two separate WebSocket connections — `useGameSocket` for game events, `useChatSocket` for messaging. Game state stored in `gameStateAtom`; messages in `unifiedMessagesAtom`. Events flow through `useGameEvents` hook which updates atoms.
 
@@ -83,6 +77,8 @@ Players must always know where they are in the game and what their actions mean 
 | Functional setSocketState for async state reads | Eliminates stale closure risk in reconnect callbacks | ✓ Good — pattern adopted throughout hooks |
 | Correct answers = neon green (not gold) | Consistent with slot tiles which use `--neon-green` for answered state | ✓ Good — coherent "green = success" visual language |
 | Own failed answer = neutral (not blue) | `.ownFailedAnswerMessage` resets `.ownMessage` blue !important | ✓ Good — avoids confusing blue styling for wrong answers |
+| Audit-only v1.1 milestone before v1.2 improvements | Ship audit findings first so v1.2 planning is evidence-based, not assumption-based | ✓ Good — surfaced 2 confirmed bugs that would otherwise ship undetected |
+| Dual performance systems must be consolidated (not patched) | `performance-atom.ts` and `performance-context.tsx` use different localStorage keys — patching one leaves the other wrong | ⚠️ Revisit — requires product decision on `prefers-reduced-motion` handling before migration |
 
 ---
-*Last updated: 2026-03-11 after v1.1 milestone start*
+*Last updated: 2026-03-12 after v1.1 milestone*

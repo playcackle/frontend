@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.1 Audit (Shipped: 2026-03-12)
+
+**Phases completed:** 1 phase, 2 plans, 4 tasks
+**Timeline:** 2026-03-12 (single session)
+**Codebase:** ~13,000 LOC TypeScript
+
+**Key accomplishments:**
+1. 28 verified findings across code quality (AUDIT-01) and performance (AUDIT-02) — each with confirmed file path, line number, impact, effort, and concrete remediation
+2. 9 architecture findings (AUDIT-03) — Rules of Hooks crash risk, dual performance mode systems, Bot Bob detection triplication, onEvent cleanup discard
+3. 13 type safety findings (AUDIT-04) — 2 `@ts-ignore`, 7 `as any`, 1 `as unknown as`, EventPayloadMap gaps
+4. 2 confirmed runtime bugs surfaced: answer reveal animation has never fired (string vs number id type mismatch); Rules of Hooks violation in `page.tsx` is a crash risk on first render
+5. Consolidated `FINDINGS.md` with 45-entry priority table ordered by impact/effort — direct input for v1.2 planning
+
+**Archive:** `.planning/milestones/v1.1-ROADMAP.md`, `.planning/milestones/v1.1-REQUIREMENTS.md`
+
+---
+
 ## v1.0 MVP (Shipped: 2026-03-11)
 
 **Phases completed:** 4 phases, 6 plans
