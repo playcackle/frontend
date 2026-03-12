@@ -86,8 +86,7 @@ export default function GameroomTile(props: GameroomTileProps) {
           <div
             className={styles.capacityFill}
             style={{
-              width: `${(gameroom.player_count / maxPlayers) * 100}%`,
-              backgroundColor: "--neon-pink",
+              width: `${Math.min(100, (gameroom.player_count / maxPlayers) * 100)}%`,
             }}
           ></div>
         </div>
