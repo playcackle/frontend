@@ -3,7 +3,7 @@
 import React from "react";
 import { Flex } from "@radix-ui/themes";
 import PlayerAvatar from "./PlayerAvatar";
-import styles from "../gameroom.module.css";
+import styles from "./BotBobPinnedMessage.module.css";
 import { UnifiedMessage } from "../store/gameAtoms";
 
 interface BotBobPinnedMessageProps {
