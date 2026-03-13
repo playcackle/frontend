@@ -25,6 +25,9 @@ export function useRealtimeLobbies(initialLobbies: LobbyInfo[]) {
   }, [initialLobbies]);
 
   useEffect(() => {
+    console.log("Setting up realtime channel...");
+    console.log("Supabase URL:", supabase.supabaseUrl);
+    
     const channel = supabase
       .channel("public:ActiveLobby")
       .on(
@@ -35,6 +38,7 @@ export function useRealtimeLobbies(initialLobbies: LobbyInfo[]) {
           table: "ActiveLobby",
         },
         (payload: RealtimePostgresChangesPayload<any>) => {
+          console.log("Realtime lobby update:", payload.eventType, payload);
           if (payload.eventType === "INSERT") {
             const newLobby: LobbyInfo = {
               lobby_id: payload.new.lobby_id,
@@ -71,7 +75,9 @@ export function useRealtimeLobbies(initialLobbies: LobbyInfo[]) {
           }
         }
       )
-      .subscribe();
+      .subscribe((status: string, err?: Error) => {
+        console.log("Supabase channel status:", status, err);
+      });
 
     return () => {
       supabase.removeChannel(channel);
