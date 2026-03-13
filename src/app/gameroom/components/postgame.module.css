@@ -1,3 +1,11 @@
+/*
+ * postgame.module.css
+ * Scope: PostGameShowcase component (in-page leaderboard and awards panels)
+ * Used by: src/app/gameroom/components/PostGameShowcase.tsx
+ * Separate from: PostGameModal.module.css (full-screen modal slideshow)
+ * CSS-02: These two files intentionally serve different post-game UI contexts.
+ */
+
 .showcaseContainer {
   display: flex;
   flex-direction: column;
