@@ -97,23 +97,22 @@ export default function TopicsPage() {
           <span className={styles.neonText}>TOPIC</span>
           <span className={styles.neonTextPink}>BROWSER</span>
         </h1>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button
-            className={styles.uploadToggle}
-            onClick={() => setShowAIGenerate(!showAIGenerate)}
-          >
-            {showAIGenerate ? "✖️ CLOSE AI" : "🤖 AI GENERATE"}
-          </button>
-        </div>
+        <button
+          className={styles.uploadToggle}
+          onClick={() => setShowAIGenerate(true)}
+        >
+          ＋ NEW TOPIC
+        </button>
       </div>
 
       {/* AI Generate Section */}
       {showAIGenerate && (
         <div className={styles.uploadSection}>
-          <AIGenerate onComplete={() => {
-            loadData();
-            setShowAIGenerate(false);
-          }} />
+          <AIGenerate
+            onComplete={() => { loadData(); setShowAIGenerate(false); }}
+            onClose={() => setShowAIGenerate(false)}
+            title="🤖 New Topic"
+          />
         </div>
       )}
 

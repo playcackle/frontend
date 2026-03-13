@@ -32,10 +32,17 @@ interface AIGenerateProps {
   topicId?: number;
   topicName?: string;
   onComplete?: () => void;
+  onClose?: () => void;
+  title?: string;
 }
 
-export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGenerateProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function AIGenerate({
+  topicId,
+  topicName = "",
+  onComplete,
+  onClose,
+  title = "🤖 AI Generate Slots",
+}: AIGenerateProps) {
   const [step, setStep] = useState<"input" | "analysing" | "analysed" | "generating" | "preview" | "saving">("input");
 
   // Input state
@@ -44,7 +51,6 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
 
   // Analysis state
   const [analysis, setAnalysis] = useState<TopicAnalysisResponse | null>(null);
-  // Editable classification fields (pre-filled from analysis, user can override)
   const [confirmedCategory, setConfirmedCategory] = useState("");
   const [confirmedMode, setConfirmedMode] = useState("mainstream");
   const [confirmedTopicType, setConfirmedTopicType] = useState("bounded_cultural");
@@ -72,6 +78,11 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
     setEditedSlots([]);
     setError(null);
     setStatusMessage("");
+  };
+
+  const handleClose = () => {
+    resetState();
+    onClose?.();
   };
 
   const handleAnalyse = async () => {
@@ -175,30 +186,22 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
       );
 
       setStatusMessage("Done!");
-      if (onComplete) {
-        onComplete();
-      }
+      onComplete?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save");
       setStep("preview");
     }
   };
 
-  if (!isOpen) {
-    return (
-      <button className={styles.generateButton} onClick={() => setIsOpen(true)}>
-        🤖 AI GENERATE
-      </button>
-    );
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3 className={styles.title}>🤖 AI Generate Slots</h3>
-        <button className={styles.closeButton} onClick={() => { setIsOpen(false); resetState(); }}>
-          ✕
-        </button>
+        <h3 className={styles.title}>{title}</h3>
+        {onClose && (
+          <button className={styles.closeButton} onClick={handleClose}>
+            ✕
+          </button>
+        )}
       </div>
 
       {error && (
@@ -219,6 +222,7 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Sci-Fi TV Shows"
+              autoFocus
             />
           </div>
 
@@ -232,6 +236,7 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
               value={example}
               onChange={(e) => setExample(e.target.value)}
               placeholder="e.g., Star Trek"
+              onKeyDown={(e) => e.key === "Enter" && handleAnalyse()}
             />
             <p className={styles.helpText}>
               The AI will classify the topic and estimate scope before generating
@@ -262,16 +267,16 @@ export default function AIGenerate({ topicId, topicName = "", onComplete }: AIGe
       {/* Step 2: Analysis results — editable before generating */}
       {step === "analysed" && analysis && (
         <div className={styles.form}>
-          <div className={styles.topicInfo} style={{ marginBottom: '1rem' }}>
-            <p style={{ fontWeight: 'bold' }}>{name}</p>
-            <p style={{ color: '#aaa', fontSize: '0.875rem' }}>
+          <div className={styles.topicInfo} style={{ marginBottom: '0.5rem' }}>
+            <p style={{ fontWeight: 'bold', margin: 0 }}>{name}</p>
+            <p style={{ color: '#aaa', fontSize: '0.875rem', margin: '0.25rem 0 0' }}>
               ~{analysis.estimated_count} items estimated
             </p>
           </div>
 
           {!analysis.is_suitable && (
             <div className={styles.estimateWarning}>
-              <p>⚠️ This topic may not be suitable as-is. Consider narrowing:</p>
+              <p style={{ margin: '0 0 0.5rem' }}>⚠️ This topic may not be suitable as-is. Consider narrowing:</p>
               <ul className={styles.suggestionsList}>
                 {analysis.suggestions.map((s, i) => (
                   <li key={i}>
