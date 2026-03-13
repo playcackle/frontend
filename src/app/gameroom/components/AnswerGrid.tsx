@@ -26,7 +26,11 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
         .filter((s) => s.is_snapped)
         .slice(prevFoundCount.current)
         .map((s) => s.id);
-      setSnappedOrder((prev) => [...prev, ...newIds]);
+      setSnappedOrder((prev) => {
+        const existing = new Set(prev);
+        const trulyNew = newIds.filter((id) => !existing.has(id));
+        return trulyNew.length ? [...prev, ...trulyNew] : prev;
+      });
       setNewlyFound(new Set(newIds));
       const t = setTimeout(() => setNewlyFound(new Set()), 800);
       prevFoundCount.current = foundCount;
