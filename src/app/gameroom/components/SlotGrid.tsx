@@ -2,7 +2,7 @@
 
 import { useAtomValue } from "jotai";
 import React, { useState } from "react";
-import styles from "../gameroom.module.css";
+import styles from "./SlotGrid.module.css";
 import { slotsAtom } from "../store/gameAtoms";
 import { Slot } from "../types/state";
 import AnswerGrid from "./AnswerGrid";
