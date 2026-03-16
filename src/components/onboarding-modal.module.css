@@ -222,3 +222,389 @@
   margin: 0;
   letter-spacing: 1px;
 }
+
+/* ── Wide content (tour step) ─────────────────────────────── */
+.contentWide {
+  width: min(960px, calc(100vw - 2rem));
+}
+
+.stepBodyTour {
+  min-height: unset;
+  justify-content: flex-start;
+  align-items: stretch;
+  text-align: left;
+  padding: 0;
+}
+
+/* ── Tour layout ──────────────────────────────────────────── */
+.tourWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.tourTopRow,
+.tourBottomRow {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+/* Callout bubbles */
+.tourCallout {
+  position: relative;
+  background: #fff;
+  color: #111;
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+  flex: 1;
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.08);
+}
+
+.tourCalloutNum {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--retro-font);
+  font-size: 0.65rem;
+  font-weight: bold;
+  margin-top: 1px;
+}
+
+.tourCalloutBody {
+  flex: 1;
+}
+
+.tourCalloutTitle {
+  display: block;
+  font-family: var(--retro-font);
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #111;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.3px;
+}
+
+.tourCalloutBody p {
+  font-family: var(--retro-font);
+  font-size: 0.62rem;
+  line-height: 1.5;
+  color: #222;
+  margin: 0;
+}
+
+.tourCoda {
+  margin-top: 0.35rem !important;
+}
+
+.tourPurple { color: #7c3aed; }
+
+/* Callout tails */
+.tourTail {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.tourTailDownRight {
+  bottom: -12px;
+  right: 24px;
+  border-left: 9px solid transparent;
+  border-right: 0 solid transparent;
+  border-top: 12px solid #fff;
+}
+.tourTailDownLeft {
+  bottom: -12px;
+  left: 24px;
+  border-left: 0 solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 12px solid #fff;
+}
+.tourTailUpRight {
+  top: -12px;
+  right: 24px;
+  border-left: 9px solid transparent;
+  border-right: 0 solid transparent;
+  border-bottom: 12px solid #fff;
+}
+.tourTailUpCenter {
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 12px solid #fff;
+}
+.tourTailUpLeft {
+  top: -12px;
+  left: 24px;
+  border-left: 0 solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 12px solid #fff;
+}
+
+/* Frozen game UI */
+.tourGame {
+  border: 1px solid rgba(0, 221, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(10, 10, 31, 0.95);
+  overflow: hidden;
+  filter: brightness(0.88);
+  flex-shrink: 0;
+}
+
+.tourGameHeader {
+  background: rgba(0,0,0,0.6);
+  border-bottom: 1px solid rgba(0,221,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 1rem;
+}
+
+.tourGameTitle {
+  font-family: var(--retro-font);
+  font-size: 0.85rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
+}
+
+.tourStatsRow {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid rgba(0,221,255,0.08);
+}
+
+.tourStatTile {
+  flex: 1;
+  background: rgba(20,20,40,0.7);
+  border: 1px solid rgba(0,221,255,0.2);
+  border-radius: 5px;
+  padding: 0.25rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tourStatLabel {
+  font-family: var(--retro-font);
+  font-size: 0.48rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--neon-blue);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.tourStatValue {
+  font-family: var(--retro-font);
+  font-size: 0.6rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.tourStatAccent {
+  color: var(--neon-blue);
+  text-shadow: 0 0 6px var(--neon-blue);
+}
+
+.tourContentRow {
+  display: grid;
+  grid-template-columns: 3fr 4fr 2fr;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  min-height: 160px;
+}
+
+.tourChat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  border: 1px solid rgba(183,0,255,0.3);
+  border-radius: 5px;
+  background: rgba(20,20,40,0.6);
+  padding: 0.4rem;
+  overflow: hidden;
+}
+
+.tourMessages { flex: 1; display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
+
+.tourMsg {
+  font-family: var(--retro-font);
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.05);
+  border-radius: 3px;
+  padding: 0.15rem 0.35rem;
+}
+
+.tourInput {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,221,255,0.3);
+  border-radius: 3px;
+  padding: 0.25rem 0.4rem;
+  font-family: var(--retro-font);
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.3);
+}
+
+.tourSlots {
+  border: 1px solid var(--neon-pink);
+  border-radius: 5px;
+  background: rgba(20,20,40,0.7);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-shadow: 0 0 6px rgba(255,0,170,0.2);
+}
+
+.tourSlotsHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tourSlotsCount {
+  font-family: var(--retro-font);
+  font-size: 1.1rem;
+  color: var(--neon-pink);
+  text-shadow: 0 0 8px var(--neon-pink);
+  line-height: 1;
+}
+
+.tourSlotsLabel {
+  font-family: var(--retro-font);
+  font-size: 0.48rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+}
+
+.tourSlotsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  flex: 1;
+}
+
+.tourSlot {
+  border-radius: 3px;
+  background: var(--neon-pink);
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  min-height: 32px;
+}
+
+.tourSlotPurple {
+  background: var(--neon-purple, #b700ff);
+  box-shadow: 0 0 6px rgba(183,0,255,0.6);
+}
+
+.tourSlotEmpty {
+  background: rgba(255,0,170,0.1);
+  border: 1px dashed rgba(255,0,170,0.3);
+}
+
+.tourSlotLabel {
+  font-family: var(--retro-font);
+  font-size: 0.5rem;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.tourSlotQ {
+  font-family: var(--retro-font);
+  font-size: 0.9rem;
+  color: rgba(255,0,170,0.35);
+}
+
+.tourLeader {
+  border: 1px solid rgba(255,0,170,0.3);
+  border-radius: 5px;
+  background: rgba(20,20,40,0.7);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tourLeaderTitle {
+  font-family: var(--retro-font);
+  font-size: 0.52rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--neon-pink);
+  margin-bottom: 3px;
+  text-shadow: 0 0 5px var(--neon-pink);
+}
+
+.tourLeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 3px;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.tourRank {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--retro-font);
+  font-size: 0.48rem;
+  font-weight: bold;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rankGold   { background: linear-gradient(45deg,#ffd700,#ff9900); color: #000; }
+.rankSilver { background: linear-gradient(45deg,#c0c0c0,#999); color: #000; }
+.rankBronze { background: linear-gradient(45deg,#cd7f32,#8b4513); color: #fff; }
+
+.tourLeaderName {
+  flex: 1;
+  font-family: var(--retro-font);
+  font-size: 0.48rem;
+  color: rgba(255,255,255,0.75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tourLeaderScore {
+  font-family: var(--retro-font);
+  font-size: 0.52rem;
+  font-weight: bold;
+  color: var(--neon-pink);
+}

@@ -1,72 +1,90 @@
+---
+gsd_state_version: 1.0
+milestone: v1.2
+milestone_name: Code Health
+status: planning
+stopped_at: Completed 06-gameroom-css-split 06-06-PLAN.md
+last_updated: "2026-03-13T22:30:25.290Z"
+last_activity: 2026-03-13 — Roadmap created, phases 6-8 defined
+progress:
+  total_phases: 3
+  completed_phases: 1
+  total_plans: 6
+  completed_plans: 6
+  percent: 0
+---
+
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-25)
+See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Players must always know where they are in the game and what their actions mean — reliable state, readable feedback, and visible progress are what keep them coming back.
-**Current focus:** Phase 2 — Chat UX
+**Current focus:** v1.2 Code Health — Phase 6: Gameroom CSS Split
 
 ## Current Position
 
-Phase: 2 of 4 (Chat UX)
-Plan: 2 of 2 in current phase
-Status: Complete — pending verification
-Last activity: 2026-03-02 — Completed plan 02-02: getMessageTypeClass refactor + badge rendering + color scheme tuning
+Phase: 6 of 8 (Gameroom CSS Split)
+Plan: — (not yet planned)
+Status: Ready to plan
+Last activity: 2026-03-13 — Roadmap created, phases 6-8 defined
 
-Progress: [████░░░░░░] 40%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 2 min
-- Total execution time: 7 min
+- Total plans completed: 0 (this milestone)
+- Average duration: —
+- Total execution time: —
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-state-sync | 2 | 4 min | 2 min |
-| 02-chat-ux | 2 | 3 min | 1.5 min |
-
-**Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-02 (2 min), 02-01 (1 min), 02-02 (2 min)
-- Trend: stable
-
-*Updated after each plan completion*
+| - | - | - | - |
 
 ## Accumulated Context
+| Phase 06-gameroom-css-split P05 | 5 | 1 tasks | 2 files |
+| Phase 06-gameroom-css-split P03 | 8 | 1 tasks | 2 files |
+| Phase 06-gameroom-css-split P04 | 8 | 2 tasks | 4 files |
+| Phase 06-gameroom-css-split P02 | 2 | 1 tasks | 2 files |
+| Phase 06 P01 | 10min | 3 tasks | 6 files |
+| Phase 06-gameroom-css-split P06 | 3 | 2 tasks | 3 files |
+| Phase 06-gameroom-css-split P06 | 15 | 3 tasks | 3 files |
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+See PROJECT.md Key Decisions table for all decisions from v1.0 and v1.1.
 
-- [State Sync]: Use `lobby_state_sync` event for recovery — extend existing event rather than add new ones
-- [Chat UX]: Visual differentiation via existing `message_type` field — add styling layer only
-- [Landing Page]: Player card data fetched from Supabase/backend at page load — progression partially tracked server-side
-- [01-01]: Use initializeSocketRef to break circular useCallback dependency between scheduleReconnect and initializeSocket
-- [01-01]: Gate loading on !isConnected || connectionStatus === "reconnecting" to cover full reconnection uncertainty window
-- [01-02]: Emit request_state_sync inside setSocketState functional updater — safe when socket is connected, synchronous before state commit
-- [01-02]: Use sendEventRef (ref-capture pattern) to call sendEvent from handleRoundOverRef without stale closure risk
-- [01-02]: Cast sendEventRef.current for request_state_sync — event not in EventPayloadMap, backend silently ignores unknown events
-- [02-01]: Use .ownSuccessfulAnswerMessage combined class with !important to override .ownMessage !important — safer than removing !important from .ownMessage
-- [02-01]: Keep .chatMessage border-left-color unchanged — .botBobMessage differentiated via higher background opacity (0.12 vs 0.05) not color change
-- [02-01]: Use :global(.performance-mode) CSS guard at CSS layer for animation suppression — no React-level atom reads needed for CSS-only animations
-- [02-02]: getMessageTypeClass accepts full UnifiedMessage — Bot Bob branch precedes message_type switch since Bot Bob sends type "chat"
-- [02-02]: Color scheme: correct=neon-green (consistent with answered slot tiles), duplicate=orange, own-wrong=neutral (ownFailedAnswerMessage resets .ownMessage !important)
+**v1.2 context:**
+- CSS split scope: gameroom.module.css (1,739 lines) imported by 9 files — PlayerAvatar, UnifiedInputForm, StatsRow, BotBobPinnedMessage, RoomHeader, SlotTile, SlotGrid, UnifiedMessages, page.tsx
+- Some components already have own modules: AnswerGrid, AnswerReveal, PostGameModal, countdown, leaderboard, postgame
+- PostGameModal.module.css (415 lines) and postgame.module.css (406 lines) are distinct files — different class names but overlapping post-game concerns; need rationalization
+- Dual performance mode systems (FINDING-A06) deferred — requires product decision on prefers-reduced-motion; NOT in v1.2 scope
+- Full CSS overhaul includes admin/other route large module files (page.module.css 568L, admin pages 450-601L, etc.)
+- [Phase 06-gameroom-css-split]: UnifiedMessages: include both .ownMessage rules verbatim (second uses !important for correct specificity)
+- [Phase 06-gameroom-css-split]: SlotTile styles extracted to SlotTile.module.css; page-level animation classes (colorBurstOverlay, particles, etc.) remain in gameroom.module.css
+- [Phase 06]: CSS extracted verbatim — no property values changed, pure structural refactor
+- [Phase 06]: gameroom.module.css NOT modified yet — cleanup deferred to later plan per plan spec
+- [Phase 06-gameroom-css-split]: gradientShift keyframes defined in UnifiedInputForm.module.css — referenced by .unifiedInputFormOnly::before but absent from gameroom.module.css everywhere in codebase
+- [Phase 06-gameroom-css-split]: statsTitle missing from gameroom.module.css — defined in StatsRow.module.css with retro label styling; will need duplication note until Plan 06 cleanup
+- [Phase 06-gameroom-css-split]: gameroom.module.css reduced to 611 lines (from 1,739) removing all 8 extracted component class blocks
+- [Phase 06-gameroom-css-split]: PostGameModal.module.css and postgame.module.css confirmed distinct — scope comments document intentional separation
+- [Phase 06-gameroom-css-split]: gameroom.module.css reduced to 611 lines (from 1,739) by removing all 8 extracted component class blocks
+- [Phase 06-gameroom-css-split]: PostGameModal and postgame CSS files intentionally separate — different class names, different component scopes; scope comments added (CSS-02)
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
-- [Phase 4]: Progresjonsscore and per-category percentile data may require new API endpoints — backend availability unknown
+None.
 
 ## Session Continuity
 
-Last session: 2026-03-02
-Stopped at: Completed 02-02-PLAN.md — all Phase 2 plans done, awaiting verification
+Last session: 2026-03-13T22:30:25.288Z
+Stopped at: Completed 06-gameroom-css-split 06-06-PLAN.md
 Resume file: None

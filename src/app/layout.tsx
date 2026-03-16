@@ -3,15 +3,14 @@ import SynthwaveBackground from "@/components/synthwave-background";
 import { Progress, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import type React from "react";
 import { Suspense } from "react";
 import "./globals.css";
 import { Provider } from "./provider";
 
 export const metadata: Metadata = {
-  title: "Race. Claim. Win",
-  description: "Snap answers first, win points. Chaotic and addictive!",
+  title: "Cackle",
+  description: "Trivia reinvented!",
   generator: "v0.dev",
 };
 
@@ -20,12 +19,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const pathname =
-    headersList.get("x-invoke-path") || headersList.get("referer");
-
-  const isGameroom = pathname?.includes("gameroom");
-
   return (
     <html lang="en">
       <body

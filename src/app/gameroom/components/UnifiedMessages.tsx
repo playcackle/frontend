@@ -4,21 +4,18 @@ import { useUser } from "@/hooks/useUser";
 import { Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
-import styles from "../gameroom.module.css";
+import styles from "./UnifiedMessages.module.css";
 import {
-  botBobLastMessageAtom,
   isRoundBreakAtom,
   unifiedMessagesAtom,
   type UnifiedMessage,
 } from "../store/gameAtoms";
-import BotBobPinnedMessage from "./BotBobPinnedMessage";
 
 export default function UnifiedMessages() {
   const { user } = useUser();
   // Use atomic selector for optimal performance
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
   const messages = useAtomValue(unifiedMessagesAtom);
-  const botBobLastMessage = useAtomValue(botBobLastMessageAtom);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change
@@ -62,9 +59,6 @@ export default function UnifiedMessages() {
 
   return (
     <div className={styles.unifiedMessagesContainer}>
-      {/* Pinned Bot Bob section replaces the header */}
-      <BotBobPinnedMessage message={botBobLastMessage} />
-
       <div className={styles.messagesScrollArea}>
         {messages.length === 0 ? (
           <div className={styles.messagesEmpty}>

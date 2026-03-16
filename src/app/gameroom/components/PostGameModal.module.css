@@ -1,3 +1,11 @@
+/*
+ * PostGameModal.module.css
+ * Scope: PostGameModal component (full-screen slideshow overlay)
+ * Used by: src/app/gameroom/components/PostGameModal.tsx
+ * Separate from: postgame.module.css (PostGameShowcase in-page panels)
+ * CSS-02: These two files intentionally serve different post-game UI contexts.
+ */
+
 .overlay {
   background: rgba(0, 0, 0, 0.95);
   position: fixed;

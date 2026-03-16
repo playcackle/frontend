@@ -1,84 +1,94 @@
 # Roadmap: Quiz Game Frontend
 
-## Overview
+## Milestones
 
-Four phases that address the four active improvement areas in sequence: first make the game reliable (state sync), then make in-game feedback readable (chat UX), then guide new players in (onboarding), then surface player progress on the landing page. Each phase delivers one coherent capability that can be verified end-to-end.
+- ✅ **v1.0 MVP** — Phases 1-4 (shipped 2026-03-11)
+- ✅ **v1.1 Audit** — Phase 5 (shipped 2026-03-12)
+- 🚧 **v1.2 Code Health** — Phases 6-8 (in progress)
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+<details>
+<summary>✅ v1.0 MVP (Phases 1-4) — SHIPPED 2026-03-11</summary>
 
-Decimal phases appear between their surrounding integers in numeric order.
+- [x] Phase 1: State Sync (2/2 plans) — completed 2026-02-26
+- [x] Phase 2: Chat UX (2/2 plans) — completed 2026-03-02
+- [x] Phase 3: Onboarding (1/1 plan) — completed 2026-03-11
+- [x] Phase 4: Landing Page (1/1 plan) — completed 2026-03-11
 
-- [x] **Phase 1: State Sync** - Client reliably recovers game state across round transitions and reconnections (completed 2026-02-26)
-- [x] **Phase 2: Chat UX** - Message types in the unified feed are visually distinct at a glance (completed 2026-03-02)
-- [ ] **Phase 3: Onboarding** - New users are guided through game mechanics before their first round
-- [ ] **Phase 4: Landing Page** - Authenticated players see their progression stats, high scores, and playstyle data on the home page
+Archive: `.planning/milestones/v1.0-ROADMAP.md`
+
+</details>
+
+<details>
+<summary>✅ v1.1 Audit (Phase 5) — SHIPPED 2026-03-12</summary>
+
+- [x] Phase 5: Codebase Audit (2/2 plans) — completed 2026-03-12
+
+Archive: `.planning/milestones/v1.1-ROADMAP.md`
+
+</details>
+
+### 🚧 v1.2 Code Health (In Progress)
+
+**Milestone Goal:** Eliminate confirmed runtime bugs, split the monolithic gameroom CSS into per-component modules, and fix the highest-impact structural findings from the v1.1 audit.
+
+- [x] **Phase 6: Gameroom CSS Split** - Split `gameroom.module.css` into per-component modules and rationalize postgame CSS duplication (completed 2026-03-13)
+- [ ] **Phase 7: Admin/Route CSS Tidy** - Audit and reorganize oversized module CSS files across admin and other routes
+- [ ] **Phase 8: Bug Fixes and Performance** - Fix confirmed runtime bugs, gate effects on performance mode, fix listener accumulation, and replace full-state subscriptions with granular selectors
 
 ## Phase Details
 
-### Phase 1: State Sync
-**Goal**: Players are never stuck looking at stale or missing game state after a round transition or reconnect
-**Depends on**: Nothing (first phase)
-**Requirements**: STATE-01, STATE-02, STATE-03
+### Phase 6: Gameroom CSS Split
+**Goal**: Developers can navigate and modify gameroom styles without opening a 1,739-line monolith
+**Depends on**: Phase 5
+**Requirements**: CSS-01, CSS-02
 **Success Criteria** (what must be TRUE):
-  1. Player in an active game sees the correct intermission UI automatically after a round ends — no manual page reload or rejoin
-  2. When the client is mid-transition and state is uncertain, a visible reconnecting indicator is shown rather than a frozen or incorrect game screen
-  3. Player who loses WebSocket connection and reconnects lands in the correct game phase (lobby, intermission, or active round) without manual intervention
-**Plans**: 2 plans
+  1. Each of the 8 components (PlayerAvatar, UnifiedInputForm, StatsRow, BotBobPinnedMessage, RoomHeader, SlotTile, SlotGrid, UnifiedMessages) has its own CSS module containing only its styles
+  2. `gameroom.module.css` contains only layout and page-level styles — no component-scoped rules
+  3. `PostGameModal.module.css` and `postgame.module.css` are rationalized — overlapping post-game concerns are resolved into clearly scoped files with no duplicated class responsibilities
+  4. The game room renders identically to pre-split in the browser (no visual regressions)
+**Plans**: 6 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Fix scheduleReconnect stale closure + loading gate covers reconnecting state (STATE-02)
-- [ ] 01-02-PLAN.md — Emit request_state_sync on reconnect + fix handleLobbySyncRef divergence + round_over sync request (STATE-01, STATE-03)
+- [ ] 06-01-PLAN.md — Extract PlayerAvatar, RoomHeader, BotBobPinnedMessage CSS modules
+- [ ] 06-02-PLAN.md — Extract StatsRow CSS module
+- [ ] 06-03-PLAN.md — Extract SlotTile CSS module (tile, badge, animations)
+- [ ] 06-04-PLAN.md — Extract SlotGrid and UnifiedInputForm CSS modules
+- [ ] 06-05-PLAN.md — Extract UnifiedMessages CSS module
+- [ ] 06-06-PLAN.md — Strip gameroom.module.css and rationalize post-game CSS (CSS-02)
 
-### Phase 2: Chat UX
-**Goal**: Players can instantly tell what kind of message they are reading in the unified chat feed
-**Depends on**: Phase 1
-**Requirements**: CHAT-01, CHAT-02, CHAT-03
+### Phase 7: Admin/Route CSS Tidy
+**Goal**: No single CSS module file in admin or other routes is oversized or difficult to navigate
+**Depends on**: Phase 6
+**Requirements**: CSS-03
 **Success Criteria** (what must be TRUE):
-  1. A correct answer submission in the chat feed is visually distinct from a regular chat message (different color, badge, or treatment)
-  2. Bot Bob hint messages are immediately recognizable in the feed without reading the sender name
-  3. A duplicate or already-answered attempt looks different from a fresh answer attempt, so players understand why their input was rejected
-**Plans**: 2 plans
-
-Plans:
-- [x] 02-01-PLAN.md — CSS classes for all message type variants (botBobMessage, duplicateMessage, badge classes, performance-mode guards) (CHAT-01, CHAT-02, CHAT-03)
-- [ ] 02-02-PLAN.md — Refactor getMessageTypeClass + add getMessageBadge + render badges in UnifiedMessages.tsx (CHAT-01, CHAT-02, CHAT-03)
-
-### Phase 3: Onboarding
-**Goal**: New users understand how to play before their first round, and are not shown the walkthrough again afterward
-**Depends on**: Phase 2
-**Requirements**: ONBRD-01, ONBRD-02, ONBRD-03, ONBRD-04, ONBRD-05
-**Success Criteria** (what must be TRUE):
-  1. A first-time user sees a multi-step walkthrough modal automatically on their first visit to the app
-  2. Each walkthrough step includes a screenshot of the actual game UI being described
-  3. The walkthrough explains how to submit an answer, how Bot Bob hints work, and how scoring works
-  4. A user can exit the walkthrough at any step via a visible skip option
-  5. A user who completed or skipped the walkthrough does not see it again on subsequent visits
+  1. All oversized admin and route module CSS files (page.module.css 568L, admin pages 450-601L) are audited and split or reorganized
+  2. No single module CSS file outside the gameroom exceeds a reasonable size threshold (e.g., no file larger than the largest per-component module from Phase 6)
+  3. Admin pages render correctly after reorganization (no visual regressions)
 **Plans**: TBD
 
-### Phase 4: Landing Page
-**Goal**: Authenticated players see a rich player card with progression stats, high scores, playstyle breakdown, and a global leaderboard on the home page
-**Depends on**: Phase 3
-**Requirements**: LAND-01, LAND-02, LAND-03, LAND-04, LAND-05
+### Phase 8: Bug Fixes and Performance
+**Goal**: The game room runs without confirmed bugs, respects performance mode fully, and avoids unnecessary re-renders and listener accumulation
+**Depends on**: Phase 7
+**Requirements**: BUG-01, BUG-02, PERF-01, PERF-02, REL-01
 **Success Criteria** (what must be TRUE):
-  1. Logged-in player sees their Progresjonsscore on a player card on the landing page
-  2. Player card shows high scores for daily, weekly, monthly, and yearly timeframes
-  3. Landing page shows a playstyle dashboard with the player's percentile ranking per quiz category
-  4. Landing page includes a global leaderboard visible to all authenticated users
-  5. The existing lobby browser remains accessible on the landing page alongside the new stats sections
+  1. Game room page loads without a React invariant violation — Rules of Hooks violation in `page.tsx` is resolved (hooks are never called conditionally)
+  2. Answer reveal animation fires correctly when a correct answer is submitted — `AnswerReveal.tsx` type mismatch is fixed and `styles.visible` is applied as expected
+  3. All DOM animations, screen shake, and overlays in `triggerCorrectAnswerEffects` are gated on `performanceModeAtom` — performance mode off means no effects fire
+  4. Socket event listeners do not accumulate across re-renders — `useGameEvents` cleanup correctly captures and calls all `onEvent` return values on unmount
+  5. `LeaderBoard`, `AnswerReveal`, `PostGameShowcase`, and `page.tsx` subscribe to granular atom selectors instead of full `gameStateAtom` — no unnecessary re-renders on game ticks that don't affect their data
 **Plans**: TBD
 
 ## Progress
 
-**Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. State Sync | 2/2 | Complete   | 2026-02-26 |
-| 2. Chat UX | 1/2 | Complete    | 2026-03-02 |
-| 3. Onboarding | 0/? | Not started | - |
-| 4. Landing Page | 0/? | Not started | - |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. State Sync | v1.0 | 2/2 | Complete | 2026-02-26 |
+| 2. Chat UX | v1.0 | 2/2 | Complete | 2026-03-02 |
+| 3. Onboarding | v1.0 | 1/1 | Complete | 2026-03-11 |
+| 4. Landing Page | v1.0 | 1/1 | Complete | 2026-03-11 |
+| 5. Codebase Audit | v1.1 | 2/2 | Complete | 2026-03-12 |
+| 6. Gameroom CSS Split | 6/6 | Complete   | 2026-03-13 | - |
+| 7. Admin/Route CSS Tidy | v1.2 | 0/? | Not started | - |
+| 8. Bug Fixes and Performance | v1.2 | 0/? | Not started | - |
