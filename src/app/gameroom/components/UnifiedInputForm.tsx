@@ -2,8 +2,7 @@
 
 import { Flex } from "@radix-ui/themes";
 import { useAtom, useAtomValue } from "jotai";
-import React from "react";
-import styles from "./UnifiedInputForm.module.css";
+import React, { useState } from "react";
 import { useAnswer } from "../hooks/useGameState";
 import {
   isRoundBreakAtom,
@@ -12,6 +11,7 @@ import {
 } from "../store/gameAtoms";
 import { containsBannedLanguage } from "../utils/profanityFilter";
 import AnswerBubbles, { BubbleAnswer } from "./answerChips/AnswerBubbles";
+import styles from "./UnifiedInputForm.module.css";
 
 interface UnifiedInputFormProps {
   onSubmit: (message: string, isAnswer: boolean) => void;
@@ -100,7 +100,8 @@ export default function UnifiedInputForm({
           )}
           {repeatError && (
             <span className={styles.profanityError}>
-              You cannot send the same answer more than {REPEAT_LIMIT} times in a row.
+              You cannot send the same answer more than {REPEAT_LIMIT} times in
+              a row.
             </span>
           )}
           <Flex direction="row" gap="2">

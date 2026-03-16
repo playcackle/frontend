@@ -4,12 +4,12 @@ import { useUser } from "@/hooks/useUser";
 import { Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
-import styles from "./UnifiedMessages.module.css";
 import {
   isRoundBreakAtom,
   unifiedMessagesAtom,
   type UnifiedMessage,
 } from "../store/gameAtoms";
+import styles from "./UnifiedMessages.module.css";
 
 export default function UnifiedMessages() {
   const { user } = useUser();
@@ -43,6 +43,7 @@ export default function UnifiedMessages() {
     ) {
       return styles.botBobMessage;
     }
+    debugger;
     switch (msg.message_type) {
       case "answer_attempt":
         if (msg.submission_result === "already_snapped")
