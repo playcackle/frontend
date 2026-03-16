@@ -14,6 +14,7 @@ import UnifiedInputForm from "./components/UnifiedInputForm";
 import UnifiedMessages from "./components/UnifiedMessages";
 
 // Import optimized components
+import HintPanel from "./components/HintPanel";
 import SlotGrid from "./components/SlotGrid";
 import StatsRow from "./components/StatsRow";
 
@@ -182,15 +183,18 @@ export default function GameroomPage() {
                   {isRoundBreak ? (
                     <Leaderboard />
                   ) : (
-                    <div
-                      className={styles.slotContainer}
-                      style={
-                        {
-                          "--room-color": "var(--neon-pink)",
-                        } as React.CSSProperties
-                      }
-                    >
-                      <SlotGrid />
+                    <div className={styles.slotColumnWrapper}>
+                      <div
+                        className={styles.slotContainer}
+                        style={
+                          {
+                            "--room-color": "var(--neon-pink)",
+                          } as React.CSSProperties
+                        }
+                      >
+                        <SlotGrid />
+                      </div>
+                      <HintPanel />
                     </div>
                   )}
                 </>

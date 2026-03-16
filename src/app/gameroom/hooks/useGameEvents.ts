@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useSetAtom } from "jotai";
 import {
   GameOverPayload,
   LobbySyncPayload,
@@ -13,6 +14,7 @@ import {
   getRandomSnappedSound,
   playSound,
 } from "../utils";
+import { clearRoundHintsAtom } from "../store/gameAtoms";
 import { useGameActions } from "./useGameActions";
 import { useGameSocket } from "./useGameSocket";
 import { useGameState } from "./useGameState";
@@ -21,6 +23,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const { onEvent, sendEvent, isConnected, connectionStatus } = useGameSocket(gameWsUrl, token);
   const { updateGameState, slots } = useGameState();
   const { triggerCorrectAnswerEffects } = useGameActions();
+  const clearRoundHints = useSetAtom(clearRoundHintsAtom);
 
   const slotsRef = useRef(slots);
   useEffect(() => {
@@ -94,6 +97,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       showCountDown: false,
       accolades: [], // Clear accolades for new round
     });
+    clearRoundHints();
     playSound("newRound");
   });
 

@@ -6,6 +6,7 @@ import { AnimationState, GameState } from "../types/state";
 export type UnifiedMessage = ChatMessageData & {
   message_type:
     | "chat"
+    | "bot_hint"
     | "answer_attempt"
     | "successful_answer"
     | "failed_answer";
@@ -65,7 +66,8 @@ export const answerAtom = atom<string>("");
 // Unified message system atoms
 export const unifiedMessagesAtom = atom<UnifiedMessage[]>([]);
 export const unifiedInputAtom = atom<string>("");
-export const botBobLastMessageAtom = atom<UnifiedMessage | null>(null);
+// Hints sent by BotBob during the current round, displayed in the dedicated HintPanel
+export const roundHintsAtom = atom<UnifiedMessage[]>([]);
 
 export const animationStateAtom = atom<AnimationState>({
   attentionAnimation: "",
@@ -125,20 +127,22 @@ export const resetGameStateAtom = atom(null, (get, set) => {
 export const addUnifiedMessageAtom = atom(
   null,
   (get, set, message: UnifiedMessage) => {
-    const current = get(unifiedMessagesAtom);
-    const updated = [...current, message].slice(-100); // Keep last 100 messages
-    set(unifiedMessagesAtom, updated);
-
-    // Update Bot Bob's last message if this is from Bot Bob
-    if (
-      message.player_id === "botbob" ||
-      message.display_name.toLowerCase() === "botbob"
-    ) {
-      set(botBobLastMessageAtom, message);
+    if (message.message_type === "bot_hint") {
+      // Hints go to the dedicated HintPanel, not the chat feed
+      const current = get(roundHintsAtom);
+      set(roundHintsAtom, [...current, message]);
+    } else {
+      const current = get(unifiedMessagesAtom);
+      const updated = [...current, message].slice(-100); // Keep last 100 messages
+      set(unifiedMessagesAtom, updated);
     }
   }
 );
 
 export const clearUnifiedMessagesAtom = atom(null, (get, set) => {
   set(unifiedMessagesAtom, []);
+});
+
+export const clearRoundHintsAtom = atom(null, (get, set) => {
+  set(roundHintsAtom, []);
 });
