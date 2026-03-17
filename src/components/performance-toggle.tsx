@@ -2,10 +2,20 @@
 
 import { performanceModeAtom } from "@/atoms/performance-atom";
 import { useAtom } from "jotai";
+import { useState, useEffect } from "react";
 import styles from "./settings-controls.module.css";
 
 export default function PerformanceToggle() {
   const [performanceMode, setPerformanceMode] = useAtom(performanceModeAtom);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   const handleToggle = () => {
     const newValue = !performanceMode;
