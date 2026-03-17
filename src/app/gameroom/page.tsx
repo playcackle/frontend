@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./gameroom.module.css";
 
 // Import custom hooks
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import Progress from "../loading";
 import { gameRoomAtom } from "../store/gameRoom";
 import CountdownOverlay from "./components/CountdownOverlay";
@@ -26,7 +26,6 @@ import { useAnswerBubbles } from "./hooks/useAnswerBubbles";
 import { useChatSocket } from "./hooks/useChatWs";
 import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
-import { useGameState } from "./hooks/useGameState";
 import {
   animationStateAtom,
   isPostGameShowcaseAtom,
@@ -36,6 +35,7 @@ import {
   scoresAtom,
   showCountDownAtom,
   timeRemainingAtom,
+  updateGameStateAtom,
 } from "./store/gameAtoms";
 
 export default function GameroomPage() {
@@ -52,8 +52,8 @@ export default function GameroomPage() {
   const scores = useAtomValue(scoresAtom);
   const roundName = useAtomValue(roundNameAtom);
 
-  // Still need updateGameState from the hook
-  const { updateGameState } = useGameState();
+  // Granular atom subscription — avoids full-state re-render on every game tick
+  const updateGameState = useSetAtom(updateGameStateAtom);
 
   // Refs
   const mainRef = useRef<HTMLDivElement>(null);
@@ -98,21 +98,20 @@ export default function GameroomPage() {
   // Custom hooks
   const { submitAnswer } = useGameActions();
 
-  if (!gameroom) {
-    return <div>Loading gameroom...</div>;
-  }
-
-  // WebSocket connections
-  const { sendEvent } = useGameEvents(gameroom.game_ws_url, gameroom.token);
+  // WebSocket connections — must be called unconditionally before any conditional return
+  const { sendEvent } = useGameEvents(
+    gameroom?.game_ws_url ?? "",
+    gameroom?.token ?? ""
+  );
 
   // Chat socket connection
   function getBaseWsUrl(url: string) {
     return url.replace(/\/(game|chat)$/, "");
   }
-  const baseWsUrl = getBaseWsUrl(gameroom.game_ws_url);
+  const baseWsUrl = getBaseWsUrl(gameroom?.game_ws_url ?? "");
   const { sendMessage: sendChatMessage } = useChatSocket(
     baseWsUrl,
-    gameroom.token
+    gameroom?.token ?? ""
   );
 
   // Unified submission handler
@@ -138,6 +137,10 @@ export default function GameroomPage() {
       updateGameState({ soundsLoaded: true });
     }
   }, [updateGameState]);
+
+  if (!gameroom) {
+    return <div>Loading gameroom...</div>;
+  }
 
   return (
     <>
