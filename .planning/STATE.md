@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Code Health
 status: planning
-stopped_at: Completed 07-admin-route-css-tidy 07-03-PLAN.md
-last_updated: "2026-03-17T13:04:18.894Z"
+stopped_at: Completed 08-bug-fixes-and-performance 08-02-PLAN.md
+last_updated: "2026-03-17T13:25:37.635Z"
 last_activity: 2026-03-13 — Roadmap created, phases 6-8 defined
 progress:
   total_phases: 3
   completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 12
+  completed_plans: 10
   percent: 0
 ---
 
@@ -56,6 +56,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 07-admin-route-css-tidy P01 | 3min | 2 tasks | 9 files |
 | Phase 07-admin-route-css-tidy P02 | 4min | 2 tasks | 5 files |
 | Phase 07-admin-route-css-tidy P03 | 2min | 2 tasks | 0 files |
+| Phase 08-bug-fixes-and-performance P02 | 2min | 1 tasks | 1 files |
 
 ### Decisions
 
@@ -80,6 +81,8 @@ See PROJECT.md Key Decisions table for all decisions from v1.0 and v1.1.
 - [Phase 07-admin-route-css-tidy]: page.module.css split into 3 component modules; .footer moved to leaderboard.module.css; .container/.main added to leaderboard.module.css (were undefined no-ops)
 - [Phase 07-admin-route-css-tidy]: Upgraded existing inline comments to dashed style for visual consistency; scrollbar and keyframe blocks got own headers; no CSS property values changed
 - [Phase 07-admin-route-css-tidy]: Visual regression check approved by human — no issues found on home page or admin pages; phase 07 CSS refactoring confirmed visually correct
+- [Phase 08-bug-fixes-and-performance]: AnswerReveal.QuizAnswer.id changed from number to string to align with Slot.id — fixes visibleAnswers.includes() always returning false (BUG-02)
+- [Phase 08-bug-fixes-and-performance]: useGameState() replaced with useAtomValue(slotsAtom) in AnswerReveal — granular atom subscription prevents full-state re-renders (PERF-02)
 
 ### Pending Todos
 
@@ -91,6 +94,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-17T12:50:03.081Z
-Stopped at: Completed 07-admin-route-css-tidy 07-03-PLAN.md
+Last session: 2026-03-17T13:25:37.633Z
+Stopped at: Completed 08-bug-fixes-and-performance 08-02-PLAN.md
 Resume file: None
