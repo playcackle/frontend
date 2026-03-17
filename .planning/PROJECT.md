@@ -31,16 +31,20 @@ Players must always know where they are in the game and what their actions mean 
 - ✓ 41 findings documented in prioritized FINDINGS.md with impact/effort ratings and concrete remediation — v1.1
 - ✓ 2 confirmed runtime bugs surfaced: Rules of Hooks violation (crash risk) and answer reveal animation never firing — v1.1
 
-### Active (v1.2 — Code Health)
+### Validated (continued)
 
-- [ ] Split `gameroom.module.css` (1,739 lines) into per-component CSS modules
-- [ ] Rationalize `PostGameModal.module.css` vs `postgame.module.css` duplication
-- [ ] Audit and tidy oversized module CSS files across admin and other routes
-- [ ] Fix Rules of Hooks violation in `page.tsx` — crash risk (FINDING-A01)
-- [ ] Fix answer reveal animation type mismatch — never fires (FINDING-T10)
-- [ ] Gate all effects in `triggerCorrectAnswerEffects` on `performanceModeAtom` (FINDING-P06)
-- [ ] Fix `onEvent` cleanup discard in `useGameEvents` — listener accumulation (FINDING-Q13/A09)
-- [ ] Replace `useGameState()` with granular atom selectors across 4 components (FINDING-P01–P04)
+- ✓ `gameroom.module.css` split into 8 per-component CSS modules; monolith trimmed 1,739→611 lines — v1.2
+- ✓ `PostGameModal.module.css` and `postgame.module.css` rationalized with non-overlapping scopes — v1.2
+- ✓ Admin/route CSS files reorganized with section headers; `page.module.css` trimmed 601→240 lines — v1.2
+- ✓ Rules of Hooks violation fixed in `page.tsx` — hooks unconditional before guard — v1.2
+- ✓ Answer reveal animation fixed — `QuizAnswer.id` type aligned to `string`, `styles.visible` now fires — v1.2
+- ✓ All DOM effects in `triggerCorrectAnswerEffects` gated on `performanceModeAtom` — v1.2
+- ✓ `onEvent` cleanup captures fixed in `useGameEvents` — 9 listeners properly unmounted — v1.2
+- ✓ `useGameState()` replaced with granular atom selectors in `LeaderBoard`, `AnswerReveal`, `PostGameShowcase`, `page.tsx` — v1.2
+
+### Active (v1.3 — TBD)
+
+(Define with `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -81,15 +85,17 @@ Players must always know where they are in the game and what their actions mean 
 | Audit-only v1.1 milestone before v1.2 improvements | Ship audit findings first so v1.2 planning is evidence-based, not assumption-based | ✓ Good — surfaced 2 confirmed bugs that would otherwise ship undetected |
 | Dual performance systems must be consolidated (not patched) | `performance-atom.ts` and `performance-context.tsx` use different localStorage keys — patching one leaves the other wrong | ⚠️ Revisit — requires product decision on `prefers-reduced-motion` handling before migration |
 
-## Current Milestone: v1.2 Code Health
+## Current State (v1.2 — shipped 2026-03-17)
 
-**Goal:** Eliminate confirmed runtime bugs, split the monolithic gameroom CSS into per-component modules, and fix the highest-impact structural findings from the v1.1 audit.
+**Shipped:** Code Health milestone complete. All 8 requirements satisfied across 4 phases (3 GSD + 1 manual fix). Codebase now has per-component CSS modules, no confirmed runtime bugs, performance-mode-gated DOM effects, and stable listener cleanup.
 
-**Target features:**
-- CSS split: `gameroom.module.css` → per-component modules; rationalize postgame CSS duplication; tidy other large module files
-- Bug fixes: Rules of Hooks crash risk (`page.tsx`), answer reveal animation never firing (`AnswerReveal.tsx`)
-- Performance: Gate `triggerCorrectAnswerEffects` on `performanceModeAtom`; replace `useGameState()` with granular atom selectors
-- Reliability: Fix `onEvent` cleanup discard to prevent listener accumulation
+**Tech debt carried forward:**
+- `useGameEvents.ts` still uses full `gameStateAtom` internally (intentional — orchestrating hook)
+- ARCH-01: Dual performance mode systems need product decision before consolidation
+- ARCH-02: `sound-effects.tsx` (1,448 lines) split deferred
+- ARCH-03: `AdminApiClient` domain split deferred
+
+**Next:** `/gsd:new-milestone` to define v1.3 scope.
 
 ---
-*Last updated: 2026-03-13 after v1.2 milestone started*
+*Last updated: 2026-03-17 after v1.2 milestone shipped*
