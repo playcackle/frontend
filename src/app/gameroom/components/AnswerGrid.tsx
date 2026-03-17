@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAtomValue } from "jotai";
+import { isRoundBreakAtom, roundHintsAtom } from "../store/gameAtoms";
 import { Slot } from "../types/state";
 import { slotHeatAtom } from "../store/gameAtoms";
 import styles from "./AnswerGrid.module.css";
@@ -29,6 +30,8 @@ const heatLevelFromAttempts = (attempts: number): number => {
 const HEAT_NAMES = ["empty", "cool", "warm", "hot", "inferno"] as const;
 
 export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
+  const hints = useAtomValue(roundHintsAtom);
+  const isRoundBreak = useAtomValue(isRoundBreakAtom);
   const slotHeat = useAtomValue(slotHeatAtom);
   const totalAnswers = slots.length;
   const snappedMap = new Map(slots.filter((s) => s.is_snapped).map((s) => [s.id, s]));
@@ -205,6 +208,20 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
           </div>
         );
       })()}
+
+      {/* Round hints — hidden during round breaks */}
+      {!isRoundBreak && hints.length > 0 && (
+        <div className={styles.hintsSection}>
+          <p className={styles.hintsSectionLabel}>Hints</p>
+          <div className={styles.hintsGrid}>
+            {hints.map((hint, index) => (
+              <div key={index} className={styles.hintChip}>
+                <span className={styles.hintChipText}>{hint.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

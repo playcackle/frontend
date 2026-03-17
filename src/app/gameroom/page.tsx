@@ -14,7 +14,6 @@ import UnifiedInputForm from "./components/UnifiedInputForm";
 import UnifiedMessages from "./components/UnifiedMessages";
 
 // Import optimized components
-import HintPanel from "./components/HintPanel";
 import SlotGrid from "./components/SlotGrid";
 import StatsRow from "./components/StatsRow";
 
@@ -197,7 +196,6 @@ export default function GameroomPage() {
                       >
                         <SlotGrid />
                       </div>
-                      <HintPanel />
                     </div>
                   )}
                 </>
