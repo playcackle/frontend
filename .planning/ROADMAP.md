@@ -66,7 +66,12 @@ Plans:
   1. All oversized admin and route module CSS files (page.module.css 568L, admin pages 450-601L) are audited and split or reorganized
   2. No single module CSS file outside the gameroom exceeds a reasonable size threshold (e.g., no file larger than the largest per-component module from Phase 6)
   3. Admin pages render correctly after reorganization (no visual regressions)
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Split src/app/page.module.css into per-consumer modules (home-leaderboard, home-user-stats, home-gamerooms)
+- [ ] 07-02-PLAN.md — Add section navigation headers to 5 single-consumer oversized admin/route CSS files
+- [ ] 07-03-PLAN.md — Build verification and visual regression checkpoint
 
 ### Phase 8: Bug Fixes and Performance
 **Goal**: The game room runs without confirmed bugs, respects performance mode fully, and avoids unnecessary re-renders and listener accumulation
@@ -90,5 +95,5 @@ Plans:
 | 4. Landing Page | v1.0 | 1/1 | Complete | 2026-03-11 |
 | 5. Codebase Audit | v1.1 | 2/2 | Complete | 2026-03-12 |
 | 6. Gameroom CSS Split | 6/6 | Complete    | 2026-03-17 | - |
-| 7. Admin/Route CSS Tidy | v1.2 | 0/? | Not started | - |
+| 7. Admin/Route CSS Tidy | v1.2 | 0/3 | Not started | - |
 | 8. Bug Fixes and Performance | v1.2 | 0/? | Not started | - |
