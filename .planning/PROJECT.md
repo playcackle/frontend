@@ -42,9 +42,19 @@ Players must always know where they are in the game and what their actions mean 
 - ✓ `onEvent` cleanup captures fixed in `useGameEvents` — 9 listeners properly unmounted — v1.2
 - ✓ `useGameState()` replaced with granular atom selectors in `LeaderBoard`, `AnswerReveal`, `PostGameShowcase`, `page.tsx` — v1.2
 
-### Active (v1.3 — TBD)
+### Active (v1.3 — Observability & Performance)
 
-(Define with `/gsd:new-milestone`)
+- [ ] Sentry SDK installed and configured with DSN
+- [ ] Unhandled errors and promise rejections automatically captured in Sentry
+- [ ] Global error boundary catches unexpected React render crashes at app level
+- [ ] Gameroom error boundary silently attempts recovery; shows minimal fallback only if crash is unrecoverable
+- [ ] Sentry events include user identity and current game room context
+- [ ] React re-render hotspots profiled across gameroom components
+- [ ] Next.js bundle analyzed for size, code splitting, and unused imports
+- [ ] Core Web Vitals (LCP, CLS, INP) measured and baselined
+- [ ] Socket event handling overhead profiled
+- [ ] All performance findings documented with impact/effort ratings
+- [ ] Top 3 highest-impact bottlenecks fixed
 
 ### Out of Scope
 
@@ -85,6 +95,16 @@ Players must always know where they are in the game and what their actions mean 
 | Audit-only v1.1 milestone before v1.2 improvements | Ship audit findings first so v1.2 planning is evidence-based, not assumption-based | ✓ Good — surfaced 2 confirmed bugs that would otherwise ship undetected |
 | Dual performance systems must be consolidated (not patched) | `performance-atom.ts` and `performance-context.tsx` use different localStorage keys — patching one leaves the other wrong | ⚠️ Revisit — requires product decision on `prefers-reduced-motion` handling before migration |
 
+## Current Milestone: v1.3 Observability & Performance
+
+**Goal:** Add Sentry error monitoring with smart error boundaries, and systematically profile + fix the top performance bottlenecks.
+
+**Target features:**
+- Sentry SDK integration (install from scratch, DSN config, user/room context)
+- Global + gameroom error boundaries (silent recovery where possible)
+- Performance profiling across re-renders, bundle, Web Vitals, socket overhead
+- Fix top 3 highest-impact findings
+
 ## Current State (v1.2 — shipped 2026-03-17)
 
 **Shipped:** Code Health milestone complete. All 8 requirements satisfied across 4 phases (3 GSD + 1 manual fix). Codebase now has per-component CSS modules, no confirmed runtime bugs, performance-mode-gated DOM effects, and stable listener cleanup.
@@ -95,7 +115,5 @@ Players must always know where they are in the game and what their actions mean 
 - ARCH-02: `sound-effects.tsx` (1,448 lines) split deferred
 - ARCH-03: `AdminApiClient` domain split deferred
 
-**Next:** `/gsd:new-milestone` to define v1.3 scope.
-
 ---
-*Last updated: 2026-03-17 after v1.2 milestone shipped*
+*Last updated: 2026-03-17 after v1.3 milestone started*
