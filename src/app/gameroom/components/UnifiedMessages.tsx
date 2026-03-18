@@ -43,7 +43,6 @@ export default function UnifiedMessages() {
     ) {
       return styles.botBobMessage;
     }
-    debugger;
     switch (msg.message_type) {
       case "successful_answer":
         return styles.successfulAnswerMessage;
