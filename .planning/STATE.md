@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Observability & Performance
 status: planning
-stopped_at: —
-last_updated: "2026-03-17T00:00:00.000Z"
-last_activity: 2026-03-17 — Roadmap created for v1.3
+stopped_at: Completed 10-sentry-foundation plan 01 (10-01-PLAN.md)
+last_updated: "2026-03-18T07:41:28.512Z"
+last_activity: 2026-03-17 — Roadmap created, ready to begin Phase 10 planning
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
   percent: 0
 ---
 
@@ -46,6 +46,7 @@ Progress: [░░░░░░░░░░] 0%
 | - | - | - | - |
 
 ## Accumulated Context
+| Phase 10-sentry-foundation P01 | 25 | 3 tasks | 8 files |
 
 ### Decisions
 
@@ -58,6 +59,9 @@ See PROJECT.md Key Decisions table for all decisions from v1.0–v1.2.
 - Tunnel route required from Phase 10 start — not retrofittable without a gap in observability
 - Sentry v8 vs v9: accept what wizard installs, do not pin manually
 - `why-did-you-render` React 19 compat is LOW confidence — verify before Phase 12; fall back to React DevTools Profiler if incompatible
+- [Phase 10-sentry-foundation]: Wizard placed instrumentation files in src/ — edited at actual location, not relocated
+- [Phase 10-sentry-foundation]: tracesSampleRate: 0.1 across all runtimes — real-time game would exhaust Sentry quota at 1.0
+- [Phase 10-sentry-foundation]: sendDefaultPii removed — user identity set explicitly via setSentryUser() in Plan 02
 
 ### Pending Todos
 
@@ -70,6 +74,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-17
-Stopped at: Roadmap written, all 4 phases defined, ready to plan Phase 10
+Last session: 2026-03-18T07:41:28.510Z
+Stopped at: Completed 10-sentry-foundation plan 01 (10-01-PLAN.md)
 Resume file: None

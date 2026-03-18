@@ -7,8 +7,8 @@
 
 ### Observability
 
-- [ ] **OBS-01**: Sentry SDK installed and configured with DSN, source maps uploaded securely, quota-safe sampling, and tunnel route for ad-blocker users
-- [ ] **OBS-02**: Unhandled errors, promise rejections, and Socket.IO connection errors automatically captured in Sentry
+- [x] **OBS-01**: Sentry SDK installed and configured with DSN, source maps uploaded securely, quota-safe sampling, and tunnel route for ad-blocker users
+- [x] **OBS-02**: Unhandled errors, promise rejections, and Socket.IO connection errors automatically captured in Sentry
 - [ ] **OBS-03**: Global error boundary catches unexpected React render crashes at app level
 - [ ] **OBS-04**: Gameroom error boundary silently attempts recovery; shows minimal fallback only if crash is unrecoverable
 - [ ] **OBS-05**: Sentry events include user identity (from Supabase auth) and current game room context (roomId, game phase)
@@ -49,8 +49,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| OBS-01 | Phase 10 | Pending |
-| OBS-02 | Phase 10 | Pending |
+| OBS-01 | Phase 10 | Complete |
+| OBS-02 | Phase 10 | Complete |
 | OBS-03 | Phase 11 | Pending |
 | OBS-04 | Phase 11 | Pending |
 | OBS-05 | Phase 10 | Pending |
