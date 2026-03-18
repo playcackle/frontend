@@ -107,7 +107,11 @@ Plans:
   1. Three specific bottlenecks are identified from Phase 12 data (not assumptions) and named in the plan
   2. Each fix produces a measurable improvement compared to its Phase 12 baseline (re-render count down, bundle size down, or Web Vital improved)
   3. No existing game functionality regresses — leaderboard, chat feed, slot grid, and answer reveal all work correctly after fixes
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 13-01-PLAN.md — LCP fix: gate router.refresh() in useUser.ts to exclude INITIAL_SESSION (PERF-06)
+- [ ] 13-02-PLAN.md — Bundle fix: dynamic import SentryUserSync in Provider.tsx to move Supabase 645KB out of main chunk (PERF-06)
+- [ ] 13-03-PLAN.md — Gameroom fix: replace useUser() in UnifiedMessages with currentUserIdAtom (PERF-06)
 
 ## Progress
 
@@ -118,11 +122,11 @@ Plans:
 | 3. Onboarding | v1.0 | 1/1 | Complete | 2026-03-11 |
 | 4. Landing Page | v1.0 | 1/1 | Complete | 2026-03-11 |
 | 5. Codebase Audit | v1.1 | 2/2 | Complete | 2026-03-12 |
-| 6. Gameroom CSS Split | v1.2 | 6/6 | Complete | 2026-03-17 |
+| 6. Gameroom CSS Split | v1.2 | 6/6 | Complete | 2026-03-13 |
 | 7. Admin/Route CSS Tidy | v1.2 | 3/3 | Complete | 2026-03-17 |
 | 8. Bug Fixes and Performance | v1.2 | 3/3 | Complete | 2026-03-17 |
 | 9. CSS-01 Gap Closure | v1.2 | manual | Complete | 2026-03-17 |
-| 10. Sentry Foundation | 2/2 | Complete    | 2026-03-18 | - |
-| 11. Error Boundaries | 2/2 | Complete    | 2026-03-18 | - |
-| 12. Performance Baselines | 2/2 | Complete    | 2026-03-18 | - |
-| 13. Performance Fixes | v1.3 | 0/? | Not started | - |
+| 10. Sentry Foundation | v1.3 | 2/2 | Complete | 2026-03-18 |
+| 11. Error Boundaries | v1.3 | 2/2 | Complete | 2026-03-18 |
+| 12. Performance Baselines | v1.3 | 2/2 | Complete | 2026-03-18 |
+| 13. Performance Fixes | v1.3 | 0/3 | Not started | - |
