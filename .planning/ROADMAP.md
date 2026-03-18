@@ -51,7 +51,7 @@ Archive: `.planning/milestones/v1.2-ROADMAP.md`
 - [x] **Phase 10: Sentry Foundation** - SDK installed, errors captured, user and room context attached, quota-safe config (completed 2026-03-18)
 - [x] **Phase 11: Error Boundaries** - Global and gameroom boundaries layered; socket errors explicitly captured (completed 2026-03-18)
 - [x] **Phase 12: Performance Baselines** - Re-render hotspots, bundle, Web Vitals, and socket overhead measured and documented (completed 2026-03-18)
-- [ ] **Phase 13: Performance Fixes** - Top 3 highest-impact bottlenecks fixed and verified against baselines
+- [x] **Phase 13: Performance Fixes** - Top 3 highest-impact bottlenecks fixed and verified against baselines (completed 2026-03-18)
 
 ## Phase Details
 
@@ -129,4 +129,4 @@ Plans:
 | 10. Sentry Foundation | v1.3 | 2/2 | Complete | 2026-03-18 |
 | 11. Error Boundaries | v1.3 | 2/2 | Complete | 2026-03-18 |
 | 12. Performance Baselines | v1.3 | 2/2 | Complete | 2026-03-18 |
-| 13. Performance Fixes | 1/3 | In Progress|  | - |
+| 13. Performance Fixes | 3/3 | Complete   | 2026-03-18 | - |

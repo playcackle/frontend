@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Observability & Performance
 status: planning
-stopped_at: "Checkpoint: 13-02 Task 2 human-verify pending — npm run analyze to confirm Supabase chunk moved out of main entry bundle"
-last_updated: "2026-03-18T15:54:14.795Z"
+stopped_at: "Checkpoint: Task 3 human-verify in 13-01-PLAN.md (LCP measurement)"
+last_updated: "2026-03-18T15:55:16.926Z"
 last_activity: 2026-03-17 — Roadmap created, ready to begin Phase 10 planning
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 9
   percent: 0
 ---
 
@@ -85,6 +85,7 @@ See PROJECT.md Key Decisions table for all decisions from v1.0–v1.2.
 - [Phase 12-performance-baselines]: LCP 4324ms (poor) is highest-priority fix target for Phase 13; lobby_tick handler overhead is low (~0.2ms); React component render times are fast (<1ms) — Phase 13 should focus on LCP/bundle size first
 - [Phase 13-performance-fixes]: SentryUserSync dynamic import uses ssr: false — component only sets Sentry user context, no server-side HTML, safe to defer
 - [Phase 13-performance-fixes]: Dynamic import in Provider.tsx (Client Component) not layout.tsx (Server Component) — Next.js only code-splits dynamic imports from Client Components
+- [Phase 13-performance-fixes]: INITIAL_SESSION early return in onAuthStateChange prevents router.refresh() on passive session restore — initial state handled by loadUser() only
 
 ### Pending Todos
 
@@ -97,6 +98,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-18T15:54:14.794Z
-Stopped at: Checkpoint: 13-02 Task 2 human-verify pending — npm run analyze to confirm Supabase chunk moved out of main entry bundle
+Last session: 2026-03-18T15:55:03.938Z
+Stopped at: Checkpoint: Task 3 human-verify in 13-01-PLAN.md (LCP measurement)
 Resume file: None
