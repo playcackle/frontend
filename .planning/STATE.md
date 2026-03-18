@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Observability & Performance
 status: planning
-stopped_at: "Completed 11-error-boundaries 11-01-PLAN.md Task 1 — awaiting checkpoint:human-verify"
-last_updated: "2026-03-18T11:22:08.435Z"
+stopped_at: "Completed 11-error-boundaries 11-02-PLAN.md Tasks 1-2 — awaiting checkpoint:human-verify"
+last_updated: "2026-03-18T11:24:58.759Z"
 last_activity: 2026-03-17 — Roadmap created, ready to begin Phase 10 planning
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -71,6 +71,9 @@ See PROJECT.md Key Decisions table for all decisions from v1.0–v1.2.
 - [Phase 10-sentry-foundation]: Module-level lastConnectErrorCapture guard in useGameSocket — per-instance ref resets on hook remount; module scope persists across reconnect cycles
 - [Phase 11-error-boundaries]: error.tsx uses captureException from @/lib/sentry (not @sentry/nextjs directly) — only global-error.tsx imports Sentry SDK directly
 - [Phase 11-error-boundaries]: No html/body wrapper in error.tsx — renders inside existing layout unlike global-error.tsx
+- [Phase 11-error-boundaries]: Silent-retry boundary requires class component, not error.tsx — Next.js error.tsx always shows fallback immediately; class component two-state machine is the only way to attempt silent recovery first
+- [Phase 11-error-boundaries]: recoveryAttempted gate mandatory in componentDidCatch — without it a persistent error causes infinite setState->crash loop
+- [Phase 11-error-boundaries]: componentStack NOT passed as Sentry tag in GameroomErrorBoundary — multi-line value truncated by Sentry; boundary='gameroom' tag sufficient for triage
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-18T11:22:08.433Z
-Stopped at: Completed 11-error-boundaries 11-01-PLAN.md Task 1 — awaiting checkpoint:human-verify
+Last session: 2026-03-18T11:24:51.921Z
+Stopped at: Completed 11-error-boundaries 11-02-PLAN.md Tasks 1-2 — awaiting checkpoint:human-verify
 Resume file: None
