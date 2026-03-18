@@ -9,6 +9,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   whyDidYouRender(React, {
     trackAllPureComponents: false, // opt-in per component via .whyDidYouRender = true
     logOnDifferentValues: true,
+    trackHooks: false, // disable hook tracking — avoids patching Next.js router internals
   });
 }
 
