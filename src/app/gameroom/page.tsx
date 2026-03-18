@@ -5,6 +5,7 @@ import React, { Profiler, useCallback, useEffect, useRef, useState, type Profile
 import styles from "./gameroom.module.css";
 
 // Import custom hooks
+import { useUser } from "@/hooks/useUser";
 import { useAtomValue, useSetAtom } from "jotai";
 import Progress from "../loading";
 import { gameRoomAtom } from "../store/gameRoom";
@@ -28,6 +29,7 @@ import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
 import {
   animationStateAtom,
+  currentUserIdAtom,
   isPostGameShowcaseAtom,
   isRoundBreakAtom,
   loadingAtom,
@@ -48,6 +50,8 @@ export default function GameroomPage() {
   const gameroom = useAtomValue(gameRoomAtom);
   const animationState = useAtomValue(animationStateAtom);
   const { addAnswerBubble, bubbles, removeBubble } = useAnswerBubbles();
+  const { user } = useUser();
+  const setCurrentUserId = useSetAtom(currentUserIdAtom);
 
   // Use atomic selectors for optimal performance
   const loading = useAtomValue(loadingAtom);
@@ -106,6 +110,10 @@ export default function GameroomPage() {
       setSentryGameContext(gameroom.game_ws_url);
     }
   }, [gameroom?.game_ws_url]);
+
+  useEffect(() => {
+    setCurrentUserId(user?.id ?? null);
+  }, [user?.id, setCurrentUserId]);
 
   // Custom hooks
   const { submitAnswer } = useGameActions();

@@ -1,10 +1,10 @@
 "use client";
 
-import { useUser } from "@/hooks/useUser";
 import { Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
 import {
+  currentUserIdAtom,
   isRoundBreakAtom,
   unifiedMessagesAtom,
   type UnifiedMessage,
@@ -12,7 +12,7 @@ import {
 import styles from "./UnifiedMessages.module.css";
 
 export default function UnifiedMessages() {
-  const { user } = useUser();
+  const currentUserId = useAtomValue(currentUserIdAtom);
   // Use atomic selector for optimal performance
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
   const messages = useAtomValue(unifiedMessagesAtom);
@@ -72,7 +72,7 @@ export default function UnifiedMessages() {
             <div
               key={index}
               className={`${styles.unifiedMessage} ${getMessageTypeClass(msg)} ${
-                msg.player_id === user?.id
+                msg.player_id === currentUserId
                   ? msg.message_type === "successful_answer"
                     ? styles.ownSuccessfulAnswerMessage
                     : msg.message_type === "chat"
