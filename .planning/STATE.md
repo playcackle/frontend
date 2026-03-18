@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Observability & Performance
 status: planning
-stopped_at: Completed 12-performance-baselines 12-02-PLAN.md
-last_updated: "2026-03-18T15:02:14.880Z"
+stopped_at: "Checkpoint: 13-02 Task 2 human-verify pending — npm run analyze to confirm Supabase chunk moved out of main entry bundle"
+last_updated: "2026-03-18T15:54:14.795Z"
 last_activity: 2026-03-17 — Roadmap created, ready to begin Phase 10 planning
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 9
+  completed_plans: 7
   percent: 0
 ---
 
@@ -53,6 +53,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 11-error-boundaries P02 | 15 | 3 tasks | 2 files |
 | Phase 12-performance-baselines P01 | 4 | 2 tasks | 5 files |
 | Phase 12-performance-baselines P02 | 30 | 3 tasks | 7 files |
+| Phase 13-performance-fixes P02 | 5 | 1 tasks | 1 files |
 
 ### Decisions
 
@@ -82,6 +83,8 @@ See PROJECT.md Key Decisions table for all decisions from v1.0–v1.2.
 - [Phase 12-performance-baselines]: WebVitalsLogger only logs in NODE_ENV=development — gating ensures no production console noise before baselines are recorded
 - [Phase 12-performance-baselines]: WDYR removed from layout.tsx after crashing on Next.js 16 router internals — wdyr.ts and WdyrInit.tsx remain as artifacts but are not mounted; React Profiler callbacks replaced WDYR for re-render profiling
 - [Phase 12-performance-baselines]: LCP 4324ms (poor) is highest-priority fix target for Phase 13; lobby_tick handler overhead is low (~0.2ms); React component render times are fast (<1ms) — Phase 13 should focus on LCP/bundle size first
+- [Phase 13-performance-fixes]: SentryUserSync dynamic import uses ssr: false — component only sets Sentry user context, no server-side HTML, safe to defer
+- [Phase 13-performance-fixes]: Dynamic import in Provider.tsx (Client Component) not layout.tsx (Server Component) — Next.js only code-splits dynamic imports from Client Components
 
 ### Pending Todos
 
@@ -94,6 +97,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-18T13:49:49.407Z
-Stopped at: Completed 12-performance-baselines 12-02-PLAN.md
+Last session: 2026-03-18T15:54:14.794Z
+Stopped at: Checkpoint: 13-02 Task 2 human-verify pending — npm run analyze to confirm Supabase chunk moved out of main entry bundle
 Resume file: None
