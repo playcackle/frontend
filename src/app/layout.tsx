@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import { Provider } from "./provider";
 import { WebVitalsLogger } from "./_components/WebVitalsLogger";
+import { WdyrInit } from "./_components/WdyrInit";
 
 export const metadata: Metadata = {
   title: "Cackle",
@@ -32,6 +33,7 @@ export default async function RootLayout({
         }}
       >
         <WebVitalsLogger />
+        <WdyrInit />
         <Theme appearance="dark" hasBackground={false}>
           <div className="crt-container">
             <div className="crt-content">

@@ -15,4 +15,9 @@ function SlotGrid() {
   );
 }
 
-export default React.memo(SlotGrid);
+const MemoSlotGrid = React.memo(SlotGrid);
+
+// @ts-expect-error — WDYR dev instrumentation
+if (process.env.NODE_ENV === 'development') MemoSlotGrid.whyDidYouRender = true;
+
+export default MemoSlotGrid;

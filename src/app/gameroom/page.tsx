@@ -1,7 +1,7 @@
 "use client";
 
 import SoundEffects from "@/components/sound-effects";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { Profiler, useCallback, useEffect, useRef, useState, type ProfilerOnRenderCallback } from "react";
 import styles from "./gameroom.module.css";
 
 // Import custom hooks
@@ -37,6 +37,12 @@ import {
   timeRemainingAtom,
   updateGameStateAtom,
 } from "./store/gameAtoms";
+
+const onRenderCallback: ProfilerOnRenderCallback = (id, phase, actualDuration, baseDuration) => {
+  if (process.env.NODE_ENV === 'development' && phase === 'update') {
+    console.log(`[Profiler] ${id} | actual: ${actualDuration.toFixed(2)}ms | base: ${baseDuration.toFixed(2)}ms`);
+  }
+};
 
 export default function GameroomPage() {
   const gameroom = useAtomValue(gameRoomAtom);
@@ -173,7 +179,9 @@ export default function GameroomPage() {
 
             <div className={styles.contentRow}>
               <Flex direction="column" gap="3">
-                <UnifiedMessages />
+                <Profiler id="UnifiedMessages" onRender={onRenderCallback}>
+                  <UnifiedMessages />
+                </Profiler>
                 <div className={styles.answerRow}>
                   <UnifiedInputForm
                     onSubmit={handleUnifiedSubmit}
@@ -190,7 +198,9 @@ export default function GameroomPage() {
                 <>
                   {isRoundBreak && <AnswerReveal />}
                   {isRoundBreak ? (
-                    <Leaderboard />
+                    <Profiler id="Leaderboard" onRender={onRenderCallback}>
+                      <Leaderboard />
+                    </Profiler>
                   ) : (
                     <div className={styles.slotColumnWrapper}>
                       <div
@@ -201,7 +211,9 @@ export default function GameroomPage() {
                           } as React.CSSProperties
                         }
                       >
-                        <SlotGrid />
+                        <Profiler id="SlotGrid" onRender={onRenderCallback}>
+                          <SlotGrid />
+                        </Profiler>
                       </div>
                     </div>
                   )}
