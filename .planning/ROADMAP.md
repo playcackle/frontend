@@ -65,7 +65,10 @@ Archive: `.planning/milestones/v1.2-ROADMAP.md`
   3. A Sentry event includes the logged-in user's identity (from Supabase auth) and the current game room ID and phase
   4. A production build leaves zero `.map` files in `.next/` — source maps are uploaded to Sentry only
   5. Sentry events from a browser running an ad blocker still reach Sentry via the tunnel route
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 10-01-PLAN.md — SDK wizard install, withSentryConfig hardening, lib/sentry.ts helpers, global-error.tsx
+- [ ] 10-02-PLAN.md — SentryUserSync (auth context), gameroom context, socket error capture
 
 ### Phase 11: Error Boundaries
 **Goal**: React render crashes are contained at two levels — global (whole app) and gameroom (mid-game crash attempts silent recovery before showing fallback)
