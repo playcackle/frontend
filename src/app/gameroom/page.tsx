@@ -18,6 +18,7 @@ import SlotGrid from "./components/SlotGrid";
 import StatsRow from "./components/StatsRow";
 
 import { Flex } from "@radix-ui/themes";
+import { setSentryGameContext } from "@/lib/sentry";
 import AnswerReveal from "./components/AnswerReveal";
 import Leaderboard from "./components/LeaderBoard";
 import PostGameShowcase from "./components/PostGameShowcase";
@@ -93,6 +94,12 @@ export default function GameroomPage() {
     });
     previousPositionsRef.current = newPositions;
   }, [scores]);
+
+  useEffect(() => {
+    if (gameroom?.game_ws_url) {
+      setSentryGameContext(gameroom.game_ws_url);
+    }
+  }, [gameroom?.game_ws_url]);
 
   // Custom hooks
   const { submitAnswer } = useGameActions();
