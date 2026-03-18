@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Observability & Performance
 status: planning
-stopped_at: "Checkpoint: Task 3 human-verify in 13-01-PLAN.md (LCP measurement)"
-last_updated: "2026-03-18T15:55:16.926Z"
+stopped_at: "Checkpoint: 13-03 Task 3 human-verify — awaiting own-message styling visual confirmation"
+last_updated: "2026-03-18T15:55:24.123Z"
 last_activity: 2026-03-17 — Roadmap created, ready to begin Phase 10 planning
 progress:
   total_phases: 4
@@ -54,6 +54,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 12-performance-baselines P01 | 4 | 2 tasks | 5 files |
 | Phase 12-performance-baselines P02 | 30 | 3 tasks | 7 files |
 | Phase 13-performance-fixes P02 | 5 | 1 tasks | 1 files |
+| Phase 13-performance-fixes P03 | 8 | 2 tasks | 3 files |
 
 ### Decisions
 
@@ -86,6 +87,7 @@ See PROJECT.md Key Decisions table for all decisions from v1.0–v1.2.
 - [Phase 13-performance-fixes]: SentryUserSync dynamic import uses ssr: false — component only sets Sentry user context, no server-side HTML, safe to defer
 - [Phase 13-performance-fixes]: Dynamic import in Provider.tsx (Client Component) not layout.tsx (Server Component) — Next.js only code-splits dynamic imports from Client Components
 - [Phase 13-performance-fixes]: INITIAL_SESSION early return in onAuthStateChange prevents router.refresh() on passive session restore — initial state handled by loadUser() only
+- [Phase 13-performance-fixes]: currentUserIdAtom set in page.tsx (not hot-render path) via useUser() + useEffect — acceptable because page.tsx re-renders are rare compared to 1Hz lobby_tick
 
 ### Pending Todos
 
@@ -98,6 +100,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-18T15:55:03.938Z
-Stopped at: Checkpoint: Task 3 human-verify in 13-01-PLAN.md (LCP measurement)
+Last session: 2026-03-18T15:55:24.122Z
+Stopped at: Checkpoint: 13-03 Task 3 human-verify — awaiting own-message styling visual confirmation
 Resume file: None
