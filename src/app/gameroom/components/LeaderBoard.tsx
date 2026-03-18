@@ -130,6 +130,3 @@ export default function Leaderboard() {
     </div>
   );
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-if (process.env.NODE_ENV === 'development') (Leaderboard as any).whyDidYouRender = true;

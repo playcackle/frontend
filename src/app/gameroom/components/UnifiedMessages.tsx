@@ -110,6 +110,3 @@ export default function UnifiedMessages() {
     </div>
   );
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-if (process.env.NODE_ENV === 'development') (UnifiedMessages as any).whyDidYouRender = true;
