@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Observability & Performance
 status: planning
-stopped_at: "Completed 11-error-boundaries 11-01-PLAN.md — OBS-03 human-verified and approved"
-last_updated: "2026-03-18T11:24:58.759Z"
+stopped_at: Completed 11-error-boundaries 11-02-PLAN.md — OBS-04 human-verified and approved
+last_updated: "2026-03-18T12:19:50.299Z"
 last_activity: 2026-03-17 — Roadmap created, ready to begin Phase 10 planning
 progress:
   total_phases: 4
@@ -50,6 +50,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 10-sentry-foundation P02 | 9min | 2 tasks | 5 files |
 | Phase 10-sentry-foundation P02 | 10 | 3 tasks | 5 files |
 | Phase 11-error-boundaries P01 | 2 | 1 tasks | 1 files |
+| Phase 11-error-boundaries P02 | 15 | 3 tasks | 2 files |
 
 ### Decisions
 
@@ -74,6 +75,7 @@ See PROJECT.md Key Decisions table for all decisions from v1.0–v1.2.
 - [Phase 11-error-boundaries]: Silent-retry boundary requires class component, not error.tsx — Next.js error.tsx always shows fallback immediately; class component two-state machine is the only way to attempt silent recovery first
 - [Phase 11-error-boundaries]: recoveryAttempted gate mandatory in componentDidCatch — without it a persistent error causes infinite setState->crash loop
 - [Phase 11-error-boundaries]: componentStack NOT passed as Sentry tag in GameroomErrorBoundary — multi-line value truncated by Sentry; boundary='gameroom' tag sufficient for triage
+- [Phase 11-error-boundaries]: GameroomErrorBoundary OBS-04 verified: transient crash recovers silently, persistent crash shows minimal fallback, Sentry captures with boundary=gameroom tag
 
 ### Pending Todos
 
@@ -86,6 +88,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-18T11:24:51.921Z
-Stopped at: Completed 11-error-boundaries 11-01-PLAN.md — OBS-03 human-verified and approved
+Last session: 2026-03-18T12:19:50.298Z
+Stopped at: Completed 11-error-boundaries 11-02-PLAN.md — OBS-04 human-verified and approved
 Resume file: None
