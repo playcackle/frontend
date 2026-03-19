@@ -46,7 +46,7 @@ export default function GameroomTile(props: GameroomTileProps) {
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const setGameroom = useSetAtom(gameRoomAtom);
 
-  const maxPlayers = gameroom.max_players ?? null;
+  const maxPlayers = gameroom.max_players;
   const statusClass = getStatusClass(gameroom.status, gameroom.player_count, maxPlayers);
 
   const handleClick = async () => {
@@ -84,16 +84,14 @@ export default function GameroomTile(props: GameroomTileProps) {
             ? `${maxPlayers - gameroom.player_count} / ${maxPlayers} seats open`
             : `${gameroom.player_count} players`}
         </span>
-        <div className={styles.capacityBar}>
-          <div
-            className={styles.capacityFill}
-            style={{
-              width: maxPlayers != null
-                ? `${Math.min(100, (gameroom.player_count / maxPlayers) * 100)}%`
-                : "0%",
-            }}
-          ></div>
-        </div>
+        {maxPlayers != null && (
+          <div className={styles.capacityBar}>
+            <div
+              className={styles.capacityFill}
+              style={{ width: `${Math.min(100, (gameroom.player_count / maxPlayers) * 100)}%` }}
+            ></div>
+          </div>
+        )}
       </div>
       <ErrorModal
         onOpenChange={(change) => setShowModal(change)}
