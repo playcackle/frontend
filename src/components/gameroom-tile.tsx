@@ -32,8 +32,8 @@ const STATUS_LABELS: Record<string, string> = {
   full: "Full",
 };
 
-function getStatusClass(status: string, playerCount: number, maxPlayers: number): string {
-  if (playerCount >= maxPlayers) return "full";
+function getStatusClass(status: string, playerCount: number, maxPlayers: number | null | undefined): string {
+  if (maxPlayers != null && playerCount >= maxPlayers) return "full";
   if (status === "IN_ROUND" || status === "ROUND_BREAK" || status === "POST_GAME_SHOWCASE") return "in_progress";
   return "open";
 }
@@ -46,7 +46,7 @@ export default function GameroomTile(props: GameroomTileProps) {
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const setGameroom = useSetAtom(gameRoomAtom);
 
-  const maxPlayers = gameroom.max_players ?? 25;
+  const maxPlayers = gameroom.max_players ?? null;
   const statusClass = getStatusClass(gameroom.status, gameroom.player_count, maxPlayers);
 
   const handleClick = async () => {
@@ -80,13 +80,17 @@ export default function GameroomTile(props: GameroomTileProps) {
       </div>
       <div className={styles.lobbyCapacity}>
         <span className={styles.capacityText}>
-          {maxPlayers - gameroom.player_count} / {maxPlayers} seats open
+          {maxPlayers != null
+            ? `${maxPlayers - gameroom.player_count} / ${maxPlayers} seats open`
+            : `${gameroom.player_count} players`}
         </span>
         <div className={styles.capacityBar}>
           <div
             className={styles.capacityFill}
             style={{
-              width: `${Math.min(100, (gameroom.player_count / maxPlayers) * 100)}%`,
+              width: maxPlayers != null
+                ? `${Math.min(100, (gameroom.player_count / maxPlayers) * 100)}%`
+                : "0%",
             }}
           ></div>
         </div>
