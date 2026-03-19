@@ -6,6 +6,7 @@
 - ✅ **v1.1 Audit** — Phase 5 (shipped 2026-03-12)
 - ✅ **v1.2 Code Health** — Phases 6-9 (shipped 2026-03-17)
 - ✅ **v1.3 Observability & Performance** — Phases 10-14 (shipped 2026-03-19)
+- 🚧 **v1.4 Social Auth** — Phases 15-16 (in progress)
 
 ## Phases
 
@@ -55,6 +56,13 @@ Archive: `.planning/milestones/v1.3-ROADMAP.md`
 
 </details>
 
+### 🚧 v1.4 Social Auth (In Progress)
+
+**Milestone Goal:** Players can sign in and register with Google and Discord OAuth alongside existing email/password auth, with profile data auto-filled from the provider on first sign-in.
+
+- [ ] **Phase 15: Provider Infrastructure** - Register OAuth apps, configure Supabase, fix DB trigger so first OAuth sign-in cannot fail with a NULL constraint error
+- [ ] **Phase 16: OAuth UI and Profile Sync** - Add OAuth buttons to login/register pages, detect first sign-in in the callback route, and sync display name and avatar from the provider
+
 ## Phase Details
 
 ### Phase 10: Sentry Foundation
@@ -69,8 +77,8 @@ Archive: `.planning/milestones/v1.3-ROADMAP.md`
   5. Sentry events from a browser running an ad blocker still reach Sentry via the tunnel route
 **Plans**: 2 plans
 Plans:
-- [ ] 10-01-PLAN.md — SDK wizard install, withSentryConfig hardening, lib/sentry.ts helpers, global-error.tsx
-- [ ] 10-02-PLAN.md — SentryUserSync (auth context), gameroom context, socket error capture
+- [x] 10-01-PLAN.md — SDK wizard install, withSentryConfig hardening, lib/sentry.ts helpers, global-error.tsx
+- [x] 10-02-PLAN.md — SentryUserSync (auth context), gameroom context, socket error capture
 
 ### Phase 11: Error Boundaries
 **Goal**: React render crashes are contained at two levels — global (whole app) and gameroom (mid-game crash attempts silent recovery before showing fallback)
@@ -83,8 +91,8 @@ Plans:
   4. Both boundary types report the caught error to Sentry with the room context available at the time of the crash
 **Plans**: 2 plans
 Plans:
-- [ ] 11-01-PLAN.md — app/error.tsx segment boundary for non-gameroom pages (OBS-03)
-- [ ] 11-02-PLAN.md — GameroomErrorBoundary silent-retry class component + layout wiring (OBS-04)
+- [x] 11-01-PLAN.md — app/error.tsx segment boundary for non-gameroom pages (OBS-03)
+- [x] 11-02-PLAN.md — GameroomErrorBoundary silent-retry class component + layout wiring (OBS-04)
 
 ### Phase 12: Performance Baselines
 **Goal**: Measured, documented baselines exist for bundle size, Core Web Vitals, React re-render counts on high-frequency components, and socket event handling overhead — ready to use as acceptance criteria for Phase 13
@@ -98,8 +106,8 @@ Plans:
   5. All findings are written to a single document with impact and effort ratings, ordered by impact
 **Plans**: 2 plans
 Plans:
-- [ ] 12-01-PLAN.md — Install @next/bundle-analyzer + WebVitalsLogger (PERF-02, PERF-03)
-- [ ] 12-02-PLAN.md — WDYR + Profiler instrumentation, socket timing probes, PERF-BASELINE.md (PERF-01, PERF-04, PERF-05)
+- [x] 12-01-PLAN.md — Install @next/bundle-analyzer + WebVitalsLogger (PERF-02, PERF-03)
+- [x] 12-02-PLAN.md — WDYR + Profiler instrumentation, socket timing probes, PERF-BASELINE.md (PERF-01, PERF-04, PERF-05)
 
 ### Phase 13: Performance Fixes
 **Goal**: The three highest-impact bottlenecks identified in Phase 12 are fixed, and each fix is verified to improve its corresponding Phase 12 baseline metric
@@ -111,9 +119,9 @@ Plans:
   3. No existing game functionality regresses — leaderboard, chat feed, slot grid, and answer reveal all work correctly after fixes
 **Plans**: 3 plans
 Plans:
-- [ ] 13-01-PLAN.md — LCP fix: gate router.refresh() in useUser.ts to exclude INITIAL_SESSION (PERF-06)
-- [ ] 13-02-PLAN.md — Bundle fix: dynamic import SentryUserSync in Provider.tsx to move Supabase 645KB out of main chunk (PERF-06)
-- [ ] 13-03-PLAN.md — Gameroom fix: replace useUser() in UnifiedMessages with currentUserIdAtom (PERF-06)
+- [x] 13-01-PLAN.md — LCP fix: gate router.refresh() in useUser.ts to exclude INITIAL_SESSION (PERF-06)
+- [x] 13-02-PLAN.md — Bundle fix: dynamic import SentryUserSync in Provider.tsx to move Supabase 645KB out of main chunk (PERF-06)
+- [x] 13-03-PLAN.md — Gameroom fix: replace useUser() in UnifiedMessages with currentUserIdAtom (PERF-06)
 
 ### Phase 14: Observability Polish
 **Goal**: Production observability gaps closed — Sentry captures real game phase context, Web Vitals are measurable in production, and SUMMARY documentation accurately reflects codebase state
@@ -126,7 +134,30 @@ Plans:
   3. `12-02-SUMMARY.md` accurately reflects that wdyr files were removed (not created)
 **Plans**: 1 plan
 Plans:
-- [ ] 14-01-PLAN.md — Sentry phase context, WebVitals production guard removal, 12-02-SUMMARY doc fix (OBS-05, PERF-03, PERF-06)
+- [x] 14-01-PLAN.md — Sentry phase context, WebVitals production guard removal, 12-02-SUMMARY doc fix (OBS-05, PERF-03, PERF-06)
+
+### Phase 15: Provider Infrastructure
+**Goal**: Google and Discord OAuth are fully configured end-to-end — provider apps registered, Supabase enabled, identity linking confirmed, and the database trigger updated so first OAuth sign-in cannot produce a NULL constraint error
+**Depends on**: Phase 14 (v1.3 complete)
+**Requirements**: SETUP-01, SETUP-02, SETUP-03, SETUP-04
+**Success Criteria** (what must be TRUE):
+  1. A developer can initiate a Google OAuth flow in a test environment and a valid player record is created in the database with no errors
+  2. A developer can initiate a Discord OAuth flow in a test environment and a valid player record is created in the database with no errors
+  3. An email/password user who signs in via OAuth with the same email address is merged to one account — no duplicate records appear in auth.users
+  4. The database trigger creates a player record for any OAuth sign-up regardless of which metadata fields the provider supplies (name, full_name, or user_name fallback chain)
+**Plans**: TBD
+
+### Phase 16: OAuth UI and Profile Sync
+**Goal**: Players can sign in or register with Google or Discord from the login and register pages, with display name and avatar pre-populated from the provider on first sign-in, and existing email/password auth preserved
+**Depends on**: Phase 15
+**Requirements**: SETUP-05, OAUTH-01, OAUTH-02, OAUTH-03, PROF-01, PROF-02, PROF-03
+**Success Criteria** (what must be TRUE):
+  1. Google and Discord OAuth buttons appear on both /auth/login and /auth/register — clicking either redirects to the provider and returns the user to the app as authenticated
+  2. A new player signing in via Google or Discord has their display name populated from the provider (Google name or Discord username) without entering it manually
+  3. A new player signing in via Google or Discord has their avatar set from the provider profile picture, and the image renders correctly via Next.js Image component
+  4. A returning player who has customized their display name or avatar does not have those values overwritten on subsequent OAuth sign-ins
+  5. Email/password login and registration continue to work correctly alongside the new OAuth buttons
+**Plans**: TBD
 
 ## Progress
 
@@ -145,4 +176,6 @@ Plans:
 | 11. Error Boundaries | v1.3 | 2/2 | Complete | 2026-03-18 |
 | 12. Performance Baselines | v1.3 | 2/2 | Complete | 2026-03-18 |
 | 13. Performance Fixes | v1.3 | 3/3 | Complete | 2026-03-19 |
-| 14. Observability Polish | 1/1 | Complete    | 2026-03-19 | - |
+| 14. Observability Polish | v1.3 | 1/1 | Complete | 2026-03-19 |
+| 15. Provider Infrastructure | v1.4 | 0/TBD | Not started | - |
+| 16. OAuth UI and Profile Sync | v1.4 | 0/TBD | Not started | - |
