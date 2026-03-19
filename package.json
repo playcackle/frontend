@@ -50,6 +50,7 @@
   },
   "overrides": {
     "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3"
+    "@types/react-dom": "19.2.3",
+    "import-in-the-middle": "3.0.0"
   }
 }
