@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Observability & Performance
 status: planning
-stopped_at: Completed 13-01-PLAN.md
-last_updated: "2026-03-19T08:45:04.213Z"
+stopped_at: Completed 13-03-PLAN.md
+last_updated: "2026-03-19T08:46:32.976Z"
 last_activity: 2026-03-17 — Roadmap created, ready to begin Phase 10 planning
 progress:
   total_phases: 4
@@ -56,6 +56,8 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 13-performance-fixes P02 | 5 | 1 tasks | 1 files |
 | Phase 13-performance-fixes P03 | 8 | 2 tasks | 3 files |
 | Phase 13-performance-fixes P01 | 15 | 3 tasks | 1 files |
+| Phase 13-performance-fixes P03 | 8 | 3 tasks | 3 files |
+| Phase 13-performance-fixes P02 | 10 | 2 tasks | 1 files |
 
 ### Decisions
 
@@ -90,6 +92,7 @@ See PROJECT.md Key Decisions table for all decisions from v1.0–v1.2.
 - [Phase 13-performance-fixes]: INITIAL_SESSION early return in onAuthStateChange prevents router.refresh() on passive session restore — initial state handled by loadUser() only
 - [Phase 13-performance-fixes]: currentUserIdAtom set in page.tsx (not hot-render path) via useUser() + useEffect — acceptable because page.tsx re-renders are rare compared to 1Hz lobby_tick
 - [Phase 13-performance-fixes]: LCP measurement via WebVitalsLogger not visible in production build (NODE_ENV=production suppresses it — Phase 12 decision); fix accepted as code-correct based on user approval
+- [Phase 13-performance-fixes]: currentUserIdAtom set in page.tsx (not hot-render path) via useUser() + useEffect — acceptable because page.tsx re-renders are rare compared to 1Hz lobby_tick
 
 ### Pending Todos
 
@@ -102,6 +105,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-19T08:45:04.211Z
-Stopped at: Completed 13-01-PLAN.md
+Last session: 2026-03-19T08:46:18.923Z
+Stopped at: Completed 13-03-PLAN.md
 Resume file: None
