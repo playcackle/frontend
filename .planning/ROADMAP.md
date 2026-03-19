@@ -5,7 +5,7 @@
 - ✅ **v1.0 MVP** — Phases 1-4 (shipped 2026-03-11)
 - ✅ **v1.1 Audit** — Phase 5 (shipped 2026-03-12)
 - ✅ **v1.2 Code Health** — Phases 6-9 (shipped 2026-03-17)
-- 🚧 **v1.3 Observability & Performance** — Phases 10-13 (in progress)
+- 🚧 **v1.3 Observability & Performance** — Phases 10-14 (in progress)
 
 ## Phases
 
@@ -52,6 +52,7 @@ Archive: `.planning/milestones/v1.2-ROADMAP.md`
 - [x] **Phase 11: Error Boundaries** - Global and gameroom boundaries layered; socket errors explicitly captured (completed 2026-03-18)
 - [x] **Phase 12: Performance Baselines** - Re-render hotspots, bundle, Web Vitals, and socket overhead measured and documented (completed 2026-03-18)
 - [x] **Phase 13: Performance Fixes** - Top 3 highest-impact bottlenecks fixed and verified against baselines (completed 2026-03-18)
+- [ ] **Phase 14: Observability Polish** - Production observability gaps closed (gap closure)
 
 ## Phase Details
 
@@ -122,7 +123,9 @@ Plans:
   1. `setSentryGameContext` receives the current game phase so Sentry events show real phase context (not "unknown")
   2. `WebVitalsLogger` reports web vitals in production (not just dev), or a RUM endpoint is wired so LCP/CLS/INP improvements are verifiable post-deploy
   3. `12-02-SUMMARY.md` accurately reflects that wdyr files were removed (not created)
-**Plans**: 0 plans
+**Plans**: 1 plan
+Plans:
+- [ ] 14-01-PLAN.md — Sentry phase context, WebVitals production guard removal, 12-02-SUMMARY doc fix (OBS-05, PERF-03, PERF-06)
 
 ## Progress
 
@@ -141,4 +144,4 @@ Plans:
 | 11. Error Boundaries | v1.3 | 2/2 | Complete | 2026-03-18 |
 | 12. Performance Baselines | v1.3 | 2/2 | Complete | 2026-03-18 |
 | 13. Performance Fixes | v1.3 | 3/3 | Complete | 2026-03-19 |
-| 14. Observability Polish | v1.3 | 0/0 | Pending | - |
+| 14. Observability Polish | v1.3 | 0/1 | Pending | - |
