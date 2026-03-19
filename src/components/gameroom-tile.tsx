@@ -66,7 +66,7 @@ export default function GameroomTile(props: GameroomTileProps) {
       return;
     }
     setErrorMessage(undefined);
-    setGameroom(gameRoom);
+    setGameroom({ ...gameRoom, discord_invite_url: gameroom.discord_invite_url ?? null });
     router.push(`/gameroom?name=${gameroom.collection_name}`);
   };
 

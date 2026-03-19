@@ -9,6 +9,7 @@ export type LobbyJoinSuccess = {
   token: string;
   game_ws_url: string;
   chat_ws_url: string;
+  discord_invite_url?: string | null;
 };
 
 type LobbyJoinError = {
