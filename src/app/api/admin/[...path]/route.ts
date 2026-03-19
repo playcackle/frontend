@@ -10,20 +10,13 @@ const PLAYER_SERVICE_URL =
 const COLLECTION_PATHS = ["/collections", "/topics", "/slots", "/generate"];
 const PLAYER_PATHS = ["/players"];
 
-type RouteParams = { path?: string[] };
-type RouteContext =
-  | { params: RouteParams }
-  | { params: Promise<{ path: string[] }> };
+type RouteContext = { params: Promise<{ path: string[] }> };
 
 const resolvePathSegments = async (
   context: RouteContext,
 ): Promise<string[]> => {
-  const params = context.params as any;
-  if (params && typeof params.then === "function") {
-    const resolved = await (context.params as Promise<{ path: string[] }>);
-    return resolved?.path ?? [];
-  }
-  return (context.params as RouteParams)?.path ?? [];
+  const resolved = await context.params;
+  return resolved?.path ?? [];
 };
 
 const buildTargetUrl = (segments: string[], search: string) => {
