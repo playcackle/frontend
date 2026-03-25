@@ -187,6 +187,16 @@
   background-color: #4267b2;
 }
 
+.discordButton {
+  background-color: #5865f2;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: var(--retro-font);
+}
+
 .socialButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
