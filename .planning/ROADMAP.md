@@ -60,7 +60,7 @@ Archive: `.planning/milestones/v1.3-ROADMAP.md`
 
 **Milestone Goal:** Players can sign in and register with Google and Discord OAuth alongside existing email/password auth, with profile data auto-filled from the provider on first sign-in.
 
-- [ ] **Phase 15: Provider Infrastructure** - Register OAuth apps, configure Supabase, fix DB trigger so first OAuth sign-in cannot fail with a NULL constraint error
+- [x] **Phase 15: Provider Infrastructure** - Register OAuth apps, configure Supabase, fix DB trigger so first OAuth sign-in cannot fail with a NULL constraint error (completed 2026-03-25)
 - [ ] **Phase 16: OAuth UI and Profile Sync** - Add OAuth buttons to login/register pages, detect first sign-in in the callback route, and sync display name and avatar from the provider
 
 ## Phase Details
@@ -147,9 +147,9 @@ Plans:
   4. The database trigger creates a player record for any OAuth sign-up regardless of which metadata fields the provider supplies (name, full_name, or user_name fallback chain)
 **Plans**: 3 plans
 Plans:
-- [ ] 15-01-PLAN.md — SQL migration: harden handle_new_user() trigger with COALESCE fallback for OAuth providers
-- [ ] 15-02-PLAN.md — Register Google & Discord OAuth apps, enable in Supabase, confirm identity linking
-- [ ] 15-03-PLAN.md — End-to-end OAuth flow verification and Discord metadata shape confirmation
+- [x] 15-01-PLAN.md — SQL migration: harden handle_new_user() trigger with COALESCE fallback for OAuth providers
+- [x] 15-02-PLAN.md — Register Google & Discord OAuth apps, enable in Supabase, confirm identity linking
+- [x] 15-03-PLAN.md — End-to-end OAuth flow verification and Discord metadata shape confirmation
 
 ### Phase 16: OAuth UI and Profile Sync
 **Goal**: Players can sign in or register with Google or Discord from the login and register pages, with display name and avatar pre-populated from the provider on first sign-in, and existing email/password auth preserved
@@ -185,5 +185,5 @@ Plans:
 | 12. Performance Baselines | v1.3 | 2/2 | Complete | 2026-03-18 |
 | 13. Performance Fixes | v1.3 | 3/3 | Complete | 2026-03-19 |
 | 14. Observability Polish | v1.3 | 1/1 | Complete | 2026-03-19 |
-| 15. Provider Infrastructure | 2/3 | In Progress|  | - |
+| 15. Provider Infrastructure | 2/3 | 3/3 | Complete   | 2026-03-25 |
 | 16. OAuth UI and Profile Sync | v1.4 | 0/TBD | Not started | - |

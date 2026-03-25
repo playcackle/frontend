@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Social Auth
 status: planning
-stopped_at: Completed 15-02-PLAN.md — Discord OAuth configured, SQL migration applied, identity linking confirmed
-last_updated: "2026-03-19T13:00:00.000Z"
-last_activity: 2026-03-19 — Phase 15 complete (Discord OAuth active, Google deferred)
+stopped_at: Completed 15-03-PLAN.md — Discord OAuth end-to-end verified, metadata shape confirmed, Phase 15 complete
+last_updated: "2026-03-25T00:00:00.000Z"
+last_activity: 2026-03-25 — Phase 15 P03 complete; Discord OAuth verified live; identity linking confirmed; Discord metadata shape locked in
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 3
-  completed_plans: 2
-  percent: 67
+  completed_plans: 3
+  percent: 71
 ---
 
 # Project State
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 Phase: 16 of 16 (OAuth UI)
 Plan: — (not yet planned)
 Status: Ready to plan
-Last activity: 2026-03-19 — Phase 15 complete; Discord OAuth active; Google OAuth deferred
+Last activity: 2026-03-25 — Phase 15 P03 complete; Discord OAuth verified live; metadata shape confirmed
 
 Progress: [███████░░░] 67%
 
@@ -48,8 +48,14 @@ Progress: [███████░░░] 67%
 ## Accumulated Context
 | Phase 15 P01 | 1min | 1 tasks | 1 files |
 | Phase 15 P02 | ~30min | 2 tasks | 0 files |
+| Phase 15 P03 | ~15min | 1 tasks | 0 files |
 
 ### Decisions
+
+**Phase 15 P03:**
+- Discord raw_user_meta_data confirmed from live response: use user_name for display name, avatar_url for avatar — all Phase 16 sync code must use these keys
+- Supabase redirect allowlist must include localhost for local dev OAuth flows (one-time setup)
+- Name editing for OAuth users is future work — no update endpoint in player_manager yet
 
 **Phase 15 P02:**
 - Google OAuth (SETUP-01) deferred — Discord is sole active provider going into Phase 16; todo tracked in .planning/todos/pending/
@@ -74,10 +80,10 @@ Progress: [███████░░░] 67%
 ### Blockers/Concerns
 
 - **Backend dependency:** `/players/{id}/sync-oauth` endpoint must exist or be stubbed before Phase 16 profile-sync logic can be fully wired
-- **Discord metadata shape:** Log actual `user_metadata` from a live Discord OAuth response during Phase 16 before finalizing sync code
+- ~~**Discord metadata shape:** Log actual `user_metadata` from a live Discord OAuth response during Phase 16 before finalizing sync code~~ — RESOLVED in Phase 15 P03: user_name + avatar_url confirmed
 
 ## Session Continuity
 
-Last session: 2026-03-19T13:00:00.000Z
-Stopped at: Completed 15-02-PLAN.md — Discord OAuth configured, SQL migration applied, identity linking confirmed
+Last session: 2026-03-25T00:00:00.000Z
+Stopped at: Completed 15-03-PLAN.md — Discord OAuth end-to-end verified, metadata shape confirmed, Phase 15 complete
 Resume file: None
