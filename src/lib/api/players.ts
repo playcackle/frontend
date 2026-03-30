@@ -18,6 +18,7 @@ export type PlayerProfileStats = {
   id: string;
   name: string;
   email: string;
+  avatar_url: string | null;
   created_at: string;
   last_seen_active_at: string | null;
 
