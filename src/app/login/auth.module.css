@@ -197,6 +197,27 @@
   font-family: var(--retro-font);
 }
 
+.googleButton {
+  background-color: #4285f4;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: var(--retro-font);
+}
+
+.socialButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.socialButton:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .socialButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
