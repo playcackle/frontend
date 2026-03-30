@@ -33,6 +33,9 @@ import {
   isPostGameShowcaseAtom,
   isRoundBreakAtom,
   loadingAtom,
+  lobbyStatusAtom,
+  minPlayersNeededAtom,
+  playerCountAtom,
   roundNameAtom,
   scoresAtom,
   showCountDownAtom,
@@ -61,6 +64,12 @@ export default function GameroomPage() {
   const showCountDown = useAtomValue(showCountDownAtom);
   const scores = useAtomValue(scoresAtom);
   const roundName = useAtomValue(roundNameAtom);
+  const lobbyStatus = useAtomValue(lobbyStatusAtom);
+  const minPlayersNeeded = useAtomValue(minPlayersNeededAtom);
+  const playerCount = useAtomValue(playerCountAtom);
+
+  const isWaiting = lobbyStatus === "WAITING" || lobbyStatus === "STARTING_SOON";
+  const missingPlayers = Math.max(0, minPlayersNeeded - playerCount);
 
   // Granular atom subscription — avoids full-state re-render on every game tick
   const updateGameState = useSetAtom(updateGameStateAtom);
@@ -186,7 +195,7 @@ export default function GameroomPage() {
 
             <StatsRow />
 
-            <div className={styles.contentRow}>
+            <div className={isWaiting ? styles.waitingContentRow : styles.contentRow}>
               <Flex direction="column" gap="3">
                 <Profiler id="UnifiedMessages" onRender={onRenderCallback}>
                   <UnifiedMessages />
@@ -199,7 +208,16 @@ export default function GameroomPage() {
                   />
                 </div>
               </Flex>
-              {isPostGameShowcase ? (
+              {isWaiting ? (
+                <div className={styles.waitingPanel}>
+                  <p className={styles.waitingTitle}>Waiting for more idiots to arrive</p>
+                  {missingPlayers > 0 && (
+                    <p className={styles.waitingCount}>
+                      {missingPlayers} still missing
+                    </p>
+                  )}
+                </div>
+              ) : isPostGameShowcase ? (
                 <div className={styles.postGameShowcaseWrapper}>
                   <PostGameShowcase />
                 </div>
@@ -228,7 +246,7 @@ export default function GameroomPage() {
                   )}
                 </>
               )}
-              {!isPostGameShowcase && !isRoundBreak && (
+              {!isWaiting && !isPostGameShowcase && !isRoundBreak && (
                 <div className={styles.leaderboardTile}>
                   <h3 className={styles.statsTitle}>Leaderboard</h3>
                   <div className={styles.ingameLeaderboard}>
