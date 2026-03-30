@@ -165,13 +165,18 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
                 key={slot.id}
                 className={`${styles.answerChip} ${slot.is_rare ? styles.answerChipBonus : ""} ${isNew ? styles.answerChipNew : ""}`}
               >
-                <span className={styles.answerChipText}>
-                  {slot.canonical_text}
-                </span>
-                {slot.snapped_by_display_name && (
-                  <span className={styles.answerChipPlayer}>
-                    {slot.snapped_by_display_name}
+                <div className={styles.answerChipContent}>
+                  <span className={styles.answerChipText}>
+                    {slot.canonical_text}
                   </span>
+                  {slot.snapped_by_display_name && (
+                    <span className={styles.answerChipPlayer}>
+                      {slot.snapped_by_display_name}
+                    </span>
+                  )}
+                </div>
+                {slot.is_rare && (
+                  <span className={styles.answerChipMultiplier}>2x</span>
                 )}
               </div>,
             ];
