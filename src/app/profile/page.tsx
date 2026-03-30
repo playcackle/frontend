@@ -4,6 +4,7 @@ import { useUser } from "@/hooks/useUser";
 import { useEffect, useState, useCallback } from "react";
 import { playersApi, type PlayerProfileStats } from "@/lib/api/players";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import styles from "./page.module.css";
 
 function StatCard({ value, label, accent = "pink" }: { value: string; label: string; accent?: "pink" | "blue" | "gold" }) {
@@ -105,9 +106,19 @@ export default function ProfilePage() {
 
       {/* Hero header */}
       <div className={styles.hero}>
-        <div className={styles.avatar}>
-          {(profile.name || "?")[0].toUpperCase()}
-        </div>
+        {profile.avatar_url ? (
+          <Image
+            src={profile.avatar_url}
+            alt={`${profile.name}'s avatar`}
+            width={72}
+            height={72}
+            className={styles.avatar}
+          />
+        ) : (
+          <div className={styles.avatar}>
+            {(profile.name || "?")[0].toUpperCase()}
+          </div>
+        )}
         <div className={styles.heroMeta}>
           <h1 className={styles.playerName}>{profile.name}</h1>
           <p className={styles.heroSub}>Joined {formatDate(profile.created_at)}</p>
