@@ -161,11 +161,10 @@ Plans:
   3. A new player signing in via Google or Discord has their avatar set from the provider profile picture, and the image renders correctly via Next.js Image component
   4. A returning player who has customized their display name or avatar does not have those values overwritten on subsequent OAuth sign-ins
   5. Email/password login and registration continue to work correctly alongside the new OAuth buttons
-**Plans**: 3 plans
+**Plans**: 2 plans
 Plans:
-- [ ] 15-01-PLAN.md — SQL migration: harden handle_new_user() trigger with COALESCE fallback for OAuth providers
-- [ ] 15-02-PLAN.md — Register Google & Discord OAuth apps, enable in Supabase, confirm identity linking
-- [ ] 15-03-PLAN.md — End-to-end OAuth flow verification and Discord metadata shape confirmation
+- [ ] 16-01-PLAN.md — remotePatterns config, disabled Google button on login/register, Google button CSS
+- [ ] 16-02-PLAN.md — avatar_url type addition, profile page avatar Image rendering with initials fallback
 
 ## Progress
 
@@ -185,5 +184,5 @@ Plans:
 | 12. Performance Baselines | v1.3 | 2/2 | Complete | 2026-03-18 |
 | 13. Performance Fixes | v1.3 | 3/3 | Complete | 2026-03-19 |
 | 14. Observability Polish | v1.3 | 1/1 | Complete | 2026-03-19 |
-| 15. Provider Infrastructure | 2/3 | 3/3 | Complete    | 2026-03-25 |
-| 16. OAuth UI and Profile Sync | v1.4 | 0/TBD | Not started | - |
+| 15. Provider Infrastructure | v1.4 | 3/3 | Complete | 2026-03-25 |
+| 16. OAuth UI and Profile Sync | v1.4 | 0/2 | Not started | - |
