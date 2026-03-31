@@ -14,18 +14,23 @@ import {
   getRandomSnappedSound,
   playSound,
 } from "../utils";
-import { clearRoundHintsAtom, clearSlotHeatAtom, slotHeatAtom } from "../store/gameAtoms";
+import { clearRoundHintsAtom, clearSlotHeatAtom, connectionStatusAtom, slotHeatAtom } from "../store/gameAtoms";
 import { useGameActions } from "./useGameActions";
 import { useGameSocket } from "./useGameSocket";
 import { useGameState } from "./useGameState";
 
+/** Grace period (ms) before a disconnection triggers the full loading screen.
+ *  Brief blips (< 3s) show only the reconnection banner, not the loading overlay. */
+const LOADING_GRACE_PERIOD_MS = 3000;
+
 export const useGameEvents = (gameWsUrl: string, token: string) => {
-  const { onEvent, sendEvent, isConnected, connectionStatus } = useGameSocket(gameWsUrl, token);
+  const { onEvent, sendEvent, isConnected, connectionStatus, reconnect } = useGameSocket(gameWsUrl, token);
   const { updateGameState, slots } = useGameState();
   const { triggerCorrectAnswerEffects } = useGameActions();
   const clearRoundHints = useSetAtom(clearRoundHintsAtom);
   const setSlotHeat = useSetAtom(slotHeatAtom);
   const clearSlotHeat = useSetAtom(clearSlotHeatAtom);
+  const setConnectionStatus = useSetAtom(connectionStatusAtom);
 
   const slotsRef = useRef(slots);
   useEffect(() => {
@@ -37,12 +42,64 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     sendEventRef.current = sendEvent;
   }, [sendEvent]);
 
+  // ---------------------------------------------------------------------------
+  // Connection → loading gate with grace period
+  // ---------------------------------------------------------------------------
+  // Instead of flipping `loading: true` instantly on disconnect (which hides the
+  // entire game UI), we:
+  //   1. Update the lightweight `connectionStatusAtom` immediately (for banner)
+  //   2. Only set `loading: true` if the disconnection persists beyond the grace
+  //      period — giving socket.io time to reconnect transparently.
+  // ---------------------------------------------------------------------------
+  const graceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hasReceivedFirstSync = useRef(false);
+
   useEffect(() => {
-    const isUncertain = !isConnected || connectionStatus === "reconnecting";
-    updateGameState({ loading: isUncertain });
-  }, [isConnected, connectionStatus, updateGameState]);
+    const isHealthy = isConnected && connectionStatus === "connected";
+
+    // Always push the lightweight connection status for the banner
+    if (isHealthy) {
+      setConnectionStatus("connected");
+    } else if (connectionStatus === "reconnecting") {
+      setConnectionStatus("reconnecting");
+    } else {
+      setConnectionStatus("disconnected");
+    }
+
+    if (isHealthy) {
+      // Connection restored — cancel any pending loading timer
+      if (graceTimerRef.current) {
+        clearTimeout(graceTimerRef.current);
+        graceTimerRef.current = null;
+      }
+      // Don't clear loading here — lobby_state_sync will clear it with real data
+      return;
+    }
+
+    // If we haven't received the first state sync yet, we're still in initial
+    // loading — keep `loading: true` (it starts as true in initGameState).
+    if (!hasReceivedFirstSync.current) {
+      return;
+    }
+
+    // Connection is unhealthy — start grace timer before showing loading screen
+    if (!graceTimerRef.current) {
+      graceTimerRef.current = setTimeout(() => {
+        graceTimerRef.current = null;
+        updateGameState({ loading: true });
+      }, LOADING_GRACE_PERIOD_MS);
+    }
+
+    return () => {
+      if (graceTimerRef.current) {
+        clearTimeout(graceTimerRef.current);
+        graceTimerRef.current = null;
+      }
+    };
+  }, [isConnected, connectionStatus, updateGameState, setConnectionStatus]);
 
   const handleLobbySyncRef = useRef((data: LobbySyncPayload) => {
+    hasReceivedFirstSync.current = true;
     updateGameState({
       roundNumber: data.round_number,
       roundExample: data.topic_example,
@@ -160,6 +217,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
   useEffect(() => {
     handleLobbySyncRef.current = (data: LobbySyncPayload) => {
+      hasReceivedFirstSync.current = true;
       updateGameState({
         roundNumber: data.round_number,
         roundExample: data.topic_example,
@@ -261,5 +319,5 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     return () => cleanups.forEach((fn) => fn?.());
   }, [onEvent]);
 
-  return { sendEvent, connectionStatus };
+  return { sendEvent, connectionStatus, reconnect };
 };

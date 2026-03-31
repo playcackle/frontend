@@ -117,8 +117,8 @@
 
 /* Also used by page.tsx leaderboard — will be duplicated in gameroom.module.css until Plan 06 cleanup */
 .statsTitle {
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
   letter-spacing: 1px;
   font-family: var(--retro-font);

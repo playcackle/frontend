@@ -1,19 +1,12 @@
 /**
- * OPTIMIZED GAME COMPONENTS WITH DEBOUNCING
+ * GAME SOCKET HOOK — resilient connection with native socket.io reconnection
  *
- * This file contains enhanced versions of the game components with strategic
- * debouncing optimizations to improve performance and user experience.
- *
- * Key optimizations:
- * - Debounced high-frequency events (lobby ticks, user input)
- * - Prevented double-submissions and spam
- * - Reduced unnecessary re-renders
- * - Maintained real-time responsiveness for critical actions
+ * Key design decisions:
+ * - Uses socket.io's built-in reconnection instead of manual forceNew + teardown
+ * - Never triggers full loading screen on transient disconnects
+ * - Exposes granular connectionStatus for UI overlay banners
+ * - Requests state sync on reconnection so the client catches up
  */
-
-// =====================================================
-// ENHANCED GAME SOCKET HOOK
-// =====================================================
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
@@ -39,8 +32,9 @@ interface SocketState {
 }
 
 // Connection configuration
-const MAX_RECONNECT_ATTEMPTS = 5;
+const MAX_RECONNECT_ATTEMPTS = 8;
 const RECONNECT_DELAY_BASE = 1000;
+const RECONNECT_DELAY_MAX = 30000;
 
 export const useGameSocket = (baseUrl: string, token: string) => {
   // ==================== REFS AND STATE ====================
@@ -49,8 +43,6 @@ export const useGameSocket = (baseUrl: string, token: string) => {
   const listenersRef = useRef<Map<GameEvent, Set<EventListener<any>>>>(
     new Map()
   );
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const initializeSocketRef = useRef<() => void>(() => {});
 
   const [socketState, setSocketState] = useState<SocketState>({
     isConnected: false,
@@ -66,65 +58,27 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     () =>
       debounce((message: string, error?: any) => {
         console.error(message, error);
-      }, 1000), // 1 second debounce for error logging
+      }, 1000),
     []
   );
 
-  // ==================== CONNECTION MANAGEMENT ====================
-
-  const clearReconnectTimeout = useCallback(() => {
-    if (reconnectTimeoutRef.current) {
-      clearTimeout(reconnectTimeoutRef.current);
-      reconnectTimeoutRef.current = null;
-    }
-  }, []);
-
-  const scheduleReconnect = useCallback(() => {
-    setSocketState((prev) => {
-      // Stop trying after max attempts
-      if (prev.reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
-        return {
-          ...prev,
-          connectionStatus: "error",
-          error: "Max reconnection attempts reached",
-        };
-      }
-
-      // Calculate exponential backoff delay (max 30 seconds)
-      const delay = Math.min(
-        RECONNECT_DELAY_BASE * Math.pow(2, prev.reconnectAttempts),
-        30000
-      );
-
-      // Schedule the reconnection attempt
-      reconnectTimeoutRef.current = setTimeout(() => {
-        initializeSocketRef.current();
-      }, delay);
-
-      // Update state to show reconnecting status
-      return {
-        ...prev,
-        connectionStatus: "reconnecting",
-        reconnectAttempts: prev.reconnectAttempts + 1,
-      };
-    });
-  }, []);
-
   // ==================== SOCKET INITIALIZATION ====================
 
-  const initializeSocket = useCallback(() => {
-    // Clean up any existing socket connection
-    if (socketRef.current) {
-      socketRef.current.removeAllListeners();
-      socketRef.current.disconnect();
+  useEffect(() => {
+    // Skip connection when URL is empty (no gameroom selected)
+    if (!baseUrl) {
+      return;
     }
 
-    // Create new socket connection
+    // Create socket with native reconnection enabled
     const socket = io(baseUrl, {
       transports: ["websocket"],
       auth: { token },
       timeout: 10000,
-      forceNew: true,
+      reconnection: true,
+      reconnectionAttempts: MAX_RECONNECT_ATTEMPTS,
+      reconnectionDelay: RECONNECT_DELAY_BASE,
+      reconnectionDelayMax: RECONNECT_DELAY_MAX,
     });
 
     socketRef.current = socket;
@@ -132,12 +86,10 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     // ========== CONNECTION EVENT HANDLERS ==========
 
     socket.on("connect", () => {
-      // Successful connection - reset everything
       setSocketState((prev) => {
-        const isReconnect = prev.reconnectAttempts > 0;
+        const isReconnect = prev.reconnectAttempts > 0 || prev.connectionStatus === "reconnecting";
         if (isReconnect) {
-          // Request current server state on reconnects
-          // Backend listens for this event and responds with lobby_state_sync
+          // Request current server state on reconnects so the client catches up
           socket.emit("request_state_sync");
         }
         return {
@@ -147,22 +99,16 @@ export const useGameSocket = (baseUrl: string, token: string) => {
           reconnectAttempts: 0,
         };
       });
-      clearReconnectTimeout();
     });
 
     socket.on("disconnect", (reason) => {
-      // Connection lost
       setSocketState((prev) => ({
         ...prev,
         isConnected: false,
         connectionStatus: "disconnected",
         error: `Disconnected: ${reason}`,
       }));
-
-      // Auto-reconnect unless user manually disconnected
-      if (reason !== "io client disconnect") {
-        scheduleReconnect();
-      }
+      // socket.io will auto-reconnect unless user manually disconnected
     });
 
     socket.on("connect_error", (error) => {
@@ -171,21 +117,47 @@ export const useGameSocket = (baseUrl: string, token: string) => {
         lastConnectErrorCapture = now;
         captureException(error, { tags: { source: "socket_connect_error" } });
       }
-      // Connection failed
       setSocketState((prev) => ({
         ...prev,
         isConnected: false,
         connectionStatus: "error",
         error: `Connection error: ${error.message}`,
       }));
-      scheduleReconnect();
+    });
+
+    // Native socket.io reconnection events
+    socket.io.on("reconnect_attempt", (attempt) => {
+      setSocketState((prev) => ({
+        ...prev,
+        connectionStatus: "reconnecting",
+        reconnectAttempts: attempt,
+      }));
+    });
+
+    socket.io.on("reconnect", () => {
+      // Socket.io fires this after a successful reconnection.
+      // The "connect" handler above already handles state sync, so this
+      // is a safety net to ensure the status is correct.
+      setSocketState({
+        isConnected: true,
+        connectionStatus: "connected",
+        error: null,
+        reconnectAttempts: 0,
+      });
+    });
+
+    socket.io.on("reconnect_failed", () => {
+      setSocketState((prev) => ({
+        ...prev,
+        connectionStatus: "error",
+        error: "Max reconnection attempts reached",
+      }));
     });
 
     // ========== GAME EVENT HANDLERS ==========
 
     // HIGH-FREQUENCY EVENTS (with debouncing)
-    // Lobby tick events come frequently and can cause UI lag
-    const debouncedLobbyTick = debounce((data) => {
+    const debouncedLobbyTick = debounce((data: any) => {
       const listeners = listenersRef.current.get("lobby_tick");
       if (listeners && listeners.size > 0) {
         listeners.forEach((callback) => {
@@ -196,10 +168,9 @@ export const useGameSocket = (baseUrl: string, token: string) => {
           }
         });
       }
-    }, 50); // 50ms debounce - smooth but responsive
+    }, 50);
 
     // REGULAR GAME EVENTS (no debouncing needed)
-    // These events are less frequent and need immediate handling
     const gameEvents: GameEvent[] = [
       "game_starting_soon",
       "waiting_for_players",
@@ -215,10 +186,8 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       "lobby_state_sync",
     ];
 
-    // Set up the high-frequency event handler
     socket.on("lobby_tick", debouncedLobbyTick);
 
-    // Set up regular event handlers
     gameEvents.forEach((eventName) => {
       socket.on(eventName, (data: any) => {
         const listeners = listenersRef.current.get(eventName);
@@ -233,38 +202,18 @@ export const useGameSocket = (baseUrl: string, token: string) => {
         }
       });
     });
-  }, [
-    baseUrl,
-    token,
-    scheduleReconnect,
-    clearReconnectTimeout,
-    debouncedErrorLog,
-  ]);
 
-  // Keep initializeSocketRef in sync so scheduleReconnect can call it without a direct dependency
-  useEffect(() => {
-    initializeSocketRef.current = initializeSocket;
-  }, [initializeSocket]);
-
-  // ==================== LIFECYCLE MANAGEMENT ====================
-
-  useEffect(() => {
-    // Initialize socket when component mounts or dependencies change
-    initializeSocket();
-
-    // Cleanup function
+    // ========== CLEANUP ==========
     return () => {
-      clearReconnectTimeout();
-      if (socketRef.current) {
-        socketRef.current.removeAllListeners();
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+      socket.removeAllListeners();
+      socket.io.removeAllListeners();
+      socket.disconnect();
+      socketRef.current = null;
       // Clear all event listeners
       listenersRef.current.forEach((listeners) => listeners.clear());
       listenersRef.current.clear();
     };
-  }, [initializeSocket, clearReconnectTimeout]);
+  }, [baseUrl, token, debouncedErrorLog]);
 
   // ==================== PUBLIC API ====================
 
@@ -290,7 +239,7 @@ export const useGameSocket = (baseUrl: string, token: string) => {
         }
       },
       100
-    ), // 100ms debounce to prevent rapid-fire submissions
+    ),
     [debouncedErrorLog]
   );
 
@@ -314,11 +263,19 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     []
   );
 
-  // Manual reconnect function
+  // Manual reconnect function (for "Retry" button in UI)
   const reconnect = useCallback(() => {
-    setSocketState((prev) => ({ ...prev, reconnectAttempts: 0 }));
-    initializeSocket();
-  }, [initializeSocket]);
+    const socket = socketRef.current;
+    if (socket && !socket.connected) {
+      setSocketState((prev) => ({
+        ...prev,
+        reconnectAttempts: 0,
+        connectionStatus: "reconnecting",
+        error: null,
+      }));
+      socket.connect();
+    }
+  }, []);
 
   return {
     sendEvent,

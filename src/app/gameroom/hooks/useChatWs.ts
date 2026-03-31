@@ -31,6 +31,10 @@ export const useChatSocket = (baseUrl: string, token: string) => {
       transports: ["websocket"],
       auth: { token },
       timeout: 10000,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 15000,
     });
 
     socketRef.current = socket;

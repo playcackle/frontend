@@ -76,6 +76,11 @@ export const roundHintsAtom = atom<UnifiedMessage[]>([]);
 // Per-slot max similarity score seen this round (slot_id -> 0-100), sourced from lobby_tick
 export const slotHeatAtom = atom<Record<string, number>>({});
 
+// Connection status atom — tracks socket health without hiding the game UI.
+// "connected" = healthy, "reconnecting" = brief blip (show banner), "disconnected" = lost
+export type ConnectionStatus = "connecting" | "connected" | "reconnecting" | "disconnected";
+export const connectionStatusAtom = atom<ConnectionStatus>("connecting");
+
 export const animationStateAtom = atom<AnimationState>({
   attentionAnimation: "",
   slotId: null,

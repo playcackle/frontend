@@ -1,6 +1,5 @@
 import { useAtomValue } from "jotai";
 import React, { useEffect, useState } from "react";
-import styles from "./StatsRow.module.css";
 import {
   isPostGameShowcaseAtom,
   isRoundBreakAtom,
@@ -12,6 +11,7 @@ import {
   totalRoundsAtom,
 } from "../store/gameAtoms";
 import { formatTime } from "../utils";
+import styles from "./StatsRow.module.css";
 
 interface StatsTileProps {
   tooltip: string;
@@ -80,13 +80,11 @@ const StatsRow = React.memo(() => {
         <>
           <StatsTileWithTooltip tooltip="The category you need to match this round. Type answers that belong to this group.">
             <h3 className={styles.statsTitle}>Looking for:</h3>
-            <div className={styles.statsValue} style={{ fontSize: "14px" }}>
-              {roundName}
-            </div>
+            <div className={styles.statsValue}>{roundName}</div>
           </StatsTileWithTooltip>
           <StatsTileWithTooltip tooltip="A sample answer that fits the category — use it as a hint for what counts.">
-            <h3 className={styles.statsTitle}>Example text:</h3>
-            <p className={styles.statsValue} style={{ fontSize: "14px" }}>
+            <h3 className={styles.statsTitle}>Example, n00b:</h3>
+            <p className={styles.statsValue}>
               {roundExample || "Answer with items from this category"}
             </p>
           </StatsTileWithTooltip>

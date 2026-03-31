@@ -7,6 +7,7 @@ import styles from "./gameroom.module.css";
 // Import custom hooks
 import { useUser } from "@/hooks/useUser";
 import { useAtomValue, useSetAtom } from "jotai";
+import Link from "next/link";
 import Progress from "../loading";
 import { gameRoomAtom } from "../store/gameRoom";
 import CountdownOverlay from "./components/CountdownOverlay";
@@ -17,6 +18,7 @@ import UnifiedMessages from "./components/UnifiedMessages";
 // Import optimized components
 import SlotGrid from "./components/SlotGrid";
 import StatsRow from "./components/StatsRow";
+import ConnectionBanner from "./components/ConnectionBanner";
 
 import { Flex } from "@radix-ui/themes";
 import { setSentryGameContext } from "@/lib/sentry";
@@ -45,6 +47,19 @@ const onRenderCallback: ProfilerOnRenderCallback = (id, phase, actualDuration, b
     console.log(`[Profiler] ${id} | actual: ${actualDuration.toFixed(2)}ms | base: ${baseDuration.toFixed(2)}ms`);
   }
 };
+
+function NoGameroom() {
+  return (
+    <div className={styles.container} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ textAlign: "center" }}>
+        <p style={{ marginBottom: "1rem" }}>No gameroom selected.</p>
+        <Link href="/gamerooms" className={styles.backLink}>
+          Browse gamerooms
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 export default function GameroomPage() {
   const gameroom = useAtomValue(gameRoomAtom);
@@ -120,7 +135,7 @@ export default function GameroomPage() {
   const { submitAnswer } = useGameActions();
 
   // WebSocket connections — must be called unconditionally before any conditional return
-  const { sendEvent } = useGameEvents(
+  const { sendEvent, reconnect: reconnectGame } = useGameEvents(
     gameroom?.game_ws_url ?? "",
     gameroom?.token ?? ""
   );
@@ -160,11 +175,12 @@ export default function GameroomPage() {
   }, [updateGameState]);
 
   if (!gameroom) {
-    return <div>Loading gameroom...</div>;
+    return <NoGameroom />;
   }
 
   return (
     <>
+      <ConnectionBanner onRetry={reconnectGame} />
       {loading && <Progress />}
       {!loading && (
         <div className={styles.container}>

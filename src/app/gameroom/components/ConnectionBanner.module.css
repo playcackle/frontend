@@ -1,0 +1,76 @@
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  animation: slideDown 0.3s ease-out;
+}
+
+.reconnecting {
+  background: linear-gradient(90deg, #d97706, #b45309);
+}
+
+.disconnected {
+  background: linear-gradient(90deg, #dc2626, #b91c1c);
+}
+
+.connected {
+  background: linear-gradient(90deg, #16a34a, #15803d);
+  animation: slideDown 0.3s ease-out, fadeOut 0.5s ease-out 1.5s forwards;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.retryButton {
+  margin-left: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.retryButton:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

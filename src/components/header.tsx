@@ -68,7 +68,7 @@ export default function Header() {
           <>
             <Link href="/profile" className={styles.playerName}>
               {user.identities?.[0]?.identity_data?.["name"] ||
-                user.user_metadata.name ||
+                user.user_metadata.name.replace(".#0") ||
                 user.email}
             </Link>
             <Button
