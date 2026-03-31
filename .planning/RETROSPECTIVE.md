@@ -147,15 +147,65 @@
 
 ---
 
+## Milestone: v1.4 — Social Auth
+
+**Shipped:** 2026-03-31
+**Phases:** 2 (Phases 15-16) | **Plans:** 5
+**Timeline:** 2026-03-19 → 2026-03-31 (12 days)
+
+### What Was Built
+
+1. **DB trigger hardening** (Phase 15): `handle_new_user()` PostgreSQL trigger updated with COALESCE fallback chain (name→full_name→user_name→split_part) covering Google, Discord, and email/password signup — prevents NULL constraint errors on first OAuth sign-in
+2. **Discord OAuth registration** (Phase 15): Discord OAuth app registered in Developer Portal, enabled in Supabase with callback URLs, automatic identity linking confirmed active — Google deferred to pending todo
+3. **End-to-end OAuth verification** (Phase 15): Live Discord OAuth flow tested, trigger confirmed creating valid public.players rows, Discord metadata field names (user_name, avatar_url) locked in
+4. **Avatar CDN configuration** (Phase 16): Next.js `remotePatterns` added for `cdn.discordapp.com/avatars/**` and `lh3.googleusercontent.com/**`
+5. **OAuth buttons on auth pages** (Phase 16): Discord sign-in button live on both /login and /register, disabled Google button placeholder with proper CSS
+6. **Profile avatar rendering** (Phase 16): `avatar_url` added to `PlayerProfileStats` type, profile page renders provider avatar via Next.js `<Image>` with initials fallback
+
+### What Worked
+
+- **Phase 15 as infrastructure-first** — completing provider registration, DB trigger, and live verification before any UI work meant Phase 16 only needed frontend changes with no backend surprises
+- **Discord metadata shape confirmed live** before writing sync code — avoiding the common pitfall of coding against documentation that doesn't match reality
+- **Uniform COALESCE fallback chain** over provider-branching — no if/else per provider, covers future providers automatically
+- **Parallel plan execution in Phase 16** — 16-01 (config + buttons) and 16-02 (type + avatar) had zero file overlap, both completed in parallel in ~2.5 min each
+
+### What Was Inefficient
+
+- **Google OAuth (SETUP-01) deferred** — the milestone was scoped for both Google and Discord but Google requires human console access that wasn't available; the disabled button placeholder is a pragmatic workaround but leaves OAUTH-01 partially unmet
+- **Phase 16 SUMMARY one-liners were empty** — the executor agents wrote "One-liner:" without content, requiring manual extraction from commit messages during milestone completion
+- **No milestone audit** — proceeding without `/gsd:audit-milestone` accepted the gap; the audit would have formally confirmed SETUP-01 as the only gap
+
+### Patterns Established
+
+- Disabled button placeholder pattern for pending OAuth providers — shows user intent without functional wiring
+- `avatar_url: string | null` type with conditional Image/initials rendering — clean fallback pattern for optional avatars
+- `remotePatterns` for external CDN hostnames — configured proactively for both Discord and Google even though only Discord is live
+- INSERT-only DB trigger for profile sync — no frontend sync logic needed; trigger fires once per account, never on re-login
+
+### Key Lessons
+
+1. **Scope OAuth providers individually** — bundling Google + Discord created a gap when Google required human console access; scoping Discord-only would have been a clean 10/10 milestone
+2. **Verify live metadata shape before committing sync code** — Phase 15 P03 confirmed Discord's `user_name` and `avatar_url` fields; this saved Phase 16 from potential field name mismatches
+3. **DB triggers > frontend sync for first-sign-in data** — the INSERT-only trigger pattern means zero frontend complexity for PROF-01/PROF-03; the frontend just displays what's already in the database
+
+### Cost Observations
+
+- Sessions: ~3 sessions across 12 days (gap due to manual provider registration)
+- Phase 15: 3 plans, mix of automated (SQL migration) and manual (provider registration, live verification)
+- Phase 16: 2 plans, fully automated, parallel execution (~2.5 min each)
+- Requirements: 10/11 satisfied — SETUP-01 (Google) intentionally deferred
+
+---
+
 ## Cross-Milestone Trends
 
-| Metric | v1.0 | v1.1 | v1.3 |
-|--------|------|------|------|
-| Phases | 4 | 1 | 5 |
-| Plans | 6 | 2 | 10 |
-| Avg plan duration | ~2 min (GSD phases) | ~25 min | ~10 min |
-| Timeline | 14 days | 1 day | 2 days |
-| LOC | ~13,000 TS | ~13,000 TS (audit-only) | ~13,755 TS |
-| Outside-GSD phases | 2 (Phases 3, 4) | 0 | 0 |
-| Confirmed bugs found | 0 | 2 | 0 (1 LCP performance root cause) |
-| Requirements satisfied | 6/6 | 4/4 | 11/11 |
+| Metric | v1.0 | v1.1 | v1.3 | v1.4 |
+|--------|------|------|------|------|
+| Phases | 4 | 1 | 5 | 2 |
+| Plans | 6 | 2 | 10 | 5 |
+| Avg plan duration | ~2 min (GSD phases) | ~25 min | ~10 min | ~5 min |
+| Timeline | 14 days | 1 day | 2 days | 12 days |
+| LOC | ~13,000 TS | ~13,000 TS (audit-only) | ~13,755 TS | ~14,400 TS |
+| Outside-GSD phases | 2 (Phases 3, 4) | 0 | 0 | 0 |
+| Confirmed bugs found | 0 | 2 | 0 (1 LCP performance root cause) | 0 |
+| Requirements satisfied | 6/6 | 4/4 | 11/11 | 10/11 |
