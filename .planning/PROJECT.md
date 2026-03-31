@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A real-time multiplayer quiz/trivia game platform built on Next.js 16 with Socket.IO. Players join game rooms, answer questions through a shared chat feed, and compete on live leaderboards. The platform serves returning players through a progression system and new players through onboarding. v1.0 shipped reliable state sync, readable chat feedback, user onboarding, and a rich player stats landing page. v1.3 added Sentry error monitoring, layered error boundaries, measured performance baselines, and fixed the top three performance bottlenecks (LCP, bundle size, hot-path Supabase call).
+A real-time multiplayer quiz/trivia game platform built on Next.js 16 with Socket.IO. Players join game rooms, answer questions through a shared chat feed, and compete on live leaderboards. The platform serves returning players through a progression system and new players through onboarding. v1.0 shipped reliable state sync, readable chat feedback, user onboarding, and a rich player stats landing page. v1.3 added Sentry error monitoring, layered error boundaries, measured performance baselines, and fixed the top three performance bottlenecks (LCP, bundle size, hot-path Supabase call). Phase 16 complete — Discord OAuth buttons live on login/register, disabled Google button placeholder, avatar rendering on profile page with initials fallback.
 
 ## Core Value
 
@@ -113,14 +113,17 @@ Players must always know where they are in the game and what their actions mean 
 - Auto-fill display name and avatar from provider on first sign-in
 - Email/password auth preserved alongside OAuth options
 
+### Validated (Phase 16)
+
+- ✓ User can sign in or register with Discord account — Validated in Phase 16: OAuth UI and Profile Sync
+- ✓ OAuth buttons appear on both login and register pages — Validated in Phase 16: OAuth UI and Profile Sync
+- ✓ Email/password auth remains available alongside OAuth — Validated in Phase 16: OAuth UI and Profile Sync
+- ✓ Display name pre-populated from provider on first OAuth sign-in — Validated in Phase 16: OAuth UI and Profile Sync (DB trigger)
+- ✓ Avatar pre-populated from provider on first OAuth sign-in — Validated in Phase 16: OAuth UI and Profile Sync
+
 ### Active
 
-- [ ] User can sign in or register with Google account
-- [ ] User can sign in or register with Discord account
-- [ ] OAuth buttons appear on both login and register pages
-- [ ] Email/password auth remains available alongside OAuth
-- [ ] Display name pre-populated from provider on first OAuth sign-in
-- [ ] Avatar pre-populated from provider on first OAuth sign-in
+- [ ] User can sign in or register with Google account (SETUP-01 pending — Google OAuth app registration required)
 
 ---
 
@@ -137,4 +140,4 @@ Players must always know where they are in the game and what their actions mean 
 - Nyquist VALIDATION.md files for phases 10-13 remain in draft status
 
 ---
-*Last updated: 2026-03-19 after v1.4 milestone start*
+*Last updated: 2026-03-31 after Phase 16 completion*
