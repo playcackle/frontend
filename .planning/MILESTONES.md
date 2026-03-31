@@ -1,5 +1,19 @@
 # Milestones
 
+## v1.4 Social Auth (Shipped: 2026-03-31)
+
+**Phases completed:** 2 phases, 5 plans, 4 tasks
+
+**Key accomplishments:**
+
+- PostgreSQL handle_new_user() trigger hardened with COALESCE fallback chain covering Google (name/picture), Discord (user_name/avatar_url), and email/password signup — NULL constraint errors on first OAuth sign-in prevented
+- Discord OAuth enabled in Supabase with credentials, trigger migration applied to live DB, automatic identity linking confirmed active — Google OAuth deferred to pending todo
+- Discord OAuth flow verified live: trigger creates valid public.players rows, identity linking confirmed, and Discord metadata field names locked in for Phase 16
+- One-liner:
+- One-liner:
+
+---
+
 ## v1.3 Observability & Performance (Shipped: 2026-03-19)
 
 **Phases completed:** 5 phases, 10 plans
@@ -7,6 +21,7 @@
 **Codebase:** ~13,755 LOC TypeScript (+632 insertions, -127 deletions across 29 files)
 
 **Key accomplishments:**
+
 1. Sentry pipeline live across all three runtimes (browser, Node.js, Edge) with quota-safe sampling (0.1), tunnel route /monitoring for ad-blocker bypass, and `src/lib/sentry.ts` abstraction keeping SDK imports contained
 2. User identity and game room context wired into Sentry via `SentryUserSync` (Supabase auth) and `setSentryGameContext` (game_ws_url + real phase: answering/round_break/post_game)
 3. Global error boundary (`error.tsx`) catches non-gameroom render crashes; `GameroomErrorBoundary` class component adds silent-retry recovery before showing minimal fallback
@@ -33,6 +48,7 @@
 **Codebase:** ~13,000 LOC TypeScript
 
 **Key accomplishments:**
+
 1. 28 verified findings across code quality (AUDIT-01) and performance (AUDIT-02) — each with confirmed file path, line number, impact, effort, and concrete remediation
 2. 9 architecture findings (AUDIT-03) — Rules of Hooks crash risk, dual performance mode systems, Bot Bob detection triplication, onEvent cleanup discard
 3. 13 type safety findings (AUDIT-04) — 2 `@ts-ignore`, 7 `as any`, 1 `as unknown as`, EventPayloadMap gaps
@@ -50,6 +66,7 @@
 **Codebase:** ~13,000 LOC TypeScript
 
 **Key accomplishments:**
+
 1. Fixed round→intermission state sync: client auto-recovers to correct game phase without manual rejoin
 2. Fixed reconnect state recovery: `request_state_sync` emitted on reconnect so client lands in correct phase after network loss
 3. Chat message visual differentiation: correct answers (neon green + CORRECT badge), Bot Bob hints (purple + BOT badge), duplicate attempts (amber + TAKEN badge)
@@ -59,4 +76,3 @@
 **Archive:** `.planning/milestones/v1.0-ROADMAP.md`, `.planning/milestones/v1.0-REQUIREMENTS.md`
 
 ---
-

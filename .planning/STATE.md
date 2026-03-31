@@ -4,7 +4,7 @@ milestone: v1.4
 milestone_name: Social Auth
 status: unknown
 stopped_at: Completed 16-01-PLAN.md — avatar CDN remotePatterns and disabled Google button added
-last_updated: "2026-03-30T18:26:30.101Z"
+last_updated: "2026-03-31T07:21:43.059Z"
 progress:
   total_phases: 7
   completed_phases: 2
@@ -16,15 +16,15 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-19)
+See: .planning/PROJECT.md (updated 2026-03-31)
 
 **Core value:** Players must always know where they are in the game and what their actions mean — reliable state, readable feedback, and visible progress are what keep them coming back.
-**Current focus:** Phase 16 — oauth-ui-and-profile-sync
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 16 (oauth-ui-and-profile-sync) — EXECUTING
-Plan: 2 of 2
+Phase: 16
+Plan: Not started
 
 ## Performance Metrics
 

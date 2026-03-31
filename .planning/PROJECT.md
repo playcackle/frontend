@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A real-time multiplayer quiz/trivia game platform built on Next.js 16 with Socket.IO. Players join game rooms, answer questions through a shared chat feed, and compete on live leaderboards. The platform serves returning players through a progression system and new players through onboarding. v1.0 shipped reliable state sync, readable chat feedback, user onboarding, and a rich player stats landing page. v1.3 added Sentry error monitoring, layered error boundaries, measured performance baselines, and fixed the top three performance bottlenecks (LCP, bundle size, hot-path Supabase call). Phase 16 complete — Discord OAuth buttons live on login/register, disabled Google button placeholder, avatar rendering on profile page with initials fallback.
+A real-time multiplayer quiz/trivia game platform built on Next.js 16 with Socket.IO. Players join game rooms, answer questions through a shared chat feed, and compete on live leaderboards. The platform serves returning players through a progression system and new players through onboarding. v1.0 shipped reliable state sync, readable chat feedback, user onboarding, and a rich player stats landing page. v1.3 added Sentry error monitoring, layered error boundaries, measured performance baselines, and fixed the top three performance bottlenecks (LCP, bundle size, hot-path Supabase call). v1.4 added Discord OAuth sign-in/registration with auto-populated display name and avatar from the provider, disabled Google button placeholder, and avatar rendering on the profile page.
 
 ## Core Value
 
@@ -56,6 +56,17 @@ Players must always know where they are in the game and what their actions mean 
 - ✓ All performance findings documented with impact/effort ratings in PERF-BASELINE.md — PERF-05 v1.3
 - ✓ Top 3 highest-impact bottlenecks fixed: LCP (INITIAL_SESSION guard), bundle (SentryUserSync lazy), UnifiedMessages hot path (currentUserIdAtom) — PERF-06 v1.3
 
+### Validated (continued — v1.4)
+
+- ✓ Discord OAuth sign-in and registration from /auth/login and /auth/register — OAUTH-02 v1.4
+- ✓ Email/password login and registration remain available alongside OAuth — OAUTH-03 v1.4
+- ✓ DB trigger hardened with COALESCE fallback for OAuth providers (name/full_name/user_name chain) — SETUP-04 v1.4
+- ✓ Discord OAuth app registered and enabled in Supabase with identity linking — SETUP-02, SETUP-03 v1.4
+- ✓ Display name pre-populated from provider on first OAuth sign-in (DB trigger INSERT-only) — PROF-01 v1.4
+- ✓ Avatar pre-populated from provider on first OAuth sign-in — PROF-02 v1.4
+- ✓ Returning users retain customized profiles (DB trigger fires on INSERT only) — PROF-03 v1.4
+- ✓ next.config.mjs remotePatterns for Discord and Google avatar CDNs — SETUP-05 v1.4
+
 ### Out of Scope
 
 - Backend game logic changes — frontend-only project, game server is external
@@ -65,7 +76,7 @@ Players must always know where they are in the game and what their actions mean 
 
 ## Context
 
-**Current state (v1.3 — shipped 2026-03-19):** ~13,755 LOC TypeScript. Next.js 16 App Router, React 19, TypeScript, Jotai atoms, Socket.IO client 4.8, Supabase auth, Radix UI, GSAP for animations, `@sentry/nextjs` (tracesSampleRate: 0.1). Phases 10-14 complete — Sentry monitoring live, error boundaries layered, performance baselines documented, top 3 bottlenecks fixed. See `.planning/codebase/` for full analysis. See `.planning/phases/05-codebase-audit/FINDINGS.md` for the full audit report. See `.planning/milestones/v1.3-MILESTONE-AUDIT.md` for v1.3 requirements coverage and tech debt log.
+**Current state (v1.4 — shipped 2026-03-31):** ~14,400 LOC TypeScript. Next.js 16 App Router, React 19, TypeScript, Jotai atoms, Socket.IO client 4.8, Supabase auth (email/password + Discord OAuth), Radix UI, GSAP for animations, `@sentry/nextjs` (tracesSampleRate: 0.1). Discord OAuth live, DB trigger hardened for multi-provider signup, avatar rendering on profile page. See `.planning/codebase/` for full analysis.
 
 **Real-time architecture:** Two separate WebSocket connections — `useGameSocket` for game events, `useChatSocket` for messaging. Game state stored in `gameStateAtom`; messages in `unifiedMessagesAtom`. Events flow through `useGameEvents` hook which updates atoms.
 
@@ -102,42 +113,29 @@ Players must always know where they are in the game and what their actions mean 
 | INITIAL_SESSION early return in `useUser.ts` | Supabase fires INITIAL_SESSION then SIGNED_IN on load; without guard, `router.refresh()` triggers a Server Component re-fetch that delays LCP to 4324ms | ✓ Good — LCP fix; initial state handled by `loadUser()` only |
 | Dynamic import of `SentryUserSync` in `Provider.tsx` (Client Component) | Next.js only code-splits dynamic imports from Client Components, not Server Components | ✓ Good — Supabase 645KB chunk deferred out of main entry bundle |
 | `currentUserIdAtom` set at page level, read in `UnifiedMessages` | Eliminates Supabase auth subscription from 1Hz gameroom hot-render path without losing own-message styling | ✓ Good — page.tsx re-renders are rare vs 1Hz lobby_tick |
+| Uniform COALESCE fallback chain over provider-branching | name→full_name→user_name→split_part covers Google, Discord, and future providers without if/else | ✓ Good — more maintainable, no provider-specific code paths |
+| Avatar column nullable with COALESCE(picture, avatar_url) | NULL result is safe — no constraint failure if provider supplies no avatar | ✓ Good — graceful degradation to initials |
+| Google button rendered disabled (no onClick) | SETUP-01 pending — button visible to show intent, not functional until Google OAuth app registered | ✓ Good — clear UX that feature exists but is pending |
+| avatar_url typed as `string \| null` | Handles email/password users and providers with no avatar — Image component gated on truthy check | ✓ Good — clean fallback to initials character |
+| Discord metadata fields: user_name + avatar_url | Confirmed from live Discord OAuth response in Phase 15 P03 | ✓ Good — locked in before writing sync code |
 
-## Current Milestone: v1.4 Social Auth
+## Completed Milestone: v1.4 Social Auth (shipped 2026-03-31)
 
-**Goal:** Let players sign in and register with Google and Discord OAuth alongside existing email/password auth, with profile data auto-filled from the provider on first sign-in.
+**Delivered:** Discord OAuth sign-in/registration live on login and register pages, DB trigger hardened for OAuth providers, avatar rendering on profile page with initials fallback. Google OAuth deferred (SETUP-01 pending — out of scope for v1.4).
 
-**Target features:**
-- Google OAuth sign-in and registration
-- Discord OAuth sign-in and registration
-- Auto-fill display name and avatar from provider on first sign-in
-- Email/password auth preserved alongside OAuth options
+**Known gap:** SETUP-01 (Google OAuth app registration) — intentionally deferred, not a blocker. Disabled Google button placeholder rendered on auth pages.
 
-### Validated (Phase 16)
-
-- ✓ User can sign in or register with Discord account — Validated in Phase 16: OAuth UI and Profile Sync
-- ✓ OAuth buttons appear on both login and register pages — Validated in Phase 16: OAuth UI and Profile Sync
-- ✓ Email/password auth remains available alongside OAuth — Validated in Phase 16: OAuth UI and Profile Sync
-- ✓ Display name pre-populated from provider on first OAuth sign-in — Validated in Phase 16: OAuth UI and Profile Sync (DB trigger)
-- ✓ Avatar pre-populated from provider on first OAuth sign-in — Validated in Phase 16: OAuth UI and Profile Sync
-
-### Active
-
-- [ ] User can sign in or register with Google account (SETUP-01 pending — Google OAuth app registration required)
-
----
+**Tech debt carried forward:**
+- SETUP-01: Google OAuth registration pending — disabled button placeholder in place
+- OAUTH-01: Google sign-in will activate once SETUP-01 is resolved
+- ARCH-01: Dual performance mode systems need product decision before consolidation
+- ARCH-02: `sound-effects.tsx` (1,448 lines) split deferred
+- ARCH-03: `AdminApiClient` domain split deferred
+- Account linking (LINK-01, LINK-02) deferred — known user_metadata overwrite bug in Supabase SDK
 
 ## Completed Milestone: v1.3 Observability & Performance (shipped 2026-03-19)
 
 **Delivered:** Sentry error monitoring live, layered error boundaries, measured performance baselines, and top-3 bottleneck fixes. All 11 requirements satisfied (OBS-01–05, PERF-01–06).
 
-**Tech debt carried forward into v1.4+:**
-- `useGameEvents.ts` still uses full `gameStateAtom` internally (intentional — orchestrating hook)
-- ARCH-01: Dual performance mode systems need product decision before consolidation
-- ARCH-02: `sound-effects.tsx` (1,448 lines) split deferred
-- ARCH-03: `AdminApiClient` domain split deferred
-- Production LCP improvement not directly measured — WebVitalsLogger now unconditional but no RUM endpoint
-- Nyquist VALIDATION.md files for phases 10-13 remain in draft status
-
 ---
-*Last updated: 2026-03-31 after Phase 16 completion*
+*Last updated: 2026-03-31 after v1.4 milestone*
