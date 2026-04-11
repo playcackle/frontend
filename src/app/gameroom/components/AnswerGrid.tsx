@@ -111,25 +111,30 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
           <div className={styles.answerDotRow}>
             {slots.map((slot) => {
               const dotState = slot.is_snapped ? "found" : "empty";
+              const isEmptyRare = !slot.is_snapped && slot.is_rare;
               return (
                 <div
                   key={slot.id}
-                  className={`${styles.answerDot} ${styles[`answerDot_${dotState}`]} ${slot.is_rare && slot.is_snapped ? styles.answerDotBonus : ""}`}
-                />
+                  className={`${styles.answerDot} ${styles[`answerDot_${dotState}`]} ${slot.is_rare && slot.is_snapped ? styles.answerDotBonus : ""} ${isEmptyRare ? styles.answerDotEmptyRare : ""}`}
+                >
+                  {isEmptyRare && (
+                    <span className={styles.answerDot2x}>2x</span>
+                  )}
+                </div>
               );
             })}
           </div>
         </div>
       </div>
 
-      {/* Answer chips — shows all slots; unanswered ones as striped placeholders */}
-      <div className={styles.answerChipGrid}>
-        {slots.map((slot) => {
-          const isSnapped = slot.is_snapped;
-          const isNew = newlyFound.has(slot.id);
-
-          if (isSnapped) {
-            return (
+      {/* Found answer chips */}
+      {foundCount > 0 && (
+        <div className={styles.answerChipGrid}>
+          {snappedOrder.flatMap((id) => {
+            const slot = snappedMap.get(id);
+            if (!slot) return [];
+            const isNew = newlyFound.has(slot.id);
+            return [
               <div
                 key={slot.id}
                 className={`${styles.answerChip} ${slot.is_rare ? styles.answerChipBonus : ""} ${isNew ? styles.answerChipNew : ""}`}
@@ -147,22 +152,21 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
                 {slot.is_rare && (
                   <span className={styles.answerChipMultiplier}>2x</span>
                 )}
-              </div>
-            );
-          }
+              </div>,
+            ];
+          })}
+        </div>
+      )}
 
-          return (
-            <div
-              key={slot.id}
-              className={`${styles.answerChipEmpty} ${slot.is_rare ? styles.answerChipEmptyRare : styles.answerChipEmptyNormal}`}
-            >
-              {slot.is_rare && (
-                <span className={styles.answerChipEmptyMultiplier}>2x</span>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      {/* Placeholder when nothing found */}
+      {foundCount === 0 && (
+        <div className={styles.answerGridPlaceholder}>
+          <p>
+            Type answers in the chat to fill this up. There are{" "}
+            <strong>{totalAnswers}</strong> answers to find.
+          </p>
+        </div>
+      )}
 
       {/* Hints section — only shows unsnapped slots that have a text_preview */}
       {(() => {
