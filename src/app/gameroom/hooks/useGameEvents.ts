@@ -160,6 +160,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       roundNumber: data.round_number,
       showCountDown: false,
       accolades: [], // Clear accolades for new round
+      lobbyStatus: "IN_ROUND", // Clear any stale WAITING/STARTING_SOON status
     });
     clearRoundHints();
     clearSlotHeat();

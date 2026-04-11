@@ -4,30 +4,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAtomValue } from "jotai";
 import { isRoundBreakAtom, roundHintsAtom } from "../store/gameAtoms";
 import { Slot } from "../types/state";
-import { slotHeatAtom } from "../store/gameAtoms";
 import styles from "./AnswerGrid.module.css";
 
 interface AnswerGridProps {
   slots: Slot[];
 }
-
-const heatLevelFromSimilarity = (score: number): number => {
-  if (score >= 90) return 4;
-  if (score >= 80) return 3;
-  if (score >= 65) return 2;
-  if (score >= 40) return 1;
-  return 0;
-};
-
-const heatLevelFromAttempts = (attempts: number): number => {
-  if (attempts >= 10) return 4;
-  if (attempts >= 6) return 3;
-  if (attempts >= 3) return 2;
-  if (attempts >= 1) return 1;
-  return 0;
-};
-
-const HEAT_NAMES = ["empty", "cool", "warm", "hot", "inferno"] as const;
 
 const BOT_BOB_HINT_LABELS = [
   "Fine. Here's your help, loser",
@@ -45,7 +26,6 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
     [],
   );
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
-  const slotHeat = useAtomValue(slotHeatAtom);
   const totalAnswers = slots.length;
   const snappedMap = new Map(slots.filter((s) => s.is_snapped).map((s) => [s.id, s]));
   const foundCount = snappedMap.size;
@@ -130,36 +110,12 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
           {/* Mini dot indicators per slot */}
           <div className={styles.answerDotRow}>
             {slots.map((slot) => {
-              const attempts = slot.failed_attempts ?? 0;
-              const similarityScore = slotHeat[slot.id] ?? 0;
-              const heatLevel = slot.is_snapped
-                ? "found"
-                : HEAT_NAMES[
-                    Math.max(
-                      heatLevelFromSimilarity(similarityScore),
-                      heatLevelFromAttempts(attempts)
-                    )
-                  ];
-              const showFlame = !slot.is_snapped && (attempts >= 6 || similarityScore >= 80);
-
+              const dotState = slot.is_snapped ? "found" : "empty";
               return (
                 <div
                   key={slot.id}
-                  className={`${styles.answerDot} ${styles[`answerDot_${heatLevel}`]} ${slot.is_rare && slot.is_snapped ? styles.answerDotBonus : ""}`}
-                  title={
-                    attempts > 0
-                      ? `${attempts} failed attempt${attempts !== 1 ? "s" : ""}`
-                      : undefined
-                  }
-                >
-                  {showFlame && (
-                    <span
-                      className={`${styles.dotFlame} ${heatLevel === "inferno" ? styles.dotFlameInferno : ""}`}
-                    >
-                      🔥
-                    </span>
-                  )}
-                </div>
+                  className={`${styles.answerDot} ${styles[`answerDot_${dotState}`]} ${slot.is_rare && slot.is_snapped ? styles.answerDotBonus : ""}`}
+                />
               );
             })}
           </div>
@@ -227,19 +183,33 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
         );
       })()}
 
-      {/* Round hints — hidden during round breaks */}
-      {!isRoundBreak && hints.length > 0 && (
-        <div className={styles.hintsSection}>
-          <p className={styles.hintsSectionLabel}>{hintLabel}</p>
-          <div className={styles.hintsGrid}>
-            {hints.map((hint, index) => (
-              <div key={index} className={styles.hintChip}>
-                <span className={styles.hintChipText}>{hint.text}</span>
-              </div>
-            ))}
+      {/* Round hints — hidden during round breaks, and hints for already-answered slots are filtered out */}
+      {(() => {
+        if (isRoundBreak) return null;
+        const snappedCanonicals = new Set(
+          slots
+            .filter((s) => s.is_snapped && s.canonical_text)
+            .map((s) => s.canonical_text.toLowerCase()),
+        );
+        const visibleHints = hints.filter(
+          (h) =>
+            !h.canonical_text ||
+            !snappedCanonicals.has(h.canonical_text.toLowerCase()),
+        );
+        if (visibleHints.length === 0) return null;
+        return (
+          <div className={styles.hintsSection}>
+            <p className={styles.hintsSectionLabel}>{hintLabel}</p>
+            <div className={styles.hintsGrid}>
+              {visibleHints.map((hint, index) => (
+                <div key={index} className={styles.hintChip}>
+                  <span className={styles.hintChipText}>{hint.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };

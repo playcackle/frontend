@@ -9,7 +9,6 @@ import {
   unifiedMessagesAtom,
   type UnifiedMessage,
 } from "../store/gameAtoms";
-import PlayerAvatar from "./PlayerAvatar";
 import styles from "./UnifiedMessages.module.css";
 
 export default function UnifiedMessages() {
@@ -18,14 +17,6 @@ export default function UnifiedMessages() {
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
   const messages = useAtomValue(unifiedMessagesAtom);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Find pinned message from botbob
-  const pinnedMessage = messages.find(
-    (msg) =>
-      (msg.player_id === "botbob" ||
-        msg.display_name.toLowerCase() === "botbob") &&
-      msg.message_type === "chat"
-  );
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -69,31 +60,6 @@ export default function UnifiedMessages() {
 
   return (
     <div className={styles.unifiedMessagesContainer}>
-      {pinnedMessage && (
-        <div className={styles.pinnedMessageContainer}>
-          <div className={`${styles.unifiedMessage} ${styles.botBobMessage} ${styles.pinnedMessage}`}>
-            <Flex direction="row" gap="2" align="center">
-              <PlayerAvatar
-                playerId={pinnedMessage.player_id}
-                displayName={pinnedMessage.display_name}
-                size="small"
-                className={styles.pinnedAvatar}
-              />
-              <div className={styles.messageContentWrapper}>
-                <Flex direction="row" gap="2" align="center">
-                  <span className={styles.messageUser}>
-                    {pinnedMessage.display_name}
-                  </span>
-                  <span className={styles.pinnedBadge}>PINNED</span>
-                </Flex>
-                <div className={styles.messageContent}>
-                  {pinnedMessage.text}
-                </div>
-              </div>
-            </Flex>
-          </div>
-        </div>
-      )}
       <div className={styles.messagesScrollArea}>
         {messages.length === 0 ? (
           <div className={styles.messagesEmpty}>
@@ -127,7 +93,7 @@ export default function UnifiedMessages() {
                   </Flex>
                   <div className={styles.messageContent}>
                     {msg.text}
-                    {msg.canonical_text && msg.canonical_text !== msg.text && (
+                    {msg.canonical_text && msg.canonical_text.toLowerCase() !== msg.text.toLowerCase() && (
                       <span className={styles.canonicalAnswer}>
                         {" "}
                         → "{msg.canonical_text}"
