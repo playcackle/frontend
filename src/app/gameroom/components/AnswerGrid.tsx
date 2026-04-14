@@ -191,16 +191,14 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
       {/* Round hints — hidden during round breaks, and hints for already-answered slots are filtered out */}
       {(() => {
         if (isRoundBreak) return null;
-        const snappedCanonicals = new Set(
+        const snappedSlotIds = new Set(
           slots
-            .filter((s) => s.is_snapped && s.canonical_text)
-            .map((s) => s.canonical_text.toLowerCase()),
+            .filter((s) => s.is_snapped && s.id)
+            .map((s) => String(s.id))
         );
-        const visibleHints = hints.filter(
-          (h) =>
-            !h.canonical_text ||
-            !snappedCanonicals.has(h.canonical_text.toLowerCase()),
-        );
+        const visibleHints = hints.filter((h) => {
+          return !h.slot_id || !snappedSlotIds.has(String(h.slot_id));
+        });
         if (visibleHints.length === 0) return null;
         return (
           <div className={styles.hintsSection}>

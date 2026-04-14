@@ -9,11 +9,14 @@ export type UnifiedMessage = ChatMessageData & {
     | "bot_hint"
     | "answer_attempt"
     | "successful_answer"
-    | "failed_answer";
+    | "failed_answer"
+    | "host";
+  host_subtype?: "welcome" | "round_start" | "round_end" | "near_miss" | "snipe" | "save";
   submission_result?: "success" | "too_slow" | "incorrect" | "already_snapped";
   points_awarded?: number;
   is_rare?: boolean;
   canonical_text?: string;
+  slot_id?: string | number;
   is_own_message?: boolean;
 };
 

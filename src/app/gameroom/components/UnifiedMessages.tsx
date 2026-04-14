@@ -4,6 +4,14 @@ import { Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
 import {
+  BookOpen,
+  Crosshair,
+  Sparkles,
+  Swords,
+  Trophy,
+  type LucideIcon,
+} from "lucide-react";
+import {
   currentUserIdAtom,
   isRoundBreakAtom,
   unifiedMessagesAtom,
@@ -11,14 +19,30 @@ import {
 } from "../store/gameAtoms";
 import styles from "./UnifiedMessages.module.css";
 
+const HOST_ICONS: Record<string, LucideIcon> = {
+  welcome: Sparkles,
+  round_start: BookOpen,
+  round_end: Trophy,
+  near_miss: Crosshair,
+  snipe: Swords,
+  save: Sparkles,
+};
+
+const HOST_ICON_COLORS: Record<string, string> = {
+  welcome: "var(--neon-blue)",
+  round_start: "#f59e0b",
+  round_end: "#fbbf24",
+  near_miss: "#fb923c",
+  snipe: "var(--neon-pink)",
+  save: "var(--neon-green)",
+};
+
 export default function UnifiedMessages() {
   const currentUserId = useAtomValue(currentUserIdAtom);
-  // Use atomic selector for optimal performance
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
   const messages = useAtomValue(unifiedMessagesAtom);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -36,12 +60,14 @@ export default function UnifiedMessages() {
   };
 
   const getMessageTypeClass = (msg: UnifiedMessage): string => {
-    // Bot Bob detection must precede message_type switch — Bot Bob sends type "chat"
     if (
       msg.player_id === "botbob" ||
       msg.display_name.toLowerCase() === "botbob"
     ) {
       return styles.botBobMessage;
+    }
+    if (msg.message_type === "host") {
+      return styles.hostMessage;
     }
     switch (msg.message_type) {
       case "successful_answer":
@@ -58,52 +84,76 @@ export default function UnifiedMessages() {
     }
   };
 
+  const getHostSubtypeClass = (subtype: string | undefined): string => {
+    if (!subtype) return "";
+    return styles[`host${subtype.charAt(0).toUpperCase() + subtype.slice(1)}Message`] || "";
+  };
+
+  const getHostIcon = (subtype: string | undefined): LucideIcon | null => {
+    if (!subtype) return null;
+    return HOST_ICONS[subtype] || null;
+  };
+
   return (
     <div className={styles.unifiedMessagesContainer}>
       <div className={styles.messagesScrollArea}>
         {messages.length === 0 ? (
           <div className={styles.messagesEmpty}>
             {isRoundBreak
-              ? "💬 Start chatting!"
-              : "⚡ Answers will appear here..."}
+              ? "Start chatting!"
+              : "Answers will appear here..."}
           </div>
         ) : (
-          messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`${styles.unifiedMessage} ${getMessageTypeClass(msg)} ${
-                msg.player_id === currentUserId
-                  ? msg.message_type === "successful_answer"
-                    ? styles.ownSuccessfulAnswerMessage
-                    : msg.message_type === "chat"
-                      ? styles.ownMessage
-                      : "" // failed_answer — takenMessage styling takes precedence
-                  : ""
-              }`}
-            >
-              <Flex direction="row" gap="2" align="center">
-                <div className={styles.messageContentWrapper}>
-                  <Flex direction="row" gap="2" align="center">
-                    <span className={styles.messageUser}>
-                      {msg.display_name}
-                    </span>
-                    <span className={styles.messageTime}>
-                      {formatTimestamp(msg.timestamp)}
-                    </span>
-                  </Flex>
-                  <div className={styles.messageContent}>
-                    {msg.text}
-                    {msg.canonical_text && msg.canonical_text.toLowerCase() !== msg.text.toLowerCase() && (
-                      <span className={styles.canonicalAnswer}>
-                        {" "}
-                        → "{msg.canonical_text}"
+          messages.map((msg, index) => {
+            const isHostMessage = msg.message_type === "host";
+            const HostIconComponent = isHostMessage ? getHostIcon(msg.host_subtype) : null;
+            const hostIconColor = isHostMessage ? HOST_ICON_COLORS[msg.host_subtype || ""] : undefined;
+
+            return (
+              <div
+                key={index}
+                className={`${styles.unifiedMessage} ${getMessageTypeClass(msg)} ${
+                  getHostSubtypeClass(msg.host_subtype)
+                } ${
+                  msg.player_id === currentUserId
+                    ? msg.message_type === "successful_answer"
+                      ? styles.ownSuccessfulAnswerMessage
+                      : msg.message_type === "chat"
+                        ? styles.ownMessage
+                        : ""
+                    : ""
+                }`}
+              >
+                <Flex direction="row" gap="2" align="center">
+                  {isHostMessage && HostIconComponent && (
+                    <HostIconComponent
+                      size={18}
+                      style={{ color: hostIconColor, flexShrink: 0 }}
+                    />
+                  )}
+                  <div className={styles.messageContentWrapper}>
+                    <Flex direction="row" gap="2" align="center">
+                      <span className={styles.messageUser}>
+                        {msg.display_name}
                       </span>
-                    )}
+                      <span className={styles.messageTime}>
+                        {formatTimestamp(msg.timestamp)}
+                      </span>
+                    </Flex>
+                    <div className={styles.messageContent}>
+                      {msg.text}
+                      {msg.canonical_text && msg.canonical_text.toLowerCase() !== msg.text.toLowerCase() && (
+                        <span className={styles.canonicalAnswer}>
+                          {" "}
+                          → "{msg.canonical_text}"
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Flex>
-            </div>
-          ))
+                </Flex>
+              </div>
+            );
+          })
         )}
         <div ref={messagesEndRef} />
       </div>

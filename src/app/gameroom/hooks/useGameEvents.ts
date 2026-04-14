@@ -141,8 +141,10 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const handleRoundOverRef = useRef((data: RoundOverPayload) => {
     updateGameState({
       isRoundBreak: true,
+      lobbyStatus: "ROUND_BREAK",
       scores: data.scores ?? [],
       accolades: data.accolades ?? [],
+      timeRemaining: data.break_duration_seconds ?? 0,
     });
     playSound("timeUp");
     // Request full state snapshot to populate slots for AnswerReveal

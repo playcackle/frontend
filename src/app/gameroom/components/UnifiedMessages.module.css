@@ -185,6 +185,67 @@
 }
 
 /* ============================
+   HOST MESSAGES
+   ============================ */
+
+/* Base host message styling - distinct from player chat */
+.hostMessage {
+  border-left: 3px solid #f59e0b;
+  background-color: rgba(245, 158, 11, 0.08);
+}
+
+/* Host message subtype variations */
+.hostWelcomeMessage {
+  border-left-color: var(--neon-blue);
+  background-color: rgba(0, 221, 255, 0.08);
+}
+
+.hostRoundStartMessage {
+  border-left-color: #f59e0b;
+  background-color: rgba(245, 158, 11, 0.08);
+}
+
+.hostRoundEndMessage {
+  border-left-color: #fbbf24;
+  background-color: rgba(251, 191, 36, 0.12);
+}
+
+.hostNearMissMessage {
+  border-left-color: #fb923c;
+  background-color: rgba(251, 146, 60, 0.15);
+  animation: messageAppear 0.3s ease-out, nearMissPulse 2s ease-in-out infinite;
+}
+
+.hostSnipeMessage {
+  border-left-color: var(--neon-pink);
+  background-color: rgba(255, 0, 170, 0.1);
+}
+
+.hostSaveMessage {
+  border-left-color: var(--neon-green);
+  background-color: rgba(0, 255, 102, 0.1);
+}
+
+/* Host message text styling */
+.hostMessage .messageContent {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.hostMessage .messageUser {
+  color: #f59e0b;
+}
+
+/* Near-miss attention-grabbing animation */
+@keyframes nearMissPulse {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(251, 146, 60, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(251, 146, 60, 0.6);
+  }
+}
+
+/* ============================
    MESSAGE CONTENT STRUCTURE
    ============================ */
 
