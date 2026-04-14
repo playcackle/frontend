@@ -181,10 +181,11 @@
 
 /* Lobbies Grid */
 .lobbiesGrid {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1.5rem;
   margin-top: 2rem;
+  padding: 0 1rem;
 }
 
 .lobbyCard {
@@ -194,8 +195,6 @@
   padding: 1.5rem;
   box-shadow: 0 0 15px rgba(255, 0, 170, 0.2);
   transition: all 0.3s ease;
-  flex: 2;
-  max-width: 50%;
 }
 
 .lobbyCard:hover {
@@ -335,11 +334,26 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .lobbiesGrid {
-    grid-template-columns: 1fr;
+  .container {
+    padding: 1rem;
   }
 
   .title {
     font-size: 2rem;
+  }
+
+  .lobbiesGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .lobbyActions {
+    flex-wrap: wrap;
+  }
+
+  .configureButton,
+  .resetButton {
+    flex: 1 1 calc(50% - 0.375rem);
+    min-width: 0;
   }
 }
