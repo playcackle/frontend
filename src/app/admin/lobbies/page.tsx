@@ -168,8 +168,7 @@ export default function LobbiesPage() {
             <div key={lobby.lobby_id} className={styles.lobbyCard}>
               <div className={styles.lobbyHeader}>
                 <h3 className={styles.lobbyTitle}>
-                  Gameroom
-                  <span className={styles.lobbyId}>#{lobby.lobby_id.slice(0, 8)}</span>
+                  <span className={styles.lobbyId}>#{lobby.lobby_id}</span>
                   <span
                     className={styles.visibilityBadge}
                     style={{ color: getVisibilityColor(lobby.visibility) }}
