@@ -59,6 +59,33 @@
   margin-top: 0.5rem;
 }
 
+.spawnButton {
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, #00ff88, #00cc66);
+  color: #000;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 1rem;
+  font-family: var(--retro-font);
+  letter-spacing: 2px;
+  box-shadow: 0 0 25px rgba(0, 255, 136, 0.4);
+}
+
+.spawnButton:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 35px rgba(0, 255, 136, 0.6);
+}
+
+.spawnButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Error State */
 .errorContainer {
   display: flex;
@@ -279,6 +306,31 @@
 .resetButton:hover {
   background: rgba(255, 0, 0, 0.2);
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+}
+
+.teardownButton {
+  border-color: rgba(255, 100, 0, 0.6);
+  color: rgba(255, 150, 50, 0.9);
+}
+
+.teardownButton:hover {
+  background: rgba(255, 100, 0, 0.2);
+  box-shadow: 0 0 10px rgba(255, 100, 0, 0.4);
+}
+
+.teardownButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.makePublicButton {
+  border-color: rgba(0, 255, 136, 0.6);
+  color: rgba(0, 255, 136, 0.9);
+}
+
+.makePublicButton:hover {
+  background: rgba(0, 255, 136, 0.2);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
 }
 
 /* Responsive */

@@ -136,6 +136,10 @@ export type Lobby = {
   join_base_url?: string | null;
   game_ws_url?: string | null;
   chat_ws_url?: string | null;
+  visibility?: "public" | "private" | "hidden";
+  is_spawned?: boolean;
+  railway_service_id?: string | null;
+  owner_id?: string | null;
 };
 
 export type LobbyConfigurationUpdate = {
@@ -707,7 +711,70 @@ export const lobbiesApi = {
     const res = await apiFetch(`/admin/lobbies/${lobbyId}/gameroom-config`);
     if (!res.ok) {
       const error = await res.json();
-      throw new Error(error.detail || 'Failed to get gameroom configuration');
+      throw new Error(error.detail || "Failed to get gameroom configuration");
+    }
+    return res.json();
+  },
+
+  /**
+   * Spawn a new gameroom service via Railway API
+   */
+  async spawnGameroom(request?: {
+    collection_id?: number;
+    configuration?: GameConfigurationParameters;
+  }): Promise<{ railway_service_id: string; railway_service_name: string; status: string }> {
+    const res = await apiFetch(`/admin/gamerooms/spawn`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request || {}),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || "Failed to spawn gameroom");
+    }
+    return res.json();
+  },
+
+  /**
+   * Tear down a spawned gameroom service via Railway API
+   */
+  async teardownGameroom(railwayServiceId: string): Promise<{ railway_service_id: string; deleted: boolean }> {
+    const res = await apiFetch(`/admin/gamerooms/${railwayServiceId}/teardown`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || "Failed to teardown gameroom");
+    }
+    return res.json();
+  },
+
+  /**
+   * Make a spawned gameroom public so it appears in the lobby browser
+   */
+  async makePublic(lobbyId: string): Promise<{ status: string; lobby_id: string; visibility: string }> {
+    const res = await apiFetch(`/admin/gamerooms/${lobbyId}/make-public`, {
+      method: "POST",
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || "Failed to make gameroom public");
+    }
+    return res.json();
+  },
+
+  /**
+   * Update visibility of any lobby (admin only)
+   */
+  async updateVisibility(lobbyId: string, visibility: "public" | "private" | "hidden"): Promise<{ status: string; lobby_id: string; visibility: string }> {
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/visibility`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ visibility }),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || "Failed to update visibility");
     }
     return res.json();
   },

@@ -10,6 +10,8 @@ export default function LobbiesPage() {
   const [lobbies, setLobbies] = useState<Lobby[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [spawning, setSpawning] = useState(false);
+  const [tearingDown, setTearingDown] = useState<string | null>(null);
 
   // Load lobbies on mount and refresh every 5 seconds
   useEffect(() => {
@@ -29,6 +31,51 @@ export default function LobbiesPage() {
       setLobbies([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSpawn = async () => {
+    if (!confirm("Spawn a new gameroom?\n\nIt will become available in the lobby browser after ~30-90 seconds.")) {
+      return;
+    }
+    setSpawning(true);
+    try {
+      const result = await lobbiesApi.spawnGameroom();
+      alert(`Spawned ${result.railway_service_name} (${result.railway_service_id})\n\nWait ~30-90s for it to register.`);
+      loadLobbies();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to spawn gameroom");
+    } finally {
+      setSpawning(false);
+    }
+  };
+
+  const handleTeardown = async (railwayServiceId: string, lobbyId: string) => {
+    if (!confirm(`Tear down this spawned gameroom?\n\nRailway service ${railwayServiceId}\n\nThe gameroom will be destroyed and removed from the list.`)) {
+      return;
+    }
+    setTearingDown(railwayServiceId);
+    try {
+      await lobbiesApi.teardownGameroom(railwayServiceId);
+      alert("Gameroom torn down successfully");
+      loadLobbies();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to teardown gameroom");
+    } finally {
+      setTearingDown(null);
+    }
+  };
+
+  const handleMakePublic = async (lobbyId: string) => {
+    if (!confirm("Make this gameroom public?\n\nIt will appear in the public lobby browser for players to join.")) {
+      return;
+    }
+    try {
+      await lobbiesApi.makePublic(lobbyId);
+      alert("Gameroom is now public");
+      loadLobbies();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to make gameroom public");
     }
   };
 
@@ -65,6 +112,19 @@ export default function LobbiesPage() {
     }
   };
 
+  const getVisibilityColor = (visibility: string | undefined) => {
+    switch (visibility) {
+      case "public":
+        return "#00ff88";
+      case "private":
+        return "#ff8800";
+      case "hidden":
+        return "#888888";
+      default:
+        return "#888888";
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -75,6 +135,13 @@ export default function LobbiesPage() {
         <p className={styles.subtitle}>
           Monitor and configure running gameroom instances
         </p>
+        <button
+          className={styles.spawnButton}
+          onClick={handleSpawn}
+          disabled={spawning}
+        >
+          {spawning ? "Spawning..." : "Spawn Gameroom"}
+        </button>
       </div>
 
       {/* Error State */}
@@ -116,6 +183,15 @@ export default function LobbiesPage() {
                 <h3 className={styles.lobbyTitle}>
                   Gameroom
                   <span className={styles.lobbyId}>#{lobby.lobby_id.slice(0, 8)}</span>
+                  {lobby.is_spawned && (
+                    <span className={styles.spawnedBadge}>spawned</span>
+                  )}
+                  <span
+                    className={styles.visibilityBadge}
+                    style={{ color: getVisibilityColor(lobby.visibility) }}
+                  >
+                    {lobby.visibility || "public"}
+                  </span>
                 </h3>
                 <div
                   className={styles.statusBadge}
@@ -167,6 +243,23 @@ export default function LobbiesPage() {
                 >
                   Force Reset
                 </button>
+                {lobby.visibility === "hidden" && lobby.is_spawned && (
+                  <button
+                    className={styles.makePublicButton}
+                    onClick={() => handleMakePublic(lobby.lobby_id)}
+                  >
+                    Make Public
+                  </button>
+                )}
+                {lobby.is_spawned && lobby.railway_service_id && (
+                  <button
+                    className={styles.teardownButton}
+                    onClick={() => handleTeardown(lobby.railway_service_id!, lobby.lobby_id)}
+                    disabled={tearingDown === lobby.railway_service_id}
+                  >
+                    {tearingDown === lobby.railway_service_id ? "Tearing..." : "Teardown"}
+                  </button>
+                )}
               </div>
             </div>
           ))}
