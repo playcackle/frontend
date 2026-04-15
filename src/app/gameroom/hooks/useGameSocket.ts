@@ -2,7 +2,7 @@
  * GAME SOCKET HOOK — resilient connection with native socket.io reconnection
  *
  * Key design decisions:
- * - Uses socket.io's built-in reconnection instead of manual forceNew + teardown
+ * - Uses socket.io's built-in reconnection for transparent mid-game reconnects
  * - Never triggers full loading screen on transient disconnects
  * - Exposes granular connectionStatus for UI overlay banners
  * - Requests state sync on reconnection so the client catches up
@@ -207,7 +207,6 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       socket.io.removeAllListeners();
       socket.disconnect();
       socketRef.current = null;
-      // Clear all event listeners
       listenersRef.current.forEach((listeners) => listeners.clear());
       listenersRef.current.clear();
     };

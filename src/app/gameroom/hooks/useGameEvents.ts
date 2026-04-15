@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useSetAtom } from "jotai";
 import {
   GameOverPayload,
@@ -25,6 +26,7 @@ import { useGameState } from "./useGameState";
 const LOADING_GRACE_PERIOD_MS = 3000;
 
 export const useGameEvents = (gameWsUrl: string, token: string) => {
+  const router = useRouter();
   const { onEvent, sendEvent, isConnected, connectionStatus, reconnect } = useGameSocket(gameWsUrl, token);
   const { updateGameState, slots, lobbyStatus } = useGameState();
   const { triggerCorrectAnswerEffects } = useGameActions();
@@ -47,6 +49,11 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   useEffect(() => {
     sendEventRef.current = sendEvent;
   }, [sendEvent]);
+
+  const routerRef = useRef(router);
+  useEffect(() => {
+    routerRef.current = router;
+  }, [router]);
 
   // ---------------------------------------------------------------------------
   // Connection → loading gate with grace period
@@ -216,6 +223,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       playerAccolades: [],
       showCountDown: false,
     });
+    routerRef.current.push("/");
   });
 
   const handleSlotSnappedRef = useRef((data: SlotSnappedPayload) => {
