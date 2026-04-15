@@ -211,19 +211,19 @@
 }
 
 .hostNearMissMessage {
-  border-left-color: #fb923c;
-  background-color: rgba(251, 146, 60, 0.15);
-  animation: messageAppear 0.3s ease-out, nearMissPulse 2s ease-in-out infinite;
+  border-left-color: #ff6b00;
+  background-color: rgba(255, 107, 0, 0.2);
+  animation: nearMissPulse 1s ease-in-out infinite;
 }
 
 .hostSnipeMessage {
-  border-left-color: var(--neon-pink);
-  background-color: rgba(255, 0, 170, 0.1);
+  border-left-color: rgba(183, 0, 255, 0.5);
+  background-color: rgba(183, 0, 255, 0.06);
 }
 
 .hostSaveMessage {
-  border-left-color: var(--neon-green);
-  background-color: rgba(0, 255, 102, 0.1);
+  border-left-color: var(--neon-blue);
+  background-color: rgba(0, 221, 255, 0.06);
 }
 
 /* Host message text styling */
@@ -238,10 +238,10 @@
 /* Near-miss attention-grabbing animation */
 @keyframes nearMissPulse {
   0%, 100% {
-    box-shadow: 0 0 4px rgba(251, 146, 60, 0.3);
+    box-shadow: 0 0 8px rgba(255, 107, 0, 0.5);
   }
   50% {
-    box-shadow: 0 0 12px rgba(251, 146, 60, 0.6);
+    box-shadow: 0 0 20px rgba(255, 107, 0, 0.9);
   }
 }
 

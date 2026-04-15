@@ -32,9 +32,9 @@ const HOST_ICON_COLORS: Record<string, string> = {
   welcome: "var(--neon-blue)",
   round_start: "#f59e0b",
   round_end: "#fbbf24",
-  near_miss: "#fb923c",
-  snipe: "var(--neon-pink)",
-  save: "var(--neon-green)",
+  near_miss: "#ff6b00",
+  snipe: "rgba(183, 0, 255, 0.5)",
+  save: "var(--neon-blue)",
 };
 
 export default function UnifiedMessages() {
