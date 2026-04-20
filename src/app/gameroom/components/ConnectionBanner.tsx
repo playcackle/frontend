@@ -2,7 +2,10 @@
 
 import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
-import { connectionStatusAtom, type ConnectionStatus } from "../store/gameAtoms";
+import {
+  connectionStatusAtom,
+  type ConnectionStatus,
+} from "../store/gameAtoms";
 import styles from "./ConnectionBanner.module.css";
 
 interface ConnectionBannerProps {
@@ -64,7 +67,11 @@ export default function ConnectionBanner({ onRetry }: ConnectionBannerProps) {
         : styles.connected;
 
   return (
-    <div className={`${styles.banner} ${bannerClass}`} role="status" aria-live="polite">
+    <div
+      className={`${styles.banner} ${bannerClass}`}
+      role="status"
+      aria-live="polite"
+    >
       {displayStatus === "reconnecting" && (
         <>
           <div className={styles.spinner} />
@@ -81,7 +88,7 @@ export default function ConnectionBanner({ onRetry }: ConnectionBannerProps) {
           )}
         </>
       )}
-      {displayStatus === "connected" && <span>Reconnected ✓</span>}
+      {displayStatus === "connected" && <span>Reconnected</span>}
     </div>
   );
 }
