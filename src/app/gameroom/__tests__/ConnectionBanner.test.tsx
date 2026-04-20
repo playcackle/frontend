@@ -1,13 +1,17 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider, createStore } from "jotai";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ConnectionBanner from "../components/ConnectionBanner";
 import { connectionStatusAtom } from "../store/gameAtoms";
 
 function renderWithStore(
   ui: React.ReactElement,
-  initialStatus: "connecting" | "connected" | "reconnecting" | "disconnected" = "connecting"
+  initialStatus:
+    | "connecting"
+    | "connected"
+    | "reconnecting"
+    | "disconnected" = "connecting",
 ) {
   const store = createStore();
   store.set(connectionStatusAtom, initialStatus);
@@ -69,7 +73,7 @@ describe("ConnectionBanner", () => {
       store.set(connectionStatusAtom, "connected");
     });
 
-    expect(screen.getByText("Reconnected ✓")).toBeInTheDocument();
+    expect(screen.getByText("Reconnected")).toBeInTheDocument();
 
     // After 2 seconds, banner should disappear
     act(() => {
