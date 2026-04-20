@@ -110,9 +110,7 @@ export default function UnifiedInputForm({
               value={input}
               onChange={handleInputChange}
               placeholder={placeholderText}
-              className={`${styles.unifiedInput} ${
-                isAnswerMode ? styles.answerMode : styles.chatMode
-              } ${profanityError || repeatError ? styles.inputError : ""}`}
+              className={`${styles.unifiedInput} ${styles.answerMode} ${profanityError || repeatError ? styles.inputError : ""}`}
             />
           </Flex>
         </Flex>
