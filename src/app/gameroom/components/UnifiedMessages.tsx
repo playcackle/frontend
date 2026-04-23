@@ -2,7 +2,6 @@
 
 import { Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
-import { useEffect, useRef } from "react";
 import {
   BookOpen,
   Crosshair,
@@ -11,6 +10,7 @@ import {
   Trophy,
   type LucideIcon,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
 import {
   currentUserIdAtom,
   isRoundBreakAtom,
@@ -86,7 +86,9 @@ export default function UnifiedMessages() {
 
   const getHostSubtypeClass = (subtype: string | undefined): string => {
     if (!subtype) return "";
-    const camelCase = subtype.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+    const camelCase = subtype.replace(/_([a-z])/g, (_, letter) =>
+      letter.toUpperCase(),
+    );
     const className = `host${camelCase.charAt(0).toUpperCase() + camelCase.slice(1)}Message`;
     return styles[className] || "";
   };
@@ -101,22 +103,24 @@ export default function UnifiedMessages() {
       <div className={styles.messagesScrollArea}>
         {messages.length === 0 ? (
           <div className={styles.messagesEmpty}>
-            {isRoundBreak
-              ? "Start chatting!"
-              : "Answers will appear here..."}
+            {isRoundBreak ? "Start chatting!" : "Answers will appear here..."}
           </div>
         ) : (
           messages.map((msg, index) => {
             const isHostMessage = msg.message_type === "host";
-            const HostIconComponent = isHostMessage ? getHostIcon(msg.host_subtype) : null;
-            const hostIconColor = isHostMessage ? HOST_ICON_COLORS[msg.host_subtype || ""] : undefined;
+            const HostIconComponent = isHostMessage
+              ? getHostIcon(msg.host_subtype)
+              : null;
+            const hostIconColor = isHostMessage
+              ? HOST_ICON_COLORS[msg.host_subtype || ""]
+              : undefined;
 
             return (
               <div
                 key={index}
-                className={`${styles.unifiedMessage} ${getMessageTypeClass(msg)} ${
-                  getHostSubtypeClass(msg.host_subtype)
-                } ${
+                className={`${styles.unifiedMessage} ${getMessageTypeClass(msg)} ${getHostSubtypeClass(
+                  msg.host_subtype,
+                )} ${
                   msg.player_id === currentUserId
                     ? msg.message_type === "successful_answer"
                       ? styles.ownSuccessfulAnswerMessage
@@ -130,7 +134,11 @@ export default function UnifiedMessages() {
                   {isHostMessage && HostIconComponent && (
                     <HostIconComponent
                       size={18}
-                      style={{ color: hostIconColor, flexShrink: 0 }}
+                      style={{
+                        color: hostIconColor,
+                        flexShrink: 0,
+                        marginRight: "0.5rem",
+                      }}
                     />
                   )}
                   <div className={styles.messageContentWrapper}>
@@ -144,12 +152,14 @@ export default function UnifiedMessages() {
                     </Flex>
                     <div className={styles.messageContent}>
                       {msg.text}
-                      {msg.canonical_text && msg.canonical_text.toLowerCase() !== msg.text.toLowerCase() && (
-                        <span className={styles.canonicalAnswer}>
-                          {" "}
-                          → "{msg.canonical_text}"
-                        </span>
-                      )}
+                      {msg.canonical_text &&
+                        msg.canonical_text.toLowerCase() !==
+                          msg.text.toLowerCase() && (
+                          <span className={styles.canonicalAnswer}>
+                            {" "}
+                            → "{msg.canonical_text}"
+                          </span>
+                        )}
                     </div>
                   </div>
                 </Flex>

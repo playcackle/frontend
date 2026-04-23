@@ -93,8 +93,8 @@
 
 .answerDot {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   border-radius: 5px;
   border: 1px solid transparent;
   transition:
@@ -392,7 +392,9 @@
   border: 1px solid rgba(0, 220, 255, 0.5);
   background: rgba(0, 220, 255, 0.1);
   animation: hintFadeIn 0.3s ease both;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .hintChipText {

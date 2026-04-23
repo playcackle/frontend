@@ -70,12 +70,14 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   useEffect(() => {
     const isHealthy = isConnected && connectionStatus === "connected";
 
-    // Always push the lightweight connection status for the banner
+    // Always push the lightweight connection status for the banner.
+    // "connecting" (initial state) is intentionally not mapped to "disconnected"
+    // so the banner doesn't flash on first load.
     if (isHealthy) {
       setConnectionStatus("connected");
     } else if (connectionStatus === "reconnecting") {
       setConnectionStatus("reconnecting");
-    } else {
+    } else if (connectionStatus === "disconnected") {
       setConnectionStatus("disconnected");
     }
 

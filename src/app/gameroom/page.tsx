@@ -8,6 +8,7 @@ import styles from "./gameroom.module.css";
 import { useUser } from "@/hooks/useUser";
 import { useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Progress from "../loading";
 import { gameRoomAtom } from "../store/gameRoom";
 import CountdownOverlay from "./components/CountdownOverlay";
@@ -16,12 +17,12 @@ import UnifiedInputForm from "./components/UnifiedInputForm";
 import UnifiedMessages from "./components/UnifiedMessages";
 
 // Import optimized components
+import ConnectionBanner from "./components/ConnectionBanner";
 import SlotGrid from "./components/SlotGrid";
 import StatsRow from "./components/StatsRow";
-import ConnectionBanner from "./components/ConnectionBanner";
 
-import { Flex } from "@radix-ui/themes";
 import { setSentryGameContext } from "@/lib/sentry";
+import { Flex } from "@radix-ui/themes";
 import AnswerReveal from "./components/AnswerReveal";
 import Leaderboard from "./components/LeaderBoard";
 import PostGameShowcase from "./components/PostGameShowcase";
@@ -47,7 +48,14 @@ import {
 
 function NoGameroom() {
   return (
-    <div className={styles.container} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div
+      className={styles.container}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <div style={{ textAlign: "center" }}>
         <p style={{ marginBottom: "1rem" }}>No gameroom selected.</p>
         <Link href="/gamerooms" className={styles.backLink}>
@@ -77,7 +85,11 @@ export default function GameroomPage() {
   const minPlayersNeeded = useAtomValue(minPlayersNeededAtom);
   const playerCount = useAtomValue(playerCountAtom);
 
-  const isWaiting = lobbyStatus === "WAITING" || lobbyStatus === "STARTING_SOON";
+  const searchParams = useSearchParams();
+  const queryRoomName = searchParams.get("name") ?? "";
+
+  const isWaiting =
+    lobbyStatus === "WAITING" || lobbyStatus === "STARTING_SOON";
   const missingPlayers = Math.max(0, minPlayersNeeded - playerCount);
 
   // Granular atom subscription — avoids full-state re-render on every game tick
@@ -125,7 +137,11 @@ export default function GameroomPage() {
 
   useEffect(() => {
     if (gameroom?.game_ws_url) {
-      const phase = isPostGameShowcase ? "post_game" : isRoundBreak ? "round_break" : "answering";
+      const phase = isPostGameShowcase
+        ? "post_game"
+        : isRoundBreak
+          ? "round_break"
+          : "answering";
       setSentryGameContext(gameroom.game_ws_url, phase);
     }
   }, [gameroom?.game_ws_url, isRoundBreak, isPostGameShowcase]);
@@ -140,7 +156,7 @@ export default function GameroomPage() {
   // WebSocket connections — must be called unconditionally before any conditional return
   const { sendEvent, reconnect: reconnectGame } = useGameEvents(
     gameroom?.game_ws_url ?? "",
-    gameroom?.token ?? ""
+    gameroom?.token ?? "",
   );
 
   // Chat socket connection
@@ -150,7 +166,7 @@ export default function GameroomPage() {
   const baseWsUrl = getBaseWsUrl(gameroom?.game_ws_url ?? "");
   const { sendMessage: sendChatMessage } = useChatSocket(
     baseWsUrl,
-    gameroom?.token ?? ""
+    gameroom?.token ?? "",
   );
 
   // Unified submission handler
@@ -199,13 +215,17 @@ export default function GameroomPage() {
           ${animationState.rotateEffect ? styles.rotateEffect : ""}
             `}
           >
-            <RoomHeader roomName={roundName} />
+            <RoomHeader roomName={roundName || queryRoomName} />
 
             <SoundEffects onLoad={onSoundsLoaded} />
 
-            <StatsRow />
+            {!isWaiting && <StatsRow />}
 
-            <div className={isWaiting ? styles.waitingContentRow : styles.contentRow}>
+            <div
+              className={
+                isWaiting ? styles.waitingContentRow : styles.contentRow
+              }
+            >
               <Flex direction="column" gap="3">
                 <UnifiedMessages />
                 <div className={styles.answerRow}>
@@ -218,7 +238,9 @@ export default function GameroomPage() {
               </Flex>
               {isWaiting ? (
                 <div className={styles.waitingPanel}>
-                  <p className={styles.waitingTitle}>Waiting for more idiots to arrive</p>
+                  <p className={styles.waitingTitle}>
+                    Waiting for more idiots to arrive
+                  </p>
                   {missingPlayers > 0 && (
                     <p className={styles.waitingCount}>
                       {missingPlayers} still missing
@@ -269,8 +291,8 @@ export default function GameroomPage() {
                             animation === "up"
                               ? styles.rankUp
                               : animation === "down"
-                              ? styles.rankDown
-                              : ""
+                                ? styles.rankDown
+                                : ""
                           }`}
                         >
                           <div className={styles.playerRank}>{index + 1}</div>
