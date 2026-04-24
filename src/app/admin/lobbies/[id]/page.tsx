@@ -590,6 +590,15 @@ export default function LobbyDetailPage() {
                 max={120}
                 unit="seconds"
               />
+              <ParameterSlider
+                label="Max Hints per Round"
+                value={hostSettings.max_hints_per_round}
+                onChange={(value) => updateHostSetting("max_hints_per_round", value)}
+                min={0}
+                max={20}
+                unit="hints"
+                description="0 = unlimited hints"
+              />
             </div>
           )}
 
