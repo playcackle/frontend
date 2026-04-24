@@ -215,7 +215,7 @@ export default function GameroomPage() {
           ${animationState.rotateEffect ? styles.rotateEffect : ""}
             `}
           >
-            <RoomHeader roomName={roundName || queryRoomName} />
+            <RoomHeader roomName={queryRoomName} />
 
             <SoundEffects onLoad={onSoundsLoaded} />
 
