@@ -103,7 +103,9 @@ export default function UnifiedMessages() {
       <div className={styles.messagesScrollArea}>
         {messages.length === 0 ? (
           <div className={styles.messagesEmpty}>
-            {isRoundBreak ? "Start chatting!" : "Answers will appear here..."}
+            {isRoundBreak
+              ? "Chaos is pausing, for now..."
+              : "Chaos will commence here..."}
           </div>
         ) : (
           messages.map((msg, index) => {
