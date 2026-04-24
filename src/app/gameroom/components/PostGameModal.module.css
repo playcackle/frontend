@@ -378,6 +378,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 4px;
+  margin-top: 1rem;
 }
 
 .skipButton:hover {

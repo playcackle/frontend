@@ -3,7 +3,7 @@
 import { Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
 import {
-  BookOpen,
+  BotIcon,
   Crosshair,
   Sparkles,
   Swords,
@@ -21,7 +21,7 @@ import styles from "./UnifiedMessages.module.css";
 
 const HOST_ICONS: Record<string, LucideIcon> = {
   welcome: Sparkles,
-  round_start: BookOpen,
+  round_start: BotIcon,
   round_end: Trophy,
   near_miss: Crosshair,
   snipe: Swords,
@@ -30,7 +30,7 @@ const HOST_ICONS: Record<string, LucideIcon> = {
 
 const HOST_ICON_COLORS: Record<string, string> = {
   welcome: "var(--neon-blue)",
-  round_start: "var(--neon-green)",
+  round_start: "var(--neon-blue)",
   round_end: "var(--neon-pink)",
   near_miss: "#ff6b00",
   snipe: "rgba(183, 0, 255, 0.5)",
