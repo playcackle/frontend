@@ -159,9 +159,9 @@
   align-items: center;
   justify-content: center;
   font-family: var(--retro-font);
-  font-size: 0.65rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  color: var(--neon-purple);
+  color: white;
   text-shadow: 0 0 4px rgba(183, 0, 255, 0.8);
   position: relative;
   z-index: 2;

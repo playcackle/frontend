@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
 import { useAtomValue } from "jotai";
+import React, { useEffect, useRef, useState } from "react";
 import { isRoundBreakAtom, roundHintsAtom } from "../store/gameAtoms";
 import { Slot } from "../types/state";
 import styles from "./AnswerGrid.module.css";
@@ -22,12 +22,17 @@ const BOT_BOB_HINT_LABELS = [
 export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
   const hints = useAtomValue(roundHintsAtom);
   const hintLabel = React.useMemo(
-    () => BOT_BOB_HINT_LABELS[Math.floor(Math.random() * BOT_BOB_HINT_LABELS.length)],
+    () =>
+      BOT_BOB_HINT_LABELS[
+        Math.floor(Math.random() * BOT_BOB_HINT_LABELS.length)
+      ],
     [],
   );
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
   const totalAnswers = slots.length;
-  const snappedMap = new Map(slots.filter((s) => s.is_snapped).map((s) => [s.id, s]));
+  const snappedMap = new Map(
+    slots.filter((s) => s.is_snapped).map((s) => [s.id, s]),
+  );
   const foundCount = snappedMap.size;
   const remaining = totalAnswers - foundCount;
 
@@ -171,7 +176,8 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
       {/* Hints section — only shows unsnapped slots that have a text_preview */}
       {(() => {
         const hintSlots = slots.filter(
-          (s) => !s.is_snapped && s.text_preview && s.text_preview.trim() !== "",
+          (s) =>
+            !s.is_snapped && s.text_preview && s.text_preview.trim() !== "",
         );
         if (hintSlots.length === 0) return null;
         return (
@@ -180,7 +186,9 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
             <div className={styles.hintsGrid}>
               {hintSlots.map((slot) => (
                 <div key={slot.id} className={styles.hintChip}>
-                  <span className={styles.hintChipText}>{slot.text_preview}</span>
+                  <span className={styles.hintChipText}>
+                    {slot.text_preview}
+                  </span>
                 </div>
               ))}
             </div>
@@ -192,12 +200,10 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
       {(() => {
         if (isRoundBreak) return null;
         const snappedSlotIds = new Set(
-          slots
-            .filter((s) => s.is_snapped && s.id)
-            .map((s) => String(s.id))
+          slots.filter((s) => s.is_snapped && s.id).map((s) => String(s.id)),
         );
         const visibleHints = hints.filter((h) => {
-          return !h.slot_id || !snappedSlotIds.has(String(h.slot_id));
+          return !h.slot_id || !snappedSlotIds.has(h.slot_id.toString());
         });
         if (visibleHints.length === 0) return null;
         return (

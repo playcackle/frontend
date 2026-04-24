@@ -139,7 +139,7 @@ export default function UnifiedMessages() {
                       style={{
                         color: hostIconColor,
                         flexShrink: 0,
-                        marginRight: "0.5rem",
+                        marginLeft: "0.5rem",
                       }}
                     />
                   )}
