@@ -12,7 +12,7 @@
   flex-direction: column;
   transition: all 0.3s ease;
   margin-left: 4px;
-  min-height: 0;
+  min-height: 50vh;
   flex-grow: 1;
   max-height: 60vh;
 }
@@ -237,7 +237,8 @@
 
 /* Near-miss attention-grabbing animation */
 @keyframes nearMissPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 8px rgba(255, 107, 0, 0.5);
   }
   50% {
