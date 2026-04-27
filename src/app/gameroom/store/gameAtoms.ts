@@ -11,7 +11,13 @@ export type UnifiedMessage = ChatMessageData & {
     | "successful_answer"
     | "failed_answer"
     | "host";
-  host_subtype?: "welcome" | "round_start" | "round_end" | "near_miss" | "snipe" | "save";
+  host_subtype?:
+    | "welcome"
+    | "round_start"
+    | "round_end"
+    | "near_miss"
+    | "snipe"
+    | "save";
   submission_result?: "success" | "too_slow" | "incorrect" | "already_snapped";
   points_awarded?: number;
   is_rare?: boolean;
@@ -27,7 +33,6 @@ const initGameState = {
   roundNumber: 0,
   totalRounds: 10, // Default value, will be overridden by backend
   isRoundBreak: false,
-  isPostGameShowcase: false,
   loading: true,
   soundsLoaded: false,
   slots: [],
@@ -46,7 +51,7 @@ export const gameStateAtom = atom<GameState>(initGameState);
 // This prevents unnecessary re-renders when unrelated state changes
 export const playerCountAtom = atom((get) => get(gameStateAtom).playerCount);
 export const timeRemainingAtom = atom(
-  (get) => get(gameStateAtom).timeRemaining
+  (get) => get(gameStateAtom).timeRemaining,
 );
 export const roundNameAtom = atom((get) => get(gameStateAtom).roundName);
 export const roundPromptAtom = atom((get) => get(gameStateAtom).roundPrompt);
@@ -54,8 +59,9 @@ export const roundExampleAtom = atom((get) => get(gameStateAtom).roundExample);
 export const roundNumberAtom = atom((get) => get(gameStateAtom).roundNumber);
 export const totalRoundsAtom = atom((get) => get(gameStateAtom).totalRounds);
 export const isRoundBreakAtom = atom((get) => get(gameStateAtom).isRoundBreak);
-export const isPostGameShowcaseAtom = atom((get) => get(gameStateAtom).isPostGameShowcase);
-export const playerAccoladesAtom = atom((get) => get(gameStateAtom).playerAccolades);
+export const playerAccoladesAtom = atom(
+  (get) => get(gameStateAtom).playerAccolades,
+);
 export const loadingAtom = atom((get) => get(gameStateAtom).loading);
 export const soundsLoadedAtom = atom((get) => get(gameStateAtom).soundsLoaded);
 export const slotsAtom = atom((get) => get(gameStateAtom).slots);
@@ -63,10 +69,12 @@ export const scoresAtom = atom((get) => get(gameStateAtom).scores);
 export const accoladesAtom = atom((get) => get(gameStateAtom).accolades);
 export const finalScoreAtom = atom((get) => get(gameStateAtom).finalScore);
 export const showCountDownAtom = atom(
-  (get) => get(gameStateAtom).showCountDown
+  (get) => get(gameStateAtom).showCountDown,
 );
 export const lobbyStatusAtom = atom((get) => get(gameStateAtom).lobbyStatus);
-export const minPlayersNeededAtom = atom((get) => get(gameStateAtom).minPlayersNeeded);
+export const minPlayersNeededAtom = atom(
+  (get) => get(gameStateAtom).minPlayersNeeded,
+);
 
 export const answerAtom = atom<string>("");
 
@@ -85,7 +93,11 @@ export const slotHeatAtom = atom<Record<string, number>>({});
 
 // Connection status atom — tracks socket health without hiding the game UI.
 // "connected" = healthy, "reconnecting" = brief blip (show banner), "disconnected" = lost
-export type ConnectionStatus = "connecting" | "connected" | "reconnecting" | "disconnected";
+export type ConnectionStatus =
+  | "connecting"
+  | "connected"
+  | "reconnecting"
+  | "disconnected";
 export const connectionStatusAtom = atom<ConnectionStatus>("connecting");
 
 export const animationStateAtom = atom<AnimationState>({
@@ -113,7 +125,7 @@ export const updateGameStateAtom = atom(
       merged.totalRounds = current.totalRounds;
     }
     set(gameStateAtom, merged);
-  }
+  },
 );
 
 export const updateAnimationStateAtom = atom(
@@ -122,7 +134,7 @@ export const updateAnimationStateAtom = atom(
     const current = get(animationStateAtom);
     const merged = { ...current, ...update };
     set(animationStateAtom, merged);
-  }
+  },
 );
 
 export const resetGameStateAtom = atom(null, (get, set) => {
@@ -155,7 +167,7 @@ export const addUnifiedMessageAtom = atom(
       const updated = [...current, message].slice(-100); // Keep last 100 messages
       set(unifiedMessagesAtom, updated);
     }
-  }
+  },
 );
 
 export const clearUnifiedMessagesAtom = atom(null, (get, set) => {

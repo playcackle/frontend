@@ -8,11 +8,9 @@ import styles from "./gameroom.module.css";
 import { useUser } from "@/hooks/useUser";
 import { useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import Progress from "../loading";
 import { gameRoomAtom } from "../store/gameRoom";
 import CountdownOverlay from "./components/CountdownOverlay";
-import RoomHeader from "./components/RoomHeader";
 import UnifiedInputForm from "./components/UnifiedInputForm";
 import UnifiedMessages from "./components/UnifiedMessages";
 
@@ -25,7 +23,6 @@ import { setSentryGameContext } from "@/lib/sentry";
 import { Flex } from "@radix-ui/themes";
 import AnswerReveal from "./components/AnswerReveal";
 import Leaderboard from "./components/LeaderBoard";
-import PostGameShowcase from "./components/PostGameShowcase";
 import { useAnswerBubbles } from "./hooks/useAnswerBubbles";
 import { useChatSocket } from "./hooks/useChatWs";
 import { useGameActions } from "./hooks/useGameActions";
@@ -33,7 +30,6 @@ import { useGameEvents } from "./hooks/useGameEvents";
 import {
   animationStateAtom,
   currentUserIdAtom,
-  isPostGameShowcaseAtom,
   isRoundBreakAtom,
   loadingAtom,
   lobbyStatusAtom,
@@ -76,7 +72,6 @@ export default function GameroomPage() {
   // Use atomic selectors for optimal performance
   const loading = useAtomValue(loadingAtom);
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
-  const isPostGameShowcase = useAtomValue(isPostGameShowcaseAtom);
   const timeRemaining = useAtomValue(timeRemainingAtom);
   const showCountDown = useAtomValue(showCountDownAtom);
   const scores = useAtomValue(scoresAtom);
@@ -84,9 +79,6 @@ export default function GameroomPage() {
   const lobbyStatus = useAtomValue(lobbyStatusAtom);
   const minPlayersNeeded = useAtomValue(minPlayersNeededAtom);
   const playerCount = useAtomValue(playerCountAtom);
-
-  const searchParams = useSearchParams();
-  const queryRoomName = searchParams.get("name") ?? "";
 
   const isWaiting =
     lobbyStatus === "WAITING" || lobbyStatus === "STARTING_SOON";
@@ -137,14 +129,10 @@ export default function GameroomPage() {
 
   useEffect(() => {
     if (gameroom?.game_ws_url) {
-      const phase = isPostGameShowcase
-        ? "post_game"
-        : isRoundBreak
-          ? "round_break"
-          : "answering";
+      const phase = isRoundBreak ? "round_break" : "answering";
       setSentryGameContext(gameroom.game_ws_url, phase);
     }
-  }, [gameroom?.game_ws_url, isRoundBreak, isPostGameShowcase]);
+  }, [gameroom?.game_ws_url, isRoundBreak]);
 
   useEffect(() => {
     setCurrentUserId(user?.id ?? null);
@@ -215,8 +203,6 @@ export default function GameroomPage() {
           ${animationState.rotateEffect ? styles.rotateEffect : ""}
             `}
           >
-            <RoomHeader roomName={queryRoomName} />
-
             <SoundEffects onLoad={onSoundsLoaded} />
 
             {!isWaiting && <StatsRow />}
@@ -249,10 +235,6 @@ export default function GameroomPage() {
                     </p>
                   )}
                 </div>
-              ) : isPostGameShowcase ? (
-                <div className={styles.postGameShowcaseWrapper}>
-                  <PostGameShowcase />
-                </div>
               ) : (
                 <>
                   {isRoundBreak && <AnswerReveal />}
@@ -274,7 +256,7 @@ export default function GameroomPage() {
                   )}
                 </>
               )}
-              {!isWaiting && !isPostGameShowcase && !isRoundBreak && (
+              {!isWaiting && !isRoundBreak && (
                 <div className={styles.leaderboardTile}>
                   <h3 className={styles.statsTitle}>Leaderboard</h3>
                   <div className={styles.ingameLeaderboard}>

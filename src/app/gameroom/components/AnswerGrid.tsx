@@ -2,7 +2,11 @@
 
 import { useAtomValue } from "jotai";
 import React, { useEffect, useRef, useState } from "react";
-import { isRoundBreakAtom, roundHintsAtom } from "../store/gameAtoms";
+import {
+  isRoundBreakAtom,
+  roundHintsAtom,
+  roundPromptAtom,
+} from "../store/gameAtoms";
 import { Slot } from "../types/state";
 import styles from "./AnswerGrid.module.css";
 
@@ -21,6 +25,7 @@ const BOT_BOB_HINT_LABELS = [
 
 export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
   const hints = useAtomValue(roundHintsAtom);
+  const roundPrompt = useAtomValue(roundPromptAtom);
   const hintLabel = React.useMemo(
     () =>
       BOT_BOB_HINT_LABELS[
@@ -101,7 +106,7 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
         <div className={styles.answerGridStatus}>
           <p className={styles.answerGridStatusTitle}>
             {foundCount === 0
-              ? "No answers found yet"
+              ? roundPrompt
               : foundCount === totalAnswers
                 ? "All answers found!"
                 : `${foundCount} answer${foundCount !== 1 ? "s" : ""} found`}

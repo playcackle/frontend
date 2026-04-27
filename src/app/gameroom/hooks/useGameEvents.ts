@@ -1,6 +1,12 @@
-import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { useSetAtom } from "jotai";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import {
+  clearRoundHintsAtom,
+  clearSlotHeatAtom,
+  connectionStatusAtom,
+  slotHeatAtom,
+} from "../store/gameAtoms";
 import {
   GameOverPayload,
   LobbySyncPayload,
@@ -16,7 +22,6 @@ import {
   getRandomSnappedSound,
   playSound,
 } from "../utils";
-import { clearRoundHintsAtom, clearSlotHeatAtom, connectionStatusAtom, slotHeatAtom } from "../store/gameAtoms";
 import { useGameActions } from "./useGameActions";
 import { useGameSocket } from "./useGameSocket";
 import { useGameState } from "./useGameState";
@@ -27,7 +32,8 @@ const LOADING_GRACE_PERIOD_MS = 3000;
 
 export const useGameEvents = (gameWsUrl: string, token: string) => {
   const router = useRouter();
-  const { onEvent, sendEvent, isConnected, connectionStatus, reconnect } = useGameSocket(gameWsUrl, token);
+  const { onEvent, sendEvent, isConnected, connectionStatus, reconnect } =
+    useGameSocket(gameWsUrl, token);
   const { updateGameState, slots, lobbyStatus } = useGameState();
   const { triggerCorrectAnswerEffects } = useGameActions();
   const clearRoundHints = useSetAtom(clearRoundHintsAtom);
@@ -128,7 +134,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         data.time_remaining_seconds! > 0 &&
         (data.status === "ROUND_BREAK" || data.status === "POST_GAME_SHOWCASE"),
       isRoundBreak: data.status === "ROUND_BREAK",
-      isPostGameShowcase: data.status === "POST_GAME_SHOWCASE",
       scores: data.scores ?? [],
       slots: data.slots ?? [],
       loading: false, // Clear loading gate once we have confirmed state
@@ -157,7 +162,10 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     });
     playSound("timeUp");
     // Request full state snapshot to populate slots for AnswerReveal
-    (sendEventRef.current as (e: string, d: any) => void)("request_state_sync", undefined);
+    (sendEventRef.current as (e: string, d: any) => void)(
+      "request_state_sync",
+      undefined,
+    );
   });
 
   const handleRoundStartingSoonRef = useRef(() => {
@@ -186,7 +194,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const handleGameOverRef = useRef((data: GameOverPayload) => {
     updateGameState({
       finalScore: data.final_scores,
-      isPostGameShowcase: true,
       playerAccolades: data.player_accolades ?? [],
       showCountDown: false,
       timeRemaining: 0,
@@ -194,22 +201,24 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     playSound("timeUp");
   });
 
-  const handleWaitingForPlayersRef = useRef((data: WaitingForPlayersPayload) => {
-    // If a round is already in progress (or we're in the break/showcase UI),
-    // a stale `waiting_for_players` event must not flip us back to the
-    // "Waiting for more idiots" panel. Only honor it when lobby is idle.
-    const currentStatus = lobbyStatusRef.current;
-    const isRoundActive =
-      currentStatus === "IN_ROUND" ||
-      currentStatus === "ROUND_BREAK" ||
-      currentStatus === "POST_GAME_SHOWCASE";
+  const handleWaitingForPlayersRef = useRef(
+    (data: WaitingForPlayersPayload) => {
+      // If a round is already in progress (or we're in the break/showcase UI),
+      // a stale `waiting_for_players` event must not flip us back to the
+      // "Waiting for more idiots" panel. Only honor it when lobby is idle.
+      const currentStatus = lobbyStatusRef.current;
+      const isRoundActive =
+        currentStatus === "IN_ROUND" ||
+        currentStatus === "ROUND_BREAK" ||
+        currentStatus === "POST_GAME_SHOWCASE";
 
-    updateGameState({
-      ...(isRoundActive ? {} : { lobbyStatus: "WAITING" }),
-      playerCount: data.current_players,
-      minPlayersNeeded: data.min_players_needed,
-    });
-  });
+      updateGameState({
+        ...(isRoundActive ? {} : { lobbyStatus: "WAITING" }),
+        playerCount: data.current_players,
+        minPlayersNeeded: data.min_players_needed,
+      });
+    },
+  );
 
   const handleLobbyResettingRef = useRef(() => {
     updateGameState({
@@ -218,7 +227,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       roundExample: "",
       roundPrompt: "",
       isRoundBreak: false,
-      isPostGameShowcase: false,
       slots: [],
       scores: [],
       finalScore: [],
@@ -269,7 +277,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           (data.status === "ROUND_BREAK" ||
             data.status === "POST_GAME_SHOWCASE"),
         isRoundBreak: data.status === "ROUND_BREAK",
-        isPostGameShowcase: data.status === "POST_GAME_SHOWCASE", // Keep in sync with initial ref
         scores: data.scores ?? [],
         slots: data.slots ?? [],
         loading: false, // Clear loading gate once we have confirmed state

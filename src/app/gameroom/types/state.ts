@@ -61,7 +61,6 @@ export type GameState = {
   roundNumber: number;
   totalRounds: number;
   isRoundBreak: boolean;
-  isPostGameShowcase: boolean;
   loading: boolean;
   soundsLoaded: boolean;
   slots: Slot[];
