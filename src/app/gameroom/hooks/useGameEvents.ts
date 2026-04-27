@@ -1,6 +1,15 @@
-import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { useSetAtom, useStore } from "jotai";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import {
+  clearRoundHintsAtom,
+  clearSlotHeatAtom,
+  clearUnifiedMessagesAtom,
+  connectionStatusAtom,
+  gameStateAtom,
+  slotHeatAtom,
+  updateGameStateAtom,
+} from "../store/gameAtoms";
 import {
   GameOverPayload,
   LobbySyncPayload,
@@ -16,15 +25,6 @@ import {
   getRandomSnappedSound,
   playSound,
 } from "../utils";
-import {
-  clearRoundHintsAtom,
-  clearSlotHeatAtom,
-  clearUnifiedMessagesAtom,
-  connectionStatusAtom,
-  gameStateAtom,
-  slotHeatAtom,
-  updateGameStateAtom,
-} from "../store/gameAtoms";
 import { useGameActions } from "./useGameActions";
 import { useGameSocket } from "./useGameSocket";
 
@@ -34,7 +34,8 @@ const LOADING_GRACE_PERIOD_MS = 3000;
 
 export const useGameEvents = (gameWsUrl: string, token: string) => {
   const router = useRouter();
-  const { onEvent, sendEvent, isConnected, connectionStatus, reconnect } = useGameSocket(gameWsUrl, token);
+  const { onEvent, sendEvent, isConnected, connectionStatus, reconnect } =
+    useGameSocket(gameWsUrl, token);
   const { triggerCorrectAnswerEffects } = useGameActions();
   const store = useStore();
 
@@ -116,9 +117,9 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           showCountDown:
             data.time_remaining_seconds! < 5 &&
             data.time_remaining_seconds! > 0 &&
-            (data.status === "ROUND_BREAK" || data.status === "POST_GAME_SHOWCASE"),
+            (data.status === "ROUND_BREAK" ||
+              data.status === "POST_GAME_SHOWCASE"),
           isRoundBreak: data.status === "ROUND_BREAK",
-          isPostGameShowcase: data.status === "POST_GAME_SHOWCASE",
           scores: data.scores ?? [],
           slots: data.slots ?? [],
           loading: false,
@@ -146,7 +147,10 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           timeRemaining: data.break_duration_seconds ?? 0,
         });
         playSound("timeUp");
-        (sendEvent as (e: string, d: any) => void)("request_state_sync", undefined);
+        (sendEvent as (e: string, d: any) => void)(
+          "request_state_sync",
+          undefined,
+        );
       }),
 
       onEvent("round_starting_soon", () => {
@@ -173,7 +177,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       onEvent("game_over", (data: GameOverPayload) => {
         updateGameState({
           finalScore: data.final_scores,
-          isPostGameShowcase: true,
           playerAccolades: data.player_accolades ?? [],
           showCountDown: false,
           timeRemaining: 0,
@@ -188,7 +191,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           roundExample: "",
           roundPrompt: "",
           isRoundBreak: false,
-          isPostGameShowcase: false,
           slots: [],
           scores: [],
           finalScore: [],
@@ -212,7 +214,12 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           const animation = getRandomAttentionAnimation();
           const slots = store.get(gameStateAtom).slots;
           const slot = slots.find((s) => s.id === data.id);
-          triggerEffectsRef.current(data.id!, animation, slot?.is_rare ?? false, null);
+          triggerEffectsRef.current(
+            data.id!,
+            animation,
+            slot?.is_rare ?? false,
+            null,
+          );
         }
       }),
 
@@ -231,7 +238,17 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     ];
 
     return () => cleanups.forEach((fn) => fn?.());
-  }, [onEvent, updateGameState, clearRoundHints, clearSlotHeat, clearUnifiedMessages, setSlotHeat, sendEvent, router, store]);
+  }, [
+    onEvent,
+    updateGameState,
+    clearRoundHints,
+    clearSlotHeat,
+    clearUnifiedMessages,
+    setSlotHeat,
+    sendEvent,
+    router,
+    store,
+  ]);
 
   return { sendEvent, connectionStatus, reconnect };
 };

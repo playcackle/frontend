@@ -163,6 +163,7 @@ export type HostSettings = {
   hints_enabled: boolean;
   hint_delay_seconds: number;
   hint_interval_seconds: number;
+  max_hints_per_round: number;
   urgency_enabled: boolean;
   urgency_time_left_seconds: number;
   urgency_interval_seconds: number;
@@ -175,6 +176,7 @@ export type HostSettingsUpdate = {
   hints_enabled?: boolean;
   hint_delay_seconds?: number;
   hint_interval_seconds?: number;
+  max_hints_per_round?: number;
   urgency_enabled?: boolean;
   urgency_time_left_seconds?: number;
   urgency_interval_seconds?: number;

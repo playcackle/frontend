@@ -242,6 +242,7 @@
   grid-template-columns: 4fr 3fr 2fr;
   gap: 1rem;
   min-height: 0;
+  margin-top: 0.5rem;
 }
 
 /* Waiting layout: just chat + waiting panel */
@@ -250,6 +251,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   min-height: 0;
+  margin-top: 1rem;
 }
 
 .waitingPanel {
@@ -283,13 +285,6 @@
   color: var(--white);
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
   text-align: center;
-}
-
-/* Post-game showcase spans the middle and right columns */
-.postGameShowcaseWrapper {
-  grid-column: 2 / 4;
-  min-height: 0;
-  height: 100%;
 }
 
 .slotColumnWrapper {

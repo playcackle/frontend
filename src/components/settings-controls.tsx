@@ -3,7 +3,6 @@
 import { Settings, X } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
-import BackgroundMusic from "./background-music";
 import CRTEffect from "./crt-effect";
 import PerformanceToggle from "./performance-toggle";
 import styles from "./settings-controls.module.css";
@@ -13,7 +12,10 @@ interface SettingsControlsProps {
   musicStartAt?: number;
 }
 
-const SettingsControls: React.FC<SettingsControlsProps> = ({ musicSrc, musicStartAt }) => {
+const SettingsControls: React.FC<SettingsControlsProps> = ({
+  musicSrc,
+  musicStartAt,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -44,11 +46,6 @@ const SettingsControls: React.FC<SettingsControlsProps> = ({ musicSrc, musicStar
           <div className={styles.settingItem}>
             <span className={styles.settingLabel}>CRT Effect</span>
             <CRTEffect />
-          </div>
-
-          <div className={styles.settingItem}>
-            <span className={styles.settingLabel}>Music</span>
-            <BackgroundMusic src={musicSrc} startAt={musicStartAt} />
           </div>
         </div>
       </div>

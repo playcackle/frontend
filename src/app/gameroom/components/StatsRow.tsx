@@ -1,12 +1,13 @@
 import { useAtomValue } from "jotai";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
-  isPostGameShowcaseAtom,
   isRoundBreakAtom,
   playerCountAtom,
   roundExampleAtom,
   roundNameAtom,
   roundNumberAtom,
+  roundPromptAtom,
   timeRemainingAtom,
   totalRoundsAtom,
 } from "../store/gameAtoms";
@@ -31,12 +32,14 @@ const StatsRow = React.memo(() => {
   const roundExample = useAtomValue(roundExampleAtom);
   const roundNumber = useAtomValue(roundNumberAtom);
   const totalRounds = useAtomValue(totalRoundsAtom);
+  const roundPrompt = useAtomValue(roundPromptAtom);
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
-  const isPostGameShowcase = useAtomValue(isPostGameShowcaseAtom);
   const timeRemaining = useAtomValue(timeRemainingAtom);
 
   const [roundText, setRoundText] = useState("Round number");
   const [timeText, setTimeText] = useState("Time remaining");
+  const searchParams = useSearchParams();
+  const queryRoomName = searchParams.get("name") ?? "";
 
   const timeRemainingMessages: string[] = [
     "Hurry up.",
@@ -78,39 +81,29 @@ const StatsRow = React.memo(() => {
     <div className={styles.statsRow}>
       {!isRoundBreak && (
         <>
-          <StatsTileWithTooltip tooltip="The category you need to match this round. Type answers that belong to this group.">
+          <StatsTileWithTooltip tooltip={roundPrompt || ""}>
             <h3 className={styles.statsTitle}>Looking for:</h3>
             <div className={styles.statsValue}>{roundName}</div>
           </StatsTileWithTooltip>
           <StatsTileWithTooltip tooltip="A sample answer that fits the category — use it as a hint for what counts.">
             <h3 className={styles.statsTitle}>Example, n00b:</h3>
-            <p className={styles.statsValue}>
-              {roundExample || "Answer with items from this category"}
-            </p>
+            <p className={styles.statsValue}>{roundExample || ""}</p>
           </StatsTileWithTooltip>
         </>
       )}
       <StatsTileWithTooltip
         tooltip={
-          isPostGameShowcase
-            ? "Time until the next game begins. Stick around."
-            : isRoundBreak
-              ? "Take a breather. The next round starts shortly."
-              : "Time left in this round. Type faster."
+          isRoundBreak
+            ? "Take a breather. The next round starts shortly."
+            : "Time left in this round. Type faster."
         }
       >
         <h3 className={styles.statsTitle}>
-          {isPostGameShowcase
-            ? "New game in:"
-            : isRoundBreak
-              ? "Intermission"
-              : timeText}
+          {isRoundBreak ? "Intermission" : timeText}
         </h3>
         <div
           className={`${styles.statsValue} ${
-            !isRoundBreak && !isPostGameShowcase && timeRemaining <= 30
-              ? styles.timerWarning
-              : ""
+            !isRoundBreak && timeRemaining <= 30 ? styles.timerWarning : ""
           }`}
         >
           {formatTime(timeRemaining)}
@@ -125,6 +118,10 @@ const StatsRow = React.memo(() => {
       <StatsTileWithTooltip tooltip="Total number of players currently in the game room.">
         <h3 className={styles.statsTitle}>Dorks in arena:</h3>
         <div className={styles.statsValue}>{playerCount}</div>
+      </StatsTileWithTooltip>
+      <StatsTileWithTooltip tooltip="Total number of players currently in the game room.">
+        <h3 className={styles.statsTitle}>Gameroom:</h3>
+        <div className={styles.statsValue}>{queryRoomName}</div>
       </StatsTileWithTooltip>
     </div>
   );

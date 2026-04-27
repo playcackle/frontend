@@ -1,27 +1,25 @@
-import { describe, expect, it } from "vitest";
 import { createStore } from "jotai";
+import { describe, expect, it } from "vitest";
 import {
-  gameStateAtom,
-  updateGameStateAtom,
-  resetGameStateAtom,
+  addUnifiedMessageAtom,
+  answerAtom,
+  clearSlotHeatAtom,
+  clearUnifiedMessagesAtom,
+  connectionStatusAtom,
+  isRoundBreakAtom,
   loadingAtom,
   playerCountAtom,
-  timeRemainingAtom,
+  resetGameStateAtom,
+  roundHintsAtom,
   roundNumberAtom,
-  totalRoundsAtom,
-  isRoundBreakAtom,
-  isPostGameShowcaseAtom,
-  slotsAtom,
   scoresAtom,
   showCountDownAtom,
-  answerAtom,
-  connectionStatusAtom,
-  unifiedMessagesAtom,
-  addUnifiedMessageAtom,
-  clearUnifiedMessagesAtom,
-  roundHintsAtom,
   slotHeatAtom,
-  clearSlotHeatAtom,
+  slotsAtom,
+  timeRemainingAtom,
+  totalRoundsAtom,
+  unifiedMessagesAtom,
+  updateGameStateAtom,
   type UnifiedMessage,
 } from "../gameAtoms";
 
@@ -144,12 +142,6 @@ describe("derived atoms", () => {
     expect(store.get(isRoundBreakAtom)).toBe(true);
   });
 
-  it("isPostGameShowcaseAtom reflects gameState.isPostGameShowcase", () => {
-    const store = createTestStore();
-    store.set(updateGameStateAtom, { isPostGameShowcase: true });
-    expect(store.get(isPostGameShowcaseAtom)).toBe(true);
-  });
-
   it("showCountDownAtom reflects gameState.showCountDown", () => {
     const store = createTestStore();
     store.set(updateGameStateAtom, { showCountDown: true });
@@ -234,7 +226,12 @@ describe("slotHeatAtom", () => {
 describe("connectionStatusAtom", () => {
   it("can be set to all valid states", () => {
     const store = createTestStore();
-    const states = ["connecting", "connected", "reconnecting", "disconnected"] as const;
+    const states = [
+      "connecting",
+      "connected",
+      "reconnecting",
+      "disconnected",
+    ] as const;
     for (const s of states) {
       store.set(connectionStatusAtom, s);
       expect(store.get(connectionStatusAtom)).toBe(s);
