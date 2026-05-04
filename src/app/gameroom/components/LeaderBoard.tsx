@@ -1,13 +1,13 @@
 "use client";
 
 import {
+  AlertCircle,
   Award,
   BadgeCheck,
   Crosshair,
   Flame,
+  Target,
   type LucideIcon,
-  Repeat2,
-  Swords,
   Timer,
   TrendingUp,
   Zap,
@@ -22,14 +22,25 @@ import styles from "./leaderboard.module.css";
 
 // Map accolade types to dedicated vector icons for a sharper look
 const ACCOLADE_ICONS: Record<string, LucideIcon> = {
+  // Speed-based
   speed_demon: Zap,
-  first_blood: Swords,
-  sharpshooter: Crosshair,
+  first_blood: Crosshair, // Crosshair for being first on target
+  
+  // Accuracy-based
+  precision: Target, // Bullseye for precision
   perfectionist: BadgeCheck,
-  machine_gun: Repeat2,
+  
+  // Volume-based
+  machine_gun: Zap, // Fast = Zap
   snapping_spree: Flame,
+  
+  // Streak-based
   hot_streak: TrendingUp,
+  
+  // Special achievements
   clutch_player: Timer,
+  sniper: Crosshair, // Hunter/target shooter
+  close_call: AlertCircle, // Near-miss warning
 };
 
 function AccoladeChip({ accolade }: { accolade: Accolade }) {
