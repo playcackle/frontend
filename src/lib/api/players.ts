@@ -57,6 +57,32 @@ export type LeaderboardResponse = {
   total_players: number;
 };
 
+export type PlayerAccoladeSummary = {
+  accolade_type: string;
+  count: number;
+};
+
+export type PlayerAccoladeStats = {
+  total_accolades: number;
+  accolades_by_type: PlayerAccoladeSummary[];
+  category_breakdown: Record<string, Record<string, number>> | null;
+};
+
+export type PlayerPlaystyleDimension = {
+  key: string;
+  label: string;
+  raw: number;
+  normalized: number;
+};
+
+export type PlayerPlaystyleProfile = {
+  archetype: string;
+  summary: string;
+  dimensions: PlayerPlaystyleDimension[];
+  top_traits: string[];
+  total_accolades: number;
+};
+
 // ============================================================================
 // Players API
 // ============================================================================
@@ -82,6 +108,30 @@ export const playersApi = {
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.detail || 'Failed to fetch leaderboard');
+    }
+    return res.json();
+  },
+
+  /**
+   * Get aggregated accolade stats for a player
+   */
+  async getAccoladeStats(playerId: string): Promise<PlayerAccoladeStats> {
+    const res = await apiFetch(`/${playerId}/accolades/stats`);
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to fetch accolade stats');
+    }
+    return res.json();
+  },
+
+  /**
+   * Get derived playstyle profile for a player
+   */
+  async getPlaystyle(playerId: string): Promise<PlayerPlaystyleProfile> {
+    const res = await apiFetch(`/${playerId}/playstyle`);
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || 'Failed to fetch player playstyle');
     }
     return res.json();
   },
