@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import {
   generationApi,
   topicsApi,
-  type TopicGenerateResponse,
   type SlotProposal,
   type TopicAnalysisResponse,
+  type TopicGenerateResponse,
 } from "@/lib/api/admin";
+import { useState } from "react";
 import styles from "./AIGenerate.module.css";
 
 const CATEGORIES = [
@@ -23,13 +23,18 @@ const CATEGORIES = [
 ];
 
 const TOPIC_TYPES = [
-  { value: "finite_enumerable", label: "Finite Enumerable (exact known universe)" },
+  {
+    value: "finite_enumerable",
+    label: "Finite Enumerable (exact known universe)",
+  },
   { value: "ranked_list", label: "Ranked List (defined by ranking)" },
-  { value: "bounded_cultural", label: "Bounded Cultural (thematic/cultural set)" },
+  {
+    value: "bounded_cultural",
+    label: "Bounded Cultural (thematic/cultural set)",
+  },
 ];
 
 interface AIGenerateProps {
-  topicId?: number;
   topicName?: string;
   onComplete?: () => void;
   onClose?: () => void;
@@ -37,13 +42,14 @@ interface AIGenerateProps {
 }
 
 export default function AIGenerate({
-  topicId,
   topicName = "",
   onComplete,
   onClose,
   title = "🤖 AI Generate Slots",
 }: AIGenerateProps) {
-  const [step, setStep] = useState<"input" | "analysing" | "analysed" | "generating" | "preview" | "saving">("input");
+  const [step, setStep] = useState<
+    "input" | "analysing" | "analysed" | "generating" | "preview" | "saving"
+  >("input");
 
   // Input state
   const [name, setName] = useState(topicName);
@@ -53,11 +59,13 @@ export default function AIGenerate({
   const [analysis, setAnalysis] = useState<TopicAnalysisResponse | null>(null);
   const [confirmedCategory, setConfirmedCategory] = useState("");
   const [confirmedMode, setConfirmedMode] = useState("mainstream");
-  const [confirmedTopicType, setConfirmedTopicType] = useState("bounded_cultural");
+  const [confirmedTopicType, setConfirmedTopicType] =
+    useState("bounded_cultural");
   const [confirmedNumSlots, setConfirmedNumSlots] = useState(30);
 
   // Generation state
-  const [generationResult, setGenerationResult] = useState<TopicGenerateResponse | null>(null);
+  const [generationResult, setGenerationResult] =
+    useState<TopicGenerateResponse | null>(null);
   const [editedSlots, setEditedSlots] = useState<SlotProposal[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
@@ -137,7 +145,11 @@ export default function AIGenerate({
     }
   };
 
-  const handleSlotEdit = (index: number, field: keyof SlotProposal, value: string | boolean | string[]) => {
+  const handleSlotEdit = (
+    index: number,
+    field: keyof SlotProposal,
+    value: string | boolean | string[],
+  ) => {
     const updated = [...editedSlots];
     if (field === "is_rare") {
       updated[index] = { ...updated[index], is_rare: value as boolean };
@@ -182,7 +194,7 @@ export default function AIGenerate({
           bot_bob_clue: slot.bot_bob_clue || undefined,
           is_rare: slot.is_rare,
           aliases: slot.aliases || [],
-        }))
+        })),
       );
 
       setStatusMessage("Done!");
@@ -228,7 +240,8 @@ export default function AIGenerate({
 
           <div className={styles.formField}>
             <label className={styles.label}>
-              Example Answer <span className={styles.hint}>(guides the AI direction)</span>
+              Example Answer{" "}
+              <span className={styles.hint}>(guides the AI direction)</span>
             </label>
             <input
               type="text"
@@ -239,7 +252,8 @@ export default function AIGenerate({
               onKeyDown={(e) => e.key === "Enter" && handleAnalyse()}
             />
             <p className={styles.helpText}>
-              The AI will classify the topic and estimate scope before generating
+              The AI will classify the topic and estimate scope before
+              generating
             </p>
           </div>
 
@@ -267,23 +281,35 @@ export default function AIGenerate({
       {/* Step 2: Analysis results — editable before generating */}
       {step === "analysed" && analysis && (
         <div className={styles.form}>
-          <div className={styles.topicInfo} style={{ marginBottom: '0.5rem' }}>
-            <p style={{ fontWeight: 'bold', margin: 0 }}>{name}</p>
-            <p style={{ color: '#aaa', fontSize: '0.875rem', margin: '0.25rem 0 0' }}>
+          <div className={styles.topicInfo} style={{ marginBottom: "0.5rem" }}>
+            <p style={{ fontWeight: "bold", margin: 0 }}>{name}</p>
+            <p
+              style={{
+                color: "#aaa",
+                fontSize: "0.875rem",
+                margin: "0.25rem 0 0",
+              }}
+            >
               ~{analysis.estimated_count} items estimated
             </p>
           </div>
 
           {!analysis.is_suitable && (
             <div className={styles.estimateWarning}>
-              <p style={{ margin: '0 0 0.5rem' }}>⚠️ This topic may not be suitable as-is. Consider narrowing:</p>
+              <p style={{ margin: "0 0 0.5rem" }}>
+                ⚠️ This topic may not be suitable as-is. Consider narrowing:
+              </p>
               <ul className={styles.suggestionsList}>
                 {analysis.suggestions.map((s, i) => (
                   <li key={i}>
                     <button
                       type="button"
                       className={styles.suggestionButton}
-                      onClick={() => { setName(s); setAnalysis(null); setStep("input"); }}
+                      onClick={() => {
+                        setName(s);
+                        setAnalysis(null);
+                        setStep("input");
+                      }}
                     >
                       {s}
                     </button>
@@ -301,22 +327,24 @@ export default function AIGenerate({
               onChange={(e) => setConfirmedCategory(e.target.value)}
             >
               {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
           </div>
 
           <div className={styles.formField}>
             <label className={styles.label}>Mode</label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               {["mainstream", "after_dark"].map((m) => (
                 <button
                   key={m}
                   type="button"
                   className={styles.estimateButton}
                   style={{
-                    background: confirmedMode === m ? '#00ff00' : undefined,
-                    color: confirmedMode === m ? '#000' : undefined,
+                    background: confirmedMode === m ? "#00ff00" : undefined,
+                    color: confirmedMode === m ? "#000" : undefined,
                   }}
                   onClick={() => setConfirmedMode(m)}
                 >
@@ -334,7 +362,9 @@ export default function AIGenerate({
               onChange={(e) => setConfirmedTopicType(e.target.value)}
             >
               {TOPIC_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>{t.label}</option>
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
               ))}
             </select>
           </div>
@@ -351,10 +381,13 @@ export default function AIGenerate({
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
             <button
               className={styles.cancelButton}
-              onClick={() => { setAnalysis(null); setStep("input"); }}
+              onClick={() => {
+                setAnalysis(null);
+                setStep("input");
+              }}
             >
               ← BACK
             </button>
@@ -384,10 +417,15 @@ export default function AIGenerate({
       {step === "preview" && generationResult && (
         <div className={styles.preview}>
           <div className={styles.topicInfo}>
-            <p><strong>Topic:</strong> {generationResult.topic_name}</p>
-            <p><strong>Prompt:</strong> {generationResult.topic_prompt}</p>
-            <p style={{ fontSize: '0.8rem', color: '#aaa' }}>
-              {generationResult.category} · {generationResult.mode} · {generationResult.topic_type}
+            <p>
+              <strong>Topic:</strong> {generationResult.topic_name}
+            </p>
+            <p>
+              <strong>Prompt:</strong> {generationResult.topic_prompt}
+            </p>
+            <p style={{ fontSize: "0.8rem", color: "#aaa" }}>
+              {generationResult.category} · {generationResult.mode} ·{" "}
+              {generationResult.topic_type}
             </p>
           </div>
 
@@ -402,14 +440,18 @@ export default function AIGenerate({
                   type="text"
                   className={styles.slotInput}
                   value={slot.canonical_text}
-                  onChange={(e) => handleSlotEdit(index, "canonical_text", e.target.value)}
+                  onChange={(e) =>
+                    handleSlotEdit(index, "canonical_text", e.target.value)
+                  }
                   placeholder="Answer"
                 />
                 <input
                   type="text"
                   className={styles.slotClue}
                   value={slot.bot_bob_clue || ""}
-                  onChange={(e) => handleSlotEdit(index, "bot_bob_clue", e.target.value)}
+                  onChange={(e) =>
+                    handleSlotEdit(index, "bot_bob_clue", e.target.value)
+                  }
                   placeholder="Bot clue"
                 />
                 <input
@@ -417,7 +459,10 @@ export default function AIGenerate({
                   className={styles.slotAliases}
                   value={slot.aliases?.join(", ") || ""}
                   onChange={(e) => {
-                    const vals = e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean);
+                    const vals = e.target.value
+                      .split(",")
+                      .map((s: string) => s.trim())
+                      .filter(Boolean);
                     handleSlotEdit(index, "aliases", vals);
                   }}
                   placeholder="Aliases (comma sep)"
@@ -426,7 +471,9 @@ export default function AIGenerate({
                   <input
                     type="checkbox"
                     checked={slot.is_rare}
-                    onChange={(e) => handleSlotEdit(index, "is_rare", e.target.checked)}
+                    onChange={(e) =>
+                      handleSlotEdit(index, "is_rare", e.target.checked)
+                    }
                   />
                   Rare
                 </label>
@@ -443,7 +490,11 @@ export default function AIGenerate({
           <div className={styles.previewActions}>
             <button
               className={styles.cancelButton}
-              onClick={() => { setGenerationResult(null); setEditedSlots([]); setStep("analysed"); }}
+              onClick={() => {
+                setGenerationResult(null);
+                setEditedSlots([]);
+                setStep("analysed");
+              }}
             >
               ← BACK
             </button>
