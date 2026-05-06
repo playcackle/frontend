@@ -309,6 +309,7 @@
 }
 
 .tourPurple { color: #7c3aed; }
+.tourCyan   { color: #00dcff; font-weight: bold; }
 
 /* Callout tails */
 .tourTail {

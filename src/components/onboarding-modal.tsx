@@ -40,7 +40,7 @@ const STEPS = [
     type: "text" as const,
     icon: "!",
     title: "Hints",
-    body: "Stuck? Hints may drop mid-round to nudge you in the right direction. Keep an eye on Bot Bob's messages — he'll snipe hints and clues to help you out.",
+    body: "Stuck? Hints may drop mid-round below the answer grid as cyan chips. Bot Bob will also snipe clues in the chat — keep an eye on what he says.",
   },
   {
     id: 6,
@@ -77,7 +77,7 @@ function TourStep() {
           <span className={styles.tourCalloutNum}>4</span>
           <div className={styles.tourCalloutBody}>
             <strong className={styles.tourCalloutTitle}>Hints</strong>
-            <p>Stuck? <strong>Hints may drop mid-round</strong> to nudge you. Watch <strong>Bot Bob&apos;s messages</strong> for clues.</p>
+            <p>Hints appear as <strong className={styles.tourCyan}>cyan chips</strong> below the answer grid. Bot Bob also <strong>snipes clues in the chat</strong>.</p>
           </div>
           <div className={`${styles.tourTail} ${styles.tourTailDownCenter}`} />
         </div>
@@ -138,7 +138,7 @@ function TourStep() {
             </div>
             {/* Hints strip */}
             <div className={styles.tourHintsStrip}>
-              <span className={styles.tourHintsLabel}>Hints</span>
+              <span className={styles.tourHintsLabel}>Fine. Here&apos;s your help, loser</span>
               <div className={styles.tourHintsChips}>
                 <span className={styles.tourHintChip}>has whiskers</span>
                 <span className={styles.tourHintChip}>lives in the sea</span>
