@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { Gamepad2, LogOut } from "lucide-react";
-import { playerCountAtom, playAgainStateAtom, updatePlayAgainStateAtom } from "../store/gameAtoms";
+import { playAgainStateAtom, timeRemainingAtom, updatePlayAgainStateAtom } from "../store/gameAtoms";
+import { formatTime } from "../utils";
 import styles from "./OptInPanel.module.css";
 
 interface OptInPanelProps {
@@ -22,42 +23,12 @@ interface OptInPanelProps {
 export default function OptInPanel({ onPlayAgainResponse, disabled = false }: OptInPanelProps) {
   const playAgainState = useAtomValue(playAgainStateAtom);
   const updatePlayAgainState = useSetAtom(updatePlayAgainStateAtom);
-  const playerCount = useAtomValue(playerCountAtom);
+  const timeRemaining = useAtomValue(timeRemainingAtom);
 
-  const { timeoutSeconds, confirmedCount, neededToStart, userResponse, showPrompt } = playAgainState;
+  const { confirmedCount, neededToStart, userResponse, playersWaiting } = playAgainState;
 
-  // Local countdown that ticks down from the server-provided timeoutSeconds
-  const [countdown, setCountdown] = useState(timeoutSeconds);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Reset and start countdown whenever the prompt appears or timeoutSeconds changes
-  useEffect(() => {
-    if (!showPrompt) {
-      setCountdown(timeoutSeconds);
-      return;
-    }
-    setCountdown(timeoutSeconds);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(intervalRef.current!);
-          intervalRef.current = null;
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [showPrompt, timeoutSeconds]);
-
-  // Build player status array for circles — use the same playerCount atom as StatsRow
-  const totalPlayers = playerCount > 0 ? playerCount : 1;
+  // Use playersWaiting for the total count (players needed to play)
+  const totalPlayers = playersWaiting > 0 ? playersWaiting : 1;
   const confirmedPlayers = confirmedCount > 0 ? confirmedCount : 0;
 
   // Determine user status
@@ -153,7 +124,7 @@ export default function OptInPanel({ onPlayAgainResponse, disabled = false }: Op
             </p>
           ) : (
             <p className={styles.timeout}>
-              Auto-closing in {countdown}s
+              Auto-closing in {formatTime(timeRemaining)}
             </p>
           )}
         </div>
