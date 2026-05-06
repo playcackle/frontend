@@ -65,6 +65,18 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
     return () => clearTimeout(t);
   }, [slots]);
 
+  // Determine whether any hints are currently visible so we can show a nudge when none are
+  const hasTextPreviewHints = slots.some(
+    (s) => !s.is_snapped && s.text_preview && s.text_preview.trim() !== "",
+  );
+  const snappedSlotIds = new Set(
+    slots.filter((s) => s.is_snapped && s.id).map((s) => String(s.id)),
+  );
+  const hasRoundHints =
+    !isRoundBreak &&
+    hints.some((h) => !h.slot_id || !snappedSlotIds.has(h.slot_id.toString()));
+  const hintsVisible = hasTextPreviewHints || hasRoundHints;
+
   const radius = 44;
   const circumference = 2 * Math.PI * radius;
   const fillPct = totalAnswers > 0 ? foundCount / totalAnswers : 0;
@@ -134,6 +146,12 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
               );
             })}
           </div>
+
+          {!hintsVisible && remaining > 0 && (
+            <p className={styles.hintNudge}>
+              Hints from Bot Bob will appear below
+            </p>
+          )}
         </div>
       </div>
 
