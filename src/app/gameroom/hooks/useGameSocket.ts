@@ -182,6 +182,10 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       "lobby_resetting_for_new_game",
       "submission_feedback",
       "lobby_state_sync",
+      "play_again_prompt",
+      "play_again_count_update",
+      "play_again_player_update",
+      "play_again_result",
     ];
 
     socket.on("lobby_tick", debouncedLobbyTick);
