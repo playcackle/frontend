@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
-import synthwave from "./synthwave.module.css";
 import { StatsOverview } from "./components/StatsOverview";
 import { CategoryBreakdown } from "./components/CategoryBreakdown";
 import { AchievementShowcase } from "./components/AchievementShowcase";
@@ -180,10 +179,6 @@ export default function StatsDemoPage() {
 
   return (
     <main className={styles.container}>
-      {/* Synthwave Grid Background */}
-      <div className={synthwave.gridBackground} />
-      <div className={synthwave.synthSun} />
-
       {/* Level Up Notification */}
       {showLevelUp && (
         <div className={styles.levelUpToast}>
