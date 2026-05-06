@@ -13,31 +13,6 @@
   overflow: hidden;
 }
 
-.gridBackground {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: linear-gradient(rgba(255, 0, 170, 0.3) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 0, 170, 0.3) 1px, transparent 1px);
-  background-size: 40px 40px;
-  perspective: 1000px;
-  transform-style: preserve-3d;
-  transform: rotateX(60deg) translateZ(-100px);
-  z-index: 0;
-  animation: gridMove 20s linear infinite;
-}
-
-@keyframes gridMove {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 0 40px;
-  }
-}
-
 .scanlines {
   position: absolute;
   top: 0;
@@ -159,11 +134,6 @@
 }
 
 @media (max-width: 768px) {
-  .cassette {
-    width: 160px;
-    height: 100px;
-  }
-
   .loadingText {
     font-size: 1.5rem;
   }

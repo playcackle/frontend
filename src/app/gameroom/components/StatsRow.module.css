@@ -105,15 +105,6 @@
   font-family: var(--retro-font);
 }
 
-.playersCount {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-top: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family: var(--retro-font);
-}
-
 /* Also used by page.tsx leaderboard — will be duplicated in gameroom.module.css until Plan 06 cleanup */
 .statsTitle {
   font-size: 0.85rem;

@@ -183,12 +183,6 @@
   height: clamp(12px, 1.5vw, 16px);
 }
 
-.accoladeTitle {
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
 .accoladePopover {
   position: fixed;
   transform: translateX(-50%) translateY(-100%);
@@ -259,9 +253,3 @@
   }
 }
 
-.trophyIcon {
-  color: #ffd700;
-  filter: drop-shadow(0 0 6px #ffd700);
-  vertical-align: middle;
-  margin-right: 2px;
-}

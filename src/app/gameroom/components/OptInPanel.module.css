@@ -174,13 +174,6 @@
   font-family: var(--retro-font);
 }
 
-.needMore {
-  color: #fbbf24;
-  font-size: clamp(0.65rem, 0.9vw, 0.8rem);
-  margin: 0 0 clamp(0.4rem, 0.75vh, 0.6rem) 0;
-  font-family: var(--retro-font);
-}
-
 .progressBar {
   width: 100%;
   height: 4px;

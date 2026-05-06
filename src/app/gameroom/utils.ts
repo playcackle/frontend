@@ -1,5 +1,5 @@
 import { SoundType } from "../../components/sound-effects";
-import { SOUND_BONUS, SOUND_SNAPPED, SOUND_SUCCESS } from "./constants";
+import { SOUND_SNAPPED, SOUND_SUCCESS } from "./constants";
 
 /**
  * Format time as MM:SS
@@ -17,12 +17,6 @@ export const formatTime = (seconds: number): string => {
  */
 export const getRandomSuccessSound = (): SoundType => {
   return SOUND_SUCCESS[Math.floor(Math.random() * SOUND_SUCCESS.length)];
-};
-/**
- * Get a random bonus sound
- */
-export const getRandomBonusSound = (): SoundType => {
-  return SOUND_BONUS[Math.floor(Math.random() * SOUND_BONUS.length)];
 };
 /**
  * Get a random snapped sound
