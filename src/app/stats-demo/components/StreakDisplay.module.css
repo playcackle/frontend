@@ -1,0 +1,366 @@
+.container {
+  position: relative;
+  background: linear-gradient(135deg, rgba(20, 10, 40, 0.9), rgba(10, 20, 40, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 100, 0, 0.1), transparent 50%);
+  pointer-events: none;
+}
+
+/* Celebration particles */
+.celebration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: particleFly 1.5s ease-out forwards;
+}
+
+@keyframes particleFly {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.fireIcon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 100, 0, 0.3), rgba(255, 50, 0, 0.2));
+  color: #ff6600;
+  animation: fireGlow 2s ease-in-out infinite;
+}
+
+.fireIcon[data-level="rare"] {
+  background: linear-gradient(135deg, rgba(0, 200, 255, 0.3), rgba(0, 100, 200, 0.2));
+  color: #0cf;
+}
+
+.fireIcon[data-level="epic"] {
+  background: linear-gradient(135deg, rgba(200, 0, 255, 0.3), rgba(100, 0, 200, 0.2));
+  color: #c0f;
+}
+
+.fireIcon[data-level="legendary"] {
+  background: linear-gradient(135deg, rgba(255, 200, 0, 0.3), rgba(255, 100, 0, 0.2));
+  color: #fc0;
+  animation: legendaryGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes fireGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 100, 0, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 100, 0, 0.5);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes legendaryGlow {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(255, 200, 0, 0.4), 0 0 60px rgba(255, 100, 0, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(255, 200, 0, 0.6), 0 0 100px rgba(255, 100, 0, 0.3);
+    transform: scale(1.08);
+  }
+}
+
+.fireIcon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.streakInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.streakLabel {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.streakValue {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ff6600;
+  font-family: var(--font-mono, monospace);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.streakValue[data-level="rare"] {
+  color: #0cf;
+}
+
+.streakValue[data-level="epic"] {
+  color: #c0f;
+}
+
+.streakValue[data-level="legendary"] {
+  background: linear-gradient(135deg, #fc0, #ff6600);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.streakUnit {
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Weekly activity */
+.weeklyActivity {
+  margin-bottom: 1.5rem;
+}
+
+.weeklyLabel {
+  display: block;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.dayGrid {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.dayItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dayCircle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.dayActive {
+  background: linear-gradient(135deg, rgba(255, 100, 0, 0.3), rgba(255, 50, 0, 0.2));
+  border-color: #ff6600;
+}
+
+.dayActive[data-level="rare"] {
+  background: linear-gradient(135deg, rgba(0, 200, 255, 0.3), rgba(0, 100, 200, 0.2));
+  border-color: #0cf;
+}
+
+.dayActive[data-level="epic"] {
+  background: linear-gradient(135deg, rgba(200, 0, 255, 0.3), rgba(100, 0, 200, 0.2));
+  border-color: #c0f;
+}
+
+.dayActive[data-level="legendary"] {
+  background: linear-gradient(135deg, rgba(255, 200, 0, 0.3), rgba(255, 100, 0, 0.2));
+  border-color: #fc0;
+}
+
+.checkIcon {
+  width: 20px;
+  height: 20px;
+  color: #ff6600;
+}
+
+.dayActive[data-level="rare"] .checkIcon {
+  color: #0cf;
+}
+
+.dayActive[data-level="epic"] .checkIcon {
+  color: #c0f;
+}
+
+.dayActive[data-level="legendary"] .checkIcon {
+  color: #fc0;
+}
+
+.dayName {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Stats row */
+.statsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  font-family: var(--font-mono, monospace);
+}
+
+.divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Milestones */
+.milestones {
+  margin-bottom: 1rem;
+}
+
+.milestoneLabel {
+  display: block;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.milestoneTrack {
+  position: relative;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  margin: 1.5rem 0;
+}
+
+.milestoneFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #ff6600, #ff00aa);
+  border-radius: 3px;
+  transition: width 1s ease-out;
+}
+
+.milestone {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  background: rgba(30, 20, 50, 1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.milestone span {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  font-family: var(--font-mono, monospace);
+}
+
+.milestone.reached {
+  border-color: #ff6600;
+  background: linear-gradient(135deg, rgba(255, 100, 0, 0.3), rgba(255, 50, 0, 0.2));
+  box-shadow: 0 0 15px rgba(255, 100, 0, 0.4);
+}
+
+.milestone.reached span {
+  color: #ff6600;
+}
+
+/* Motivation */
+.motivation {
+  text-align: center;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, rgba(255, 100, 0, 0.1), rgba(255, 0, 170, 0.1));
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .streakValue {
+    font-size: 2rem;
+  }
+  
+  .dayCircle {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .statsRow {
+    gap: 1rem;
+  }
+}

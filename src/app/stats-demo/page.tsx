@@ -8,6 +8,10 @@ import { AchievementShowcase } from "./components/AchievementShowcase";
 import { PerformanceRadar } from "./components/PerformanceRadar";
 import { ScoreTimeline } from "./components/ScoreTimeline";
 import { PlayStyleAnalysis } from "./components/PlayStyleAnalysis";
+import { WrappedStory } from "./components/WrappedStory";
+import { StreakDisplay } from "./components/StreakDisplay";
+import { ShareableStatCard } from "./components/ShareableStatCard";
+import { LiveLeaderboard } from "./components/LiveLeaderboard";
 
 // Mock data for demonstration
 const mockPlayerStats = {
@@ -59,51 +63,133 @@ const mockTimeline = [
   { date: "May 3", score: 450 },
 ];
 
+type TabType = "overview" | "categories" | "achievements" | "analysis" | "social";
+
 export default function StatsDemoPage() {
-  const [activeTab, setActiveTab] = useState<"overview" | "categories" | "achievements" | "analysis">("overview");
+  const [activeTab, setActiveTab] = useState<TabType>("overview");
+  const [showWrappedStory, setShowWrappedStory] = useState(false);
+
+  const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
+    {
+      id: "overview",
+      label: "Overview",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+        </svg>
+      ),
+    },
+    {
+      id: "categories",
+      label: "Categories",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+      ),
+    },
+    {
+      id: "achievements",
+      label: "Achievements",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="8" r="7" />
+          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+        </svg>
+      ),
+    },
+    {
+      id: "analysis",
+      label: "Analysis",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+          <path d="M22 12A10 10 0 0 0 12 2v10z" />
+        </svg>
+      ),
+    },
+    {
+      id: "social",
+      label: "Social",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      ),
+    },
+  ];
 
   return (
     <main className={styles.container}>
+      {/* Wrapped Story Modal */}
+      {showWrappedStory && (
+        <WrappedStory
+          playerName={mockPlayerStats.name}
+          stats={{
+            total_score: mockPlayerStats.total_score,
+            games_played: mockPlayerStats.games_played,
+            total_slots_snapped: mockPlayerStats.total_slots_snapped,
+            overall_accuracy: mockPlayerStats.overall_accuracy,
+            rare_claims: mockPlayerStats.rare_claims,
+            average_score_per_game: mockPlayerStats.average_score_per_game,
+          }}
+          topCategory={mockCategoryStats[0]}
+          playStyle="The Strategist"
+          onClose={() => setShowWrappedStory(false)}
+        />
+      )}
+
       <header className={styles.header}>
-        <h1 className={styles.title}>
-          <span className={styles.neonText}>PLAYER</span>
-          <span className={styles.neonTextPink}>STATS</span>
-        </h1>
-        <p className={styles.subtitle}>Interactive Stats Explorer Demo</p>
+        <div className={styles.headerContent}>
+          <div className={styles.titleSection}>
+            <h1 className={styles.title}>
+              <span className={styles.neonText}>PLAYER</span>
+              <span className={styles.neonTextPink}>STATS</span>
+            </h1>
+            <p className={styles.subtitle}>Interactive Stats Explorer Demo</p>
+          </div>
+          
+          <button className={styles.wrappedBtn} onClick={() => setShowWrappedStory(true)}>
+            <span className={styles.wrappedIcon}>&#10024;</span>
+            View Your Wrapped
+          </button>
+        </div>
       </header>
 
       <nav className={styles.tabNav}>
-        <button
-          className={`${styles.tab} ${activeTab === "overview" ? styles.tabActive : ""}`}
-          onClick={() => setActiveTab("overview")}
-        >
-          Overview
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === "categories" ? styles.tabActive : ""}`}
-          onClick={() => setActiveTab("categories")}
-        >
-          Categories
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === "achievements" ? styles.tabActive : ""}`}
-          onClick={() => setActiveTab("achievements")}
-        >
-          Achievements
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === "analysis" ? styles.tabActive : ""}`}
-          onClick={() => setActiveTab("analysis")}
-        >
-          Analysis
-        </button>
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ""}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.icon}
+            <span className={styles.tabLabel}>{tab.label}</span>
+          </button>
+        ))}
       </nav>
 
       <div className={styles.content}>
         {activeTab === "overview" && (
-          <div className={styles.overviewGrid}>
-            <StatsOverview stats={mockPlayerStats} />
-            <ScoreTimeline data={mockTimeline} />
+          <div className={styles.overviewLayout}>
+            <div className={styles.mainColumn}>
+              <StatsOverview stats={mockPlayerStats} />
+              <ScoreTimeline data={mockTimeline} />
+            </div>
+            <div className={styles.sideColumn}>
+              <StreakDisplay
+                currentStreak={12}
+                longestStreak={21}
+                lastPlayedDate="Today"
+                weeklyActivity={[true, true, true, false, true, true, true]}
+              />
+            </div>
           </div>
         )}
 
@@ -116,9 +202,29 @@ export default function StatsDemoPage() {
         )}
 
         {activeTab === "analysis" && (
-          <div className={styles.analysisGrid}>
+          <div className={styles.analysisLayout}>
             <PerformanceRadar stats={mockPlayerStats} />
             <PlayStyleAnalysis stats={mockPlayerStats} categories={mockCategoryStats} />
+          </div>
+        )}
+
+        {activeTab === "social" && (
+          <div className={styles.socialLayout}>
+            <div className={styles.leaderboardSection}>
+              <LiveLeaderboard currentPlayerId="1" />
+            </div>
+            <div className={styles.shareSection}>
+              <h3 className={styles.sectionTitle}>Share Your Stats</h3>
+              <ShareableStatCard
+                playerName={mockPlayerStats.name}
+                totalScore={mockPlayerStats.total_score}
+                gamesPlayed={mockPlayerStats.games_played}
+                accuracy={mockPlayerStats.overall_accuracy}
+                topCategory={mockCategoryStats[0].name}
+                playStyle="The Strategist"
+                streak={12}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -127,6 +233,13 @@ export default function StatsDemoPage() {
         <p className={styles.footerNote}>
           This is a demo page exploring fun ways to visualize player statistics
         </p>
+        <div className={styles.footerLinks}>
+          <span className={styles.footerTag}>Inspired by Spotify Wrapped</span>
+          <span className={styles.footerDivider}>|</span>
+          <span className={styles.footerTag}>Duolingo Streaks</span>
+          <span className={styles.footerDivider}>|</span>
+          <span className={styles.footerTag}>Gaming Dashboards</span>
+        </div>
       </footer>
     </main>
   );

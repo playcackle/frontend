@@ -1,0 +1,303 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.card {
+  position: relative;
+  width: 320px;
+  aspect-ratio: 9/16;
+  background: linear-gradient(160deg, #0f0a2e 0%, #1a0a3e 30%, #0a1a3e 70%, #0a0a2e 100%);
+  border-radius: 24px;
+  padding: 1.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(0, 243, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Background decorations */
+.bgPattern {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.glowOrb1 {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(0, 243, 255, 0.3), transparent 60%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: orbFloat 8s ease-in-out infinite;
+}
+
+.glowOrb2 {
+  position: absolute;
+  bottom: -30px;
+  left: -30px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(255, 0, 170, 0.25), transparent 60%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: orbFloat 6s ease-in-out infinite reverse;
+}
+
+@keyframes orbFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(10px, -10px) scale(1.1);
+  }
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logoS {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0ff;
+  text-shadow: 0 0 20px rgba(0, 243, 255, 0.8);
+}
+
+.logoText {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  margin-left: 2px;
+}
+
+.badge {
+  padding: 0.4rem 0.8rem;
+  background: linear-gradient(135deg, rgba(255, 0, 170, 0.3), rgba(255, 100, 0, 0.3));
+  border: 1px solid rgba(255, 0, 170, 0.4);
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #ff99cc;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Player section */
+.playerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #0ff, #ff00aa);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
+}
+
+.playerName {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  text-align: center;
+}
+
+/* Main score */
+.mainScore {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.scoreLabel {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.25rem;
+}
+
+.scoreValue {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #0ff, #00aaff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: var(--font-mono, monospace);
+  text-shadow: 0 0 40px rgba(0, 243, 255, 0.5);
+}
+
+/* Stats grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+}
+
+.statBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.statNumber {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  font-family: var(--font-mono, monospace);
+}
+
+.statLabel {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Category section */
+.categorySection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
+  z-index: 1;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, rgba(255, 0, 170, 0.1), rgba(0, 243, 255, 0.1));
+  border-radius: 12px;
+  margin-bottom: auto;
+}
+
+.categoryLabel {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.categoryValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ff99cc;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 1rem;
+}
+
+.url {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+}
+
+.date {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-mono, monospace);
+}
+
+/* Share button */
+.shareButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #0ff, #00aaff);
+  border: none;
+  border-radius: 50px;
+  color: #000;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+}
+
+.shareButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+}
+
+.shareButton.copied {
+  background: linear-gradient(135deg, #00ff88, #00cc66);
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .card {
+    width: 280px;
+    padding: 1.25rem;
+  }
+  
+  .scoreValue {
+    font-size: 2.8rem;
+  }
+  
+  .statNumber {
+    font-size: 1rem;
+  }
+}
