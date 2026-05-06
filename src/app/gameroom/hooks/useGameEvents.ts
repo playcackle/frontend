@@ -195,20 +195,27 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       }),
 
       onEvent("play_again_prompt", (data: PlayAgainPromptPayload) => {
+        // Server re-sends play_again_prompt when players join/leave (players_waiting changes).
+        // Preserve existing user response and confirmed count so they aren't wiped on each update.
+        const existing = store.get(playAgainStateAtom);
+        const alreadyResponded = existing.userResponse !== null;
+        console.log("[play_again_prompt] data:", JSON.stringify(data), "existingState:", JSON.stringify(existing), "alreadyResponded:", alreadyResponded);
         updatePlayAgainState({
           showPrompt: true,
           timeoutSeconds: data.timeout_seconds,
           minPlayers: data.min_players,
           playersWaiting: data.players_waiting,
-          confirmedCount: 0,
           totalWaiting: data.players_waiting,
-          neededToStart: Math.max(0, data.min_players),
-          userResponse: null,
-          playerResponses: {}, // Reset individual responses when new prompt appears
+          neededToStart: Math.max(0, data.min_players - (alreadyResponded ? existing.confirmedCount : 0)),
+          confirmedCount: alreadyResponded ? existing.confirmedCount : 0,
+          userResponse: alreadyResponded ? existing.userResponse : null,
+          playerResponses: alreadyResponded ? existing.playerResponses : {},
         });
       }),
 
       onEvent("play_again_count_update", (data: PlayAgainCountUpdatePayload) => {
+        const existing = store.get(playAgainStateAtom);
+        console.log("[play_again_count_update] data:", JSON.stringify(data), "existingState:", JSON.stringify(existing));
         updatePlayAgainState({
           confirmedCount: data.confirmed_count,
           totalWaiting: data.total_waiting,
@@ -217,10 +224,12 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       }),
 
       onEvent("play_again_player_update", (data: PlayAgainPlayerUpdatePayload) => {
+        const existing = store.get(playAgainStateAtom);
+        console.log("[play_again_player_update] data:", JSON.stringify(data), "existingPlayerResponses:", JSON.stringify(existing.playerResponses));
         // Update the individual player response so UI can show who opted in/out
         updatePlayAgainState({
           playerResponses: {
-            ...store.get(playAgainStateAtom).playerResponses,
+            ...existing.playerResponses,
             [data.player_id]: {
               displayName: data.display_name,
               response: data.response,
@@ -229,7 +238,9 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         });
       }),
 
-      onEvent("play_again_result", () => {
+      onEvent("play_again_result", (data: PlayAgainResultPayload) => {
+        const existing = store.get(playAgainStateAtom);
+        console.log("[play_again_result] data:", JSON.stringify(data), "existingState:", JSON.stringify(existing));
         // Result received - no action needed, userResponse already set
       }),
 
