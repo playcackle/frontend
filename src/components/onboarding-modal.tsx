@@ -118,23 +118,54 @@ function TourStep() {
           </div>
           {/* Answer grid with hints below */}
           <div className={styles.tourSlotsWrapper}>
-            {/* Slots */}
-            <div className={styles.tourSlots}>
-              <div className={styles.tourSlotsHeader}>
-                <span className={styles.tourSlotsCount}>10</span>
-                <span className={styles.tourSlotsLabel}>10 answers found</span>
+            {/* Hero: progress ring + status */}
+            <div className={styles.tourAnswerHero}>
+              <div className={styles.tourProgressRing}>
+                <svg viewBox="0 0 100 100" className={styles.tourProgressSvg}>
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="7" />
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="var(--neon-pink)" strokeWidth="7" strokeLinecap="round" strokeDasharray="276.46" strokeDashoffset="82.94" className={styles.tourProgressFill} />
+                </svg>
+                <div className={styles.tourProgressLabel}>
+                  <span className={styles.tourProgressCount}>7</span>
+                  <span className={styles.tourProgressTotal}>/ 10</span>
+                </div>
               </div>
-              <div className={styles.tourSlotsGrid}>
-                {[
-                  { label: "CAT" }, { label: "DOG" }, { label: "LION", purple: true },
-                  { label: "WHALE" }, { label: "BEAR" }, { label: "FOX" },
-                  { label: "RAT" }, { empty: true }, { empty: true }, { empty: true },
-                ].map((slot, i) => (
-                  <div key={i} className={`${styles.tourSlot} ${slot.purple ? styles.tourSlotPurple : ""} ${slot.empty ? styles.tourSlotEmpty : ""}`}>
-                    {slot.empty ? <span className={styles.tourSlotQ}>?</span> : <span className={styles.tourSlotLabel}>{slot.label}</span>}
+              <div className={styles.tourAnswerStatus}>
+                <p className={styles.tourAnswerTitle}>7 answers found</p>
+                <p className={styles.tourAnswerSub}>3 still to find — keep typing!</p>
+              </div>
+            </div>
+            {/* Dot row */}
+            <div className={styles.tourDotRow}>
+              {[
+                { found: true }, { found: true }, { found: true, purple: true },
+                { found: true }, { found: true }, { found: true },
+                { found: true }, { empty: true }, { empty: true }, { empty: true, purple: true },
+              ].map((dot, i) => (
+                <div key={i} className={`${styles.tourDot} ${dot.found ? styles.tourDotFound : styles.tourDotEmpty} ${dot.purple ? styles.tourDotPurple : ""}`}>
+                  {dot.empty && dot.purple && <span className={styles.tourDot2x}>2x</span>}
+                </div>
+              ))}
+            </div>
+            {/* Answer chips */}
+            <div className={styles.tourChipGrid}>
+              {[
+                { label: "CAT", player: "player_1" },
+                { label: "DOG", player: "player_2" },
+                { label: "LION", player: "player_1", purple: true },
+                { label: "WHALE", player: "player_3" },
+                { label: "BEAR", player: "player_2" },
+                { label: "FOX", player: "player_1" },
+                { label: "RAT", player: "player_4" },
+              ].map((chip, i) => (
+                <div key={i} className={`${styles.tourChip} ${chip.purple ? styles.tourChipPurple : ""}`}>
+                  <div className={styles.tourChipContent}>
+                    <span className={styles.tourChipText}>{chip.label}</span>
+                    <span className={styles.tourChipPlayer}>{chip.player}</span>
                   </div>
-                ))}
-              </div>
+                  {chip.purple && <span className={styles.tourChipMultiplier}>2x</span>}
+                </div>
+              ))}
             </div>
             {/* Hints strip */}
             <div className={styles.tourHintsStrip}>
