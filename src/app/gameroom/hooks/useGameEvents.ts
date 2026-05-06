@@ -7,7 +7,6 @@ import {
   clearUnifiedMessagesAtom,
   connectionStatusAtom,
   gameStateAtom,
-  lobbyStatusAtom,
   playAgainStateAtom,
   resetPlayAgainStateAtom,
   slotHeatAtom,
@@ -28,12 +27,7 @@ import {
   SubmissionFeedbackPayload,
   WaitingForPlayersPayload,
 } from "../types/payloads";
-import {
-  getRandomAttentionAnimation,
-  getRandomSnappedSound,
-  playSound,
-} from "../utils";
-import { useGameActions } from "./useGameActions";
+import { getRandomSnappedSound, getRandomSuccessSound, playSound } from "../utils";
 import { useGameSocket } from "./useGameSocket";
 
 /** Grace period (ms) before a disconnection triggers the full loading screen.
@@ -44,7 +38,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const router = useRouter();
   const { onEvent, sendEvent, isConnected, connectionStatus, reconnect } =
     useGameSocket(gameWsUrl, token);
-  const { triggerCorrectAnswerEffects } = useGameActions();
   const store = useStore();
 
   // All Jotai setters are stable references — never cause effect re-runs
@@ -56,13 +49,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const setConnectionStatus = useSetAtom(connectionStatusAtom);
   const updatePlayAgainState = useSetAtom(updatePlayAgainStateAtom);
   const resetPlayAgainState = useSetAtom(resetPlayAgainStateAtom);
-
-  // triggerCorrectAnswerEffects closes over performanceModeAtom which can change;
-  // a ref prevents re-registering all socket listeners on performance mode toggle
-  const triggerEffectsRef = useRef(triggerCorrectAnswerEffects);
-  useEffect(() => {
-    triggerEffectsRef.current = triggerCorrectAnswerEffects;
-  }, [triggerCorrectAnswerEffects]);
 
   // ---------------------------------------------------------------------------
   // Connection → loading gate with grace period
@@ -287,15 +273,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
       onEvent("submission_feedback", (data: SubmissionFeedbackPayload) => {
         if (data.status === "success") {
-          const animation = getRandomAttentionAnimation();
-          const slots = store.get(gameStateAtom).slots;
-          const slot = slots.find((s) => s.id === data.id);
-          triggerEffectsRef.current(
-            data.id!,
-            animation,
-            slot?.is_rare ?? false,
-            null,
-          );
+          playSound(getRandomSuccessSound());
         }
       }),
 

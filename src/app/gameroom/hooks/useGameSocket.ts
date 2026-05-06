@@ -133,15 +133,18 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     });
 
     socket.io.on("reconnect", () => {
-      // Socket.io fires this after a successful reconnection.
-      // The "connect" handler above already handles state sync, so this
-      // is a safety net to ensure the status is correct.
       setSocketState({
         isConnected: true,
         connectionStatus: "connected",
         error: null,
         reconnectAttempts: 0,
       });
+      // After a mid-session drop+reconnect, the server may not auto-push
+      // lobby_state_sync (unlike initial connect). Requesting it here ensures
+      // loading clears and the client catches up on any missed state.
+      // Safe to do here because "reconnect" only fires on re-connections,
+      // not on the initial connect, so there's no race with fresh joins.
+      socket.emit("request_state_sync");
     });
 
     socket.io.on("reconnect_failed", () => {

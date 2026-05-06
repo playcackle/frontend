@@ -20,13 +20,3 @@ export const SOUND_BONUS = [
   "bonus4",
   "bonus5",
 ] as const;
-export const ATTENTION_ANIMATIONS = [
-  "pulse",
-  "bounce",
-  "shake",
-  "wobble",
-  "swing",
-  "flash",
-  "rubberBand",
-  "tada",
-] as const;

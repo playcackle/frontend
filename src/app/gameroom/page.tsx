@@ -29,7 +29,6 @@ import { useChatSocket } from "./hooks/useChatWs";
 import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
 import {
-  animationStateAtom,
   chatConnectionStatusAtom,
   currentUserIdAtom,
   isRoundBreakAtom,
@@ -65,7 +64,6 @@ function NoGameroom() {
 
 export default function GameroomPage() {
   const gameroom = useAtomValue(gameRoomAtom);
-  const animationState = useAtomValue(animationStateAtom);
   const { addAnswerBubble, bubbles, removeBubble } = useAnswerBubbles();
   const { user } = useUser();
   const setCurrentUserId = useSetAtom(currentUserIdAtom);
@@ -201,13 +199,7 @@ export default function GameroomPage() {
 
           <div
             ref={mainRef}
-            className={`
-              ${styles.main}
-          ${animationState.shake ? styles.screenShake : ""}
-          ${animationState.colorFlash ? styles.colorFlash : ""}
-          ${animationState.zoomEffect ? styles.zoomEffect : ""}
-          ${animationState.rotateEffect ? styles.rotateEffect : ""}
-            `}
+            className={styles.main}
           >
             <SoundEffects onLoad={onSoundsLoaded} />
 
@@ -275,10 +267,6 @@ export default function GameroomPage() {
                         <div
                           key={player.player_id}
                           className={`${styles.leaderboardPlayer} ${
-                            player.display_name === "You" && false
-                              ? styles.nameFlash
-                              : ""
-                          } ${
                             animation === "up"
                               ? styles.rankUp
                               : animation === "down"

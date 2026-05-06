@@ -1,10 +1,5 @@
 import { SoundType } from "../../components/sound-effects";
-import {
-  ATTENTION_ANIMATIONS,
-  SOUND_BONUS,
-  SOUND_SNAPPED,
-  SOUND_SUCCESS,
-} from "./constants";
+import { SOUND_BONUS, SOUND_SNAPPED, SOUND_SUCCESS } from "./constants";
 
 /**
  * Format time as MM:SS
@@ -15,17 +10,6 @@ export const formatTime = (seconds: number): string => {
   return `${mins.toString().padStart(2, "0")}:${secs
     .toString()
     .padStart(2, "0")}`;
-};
-
-/**
- * Get a random attention animation
- */
-export const getRandomAttentionAnimation = (): string => {
-  return `animate__animated animate__${
-    ATTENTION_ANIMATIONS[
-      Math.floor(Math.random() * ATTENTION_ANIMATIONS.length)
-    ]
-  }`;
 };
 
 /**

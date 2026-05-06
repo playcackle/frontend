@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { ChatMessageData } from "../types/payloads";
-import { AnimationState, GameState } from "../types/state";
+import { GameState } from "../types/state";
 
 // Unified message type for combining chat and answer attempts
 export type UnifiedMessage = ChatMessageData & {
@@ -97,19 +97,6 @@ export type ConnectionStatus =
 export const connectionStatusAtom = atom<ConnectionStatus>("connecting");
 export const chatConnectionStatusAtom = atom<ConnectionStatus>("connecting");
 
-export const animationStateAtom = atom<AnimationState>({
-  attentionAnimation: "",
-  slotId: null,
-  showGlitter: false,
-  nameFlash: false,
-  shake: false,
-  colorFlash: false,
-  zoomEffect: false,
-  rotateEffect: false,
-  isBonus: false,
-  playerColor: "",
-});
-
 // Actions atoms (write-only atoms for state updates)
 export const updateGameStateAtom = atom(
   null,
@@ -125,30 +112,9 @@ export const updateGameStateAtom = atom(
   },
 );
 
-export const updateAnimationStateAtom = atom(
-  null,
-  (get, set, update: Partial<AnimationState>) => {
-    const current = get(animationStateAtom);
-    const merged = { ...current, ...update };
-    set(animationStateAtom, merged);
-  },
-);
-
-export const resetGameStateAtom = atom(null, (get, set) => {
+export const resetGameStateAtom = atom(null, (_get, set) => {
   set(gameStateAtom, initGameState);
   set(answerAtom, "");
-  set(animationStateAtom, {
-    attentionAnimation: "",
-    slotId: null,
-    showGlitter: false,
-    nameFlash: false,
-    shake: false,
-    colorFlash: false,
-    zoomEffect: false,
-    rotateEffect: false,
-    isBonus: false,
-    playerColor: "",
-  });
 });
 
 // Unified message action atoms

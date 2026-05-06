@@ -72,16 +72,3 @@ export type GameState = {
   lobbyStatus: LobbyStatus;
   minPlayersNeeded: number;
 };
-
-export type AnimationState = {
-  attentionAnimation: string;
-  slotId: string | null;
-  showGlitter: boolean;
-  nameFlash: boolean;
-  shake: boolean;
-  colorFlash: boolean;
-  zoomEffect: boolean;
-  rotateEffect: boolean;
-  isBonus: boolean;
-  playerColor: string | null;
-};
