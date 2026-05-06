@@ -1,0 +1,297 @@
+/* Score Timeline Component */
+
+.container {
+  background: rgba(15, 15, 35, 0.8);
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-family: var(--retro-font);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.titleIcon {
+  font-size: 1.25rem;
+}
+
+.trendBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  background: rgba(20, 20, 45, 0.7);
+}
+
+.trendIcon {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.trendValue {
+  font-family: var(--retro-font);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.trend_up {
+  color: var(--neon-green);
+}
+
+.trend_down {
+  color: var(--neon-pink);
+}
+
+/* Chart Area */
+.chartArea {
+  display: flex;
+  gap: 1rem;
+  height: 200px;
+  margin-bottom: 1.5rem;
+}
+
+.yAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--retro-font);
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-align: right;
+  padding: 0.5rem 0;
+  min-width: 40px;
+}
+
+.chart {
+  flex: 1;
+  position: relative;
+  background: rgba(20, 20, 45, 0.5);
+  border-radius: 8px;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Average Line */
+.avgLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0, 221, 255, 0.4);
+  z-index: 1;
+}
+
+.avgLine::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 221, 255, 0.4) 0px,
+    rgba(0, 221, 255, 0.4) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.avgLabel {
+  position: absolute;
+  right: 0;
+  top: -18px;
+  font-family: var(--retro-font);
+  font-size: 0.55rem;
+  color: var(--neon-blue);
+  background: rgba(10, 10, 30, 0.9);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* Bars */
+.bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 100%;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.barWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
+}
+
+.bar {
+  width: 100%;
+  max-width: 40px;
+  background: linear-gradient(180deg, var(--neon-blue), rgba(0, 221, 255, 0.4));
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  transition: all 0.3s ease;
+  margin-top: auto;
+}
+
+.bar:hover {
+  filter: brightness(1.2);
+}
+
+.barHighest {
+  background: linear-gradient(180deg, var(--neon-green), rgba(0, 255, 102, 0.4));
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+}
+
+.barHovered {
+  transform: scaleX(1.1);
+  box-shadow: 0 0 20px rgba(0, 221, 255, 0.4);
+}
+
+.barLabel {
+  font-family: var(--retro-font);
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 10, 30, 0.95);
+  border: 1px solid var(--neon-blue);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 10;
+  animation: tooltipIn 0.2s ease-out;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--neon-blue);
+}
+
+@keyframes tooltipIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.tooltipValue {
+  display: block;
+  font-family: var(--retro-font);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--neon-blue);
+  text-shadow: 0 0 8px rgba(0, 221, 255, 0.5);
+}
+
+.tooltipDate {
+  display: block;
+  font-family: var(--retro-font);
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.2rem;
+}
+
+/* Stats Row */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statLabel {
+  display: block;
+  font-family: var(--retro-font);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.35rem;
+}
+
+.statValue {
+  font-family: var(--retro-font);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.valueGreen {
+  color: var(--neon-green);
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.5);
+}
+
+.valueBlue {
+  color: var(--neon-blue);
+  text-shadow: 0 0 8px rgba(0, 221, 255, 0.5);
+}
+
+.valuePink {
+  color: var(--neon-pink);
+  text-shadow: 0 0 8px rgba(255, 0, 170, 0.5);
+}
+
+.valuePurple {
+  color: var(--neon-purple);
+  text-shadow: 0 0 8px rgba(183, 0, 255, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .chartArea {
+    height: 150px;
+  }
+
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .barLabel {
+    font-size: 0.5rem;
+  }
+}
