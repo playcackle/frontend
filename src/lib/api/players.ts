@@ -123,6 +123,19 @@ export type PlayerCategoryStatsResponse = {
   categories: PlayerCategoryStat[];
 };
 
+export type PlayerComparisonStat = {
+  value: number | null;
+  percentile: number | null;
+  label: string | null;
+};
+
+export type PlayerComparisonsResponse = {
+  total_score: PlayerComparisonStat;
+  overall_accuracy: PlayerComparisonStat;
+  total_accolades: PlayerComparisonStat;
+  games_played: PlayerComparisonStat;
+};
+
 // ============================================================================
 // Players API
 // ============================================================================
@@ -179,6 +192,17 @@ export const playersApi = {
     const res = await apiFetch(`/${playerId}/category-stats`);
     if (!res.ok) {
       throw new Error(await getErrorMessage(res, "Failed to fetch player category stats"));
+    }
+    return res.json();
+  },
+
+  /**
+   * Get normalized comparison stats for a player
+   */
+  async getComparisons(playerId: string): Promise<PlayerComparisonsResponse> {
+    const res = await apiFetch(`/${playerId}/comparisons`);
+    if (!res.ok) {
+      throw new Error(await getErrorMessage(res, "Failed to fetch player comparisons"));
     }
     return res.json();
   },

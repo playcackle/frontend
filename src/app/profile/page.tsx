@@ -8,16 +8,18 @@ import {
   type PlayerCategoryStatsResponse,
   type PlayerPlaystyleProfile,
   type PlayerProfileStats,
+  type PlayerComparisonsResponse,
 } from "@/lib/api/players";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "./page.module.css";
 import { EMPTY_PLAYSTYLE_PROFILE } from "./playstyle";
 
-function StatCard({ value, label, accent = "pink" }: { value: string; label: string; accent?: "pink" | "blue" | "gold" }) {
+function StatCard({ value, label, comparison, accent = "pink" }: { value: string; label: string; comparison?: string | null; accent?: "pink" | "blue" | "gold" }) {
   return (
     <div className={`${styles.statCard} ${styles[`accent_${accent}`]}`}>
       <div className={styles.statValue}>{value}</div>
+      {comparison ? <div className={styles.statComparison}>{comparison}</div> : null}
       <div className={styles.statLabel}>{label}</div>
     </div>
   );
@@ -192,6 +194,7 @@ export default function ProfilePage() {
   const [playstyle, setPlaystyle] = useState<PlayerPlaystyleProfile | null>(null);
   const [accoladeStats, setAccoladeStats] = useState<PlayerAccoladeStats | null>(null);
   const [categoryStats, setCategoryStats] = useState<PlayerCategoryStatsResponse | null>(null);
+  const [comparisons, setComparisons] = useState<PlayerComparisonsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -203,15 +206,17 @@ export default function ProfilePage() {
       const profileData = await playersApi.getProfile(user.id);
       setProfile(profileData);
 
-      const [playstyleResult, accoladeStatsResult, categoryStatsResult] = await Promise.allSettled([
+      const [playstyleResult, accoladeStatsResult, categoryStatsResult, comparisonsResult] = await Promise.allSettled([
         playersApi.getPlaystyle(user.id),
         playersApi.getAccoladeStats(user.id),
         playersApi.getCategoryStats(user.id),
+        playersApi.getComparisons(user.id),
       ]);
 
       setPlaystyle(playstyleResult.status === "fulfilled" ? playstyleResult.value : null);
       setAccoladeStats(accoladeStatsResult.status === "fulfilled" ? accoladeStatsResult.value : null);
       setCategoryStats(categoryStatsResult.status === "fulfilled" ? categoryStatsResult.value : null);
+      setComparisons(comparisonsResult.status === "fulfilled" ? comparisonsResult.value : null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load profile");
     } finally {
@@ -331,10 +336,10 @@ export default function ProfilePage() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Core Stats</h2>
         <div className={styles.statsGridCompact}>
-          <StatCard value={profile.total_score.toLocaleString()} label="Total Score" accent="pink" />
-          <StatCard value={String(profile.games_played)} label="Games Played" accent="blue" />
-          <StatCard value={profile.overall_accuracy !== null ? `${profile.overall_accuracy.toFixed(1)}%` : "—"} label="Accuracy" accent="blue" />
-          <StatCard value={String(resolvedPlaystyle.total_accolades)} label="Total Accolades" accent="gold" />
+          <StatCard value={profile.total_score.toLocaleString()} label="Total Score" comparison={comparisons?.total_score.label ?? null} accent="pink" />
+          <StatCard value={String(profile.games_played)} label="Games Played" comparison={comparisons?.games_played.label ?? null} accent="blue" />
+          <StatCard value={profile.overall_accuracy !== null ? `${profile.overall_accuracy.toFixed(1)}%` : "—"} label="Accuracy" comparison={comparisons?.overall_accuracy.label ?? null} accent="blue" />
+          <StatCard value={String(resolvedPlaystyle.total_accolades)} label="Total Accolades" comparison={comparisons?.total_accolades.label ?? null} accent="gold" />
         </div>
       </section>
 
