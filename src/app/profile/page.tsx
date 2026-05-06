@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import {
   playersApi,
   type PlayerAccoladeStats,
+  type PlayerCategoryStatsResponse,
   type PlayerPlaystyleProfile,
   type PlayerProfileStats,
 } from "@/lib/api/players";
@@ -37,6 +38,41 @@ function AccoladeChip({ label, count }: { label: string; count: number }) {
     <div className={styles.accoladeStatChip}>
       <span className={styles.accoladeStatLabel}>{label}</span>
       <span className={styles.accoladeStatCount}>×{count}</span>
+    </div>
+  );
+}
+
+function CategoryBar({
+  name,
+  accuracy,
+  rounds,
+  averageScore,
+}: {
+  name: string;
+  accuracy: number | null;
+  rounds: number;
+  averageScore: number | null;
+}) {
+  const maxBarWidth = 100;
+  const barFill = accuracy !== null ? Math.min(accuracy, maxBarWidth) : 0;
+
+  return (
+    <div className={styles.categoryBar}>
+      <div className={styles.categoryBarHeader}>
+        <span className={styles.categoryBarName}>{name}</span>
+        <span className={styles.categoryBarStats}>
+          {rounds} rounds · avg {typeof averageScore === "number" ? averageScore.toFixed(0) : "—"} pts
+        </span>
+      </div>
+      <div className={styles.categoryBarTrack}>
+        <div
+          className={styles.categoryBarFill}
+          style={{ width: `${barFill}%` }}
+        />
+        <span className={styles.categoryBarLabel}>
+          {accuracy !== null ? `${accuracy.toFixed(0)}%` : "—"}
+        </span>
+      </div>
     </div>
   );
 }
@@ -155,6 +191,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<PlayerProfileStats | null>(null);
   const [playstyle, setPlaystyle] = useState<PlayerPlaystyleProfile | null>(null);
   const [accoladeStats, setAccoladeStats] = useState<PlayerAccoladeStats | null>(null);
+  const [categoryStats, setCategoryStats] = useState<PlayerCategoryStatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -163,14 +200,18 @@ export default function ProfilePage() {
     try {
       setLoading(true);
       setError(null);
-      const [profileData, playstyleData, accoladeStatsData] = await Promise.all([
-        playersApi.getProfile(user.id),
+      const profileData = await playersApi.getProfile(user.id);
+      setProfile(profileData);
+
+      const [playstyleResult, accoladeStatsResult, categoryStatsResult] = await Promise.allSettled([
         playersApi.getPlaystyle(user.id),
         playersApi.getAccoladeStats(user.id),
+        playersApi.getCategoryStats(user.id),
       ]);
-      setProfile(profileData);
-      setPlaystyle(playstyleData);
-      setAccoladeStats(accoladeStatsData);
+
+      setPlaystyle(playstyleResult.status === "fulfilled" ? playstyleResult.value : null);
+      setAccoladeStats(accoladeStatsResult.status === "fulfilled" ? accoladeStatsResult.value : null);
+      setCategoryStats(categoryStatsResult.status === "fulfilled" ? categoryStatsResult.value : null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load profile");
     } finally {
@@ -223,6 +264,7 @@ export default function ProfilePage() {
     playstyle ?? EMPTY_PLAYSTYLE_PROFILE;
 
   const topAccolades = (accoladeStats?.accolades_by_type ?? []).slice(0, 3);
+  const topCategories = (categoryStats?.categories ?? []).slice(0, 5);
 
   return (
     <div className={styles.container}>
@@ -255,6 +297,20 @@ export default function ProfilePage() {
                   <h2 className={styles.playstyleTitle}>{resolvedPlaystyle.archetype}</h2>
                   <p className={styles.playstyleSummary}>{resolvedPlaystyle.summary}</p>
                 </div>
+                <div className={styles.heroCategoryMiniGrid}>
+                  <div className={styles.heroCategoryMiniCard}>
+                    <div className={styles.heroCategoryMiniLabel}>Most Played</div>
+                    <div className={styles.heroCategoryMiniValue}>{categoryStats?.most_played_category ?? "—"}</div>
+                  </div>
+                  <div className={styles.heroCategoryMiniCard}>
+                    <div className={styles.heroCategoryMiniLabel}>Top Expertise</div>
+                    <div className={styles.heroCategoryMiniValue}>{categoryStats?.highest_scoring_category ?? "—"}</div>
+                  </div>
+                  <div className={styles.heroCategoryMiniCard}>
+                    <div className={styles.heroCategoryMiniLabel}>Needs Work</div>
+                    <div className={styles.heroCategoryMiniValue}>{categoryStats?.weakest_accuracy_category ?? "—"}</div>
+                  </div>
+                </div>
                 <div className={styles.profileBadges}>
                   <span className={styles.playstyleBadge}>{resolvedPlaystyle.total_accolades} total accolades</span>
                   {resolvedPlaystyle.top_traits.length > 0 && (
@@ -274,31 +330,45 @@ export default function ProfilePage() {
       {/* Core stats */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Core Stats</h2>
-        <div className={styles.statsGrid}>
+        <div className={styles.statsGridCompact}>
           <StatCard value={profile.total_score.toLocaleString()} label="Total Score" accent="pink" />
           <StatCard value={String(profile.games_played)} label="Games Played" accent="blue" />
           <StatCard value={profile.overall_accuracy !== null ? `${profile.overall_accuracy.toFixed(1)}%` : "—"} label="Accuracy" accent="blue" />
-          <StatCard value={profile.average_score_per_game.toFixed(1)} label="Score / Game" accent="blue" />
           <StatCard value={String(resolvedPlaystyle.total_accolades)} label="Total Accolades" accent="gold" />
-          <StatCard value={String(profile.total_slots_snapped)} label="Slots Snapped" accent="gold" />
         </div>
       </section>
 
-      {/* Playstyle highlights */}
+      {/* Category breakdown */}
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Playstyle Highlights</h2>
-        <div className={styles.spotlightGrid}>
-          <SpotlightCard
-            label="Archetype"
-            value={resolvedPlaystyle.archetype}
-            hint={resolvedPlaystyle.summary}
-          />
-          <SpotlightCard
-            label="Strongest Trait"
-            value={resolvedPlaystyle.top_traits[0] ?? "Still emerging"}
-            hint={resolvedPlaystyle.top_traits[1] ? `Backed by ${resolvedPlaystyle.top_traits[1]}` : "Play more to sharpen your profile"}
-          />
+        <h2 className={styles.sectionTitle}>Category Breakdown</h2>
+        <div className={styles.categorySpotlights}>
+          <div className={styles.categorySpotlightItem}>
+            <div className={styles.categorySpotlightLabel}>Strongest</div>
+            <div className={styles.categorySpotlightValue}>{categoryStats?.best_accuracy_category ?? "Still emerging"}</div>
+          </div>
+          <div className={styles.categorySpotlightItem}>
+            <div className={styles.categorySpotlightLabel}>Needs Work</div>
+            <div className={styles.categorySpotlightValue}>{categoryStats?.weakest_accuracy_category ?? "Not enough data yet"}</div>
+          </div>
         </div>
+
+        {topCategories.length > 0 ? (
+          <div className={styles.categoryPanel}>
+            {topCategories.map((category) => (
+              <CategoryBar
+                key={category.category_name}
+                name={category.category_name}
+                accuracy={category.accuracy}
+                rounds={category.rounds_played}
+                averageScore={category.average_score}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className={styles.emptyPanel}>
+            Play across a few categories to start building your strengths and weak spots.
+          </div>
+        )}
       </section>
 
       {/* Signature accolades */}

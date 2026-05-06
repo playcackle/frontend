@@ -99,7 +99,34 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 0.1rem;
+  margin-top: 0.2rem;
+}
+
+.heroCategoryMiniGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.heroCategoryMiniCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 221, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+}
+
+.heroCategoryMiniLabel {
+  color: #8a9cb0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.68rem;
+  margin-bottom: 0.2rem;
+}
+
+.heroCategoryMiniValue {
+  color: #fff;
+  font-size: 0.92rem;
+  letter-spacing: 0.3px;
 }
 
 /* ── Sections ────────────────────────────────────────────── */
@@ -194,40 +221,32 @@
 }
 
 /* ── Spotlight & Accolades ──────────────────────────────── */
-.spotlightGrid {
+.categorySpotlights {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
-.spotlightCard {
+.categorySpotlightItem {
   background: rgba(0, 0, 0, 0.38);
   border: 1px solid rgba(0, 221, 255, 0.14);
-  border-radius: 12px;
-  padding: 1.1rem 1rem;
-  box-shadow: 0 0 14px rgba(0, 221, 255, 0.05);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
 }
 
-.spotlightLabel {
+.categorySpotlightLabel {
   color: #8a9cb0;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
-  font-size: 0.72rem;
-  margin-bottom: 0.45rem;
+  letter-spacing: 1px;
+  font-size: 0.7rem;
+  margin-bottom: 0.3rem;
 }
 
-.spotlightValue {
+.categorySpotlightValue {
   color: #fff;
-  font-family: var(--retro-font);
-  font-size: 1.15rem;
-  letter-spacing: 0.8px;
-  margin-bottom: 0.45rem;
-}
-
-.spotlightHint {
-  color: #9fc7d8;
-  font-size: 0.82rem;
-  line-height: 1.4;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .accoladeStatsRow {
@@ -266,10 +285,78 @@
   color: #9fc7d8;
 }
 
+.categoryPanel {
+  margin-top: 1rem;
+  background: rgba(0, 0, 0, 0.34);
+  border: 1px solid rgba(0, 221, 255, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.categoryBar {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.categoryBar:last-child {
+  border-bottom: none;
+}
+
+.categoryBarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.categoryBarName {
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.categoryBarStats {
+  color: #8a9cb0;
+  font-size: 0.74rem;
+}
+
+.categoryBarTrack {
+  position: relative;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: visible;
+}
+
+.categoryBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 221, 255, 0.6), rgba(255, 0, 170, 0.6));
+  border-radius: 999px;
+  min-width: 2px;
+  transition: width 0.4s ease;
+}
+
+.categoryBarLabel {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ffc300;
+  font-family: var(--retro-font);
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+}
+
 /* ── Stat Cards ──────────────────────────────────────────── */
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.statsGridCompact {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 
@@ -451,6 +538,10 @@
     justify-content: center;
   }
 
+  .heroCategoryMiniGrid {
+    width: 100%;
+  }
+
   .playstyleIdentityBlock {
     display: flex;
     flex-direction: column;
@@ -467,7 +558,8 @@
     height: auto;
   }
 
-  .statsGrid {
+  .statsGrid,
+  .statsGridCompact {
     grid-template-columns: repeat(2, 1fr);
   }
 

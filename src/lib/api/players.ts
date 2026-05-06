@@ -9,6 +9,26 @@ const apiFetch = (path: string, init?: RequestInit) => {
   return fetch(`/api/players${normalizedPath}`, init);
 };
 
+const getErrorMessage = async (res: Response, fallback: string) => {
+  const contentType = res.headers.get("content-type") || "";
+
+  if (contentType.includes("application/json")) {
+    try {
+      const error = await res.json();
+      return error.detail || error.error || fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  try {
+    const text = await res.text();
+    return text || fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -83,6 +103,26 @@ export type PlayerPlaystyleProfile = {
   total_accolades: number;
 };
 
+export type PlayerCategoryStat = {
+  category_name: string;
+  rounds_played: number;
+  total_score: number;
+  average_score: number | null;
+  total_submissions: number;
+  successful_snaps: number;
+  accuracy: number | null;
+  rare_claims: number;
+  near_miss_rate: number | null;
+};
+
+export type PlayerCategoryStatsResponse = {
+  most_played_category: string | null;
+  best_accuracy_category: string | null;
+  weakest_accuracy_category: string | null;
+  highest_scoring_category: string | null;
+  categories: PlayerCategoryStat[];
+};
+
 // ============================================================================
 // Players API
 // ============================================================================
@@ -94,8 +134,7 @@ export const playersApi = {
   async getProfile(playerId: string): Promise<PlayerProfileStats> {
     const res = await apiFetch(`/${playerId}/profile`);
     if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.detail || 'Failed to fetch player profile');
+      throw new Error(await getErrorMessage(res, "Failed to fetch player profile"));
     }
     return res.json();
   },
@@ -106,8 +145,7 @@ export const playersApi = {
   async getLeaderboard(limit: number = 20): Promise<LeaderboardResponse> {
     const res = await apiFetch(`/leaderboard?limit=${limit}`);
     if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.detail || 'Failed to fetch leaderboard');
+      throw new Error(await getErrorMessage(res, "Failed to fetch leaderboard"));
     }
     return res.json();
   },
@@ -118,8 +156,7 @@ export const playersApi = {
   async getAccoladeStats(playerId: string): Promise<PlayerAccoladeStats> {
     const res = await apiFetch(`/${playerId}/accolades/stats`);
     if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.detail || 'Failed to fetch accolade stats');
+      throw new Error(await getErrorMessage(res, "Failed to fetch accolade stats"));
     }
     return res.json();
   },
@@ -130,8 +167,18 @@ export const playersApi = {
   async getPlaystyle(playerId: string): Promise<PlayerPlaystyleProfile> {
     const res = await apiFetch(`/${playerId}/playstyle`);
     if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.detail || 'Failed to fetch player playstyle');
+      throw new Error(await getErrorMessage(res, "Failed to fetch player playstyle"));
+    }
+    return res.json();
+  },
+
+  /**
+   * Get per-category performance for a player
+   */
+  async getCategoryStats(playerId: string): Promise<PlayerCategoryStatsResponse> {
+    const res = await apiFetch(`/${playerId}/category-stats`);
+    if (!res.ok) {
+      throw new Error(await getErrorMessage(res, "Failed to fetch player category stats"));
     }
     return res.json();
   },
