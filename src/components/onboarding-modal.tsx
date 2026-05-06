@@ -47,7 +47,7 @@ const STEPS = [
     type: "text" as const,
     icon: "@",
     title: "Beat the Clock",
-    body: "Every room has a countdown timer. Find as many answers as you can before time runs out. Then watch the leaderboard explode.",
+    body: "Every room has a countdown timer. Find as many answers as you can before time runs out.",
   },
   {
     id: 7,
@@ -185,12 +185,11 @@ function TourStep() {
           </div>
           <div className={`${styles.tourTail} ${styles.tourTailUpCenter}`} />
         </div>
-        <div className={styles.tourCallout}>
+          <div className={styles.tourCallout}>
           <span className={styles.tourCalloutNum}>6</span>
           <div className={styles.tourCalloutBody}>
             <strong className={styles.tourCalloutTitle}>Beat the clock</strong>
             <p>Every room has a <strong>countdown timer</strong>. Find as many answers as you can <strong>before time runs out.</strong></p>
-            <p className={styles.tourCoda}>Then watch the leaderboard explode.</p>
           </div>
           <div className={`${styles.tourTail} ${styles.tourTailUpLeft}`} />
         </div>
