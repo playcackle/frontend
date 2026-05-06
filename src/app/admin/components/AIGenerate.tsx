@@ -7,7 +7,7 @@ import {
   type TopicAnalysisResponse,
   type TopicGenerateResponse,
 } from "@/lib/api/admin";
-import { useState } from "react";
+import React, { useState } from "react";
 import styles from "./AIGenerate.module.css";
 
 const CATEGORIES = [
@@ -38,7 +38,7 @@ interface AIGenerateProps {
   topicName?: string;
   onComplete?: () => void;
   onClose?: () => void;
-  title?: string;
+  title?: React.ReactNode;
 }
 
 export default function AIGenerate({
