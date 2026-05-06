@@ -8,11 +8,11 @@
  * - Requests state sync on reconnection so the client catches up
  */
 
+import { captureException } from "@/lib/sentry";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { EventPayloadMap, GameEvent } from "../types/payloads";
 import { debounce } from "../utils";
-import { captureException } from "@/lib/sentry";
 
 // Module-level guard: capture at most once per 30 seconds across all socket instances
 let lastConnectErrorCapture = 0;
@@ -41,7 +41,7 @@ export const useGameSocket = (baseUrl: string, token: string) => {
 
   const socketRef = useRef<Socket | null>(null);
   const listenersRef = useRef<Map<GameEvent, Set<EventListener<any>>>>(
-    new Map()
+    new Map(),
   );
 
   const [socketState, setSocketState] = useState<SocketState>({
@@ -59,7 +59,7 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       debounce((message: string, error?: any) => {
         console.error(message, error);
       }, 1000),
-    []
+    [],
   );
 
   // ==================== SOCKET INITIALIZATION ====================
@@ -223,7 +223,11 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     debounce(
       <T extends GameEvent>(
         event: T,
-        data: T extends "submit_answer" ? string : (T extends "play_again_response" ? { want_to_play: boolean } : EventPayloadMap[T])
+        data: T extends "submit_answer"
+          ? string
+          : T extends "play_again_response"
+            ? { want_to_play: boolean }
+            : EventPayloadMap[T],
       ) => {
         const socket = socketRef.current;
         if (!socket?.connected) {
@@ -239,9 +243,9 @@ export const useGameSocket = (baseUrl: string, token: string) => {
           return false;
         }
       },
-      100
+      100,
     ),
-    [debouncedErrorLog]
+    [debouncedErrorLog],
   );
 
   // Register event listeners
@@ -261,7 +265,7 @@ export const useGameSocket = (baseUrl: string, token: string) => {
         }
       };
     },
-    []
+    [],
   );
 
   // Manual reconnect function (for "Retry" button in UI)
