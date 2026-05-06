@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Trophy, Gamepad2, Zap, Target, Gem, Medal, BarChart3, Cpu } from "lucide-react";
 import styles from "./StatsOverview.module.css";
 
 type Stats = {
@@ -27,7 +28,7 @@ type StatCard = {
   value: string;
   subValue?: string;
   accent: "blue" | "pink" | "purple" | "green";
-  icon: string;
+  Icon: React.FC<{ size?: number }>;
   description: string;
 };
 
@@ -38,7 +39,7 @@ function buildStatCards(stats: Stats): StatCard[] {
       value: stats.total_score.toLocaleString(),
       subValue: `${stats.average_score_per_game.toFixed(0)} avg/game`,
       accent: "pink",
-      icon: "🏆",
+      Icon: Trophy,
       description: "Your all-time accumulated points across all games",
     },
     {
@@ -46,7 +47,7 @@ function buildStatCards(stats: Stats): StatCard[] {
       value: String(stats.games_played),
       subValue: `${stats.rounds_played} rounds`,
       accent: "blue",
-      icon: "🎮",
+      Icon: Gamepad2,
       description: "Total number of game sessions you've participated in",
     },
     {
@@ -54,7 +55,7 @@ function buildStatCards(stats: Stats): StatCard[] {
       value: String(stats.total_slots_snapped),
       subValue: `${stats.average_slots_per_game.toFixed(1)} avg/game`,
       accent: "purple",
-      icon: "⚡",
+      Icon: Zap,
       description: "Answers you've claimed before anyone else",
     },
     {
@@ -62,7 +63,7 @@ function buildStatCards(stats: Stats): StatCard[] {
       value: stats.overall_accuracy !== null ? `${stats.overall_accuracy.toFixed(1)}%` : "—",
       subValue: stats.near_miss_count !== null ? `${stats.near_miss_count} near misses` : undefined,
       accent: "green",
-      icon: "🎯",
+      Icon: Target,
       description: "Percentage of correct answers out of all attempts",
     },
     {
@@ -70,7 +71,7 @@ function buildStatCards(stats: Stats): StatCard[] {
       value: stats.rare_claims !== null ? String(stats.rare_claims) : "—",
       subValue: "bonus points",
       accent: "pink",
-      icon: "💎",
+      Icon: Gem,
       description: "Hard-to-find answers worth extra points",
     },
     {
@@ -78,7 +79,7 @@ function buildStatCards(stats: Stats): StatCard[] {
       value: stats.average_claim_rank !== null ? `#${stats.average_claim_rank.toFixed(1)}` : "—",
       subValue: "claim position",
       accent: "blue",
-      icon: "🥇",
+      Icon: Medal,
       description: "How quickly you snap answers compared to others",
     },
   ];
@@ -86,14 +87,33 @@ function buildStatCards(stats: Stats): StatCard[] {
 
 export function StatsOverview({ stats }: Props) {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [animatedValues, setAnimatedValues] = useState<string[]>([]);
   const statCards = buildStatCards(stats);
+
+  // Animate values on mount
+  useEffect(() => {
+    const values = statCards.map(card => card.value);
+    setAnimatedValues(values);
+  }, []);
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.sectionTitle}>
-        <span className={styles.titleIcon}>📊</span>
-        Quick Stats
-      </h2>
+      {/* Corner decorations */}
+      <div className={styles.cornerTL} />
+      <div className={styles.cornerTR} />
+      <div className={styles.cornerBL} />
+      <div className={styles.cornerBR} />
+
+      <div className={styles.headerRow}>
+        <h2 className={styles.sectionTitle}>
+          <span className={styles.titleIcon}><BarChart3 size={20} /></span>
+          Quick Stats
+        </h2>
+        <div className={styles.systemStatus}>
+          <Cpu size={14} className={styles.cpuIcon} />
+          <span>SYSTEM ONLINE</span>
+        </div>
+      </div>
       
       <div className={styles.grid}>
         {statCards.map((card, index) => (
@@ -103,10 +123,11 @@ export function StatsOverview({ stats }: Props) {
             onMouseEnter={() => setHoveredCard(index)}
             onMouseLeave={() => setHoveredCard(null)}
           >
-            <div className={styles.cardIcon}>{card.icon}</div>
+            <div className={styles.cardGlow} />
+            <div className={styles.cardIcon}><card.Icon size={24} /></div>
             <div className={styles.cardContent}>
               <div className={`${styles.cardValue} ${styles[`value_${card.accent}`]}`}>
-                {card.value}
+                {animatedValues[index] || card.value}
               </div>
               <div className={styles.cardLabel}>{card.label}</div>
               {card.subValue && (
@@ -123,20 +144,35 @@ export function StatsOverview({ stats }: Props) {
         ))}
       </div>
 
+      {/* XP Bar with arcade styling */}
       <div className={styles.levelMeter}>
         <div className={styles.levelHeader}>
-          <span className={styles.levelLabel}>Experience Level</span>
-          <span className={styles.levelValue}>Level 12</span>
+          <div className={styles.levelBadge}>
+            <span className={styles.levelNumber}>15</span>
+            <span className={styles.levelLabelInner}>LVL</span>
+          </div>
+          <div className={styles.levelInfo}>
+            <span className={styles.levelLabel}>Experience Progress</span>
+            <span className={styles.levelValue}>2,450 / 3,600 XP</span>
+          </div>
+          <div className={styles.levelPercent}>68%</div>
         </div>
         <div className={styles.levelTrack}>
           <div 
             className={styles.levelProgress} 
             style={{ width: "68%" }}
-          />
+          >
+            <div className={styles.levelProgressShine} />
+          </div>
+          <div className={styles.levelMarkers}>
+            {[25, 50, 75].map(mark => (
+              <div key={mark} className={styles.levelMarker} style={{ left: `${mark}%` }} />
+            ))}
+          </div>
         </div>
         <div className={styles.levelFooter}>
-          <span>2,450 XP</span>
-          <span>3,600 XP to Level 13</span>
+          <span className={styles.xpNeeded}>1,150 XP to Level 16</span>
+          <span className={styles.xpBonus}>+50% XP Boost Active</span>
         </div>
       </div>
     </div>
