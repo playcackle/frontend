@@ -89,17 +89,15 @@ function TourStep() {
           <div className={`${styles.tourTail} ${styles.tourTailDownCenter}`} />
         </div>
         <div className={styles.tourCallout}>
-          <span className={styles.tourCalloutNum}>4</span>
+          <span className={styles.tourCalloutNum}>5</span>
           <div className={styles.tourCalloutBody}>
-            <strong className={styles.tourCalloutTitle}>Hints</strong>
+            <strong className={styles.tourCalloutTitle}>Leaderboard</strong>
             <p>
-              Hints appear as{" "}
-              <strong className={styles.tourCyan}>cyan chips</strong> below the
-              answer grid. Bot Bob also{" "}
-              <strong>snipes clues in the chat</strong>.
+              Live scores update as answers are claimed. Bot Bob announces{" "}
+              <strong>accolades</strong> in the chat after the game.
             </p>
           </div>
-          <div className={`${styles.tourTail} ${styles.tourTailDownCenter}`} />
+          <div className={`${styles.tourTail} ${styles.tourTailDownLeft}`} />
         </div>
       </div>
 
@@ -297,15 +295,17 @@ function TourStep() {
           <div className={`${styles.tourTail} ${styles.tourTailUpCenter}`} />
         </div>
         <div className={styles.tourCallout}>
-          <span className={styles.tourCalloutNum}>5</span>
+          <span className={styles.tourCalloutNum}>4</span>
           <div className={styles.tourCalloutBody}>
-            <strong className={styles.tourCalloutTitle}>Leaderboard</strong>
+            <strong className={styles.tourCalloutTitle}>Hints</strong>
             <p>
-              Live scores update as answers are claimed. Bot Bob announces{" "}
-              <strong>accolades</strong> in the chat after the game.
+              Hints appear as{" "}
+              <strong className={styles.tourCyan}>cyan chips</strong> below the
+              answer grid. Bot Bob also{" "}
+              <strong>snipes clues in the chat</strong>.
             </p>
           </div>
-          <div className={`${styles.tourTail} ${styles.tourTailUpLeft}`} />
+          <div className={`${styles.tourTail} ${styles.tourTailUpCenter}`} />
         </div>
       </div>
     </div>
