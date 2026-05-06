@@ -74,6 +74,14 @@ function TourStep() {
           <div className={`${styles.tourTail} ${styles.tourTailDownRight}`} />
         </div>
         <div className={styles.tourCallout}>
+          <span className={styles.tourCalloutNum}>6</span>
+          <div className={styles.tourCalloutBody}>
+            <strong className={styles.tourCalloutTitle}>Beat the clock</strong>
+            <p>The <strong className={styles.tourYellow}>timer</strong> counts down each round. Find as many answers as you can <strong>before it hits zero</strong>.</p>
+          </div>
+          <div className={`${styles.tourTail} ${styles.tourTailDownCenter}`} />
+        </div>
+        <div className={styles.tourCallout}>
           <span className={styles.tourCalloutNum}>4</span>
           <div className={styles.tourCalloutBody}>
             <strong className={styles.tourCalloutTitle}>Hints</strong>
@@ -81,25 +89,21 @@ function TourStep() {
           </div>
           <div className={`${styles.tourTail} ${styles.tourTailDownCenter}`} />
         </div>
-
       </div>
 
       {/* Frozen game UI */}
       <div className={styles.tourGame}>
-        {/* Header */}
-        <div className={styles.tourGameHeader}>
-          <span className={styles.tourGameTitle}>MAMMALS</span>
-        </div>
-        {/* Stats row */}
+        {/* Stats row — matches real StatsRow: cyan tiles, snarky h3 label + large white value */}
         <div className={styles.tourStatsRow}>
           {[
-            { label: "Looking for", value: "MAMMALS" },
-            { label: "Example, n00b", value: "Dog" },
-            { label: "Timer", value: "00:44", accent: true },
-            { label: "Round", value: "1 / 12" },
-            { label: "Dorks in arena", value: "7" },
+            { label: "Looking for:", value: "MAMMALS" },
+            { label: "Example, n00b:", value: "Dog" },
+            { label: "Hurry up.", value: "00:28", accent: true },
+            { label: "Don't mess up.", value: "1 / 12" },
+            { label: "Dorks in arena:", value: "7" },
+            { label: "Gameroom:", value: "fun-room" },
           ].map((s) => (
-            <div key={s.label} className={styles.tourStatTile}>
+            <div key={s.label} className={`${styles.tourStatTile} ${s.accent ? styles.tourStatTileTimer : ""}`}>
               <span className={styles.tourStatLabel}>{s.label}</span>
               <span className={`${styles.tourStatValue} ${s.accent ? styles.tourStatAccent : ""}`}>{s.value}</span>
             </div>
@@ -210,10 +214,10 @@ function TourStep() {
           <div className={`${styles.tourTail} ${styles.tourTailUpCenter}`} />
         </div>
           <div className={styles.tourCallout}>
-          <span className={styles.tourCalloutNum}>6</span>
+          <span className={styles.tourCalloutNum}>5</span>
           <div className={styles.tourCalloutBody}>
-            <strong className={styles.tourCalloutTitle}>Beat the clock</strong>
-            <p>Every room has a <strong>countdown timer</strong>. Find as many answers as you can <strong>before time runs out.</strong> Bot Bob announces accolades in the chat.</p>
+            <strong className={styles.tourCalloutTitle}>Leaderboard</strong>
+            <p>Live scores update as answers are claimed. Bot Bob announces <strong>accolades</strong> in the chat after the game.</p>
           </div>
           <div className={`${styles.tourTail} ${styles.tourTailUpLeft}`} />
         </div>

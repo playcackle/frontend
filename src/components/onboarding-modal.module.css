@@ -310,6 +310,7 @@
 
 .tourPurple { color: #7c3aed; }
 .tourCyan   { color: #00dcff; font-weight: bold; }
+.tourYellow { color: #ffcc00; font-weight: bold; }
 
 /* Callout tails */
 .tourTail {
@@ -491,8 +492,20 @@
 }
 
 .tourStatAccent {
-  color: var(--neon-blue);
-  text-shadow: 0 0 6px var(--neon-blue);
+  color: #ffcc00;
+  text-shadow: 0 0 6px rgba(255, 204, 0, 0.8);
+  animation: timerPulseTour 1s infinite;
+}
+
+@keyframes timerPulseTour {
+  0%   { text-shadow: 0 0 6px rgba(255,204,0,0.6); }
+  50%  { text-shadow: 0 0 14px rgba(255,204,0,1), 0 0 20px rgba(255,204,0,0.5); }
+  100% { text-shadow: 0 0 6px rgba(255,204,0,0.6); }
+}
+
+.tourStatTileTimer {
+  border-color: rgba(255, 204, 0, 0.4);
+  box-shadow: 0 0 6px rgba(255, 204, 0, 0.2);
 }
 
 .tourContentRow {
