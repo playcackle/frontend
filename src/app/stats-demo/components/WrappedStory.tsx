@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Hand, ChevronRight, Share2, PartyPopper } from "lucide-react";
 import styles from "./WrappedStory.module.css";
 
 interface StorySlide {
@@ -225,14 +226,12 @@ export function WrappedStory({ playerName, stats, topCategory, playStyle, onClos
         <div className={`${styles.slideContent} ${styles[`slide_${slide.type}`]}`}>
           {slide.type === "intro" && (
             <>
-              <div className={styles.introEmoji}>&#128075;</div>
+              <div className={styles.introEmoji}><Hand size={48} /></div>
               <h1 className={styles.introTitle}>{slide.title}</h1>
               <p className={styles.introSubtitle}>{slide.subtitle}</p>
               <div className={styles.swipeHint}>
                 <span>Tap to continue</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
+                <ChevronRight size={20} />
               </div>
             </>
           )}
@@ -268,17 +267,11 @@ export function WrappedStory({ playerName, stats, topCategory, playStyle, onClos
 
           {slide.type === "outro" && (
             <>
-              <div className={styles.outroIcon}>&#127881;</div>
+              <div className={styles.outroIcon}><PartyPopper size={48} /></div>
               <h1 className={styles.outroTitle}>{slide.title}</h1>
               <p className={styles.outroSubtitle}>{slide.subtitle}</p>
               <button className={styles.shareBtn}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="18" cy="5" r="3" />
-                  <circle cx="6" cy="12" r="3" />
-                  <circle cx="18" cy="19" r="3" />
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                </svg>
+                <Share2 size={20} />
                 Share Stats
               </button>
             </>

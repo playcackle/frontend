@@ -14,6 +14,7 @@ import { ShareableStatCard } from "./components/ShareableStatCard";
 import { LiveLeaderboard } from "./components/LiveLeaderboard";
 import { InteractiveCharts } from "./components/InteractiveCharts";
 import { RetentionStats } from "./components/RetentionStats";
+import { Sparkles } from "lucide-react";
 
 // Mock data for demonstration
 const mockPlayerStats = {
@@ -187,7 +188,7 @@ export default function StatsDemoPage() {
           </div>
           
           <button className={styles.wrappedBtn} onClick={() => setShowWrappedStory(true)}>
-            <span className={styles.wrappedIcon}>&#10024;</span>
+            <span className={styles.wrappedIcon}><Sparkles size={16} /></span>
             View Your Wrapped
           </button>
         </div>

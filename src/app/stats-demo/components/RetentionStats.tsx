@@ -356,7 +356,7 @@ export function RetentionStats() {
                       <div className={styles.challengeReward}>
                         <span className={styles.rewardAmount}>+{challenge.reward}</span>
                         <span className={styles.rewardType}>XP</span>
-                        {challenge.completed && <span className={styles.claimedBadge}>✓</span>}
+                        {challenge.completed && <span className={styles.claimedBadge}><Check size={14} /></span>}
                       </div>
                     </div>
                   ))}
@@ -401,7 +401,7 @@ export function RetentionStats() {
             {/* Bonus Challenge */}
             <div className={styles.bonusChallenge}>
               <div className={styles.bonusHeader}>
-                <span className={styles.bonusIcon}>⚡</span>
+                <span className={styles.bonusIcon}><Zap size={16} /></span>
                 <span className={styles.bonusTitle}>BONUS CHALLENGE</span>
               </div>
               <div className={styles.bonusContent}>
@@ -450,7 +450,7 @@ export function RetentionStats() {
                 ))}
               </div>
               <div className={styles.catchUpMessage}>
-                <span className={styles.catchUpIcon}>💪</span>
+                <span className={styles.catchUpIcon}><Dumbbell size={16} /></span>
                 <span>Win 2 more games to pass Alex!</span>
               </div>
             </div>
@@ -458,17 +458,17 @@ export function RetentionStats() {
             {/* Social Stats */}
             <div className={styles.socialStats}>
               <div className={styles.socialStatCard}>
-                <div className={styles.socialStatIcon}>👥</div>
+                <div className={styles.socialStatIcon}><Users size={20} /></div>
                 <div className={styles.socialStatValue}>12</div>
                 <div className={styles.socialStatLabel}>Friends Playing</div>
               </div>
               <div className={styles.socialStatCard}>
-                <div className={styles.socialStatIcon}>🎯</div>
+                <div className={styles.socialStatIcon}><Target size={20} /></div>
                 <div className={styles.socialStatValue}>5</div>
                 <div className={styles.socialStatLabel}>Friends Beaten Today</div>
               </div>
               <div className={styles.socialStatCard}>
-                <div className={styles.socialStatIcon}>📊</div>
+                <div className={styles.socialStatIcon}><BarChart3 size={20} /></div>
                 <div className={styles.socialStatValue}>Top 15%</div>
                 <div className={styles.socialStatLabel}>Global Ranking</div>
               </div>
@@ -476,7 +476,7 @@ export function RetentionStats() {
 
             {/* Invite Friends */}
             <div className={styles.inviteCard}>
-              <div className={styles.inviteIcon}>🎁</div>
+              <div className={styles.inviteIcon}><Gift size={20} /></div>
               <div className={styles.inviteText}>
                 <strong>Invite friends, earn rewards!</strong>
                 <p>Get 200 XP for each friend who joins</p>
@@ -493,15 +493,15 @@ export function RetentionStats() {
               <h4 className={styles.bestsTitle}>Personal Bests</h4>
               <div className={styles.bestsGrid}>
                 {[
-                  { label: "Highest Score", value: mockRetentionData.personalBests.highestScore, icon: "🏆" },
-                  { label: "Fastest Snap", value: `${mockRetentionData.personalBests.fastestSnap}s`, icon: "⚡" },
-                  { label: "Perfect Games", value: mockRetentionData.personalBests.perfectGames, icon: "💯" },
-                  { label: "Win Streak", value: mockRetentionData.personalBests.longestWinStreak, icon: "🔥" },
-                  { label: "Best Round", value: mockRetentionData.personalBests.mostPointsInRound, icon: "⭐" },
-                  { label: "Best Accuracy", value: `${mockRetentionData.personalBests.bestAccuracy}%`, icon: "🎯" },
+                  { label: "Highest Score", value: mockRetentionData.personalBests.highestScore, Icon: Trophy },
+                  { label: "Fastest Snap", value: `${mockRetentionData.personalBests.fastestSnap}s`, Icon: Zap },
+                  { label: "Perfect Games", value: mockRetentionData.personalBests.perfectGames, Icon: Star },
+                  { label: "Win Streak", value: mockRetentionData.personalBests.longestWinStreak, Icon: Flame },
+                  { label: "Best Round", value: mockRetentionData.personalBests.mostPointsInRound, Icon: Medal },
+                  { label: "Best Accuracy", value: `${mockRetentionData.personalBests.bestAccuracy}%`, Icon: Target },
                 ].map((record, i) => (
                   <div key={i} className={styles.bestCard}>
-                    <div className={styles.bestIcon}>{record.icon}</div>
+                    <div className={styles.bestIcon}><record.Icon size={20} /></div>
                     <div className={styles.bestValue}>{record.value}</div>
                     <div className={styles.bestLabel}>{record.label}</div>
                   </div>
@@ -511,25 +511,25 @@ export function RetentionStats() {
 
             {/* Near Misses - Motivational */}
             <div className={styles.nearMisses}>
-              <h4 className={styles.nearMissTitle}>So Close! 💪</h4>
+              <h4 className={styles.nearMissTitle}>So Close!</h4>
               <p className={styles.nearMissSubtitle}>These near-misses show you&apos;re on the edge of greatness</p>
               <div className={styles.nearMissList}>
                 <div className={styles.nearMissItem}>
-                  <div className={styles.nearMissIcon}>🎯</div>
+                  <div className={styles.nearMissIcon}><Target size={18} /></div>
                   <div className={styles.nearMissInfo}>
                     <strong>{mockRetentionData.nearMisses.almostPerfectGames} almost-perfect games</strong>
                     <span>Just one wrong answer away from perfection!</span>
                   </div>
                 </div>
                 <div className={styles.nearMissItem}>
-                  <div className={styles.nearMissIcon}>🔥</div>
+                  <div className={styles.nearMissIcon}><Flame size={18} /></div>
                   <div className={styles.nearMissInfo}>
                     <strong>{mockRetentionData.nearMisses.oneAwayFromStreak} times one away from a longer streak</strong>
                     <span>You&apos;re building consistency!</span>
                   </div>
                 </div>
                 <div className={styles.nearMissItem}>
-                  <div className={styles.nearMissIcon}>⚔️</div>
+                  <div className={styles.nearMissIcon}><Swords size={18} /></div>
                   <div className={styles.nearMissInfo}>
                     <strong>{mockRetentionData.nearMisses.narrowLosses} narrow losses</strong>
                     <span>Close games mean you&apos;re competitive!</span>
@@ -540,7 +540,7 @@ export function RetentionStats() {
 
             {/* Comeback Stats */}
             <div className={styles.comebackStats}>
-              <h4 className={styles.comebackTitle}>Comeback King 👑</h4>
+              <h4 className={styles.comebackTitle}><Crown size={16} /> Comeback King</h4>
               <div className={styles.comebackGrid}>
                 <div className={styles.comebackStat}>
                   <div className={styles.comebackValue}>{mockRetentionData.comebackStats.biggestComeback}</div>
