@@ -92,8 +92,10 @@ export type ConnectionStatus =
   | "connecting"
   | "connected"
   | "reconnecting"
-  | "disconnected";
+  | "disconnected"
+  | "error";
 export const connectionStatusAtom = atom<ConnectionStatus>("connecting");
+export const chatConnectionStatusAtom = atom<ConnectionStatus>("connecting");
 
 export const animationStateAtom = atom<AnimationState>({
   attentionAnimation: "",

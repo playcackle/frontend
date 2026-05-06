@@ -30,14 +30,13 @@ import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
 import {
   animationStateAtom,
+  chatConnectionStatusAtom,
   currentUserIdAtom,
   isRoundBreakAtom,
   loadingAtom,
   lobbyStatusAtom,
   minPlayersNeededAtom,
   playerCountAtom,
-  playAgainStateAtom,
-  roundNameAtom,
   scoresAtom,
   showCountDownAtom,
   timeRemainingAtom,
@@ -77,11 +76,9 @@ export default function GameroomPage() {
   const timeRemaining = useAtomValue(timeRemainingAtom);
   const showCountDown = useAtomValue(showCountDownAtom);
   const scores = useAtomValue(scoresAtom);
-  const roundName = useAtomValue(roundNameAtom);
   const lobbyStatus = useAtomValue(lobbyStatusAtom);
   const minPlayersNeeded = useAtomValue(minPlayersNeededAtom);
   const playerCount = useAtomValue(playerCountAtom);
-  const playAgainState = useAtomValue(playAgainStateAtom);
 
   const isWaiting =
     lobbyStatus === "WAITING" || lobbyStatus === "STARTING_SOON";
@@ -159,28 +156,26 @@ export default function GameroomPage() {
   };
 
   // Chat socket connection
-  function getBaseWsUrl(url: string) {
-    return url.replace(/\/(game|chat)$/, "");
-  }
-  const baseWsUrl = getBaseWsUrl(gameroom?.game_ws_url ?? "");
-  const { sendMessage: sendChatMessage } = useChatSocket(
-    baseWsUrl,
-    gameroom?.token ?? "",
-  );
+  const baseWsUrl = (gameroom?.game_ws_url ?? "").replace(/\/(game|chat)$/, "");
+  const {
+    sendMessage: sendChatMessage,
+    connectionStatus: chatConnectionStatus,
+    reconnect: reconnectChat,
+  } = useChatSocket(baseWsUrl, gameroom?.token ?? "");
 
-  // Unified submission handler
-  const handleUnifiedSubmit = (message: string, isAnswer: boolean) => {
+  const setChatConnectionStatus = useSetAtom(chatConnectionStatusAtom);
+  useEffect(() => {
+    setChatConnectionStatus(chatConnectionStatus);
+  }, [chatConnectionStatus, setChatConnectionStatus]);
+
+  // Unified submission handler — returns false if the message could not be sent
+  const handleUnifiedSubmit = (message: string, isAnswer: boolean): boolean => {
     if (isAnswer) {
-      // Answer submission logic
       addAnswerBubble(message);
       submitAnswer(message, sendEvent);
-
-      // Add to unified messages as answer attempt (visible to all)
-      // This will be handled by backend cross-namespace emission
-    } else {
-      // Chat message logic
-      sendChatMessage(message);
+      return true;
     }
+    return sendChatMessage(message);
   };
 
   const handleSoundsLoaded = useRef(false);
@@ -198,7 +193,7 @@ export default function GameroomPage() {
 
   return (
     <>
-      <ConnectionBanner onRetry={reconnectGame} />
+      <ConnectionBanner onRetry={reconnectGame} onChatRetry={reconnectChat} />
       {loading && <Progress />}
       {!loading && (
         <div className={styles.container}>
