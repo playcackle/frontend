@@ -1,0 +1,229 @@
+/* Play Style Analysis Component */
+
+.container {
+  background: rgba(15, 15, 35, 0.8);
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sectionTitle {
+  font-family: var(--retro-font);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.titleIcon {
+  font-size: 1.25rem;
+}
+
+/* Style Card */
+.styleCard {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: rgba(20, 20, 45, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 1.5rem;
+}
+
+.card_blue {
+  border-color: rgba(0, 221, 255, 0.3);
+  background: linear-gradient(135deg, rgba(0, 221, 255, 0.08), rgba(20, 20, 45, 0.7));
+}
+
+.card_pink {
+  border-color: rgba(255, 0, 170, 0.3);
+  background: linear-gradient(135deg, rgba(255, 0, 170, 0.08), rgba(20, 20, 45, 0.7));
+}
+
+.card_purple {
+  border-color: rgba(183, 0, 255, 0.3);
+  background: linear-gradient(135deg, rgba(183, 0, 255, 0.08), rgba(20, 20, 45, 0.7));
+}
+
+.card_green {
+  border-color: rgba(0, 255, 102, 0.3);
+  background: linear-gradient(135deg, rgba(0, 255, 102, 0.08), rgba(20, 20, 45, 0.7));
+}
+
+.styleIcon {
+  font-size: 3rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.styleContent {
+  flex: 1;
+}
+
+.styleName {
+  font-family: var(--retro-font);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.styleDescription {
+  font-family: var(--retro-font);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.trait {
+  font-family: var(--retro-font);
+  font-size: 0.6rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Toggle Row */
+.toggleRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.toggleBtn {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 20, 45, 0.6);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--retro-font);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggleBtn:hover {
+  background: rgba(30, 30, 60, 0.8);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.toggleActive {
+  background: rgba(0, 221, 255, 0.15);
+  border-color: var(--neon-blue);
+  color: var(--neon-blue);
+}
+
+/* Lists */
+.listSection {
+  min-height: 120px;
+}
+
+.insightList,
+.tipList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.insightItem,
+.tipItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(20, 20, 45, 0.5);
+  font-family: var(--retro-font);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.insightIcon,
+.tipIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* Fun Fact */
+.funFact {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  border-radius: 10px;
+  background: rgba(183, 0, 255, 0.1);
+  border: 1px solid rgba(183, 0, 255, 0.2);
+}
+
+.funFactIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.funFactContent {
+  flex: 1;
+}
+
+.funFactLabel {
+  font-family: var(--retro-font);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--neon-purple);
+  margin-bottom: 0.25rem;
+}
+
+.funFactText {
+  font-family: var(--retro-font);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .styleCard {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .traits {
+    justify-content: center;
+  }
+}
