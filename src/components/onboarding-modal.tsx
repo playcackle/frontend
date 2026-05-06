@@ -47,7 +47,7 @@ const STEPS = [
     type: "text" as const,
     icon: "@",
     title: "Beat the Clock",
-    body: "Every room has a countdown timer. Find as many answers as you can before time runs out.",
+    body: "Every room has a countdown timer. Find as many answers as you can before time runs out. Between rounds and after the game, Bot Bob will announce accolades and highlight top performers in the chat.",
   },
   {
     id: 7,
@@ -101,10 +101,10 @@ function TourStep() {
         <div className={styles.tourStatsRow}>
           {[
             { label: "Looking for", value: "MAMMALS" },
-            { label: "Answer with", value: "Things from this category" },
+            { label: "Example, n00b", value: "Dog" },
             { label: "Timer", value: "00:44", accent: true },
-            { label: "Don't miss up", value: "1 / 1" },
-            { label: "Roles in arena", value: "7" },
+            { label: "Round", value: "1 / 12" },
+            { label: "Dorks in arena", value: "7" },
           ].map((s) => (
             <div key={s.label} className={styles.tourStatTile}>
               <span className={styles.tourStatLabel}>{s.label}</span>
@@ -189,7 +189,7 @@ function TourStep() {
           <span className={styles.tourCalloutNum}>6</span>
           <div className={styles.tourCalloutBody}>
             <strong className={styles.tourCalloutTitle}>Beat the clock</strong>
-            <p>Every room has a <strong>countdown timer</strong>. Find as many answers as you can <strong>before time runs out.</strong></p>
+            <p>Every room has a <strong>countdown timer</strong>. Find as many answers as you can <strong>before time runs out.</strong> Bot Bob announces accolades in the chat.</p>
           </div>
           <div className={`${styles.tourTail} ${styles.tourTailUpLeft}`} />
         </div>
