@@ -842,11 +842,6 @@ function ParameterSlider({
 }) {
   const [draft, setDraft] = useState(String(value));
 
-  // Keep draft in sync when value changes externally
-  useEffect(() => {
-    setDraft(String(value));
-  }, [value]);
-
   const commit = () => {
     const v = Number(draft);
     if (!isNaN(v) && draft.trim() !== "") {
@@ -854,6 +849,7 @@ function ParameterSlider({
       setDraft(String(clamped));
       onChange(clamped);
     } else {
+      // Reset to last committed value
       setDraft(String(value));
     }
   };
@@ -874,15 +870,11 @@ function ParameterSlider({
         min={min}
         max={max}
         onChange={(e) => {
-          const raw = e.target.value;
-          setDraft(raw);
-          const v = Number(raw);
-          if (!isNaN(v) && raw.trim() !== "") {
-            onChange(Math.min(max, Math.max(min, v)));
-          }
+          // Local-only — no API call until blur/enter
+          setDraft(e.target.value);
         }}
         onBlur={commit}
-        onKeyDown={(e) => e.key === "Enter" && commit()}
+        onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
       />
     </div>
   );
