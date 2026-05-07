@@ -138,9 +138,9 @@ function generateTrashTalk(
   return taunts[Math.floor(Math.random() * taunts.length)];
 }
 
-// ─── Secondary taunt — accuracy, talks a lot knows nothing ────────────────────
+// ─── Secondary taunt — average score in weakest category ─────────────────────
 
-function buildAccuracyLine(
+function buildScoreTaunt(
   player: Score,
   categoryStats: PlayerCategoryStatsResponse | null,
   isCurrentUser: boolean,
@@ -151,24 +151,46 @@ function buildAccuracyLine(
   const weakestStat = categoryStats.categories.find(
     (c) => c.category_name === weakest,
   );
-  if (!weakestStat || !weakest) return null;
+  if (!weakestStat || !weakest || weakestStat.average_score == null)
+    return null;
 
-  const {
-    successful_snaps: snaps,
-    total_submissions: subs,
-    near_miss_rate: nearMiss,
-  } = weakestStat;
-  const name = isCurrentUser ? "You" : player.display_name;
+  const avg = weakestStat.average_score;
+  const n = isCurrentUser ? "You" : player.display_name;
+  const pos = isCurrentUser ? "your" : `${player.display_name}'s`;
+  const verb = isCurrentUser ? "are" : "is";
 
+  // Below 200 = one or two slots per round at most
+  if (avg < 200) {
+    const taunts: string[] = [
+      `${pos} average score in "${weakest}" is ${avg}. That is one slot. Maybe two on a good day. Barely showing up.`,
+      `${avg} average in "${weakest}". ${n} ${verb} essentially a spectator in that category with extra steps.`,
+      `"${weakest}": avg ${avg}. One slot a round if lucky. The leaderboard does not even notice ${n}.`,
+      `${avg} per round in "${weakest}". At that rate ${n} ${verb} not competing — ${isCurrentUser ? "you're" : "they're"} decorating the scoreboard for everyone else.`,
+      `Average of ${avg} in "${weakest}". That is a participation trophy masquerading as a score.`,
+      `${n} average ${avg} points in "${weakest}". One answer. Sometimes zero. Truly doing the bare minimum.`,
+      `"${weakest}" avg: ${avg}. ${n} ${verb} technically playing. The points suggest otherwise.`,
+    ];
+    return taunts[Math.floor(Math.random() * taunts.length)];
+  }
+
+  // 200–500 = decent but not threatening
+  if (avg < 500) {
+    const taunts: string[] = [
+      `${avg} average in "${weakest}". A few slots per round. Respectable floor, unremarkable ceiling.`,
+      `"${weakest}": avg ${avg}. Not embarrassing, not impressive. The beige of scores.`,
+      `${n} average ${avg} in "${weakest}". Consistent. Consistently mediocre.`,
+      `${avg} per round in "${weakest}". ${n} ${verb} always there. Never really a threat.`,
+      `"${weakest}" avg ${avg}. Hovering around fine. No danger to anyone.`,
+    ];
+    return taunts[Math.floor(Math.random() * taunts.length)];
+  }
+
+  // 500+ = surprisingly decent for their worst category
   const taunts: string[] = [
-    `${snaps} snaps out of ${subs} attempts in "${weakest}"${nearMiss != null ? ` · near-miss rate ${nearMiss}` : ""}. ${name} clearly talk a big game and know absolutely nothing.`,
-    `${subs} submissions. ${snaps} that actually counted. In "${weakest}"${nearMiss != null ? ` · near-miss rate ${nearMiss}` : ""}. ${name} have a lot of opinions for someone so consistently wrong.`,
-    `"${weakest}": ${subs} tries, ${snaps} hits${nearMiss != null ? `, near-miss ${nearMiss}` : ""}. Loud. Confident. Wrong. Classic ${name === "You" ? "you" : player.display_name}.`,
-    `${name} submitted ${subs} times in "${weakest}" and got ${snaps} right${nearMiss != null ? ` — near-miss rate ${nearMiss}` : ""}. The volume suggests knowledge. The results do not.`,
-    `In "${weakest}": ${snaps}/${subs}${nearMiss != null ? ` · near-miss ${nearMiss}` : ""}. ${name} type fast and know little. A dangerous combination.`,
-    `${subs} guesses, ${snaps} correct in "${weakest}"${nearMiss != null ? `, near-miss rate ${nearMiss}` : ""}. ${name} contribute quantity. Not quality. Never quality.`,
+    `${avg} average in "${weakest}" and it is still ${pos} worst category. That is either impressive or a sign the bar is very low everywhere else.`,
+    `"${weakest}": avg ${avg}. For a supposed weak spot that is uncomfortably competent.`,
+    `${n} average ${avg} in ${pos} weakest category. Whatever the strong ones look like must be insufferable.`,
   ];
-
   return taunts[Math.floor(Math.random() * taunts.length)];
 }
 
@@ -196,7 +218,7 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
   const [categoryStats, setCategoryStats] =
     useState<PlayerCategoryStatsResponse | null>(null);
   const [taunt, setTaunt] = useState<string>("");
-  const [accuracyLine, setAccuracyLine] = useState<string | null>(null);
+  const [scoreTaunt, setScoreTaunt] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -207,13 +229,13 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
         if (!cancelled) {
           setCategoryStats(stats);
           setTaunt(generateTrashTalk(player, stats, isCurrentUser));
-          setAccuracyLine(buildAccuracyLine(player, stats, isCurrentUser));
+          setScoreTaunt(buildScoreTaunt(player, stats, isCurrentUser));
           setLoaded(true);
         }
       } catch {
         if (!cancelled) {
           setTaunt(generateTrashTalk(player, null, isCurrentUser));
-          setAccuracyLine(null);
+          setScoreTaunt(null);
           setLoaded(true);
         }
       }
@@ -267,8 +289,10 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
       <p className={`${styles.taunt} ${loaded ? styles.tauntVisible : ""}`}>
         {loaded ? taunt : "analyzing stats..."}
       </p>
-      {loaded && accuracyLine && (
-        <p className={styles.accuracyLine}>{accuracyLine}</p>
+      {loaded && scoreTaunt && (
+        <p className={`${styles.scoreTaunt} ${styles.tauntVisible}`}>
+          {scoreTaunt}
+        </p>
       )}
     </div>
   );
