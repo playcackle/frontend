@@ -261,24 +261,11 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
       style={{ animationDelay: `${entryDelay}ms` }}
     >
       <div className={styles.cardHeader}>
-        <div
-          className={styles.avatar}
-          style={{ backgroundColor: color, boxShadow: `0 0 10px ${color}88` }}
-        >
-          {initials}
-        </div>
         <div className={styles.playerMeta}>
           <span className={styles.playerName}>
             {player.display_name}
             {isCurrentUser && <span className={styles.youBadge}>YOU</span>}
           </span>
-          {categoryStats && (
-            <span className={styles.playerStats}>
-              {categoryStats.most_played_category
-                ? `fav: ${categoryStats.most_played_category}`
-                : "no data"}
-            </span>
-          )}
         </div>
         {categoryStats?.weakest_accuracy_category && (
           <div className={styles.weakBadge}>
@@ -289,11 +276,6 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
       <p className={`${styles.taunt} ${loaded ? styles.tauntVisible : ""}`}>
         {loaded ? taunt : "analyzing stats..."}
       </p>
-      {loaded && scoreTaunt && (
-        <p className={`${styles.scoreTaunt} ${styles.tauntVisible}`}>
-          {scoreTaunt}
-        </p>
-      )}
     </div>
   );
 }
@@ -388,14 +370,10 @@ export default function WaitingPanel({ currentUserId }: WaitingPanelProps) {
       {/* Header */}
       <div className={styles.panelHeader}>
         <p className={styles.waitingTitle}>
-          {missingPlayers === 0 ? "LFG!!!1!!!!" : "Waiting for more idiots"}
+          {missingPlayers === 0 ? "LFG!!!1!!!! " : "Waiting for more idiots, "}
+          <span className={styles.missingNum}>{missingPlayers}</span> still
+          missing
         </p>
-        {missingPlayers > 0 && (
-          <p className={styles.waitingCount}>
-            <span className={styles.missingNum}>{missingPlayers}</span> still
-            missing
-          </p>
-        )}
       </div>
 
       {/* Player roster */}
