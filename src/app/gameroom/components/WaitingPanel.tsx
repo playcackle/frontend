@@ -96,33 +96,37 @@ function generateTrashTalk(
 
   const snaps = weakestStat.successful_snaps;
   const nearMiss = weakestStat.near_miss_rate;
-
-  const snapPhrase = snaps === 0
-    ? "zero successful snaps"
-    : `only ${snaps} snap${snaps === 1 ? "" : "s"}`;
-
-  const nearMissPhrase = nearMiss != null && nearMiss > 0
-    ? `, near-miss rate of ${nearMiss}`
-    : "";
+  const n = name;
+  const dn = player.display_name;
+  const snap = snaps === 0 ? "zero successful snaps" : `only ${snaps} snap${snaps === 1 ? "" : "s"}`;
+  const nm = nearMiss != null && nearMiss > 0 ? `, near-miss rate of ${nearMiss}` : "";
+  const pos = isCurrentUser ? "your" : `${dn}'s`;
 
   const taunts: string[] = [
-    `${name} are genuinely terrible at "${weakest}" — ${snapPhrase}${nearMissPhrase}. Statistically, ${pronoun2} should just skip it.`,
-    `"${weakest}" is ${name === "You" ? "your" : `${player.display_name}'s`} graveyard. ${snapPhrase}${nearMissPhrase}. Keep showing up though.`,
-    `${name} see "${weakest}" on the board and something dies inside — ${snapPhrase}${nearMissPhrase}.`,
-    `${snapPhrase} in "${weakest}"${nearMissPhrase}. The data does not lie. ${name === "You" ? "You" : player.display_name} might.`,
-    `In "${weakest}", ${name} have contributed ${snapPhrase}${nearMissPhrase}. Remarkable in how little that is.`,
+    `${n} are genuinely terrible at "${weakest}" — ${snap}${nm}. Statistically, ${pronoun2} should just skip it.`,
+    `"${weakest}" is ${pos} graveyard. ${snap}${nm}. Keep showing up though.`,
+    `${n} see "${weakest}" on the board and something dies inside — ${snap}${nm}.`,
+    `${snap} in "${weakest}"${nm}. The data does not lie. ${n} might.`,
+    `In "${weakest}", ${n} have contributed ${snap}${nm}. Remarkable in how little that is.`,
+    `${snap}${nm} in "${weakest}". ${n} have had many chances. ${n} have wasted all of them.`,
+    `"${weakest}" has seen ${n} fail ${snap}${nm}. The category remembers. ${n} apparently do not.`,
+    `${n} enter "${weakest}" every time with the same energy and leave with ${snap}${nm}. The definition of insanity.`,
+    `${snap}${nm} — that is ${pos} entire "${weakest}" resume. It is a short resume.`,
+    `If "${weakest}" is on the board, look away from ${n}. ${snap}${nm}. It is not getting better.`,
   ];
 
   if (mostPlayed === weakest) {
     taunts.push(
-      `"${weakest}" is ${name === "You" ? "your" : `${player.display_name}'s`} most played category. Also the worst one. ${snapPhrase}${nearMissPhrase}. Commitment to failure.`,
-      `${name} keep coming back to "${weakest}" despite ${snapPhrase}${nearMissPhrase}. That is not confidence, that is delusion.`,
+      `"${weakest}" is ${pos} most played category. Also the worst one. ${snap}${nm}. Commitment to failure.`,
+      `${n} keep coming back to "${weakest}" despite ${snap}${nm}. That is not confidence, that is delusion.`,
+      `${n} have spent more time in "${weakest}" than anywhere else and have ${snap}${nm} to show for it. Inspiring.`,
     );
   }
 
   if (totalRounds >= 20) {
     taunts.push(
-      `${totalRounds} rounds deep and "${weakest}" is still a disaster — ${snapPhrase}${nearMissPhrase}. Nothing is improving.`,
+      `${totalRounds} rounds deep and "${weakest}" is still a disaster — ${snap}${nm}. Nothing is improving.`,
+      `After ${totalRounds} rounds, "${weakest}" still has ${n} beat with ${snap}${nm}. Some people just never learn.`,
     );
   }
 
