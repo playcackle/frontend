@@ -118,6 +118,18 @@
   font-family: var(--retro-font-alt) !important;
 }
 
+.errorCode {
+  font-size: 0.9rem;
+  color: #ff3366;
+  font-family: var(--retro-font);
+  letter-spacing: 1px;
+  background-color: rgba(255, 51, 102, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 51, 102, 0.3);
+  display: inline-block;
+}
+
 .modalActions {
   position: relative;
   z-index: 2;

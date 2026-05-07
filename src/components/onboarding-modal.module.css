@@ -304,6 +304,10 @@
   margin: 0;
 }
 
+.tourCoda {
+  margin-top: 0.35rem !important;
+}
+
 .tourPurple { color: #7c3aed; }
 .tourCyan   { color: #00dcff; font-weight: bold; }
 .tourYellow { color: #ffcc00; font-weight: bold; }
@@ -343,6 +347,14 @@
   border-right: 9px solid transparent;
   border-bottom: 12px solid #fff;
 }
+.tourTailUpLeft {
+  top: -12px;
+  left: 24px;
+  border-left: 0 solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 12px solid #fff;
+}
+
 .tourTailDownCenter {
   bottom: -12px;
   left: 50%;
@@ -350,6 +362,21 @@
   border-left: 9px solid transparent;
   border-right: 9px solid transparent;
   border-top: 12px solid #fff;
+}
+
+.tourOrange { color: #f97316; font-weight: bold; }
+
+/* Hot Wire slot */
+.tourSlotHotWire {
+  background: #f97316;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.7);
+  border: 1px solid rgba(255, 200, 100, 0.4);
+  animation: hotWirePulse 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes hotWirePulse {
+  from { box-shadow: 0 0 4px rgba(249, 115, 22, 0.5); }
+  to   { box-shadow: 0 0 12px rgba(249, 115, 22, 0.9); }
 }
 
 /* Slots + hints wrapper */
@@ -402,6 +429,24 @@
   overflow: hidden;
   filter: brightness(0.88);
   flex-shrink: 0;
+}
+
+.tourGameHeader {
+  background: rgba(0,0,0,0.6);
+  border-bottom: 1px solid rgba(0,221,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 1rem;
+}
+
+.tourGameTitle {
+  font-family: var(--retro-font);
+  font-size: 0.85rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
 }
 
 .tourStatsRow {

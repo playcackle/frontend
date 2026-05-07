@@ -108,6 +108,15 @@
   cursor: not-allowed;
 }
 
+.estimateResult {
+  color: #00ff00;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(0, 255, 0, 0.1);
+  border-radius: 4px;
+}
+
 .estimateWarning {
   color: #ff6b6b;
   font-size: 0.85rem;
@@ -142,6 +151,27 @@
   color: #a0a0ff;
   font-size: 0.8rem;
   margin: 0;
+}
+
+/* Buttons */
+.generateButton {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
+  color: #000;
+  font-weight: 900;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+}
+
+.generateButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(255, 0, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.5);
 }
 
 .submitButton {

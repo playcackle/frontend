@@ -175,6 +175,18 @@
   font-family: var(--retro-font-alt);
 }
 
+.githubButton {
+  background-color: #24292e;
+}
+
+.twitterButton {
+  background-color: #1da1f2;
+}
+
+.facebookButton {
+  background-color: #4267b2;
+}
+
 .discordButton {
   background-color: #5865f2;
   padding: 1rem;
@@ -226,6 +238,17 @@
 
 .switchLink:hover {
   text-shadow: 0 0 5px var(--neon-blue);
+}
+
+.demoNotice {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background-color: rgba(255, 204, 0, 0.2);
+  border: 1px solid rgba(255, 204, 0, 0.3);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #ffcc00;
 }
 
 @keyframes fadeIn {

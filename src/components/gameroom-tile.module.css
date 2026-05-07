@@ -129,6 +129,59 @@
   color: #ff3366;
 }
 
+.lobbyDifficulty {
+  position: relative;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid var(--lobby-color);
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.lobbyCard:hover .lobbyDifficulty {
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px var(--lobby-color), 0 0 15px var(--lobby-color);
+  transform: scale(1.1);
+  animation: difficultyPulse 1.5s infinite alternate;
+}
+
+@keyframes difficultyPulse {
+  0% {
+    box-shadow: 0 0 10px var(--lobby-color);
+  }
+  100% {
+    box-shadow: 0 0 20px var(--lobby-color), 0 0 30px var(--lobby-color);
+  }
+}
+
+/* Added lobby description styling */
+.lobbyDescription {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  line-height: 1.4;
+  flex-grow: 1; /* Allow description to take available space */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--retro-font-alt);
+}
+
+.lobbyCard:hover .lobbyDescription {
+  color: white;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
 .lobbyCapacity {
   width: 100%;
   position: relative;
@@ -203,6 +256,11 @@
 }
 
 @media (max-width: 768px) {
+  .lobbysContainer {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
   .lobbyCard {
     padding: 1.5rem;
     min-height: 160px;
@@ -211,5 +269,10 @@
   .lobbyName {
     font-size: 1rem;
     min-height: 2.5rem;
+  }
+
+  .lobbyDescription {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2; /* Limit to 2 lines on mobile */
   }
 }
