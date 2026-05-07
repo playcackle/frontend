@@ -12,6 +12,7 @@ interface BotControlsProps {
 export function BotControls({ lobbyId }: BotControlsProps) {
   const [botCount, setBotCount] = useState(5);
   const [accuracy, setAccuracy] = useState(70); // Percentage (0-100)
+  const [typoRate, setTypoRate] = useState(20); // Percentage (0-100)
   const [minDelay, setMinDelay] = useState(5); // Seconds
   const [maxDelay, setMaxDelay] = useState(30); // Seconds
   const [activeBots, setActiveBots] = useState<BotInfo[]>([]);
@@ -46,7 +47,7 @@ export function BotControls({ lobbyId }: BotControlsProps) {
       await botsApi.addToLobby(lobbyId, {
         count: botCount,
         accuracy: accuracy / 100, // Convert percentage to 0-1
-        typo_rate: 0.2,
+        typo_rate: typoRate / 100, // Convert percentage to 0-1
         min_delay_seconds: minDelay,
         max_delay_seconds: maxDelay,
       });
@@ -172,6 +173,34 @@ export function BotControls({ lobbyId }: BotControlsProps) {
           <p className={styles.hint}>
             Higher accuracy means bots will submit more correct answers (with occasional
             typos)
+          </p>
+        </div>
+
+        <div className={styles.controlGroup}>
+          <div className={styles.controlHeader}>
+            <label className={styles.controlLabel}>Typo Rate</label>
+            <span className={styles.controlValue}>{typoRate}%</span>
+          </div>
+          <Slider.Root
+            className={styles.sliderRoot}
+            value={[typoRate]}
+            onValueChange={([value]) => setTypoRate(value)}
+            min={0}
+            max={100}
+            step={5}
+          >
+            <Slider.Track className={styles.sliderTrack}>
+              <Slider.Range className={styles.sliderRange} />
+            </Slider.Track>
+            <Slider.Thumb className={styles.sliderThumb} />
+          </Slider.Root>
+          <div className={styles.sliderLabels}>
+            <span>No typos</span>
+            <span>Always typo</span>
+          </div>
+          <p className={styles.hint}>
+            Higher typo rate means correct answers are more likely to have misspellings —
+            useful for testing near-miss and snipe mechanics
           </p>
         </div>
 
