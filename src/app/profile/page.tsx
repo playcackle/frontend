@@ -237,7 +237,7 @@ export default function ProfilePage() {
       <div className={styles.container}>
         <div className={styles.stateContainer}>
           <div className={styles.spinner} />
-          <p className={styles.stateText}>Loading profile...</p>
+          <p className={styles.stateText}>Pulling your stats...</p>
         </div>
       </div>
     );
@@ -308,11 +308,11 @@ export default function ProfilePage() {
                     <div className={styles.heroCategoryMiniValue}>{categoryStats?.most_played_category ?? "—"}</div>
                   </div>
                   <div className={styles.heroCategoryMiniCard}>
-                    <div className={styles.heroCategoryMiniLabel}>Top Expertise</div>
+                    <div className={styles.heroCategoryMiniLabel}>Your Lane</div>
                     <div className={styles.heroCategoryMiniValue}>{categoryStats?.highest_scoring_category ?? "—"}</div>
                   </div>
                   <div className={styles.heroCategoryMiniCard}>
-                    <div className={styles.heroCategoryMiniLabel}>Needs Work</div>
+                    <div className={styles.heroCategoryMiniLabel}>Needs Reps</div>
                     <div className={styles.heroCategoryMiniValue}>{categoryStats?.weakest_accuracy_category ?? "—"}</div>
                   </div>
                 </div>
@@ -352,7 +352,7 @@ export default function ProfilePage() {
             <div className={styles.categorySpotlightValue}>{categoryStats?.best_accuracy_category ?? "Still emerging"}</div>
           </div>
           <div className={styles.categorySpotlightItem}>
-            <div className={styles.categorySpotlightLabel}>Needs Work</div>
+            <div className={styles.categorySpotlightLabel}>Needs Reps</div>
             <div className={styles.categorySpotlightValue}>{categoryStats?.weakest_accuracy_category ?? "Not enough data yet"}</div>
           </div>
         </div>
@@ -371,14 +371,14 @@ export default function ProfilePage() {
           </div>
         ) : (
           <div className={styles.emptyPanel}>
-            Play across a few categories to start building your strengths and weak spots.
+            Play a few more categories and we’ll find your lane.
           </div>
         )}
       </section>
 
       {/* Signature accolades */}
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Signature Accolades</h2>
+        <h2 className={styles.sectionTitle}>What You’re Known For</h2>
         {topAccolades.length > 0 ? (
           <div className={styles.accoladeStatsRow}>
             {topAccolades.map((accolade) => (
@@ -391,7 +391,7 @@ export default function ProfilePage() {
           </div>
         ) : (
           <div className={styles.emptyPanel}>
-            Play a few rounds to start building a signature accolade collection.
+            Play a few more rounds and we’ll figure out what you’re known for.
           </div>
         )}
       </section>
