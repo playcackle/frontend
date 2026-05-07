@@ -90,21 +90,24 @@ function generateTrashTalk(
   const taunts: string[] = [];
 
   if (weakest && weakestStat) {
-    const acc = weakestStat.accuracy != null
-      ? `${Math.round(weakestStat.accuracy * 100)}%`
-      : "unknown";
+    const snaps = weakestStat.successful_snaps;
+    const nearMissRate = weakestStat.near_miss_rate;
+    const snapLine = snaps === 0
+      ? "zero successful snaps"
+      : `only ${snaps} successful snap${snaps === 1 ? "" : "s"}`;
+    const nearMissLine = nearMissRate != null && nearMissRate > 0
+      ? ` and a near-miss rate of ${nearMissRate}`
+      : "";
     taunts.push(
-      `${name} historically choke on "${weakest}" with a ${acc} accuracy. Prepare to watch ${pronoun2} suffer.`,
-      `${pronoun.charAt(0).toUpperCase() + pronoun.slice(1)} worst category is "${weakest}". ${acc} accuracy. Just... embarrassing.`,
+      `${name} historically choke on "${weakest}" — ${snapLine}${nearMissLine}. Prepare to watch ${pronoun2} suffer.`,
+      `${pronoun.charAt(0).toUpperCase() + pronoun.slice(1)} worst category is "${weakest}". ${snapLine}${nearMissLine}. Just... embarrassing.`,
     );
   }
 
   if (bestCat && bestStat && bestStat !== weakestStat) {
-    const acc = bestStat.accuracy != null
-      ? `${Math.round(bestStat.accuracy * 100)}%`
-      : "decent";
+    const snaps = bestStat.successful_snaps;
     taunts.push(
-      `${name === "You" ? "Your" : `${player.display_name}'s`} only decent category is "${bestCat}" at ${acc}. One trick pony.`,
+      `${name === "You" ? "Your" : `${player.display_name}'s`} only decent category is "${bestCat}" with ${snaps} snap${snaps === 1 ? "" : "s"}. One trick pony.`,
     );
   }
 
@@ -133,6 +136,30 @@ function generateTrashTalk(
   }
 
   return taunts[Math.floor(Math.random() * taunts.length)];
+}
+
+// ─── Accuracy line builder ────────────────────────────────────────────────────
+
+function buildAccuracyLine(
+  categoryStats: PlayerCategoryStatsResponse | null,
+): string | null {
+  if (!categoryStats || categoryStats.categories.length === 0) return null;
+
+  const weakest = categoryStats.weakest_accuracy_category;
+  const weakestStat = categoryStats.categories.find(
+    (c) => c.category_name === weakest,
+  );
+  if (!weakestStat) return null;
+
+  const parts: string[] = [];
+
+  parts.push(`${weakestStat.successful_snaps} snap${weakestStat.successful_snaps === 1 ? "" : "s"} from ${weakestStat.total_submissions} submission${weakestStat.total_submissions === 1 ? "" : "s"}`);
+
+  if (weakestStat.near_miss_rate != null) {
+    parts.push(`near-miss rate ${weakestStat.near_miss_rate}`);
+  }
+
+  return `in "${weakest}": ${parts.join(" · ")}`;
 }
 
 // ─── Avatar initials color ────────────────────────────────────────────────────
@@ -165,6 +192,7 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
   const [categoryStats, setCategoryStats] =
     useState<PlayerCategoryStatsResponse | null>(null);
   const [taunt, setTaunt] = useState<string>("");
+  const [accuracyLine, setAccuracyLine] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -175,11 +203,13 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
         if (!cancelled) {
           setCategoryStats(stats);
           setTaunt(generateTrashTalk(player, stats, isCurrentUser));
+          setAccuracyLine(buildAccuracyLine(stats));
           setLoaded(true);
         }
       } catch {
         if (!cancelled) {
           setTaunt(generateTrashTalk(player, null, isCurrentUser));
+          setAccuracyLine(null);
           setLoaded(true);
         }
       }
@@ -235,6 +265,9 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
       <p className={`${styles.taunt} ${loaded ? styles.tauntVisible : ""}`}>
         {loaded ? taunt : "analyzing stats..."}
       </p>
+      {loaded && accuracyLine && (
+        <p className={styles.accuracyLine}>{accuracyLine}</p>
+      )}
     </div>
   );
 }
