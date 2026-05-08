@@ -19,6 +19,7 @@ export type GameEvent =
   | "lobby_resetting_for_new_game"
   | "submission_feedback"
   | "submit_answer"
+  | "request_state_sync"
   | "lobby_state_sync"
   | "play_again_prompt"
   | "play_again_count_update"
@@ -45,7 +46,7 @@ export type GameStartingSoonPayload = {
   start_timestamp_utc: string;
 };
 
-export type RoundStartinSoonPayload = {
+export type RoundStartingSoonPayload = {
   message: string;
   round_number: number; // The upcoming round number
   countdown_seconds: number; // Remaining seconds until round start
@@ -93,7 +94,6 @@ export type LobbyTickPayload = {
   time_remaining_seconds: number | null;
   player_count: number;
   scores: Score[];
-  slot_heats?: Record<string, number>;
 };
 
 export type NewRoundStartedPayload = {
@@ -233,7 +233,7 @@ export type EventPayloadMap = {
   waiting_for_players: WaitingForPlayersPayload;
   game_start_cancelled: GameStartCancelledPayload;
   lobby_tick: LobbyTickPayload;
-  round_starting_soon: RoundStartinSoonPayload;
+  round_starting_soon: RoundStartingSoonPayload;
   new_round_started: NewRoundStartedPayload;
   slot_snapped: SlotSnappedPayload;
   round_over: RoundOverPayload;
@@ -243,6 +243,7 @@ export type EventPayloadMap = {
   submission_feedback: SubmissionFeedbackPayload;
   lobby_state_sync: LobbySyncPayload;
   submit_answer: any;
+  request_state_sync: undefined;
   play_again_prompt: PlayAgainPromptPayload;
   play_again_count_update: PlayAgainCountUpdatePayload;
   play_again_player_update: PlayAgainPlayerUpdatePayload;

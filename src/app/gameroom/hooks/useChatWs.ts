@@ -4,11 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSetAtom } from "jotai";
 import { io, Socket } from "socket.io-client";
 import { captureException } from "@/lib/sentry";
+import {
+  SOCKET_MAX_RECONNECT_ATTEMPTS,
+  SOCKET_RECONNECT_DELAY_BASE,
+  SOCKET_RECONNECT_DELAY_MAX,
+} from "../constants";
 import { UnifiedMessage, addUnifiedMessageAtom } from "../store/gameAtoms";
-
-const MAX_RECONNECT_ATTEMPTS = 8;
-const RECONNECT_DELAY_BASE = 1000;
-const RECONNECT_DELAY_MAX = 30000;
 
 let lastChatConnectErrorCapture = 0;
 
@@ -44,9 +45,9 @@ export const useChatSocket = (baseUrl: string, token: string) => {
       auth: { token },
       timeout: 10000,
       reconnection: true,
-      reconnectionAttempts: MAX_RECONNECT_ATTEMPTS,
-      reconnectionDelay: RECONNECT_DELAY_BASE,
-      reconnectionDelayMax: RECONNECT_DELAY_MAX,
+      reconnectionAttempts: SOCKET_MAX_RECONNECT_ATTEMPTS,
+      reconnectionDelay: SOCKET_RECONNECT_DELAY_BASE,
+      reconnectionDelayMax: SOCKET_RECONNECT_DELAY_MAX,
     });
 
     socketRef.current = socket;
@@ -108,7 +109,7 @@ export const useChatSocket = (baseUrl: string, token: string) => {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [baseUrl, token]);
+  }, [baseUrl, token, addUnifiedMessage]);
 
   const sendMessage = useCallback((text: string) => {
     const socket = socketRef.current;
@@ -125,6 +126,7 @@ export const useChatSocket = (baseUrl: string, token: string) => {
   const reconnect = useCallback(() => {
     const socket = socketRef.current;
     if (socket && !socket.connected) {
+      socket.io.reconnectionAttempts(SOCKET_MAX_RECONNECT_ATTEMPTS);
       setChatState((prev) => ({ ...prev, connectionStatus: "reconnecting", error: null }));
       socket.connect();
     }

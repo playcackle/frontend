@@ -3,13 +3,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import {
   clearRoundHintsAtom,
-  clearSlotHeatAtom,
   clearUnifiedMessagesAtom,
   connectionStatusAtom,
   gameStateAtom,
   playAgainStateAtom,
   resetPlayAgainStateAtom,
-  slotHeatAtom,
   updateGameStateAtom,
   updatePlayAgainStateAtom,
 } from "../store/gameAtoms";
@@ -21,7 +19,6 @@ import {
   PlayAgainCountUpdatePayload,
   PlayAgainPlayerUpdatePayload,
   PlayAgainPromptPayload,
-  PlayAgainResultPayload,
   RoundOverPayload,
   SlotSnappedPayload,
   SubmissionFeedbackPayload,
@@ -44,8 +41,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const updateGameState = useSetAtom(updateGameStateAtom);
   const clearRoundHints = useSetAtom(clearRoundHintsAtom);
   const clearUnifiedMessages = useSetAtom(clearUnifiedMessagesAtom);
-  const setSlotHeat = useSetAtom(slotHeatAtom);
-  const clearSlotHeat = useSetAtom(clearSlotHeatAtom);
   const setConnectionStatus = useSetAtom(connectionStatusAtom);
   const updatePlayAgainState = useSetAtom(updatePlayAgainStateAtom);
   const resetPlayAgainState = useSetAtom(resetPlayAgainStateAtom);
@@ -141,9 +136,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           timeRemaining: data.time_remaining_seconds ?? 0,
           scores: data.scores ?? [],
         });
-        if (data.slot_heats) {
-          setSlotHeat(data.slot_heats);
-        }
       }),
 
       onEvent("round_over", (data: RoundOverPayload) => {
@@ -155,10 +147,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           timeRemaining: data.break_duration_seconds ?? 0,
         });
         playSound("timeUp");
-        (sendEvent as (e: string, d: any) => void)(
-          "request_state_sync",
-          undefined,
-        );
+        sendEvent("request_state_sync", undefined);
       }),
 
       onEvent("round_starting_soon", () => {
@@ -178,7 +167,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           lobbyStatus: "IN_ROUND",
         });
         clearRoundHints();
-        clearSlotHeat();
         playSound("newRound");
       }),
 
@@ -199,7 +187,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         // Preserve existing user response and confirmed count so they aren't wiped on each update.
         const existing = store.get(playAgainStateAtom);
         const alreadyResponded = existing.userResponse !== null;
-        console.log("[play_again_prompt] data:", JSON.stringify(data), "existingState:", JSON.stringify(existing), "alreadyResponded:", alreadyResponded);
         updatePlayAgainState({
           showPrompt: true,
           timeoutSeconds: data.timeout_seconds,
@@ -214,8 +201,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       }),
 
       onEvent("play_again_count_update", (data: PlayAgainCountUpdatePayload) => {
-        const existing = store.get(playAgainStateAtom);
-        console.log("[play_again_count_update] data:", JSON.stringify(data), "existingState:", JSON.stringify(existing));
         updatePlayAgainState({
           confirmedCount: data.confirmed_count,
           totalWaiting: data.total_waiting,
@@ -225,8 +210,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
       onEvent("play_again_player_update", (data: PlayAgainPlayerUpdatePayload) => {
         const existing = store.get(playAgainStateAtom);
-        console.log("[play_again_player_update] data:", JSON.stringify(data), "existingPlayerResponses:", JSON.stringify(existing.playerResponses));
-        // Update the individual player response so UI can show who opted in/out
         updatePlayAgainState({
           playerResponses: {
             ...existing.playerResponses,
@@ -236,12 +219,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
             },
           },
         });
-      }),
-
-      onEvent("play_again_result", (data: PlayAgainResultPayload) => {
-        const existing = store.get(playAgainStateAtom);
-        console.log("[play_again_result] data:", JSON.stringify(data), "existingState:", JSON.stringify(existing));
-        // Result received - no action needed, userResponse already set
       }),
 
       onEvent("lobby_resetting_for_new_game", () => {
@@ -263,14 +240,11 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         });
         clearUnifiedMessages();
         
+        store.set(resetPlayAgainStateAtom);
         // If player opted in ("yes"), stay in lobby to receive new game content
         // Otherwise redirect to home
         if (playAgainState.userResponse !== "yes") {
-          store.set(resetPlayAgainStateAtom);
           router.push("/");
-        } else {
-          // Reset play again state for the new game
-          store.set(resetPlayAgainStateAtom);
         }
       }),
 
@@ -293,7 +267,8 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         const isRoundActive =
           currentStatus === "IN_ROUND" ||
           currentStatus === "ROUND_BREAK" ||
-          currentStatus === "POST_GAME_SHOWCASE";
+          currentStatus === "POST_GAME_SHOWCASE" ||
+          currentStatus === "STARTING_SOON";
         updateGameState({
           ...(isRoundActive ? {} : { lobbyStatus: "WAITING" }),
           playerCount: data.current_players,
@@ -307,9 +282,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     onEvent,
     updateGameState,
     clearRoundHints,
-    clearSlotHeat,
     clearUnifiedMessages,
-    setSlotHeat,
     sendEvent,
     router,
     store,

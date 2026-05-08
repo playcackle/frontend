@@ -217,7 +217,6 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
   const [categoryStats, setCategoryStats] =
     useState<PlayerCategoryStatsResponse | null>(null);
   const [taunt, setTaunt] = useState<string>("");
-  const [scoreTaunt, setScoreTaunt] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -228,13 +227,11 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
         if (!cancelled) {
           setCategoryStats(stats);
           setTaunt(generateTrashTalk(player, stats, isCurrentUser));
-          setScoreTaunt(buildScoreTaunt(player, stats, isCurrentUser));
           setLoaded(true);
         }
       } catch {
         if (!cancelled) {
           setTaunt(generateTrashTalk(player, null, isCurrentUser));
-          setScoreTaunt(null);
           setLoaded(true);
         }
       }
@@ -244,13 +241,6 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
       cancelled = true;
     };
   }, [player.player_id, isCurrentUser]);
-
-  const initials = player.display_name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 
   const color = avatarColor(player.display_name);
 
@@ -306,7 +296,7 @@ function PlayerCarousel({ scores, currentUserId }: PlayerCarouselProps) {
   useEffect(() => {
     if (scores.length <= 1) return;
     const startDelay = setTimeout(() => {
-      intervalRef.current = setInterval(() => advance(1), 4500);
+      intervalRef.current = setInterval(() => advance(1), 6500);
     }, 2000); // 2s initial offset vs tips carousel
     return () => {
       clearTimeout(startDelay);
@@ -358,7 +348,9 @@ function PlayerCarousel({ scores, currentUserId }: PlayerCarouselProps) {
           </div>
         )}
       </div>
-      <div className={`${styles.playerSlide} ${exiting ? styles.tipExit : styles.tipEnter}`}>
+      <div
+        className={`${styles.playerSlide} ${exiting ? styles.tipExit : styles.tipEnter}`}
+      >
         <PlayerCard
           key={player.player_id}
           player={player}

@@ -11,6 +11,11 @@
 import { captureException } from "@/lib/sentry";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import {
+  SOCKET_MAX_RECONNECT_ATTEMPTS,
+  SOCKET_RECONNECT_DELAY_BASE,
+  SOCKET_RECONNECT_DELAY_MAX,
+} from "../constants";
 import { EventPayloadMap, GameEvent } from "../types/payloads";
 import { debounce } from "../utils";
 
@@ -31,10 +36,6 @@ interface SocketState {
   reconnectAttempts: number;
 }
 
-// Connection configuration
-const MAX_RECONNECT_ATTEMPTS = 8;
-const RECONNECT_DELAY_BASE = 1000;
-const RECONNECT_DELAY_MAX = 30000;
 
 export const useGameSocket = (baseUrl: string, token: string) => {
   // ==================== REFS AND STATE ====================
@@ -76,9 +77,9 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       auth: { token },
       timeout: 10000,
       reconnection: true,
-      reconnectionAttempts: MAX_RECONNECT_ATTEMPTS,
-      reconnectionDelay: RECONNECT_DELAY_BASE,
-      reconnectionDelayMax: RECONNECT_DELAY_MAX,
+      reconnectionAttempts: SOCKET_MAX_RECONNECT_ATTEMPTS,
+      reconnectionDelay: SOCKET_RECONNECT_DELAY_BASE,
+      reconnectionDelayMax: SOCKET_RECONNECT_DELAY_MAX,
     });
 
     socketRef.current = socket;
@@ -275,6 +276,8 @@ export const useGameSocket = (baseUrl: string, token: string) => {
   const reconnect = useCallback(() => {
     const socket = socketRef.current;
     if (socket && !socket.connected) {
+      // Reset the Manager's attempt counter so reconnection logic fires fully
+      socket.io.reconnectionAttempts(SOCKET_MAX_RECONNECT_ATTEMPTS);
       setSocketState((prev) => ({
         ...prev,
         reconnectAttempts: 0,

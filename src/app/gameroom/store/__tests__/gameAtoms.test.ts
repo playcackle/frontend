@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import {
   addUnifiedMessageAtom,
   answerAtom,
-  clearSlotHeatAtom,
   clearUnifiedMessagesAtom,
   connectionStatusAtom,
   isRoundBreakAtom,
@@ -14,7 +13,6 @@ import {
   roundNumberAtom,
   scoresAtom,
   showCountDownAtom,
-  slotHeatAtom,
   slotsAtom,
   timeRemainingAtom,
   totalRoundsAtom,
@@ -198,25 +196,6 @@ describe("unified messages", () => {
     store.set(addUnifiedMessageAtom, makeChatMsg("hello"));
     store.set(clearUnifiedMessagesAtom);
     expect(store.get(unifiedMessagesAtom)).toHaveLength(0);
-  });
-});
-
-// ============================================================================
-// Slot heat
-// ============================================================================
-describe("slotHeatAtom", () => {
-  it("starts empty", () => {
-    const store = createTestStore();
-    expect(store.get(slotHeatAtom)).toEqual({});
-  });
-
-  it("can be set and cleared", () => {
-    const store = createTestStore();
-    store.set(slotHeatAtom, { slot1: 50, slot2: 80 });
-    expect(store.get(slotHeatAtom)).toEqual({ slot1: 50, slot2: 80 });
-
-    store.set(clearSlotHeatAtom);
-    expect(store.get(slotHeatAtom)).toEqual({});
   });
 });
 
