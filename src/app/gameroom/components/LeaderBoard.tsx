@@ -4,9 +4,9 @@ import {
   AlertCircle,
   Award,
   BadgeCheck,
-  Crosshair,
   Flame,
   Sword,
+  Swords,
   Target,
   Timer,
   TrendingUp,
@@ -25,7 +25,7 @@ import styles from "./leaderboard.module.css";
 const ACCOLADE_ICONS: Record<string, LucideIcon> = {
   // Speed-based
   speed_demon: Zap,
-  first_blood: Sword, // Crosshair for being first on target
+  first_blood: Sword,
   // Accuracy-based
   precision: Target, // Bullseye for precision
   perfectionist: BadgeCheck,
@@ -36,7 +36,7 @@ const ACCOLADE_ICONS: Record<string, LucideIcon> = {
   hot_streak: TrendingUp,
   // Special achievements
   clutch_player: Timer,
-  sniper: Crosshair, // Hunter/target shooter
+  sniper: Swords,
   close_call: AlertCircle, // Near-miss warning
 };
 
