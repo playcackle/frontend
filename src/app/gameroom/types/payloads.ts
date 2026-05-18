@@ -25,11 +25,9 @@ export type GameEvent =
   | "play_again_count_update"
   | "play_again_player_update"
   | "play_again_result"
-  | "play_again_response";
-
-export type ChatEvent =
-  | "connection_success_chat"
-  | "new_message"
+  | "play_again_response"
+  | "send_message"
+  | "unified_message"
   | "message_error";
 
 // ========================
@@ -244,6 +242,9 @@ export type EventPayloadMap = {
   submission_feedback: SubmissionFeedbackPayload;
   lobby_state_sync: LobbySyncPayload;
   submit_answer: any;
+  send_message: string;
+  unified_message: any;
+  message_error: { error: string };
   request_state_sync: undefined;
   play_again_prompt: PlayAgainPromptPayload;
   play_again_count_update: PlayAgainCountUpdatePayload;

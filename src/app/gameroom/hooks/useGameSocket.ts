@@ -224,9 +224,11 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       event: T,
       data: T extends "submit_answer"
         ? string
-        : T extends "play_again_response"
-          ? { want_to_play: boolean }
-          : EventPayloadMap[T],
+        : T extends "send_message"
+          ? string
+          : T extends "play_again_response"
+            ? { want_to_play: boolean }
+            : EventPayloadMap[T],
     ) => {
       const socket = socketRef.current;
       if (!socket?.connected) {

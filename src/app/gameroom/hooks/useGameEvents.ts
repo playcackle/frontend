@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import {
   clearRoundHintsAtom,
+  addUnifiedMessageAtom,
   clearUnifiedMessagesAtom,
   connectionStatusAtom,
   gameStateAtom,
@@ -10,6 +11,7 @@ import {
   resetPlayAgainStateAtom,
   updateGameStateAtom,
   updatePlayAgainStateAtom,
+  type UnifiedMessage,
 } from "../store/gameAtoms";
 import {
   GameStartCancelledPayload,
@@ -45,6 +47,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const setConnectionStatus = useSetAtom(connectionStatusAtom);
   const updatePlayAgainState = useSetAtom(updatePlayAgainStateAtom);
   const resetPlayAgainState = useSetAtom(resetPlayAgainStateAtom);
+  const addUnifiedMessage = useSetAtom(addUnifiedMessageAtom);
 
   // ---------------------------------------------------------------------------
   // Connection → loading gate with grace period
@@ -293,6 +296,14 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           minPlayersNeeded: data.min_players_needed,
         });
       }),
+
+      onEvent("unified_message", (data: UnifiedMessage) => {
+        addUnifiedMessage(data);
+      }),
+
+      onEvent("message_error", (data: { error?: string }) => {
+        console.warn("Message error:", data?.error);
+      }),
     ];
 
     return () => cleanups.forEach((fn) => fn?.());
@@ -301,6 +312,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     updateGameState,
     clearRoundHints,
     clearUnifiedMessages,
+    addUnifiedMessage,
     sendEvent,
     router,
     store,
