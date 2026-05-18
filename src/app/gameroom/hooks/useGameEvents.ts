@@ -64,7 +64,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const versionGate = <T extends Record<string, unknown>>(handler: (data: T) => void) => {
     return (data: T & { stateVersion?: number }) => {
       const sv = data.stateVersion;
-      if (sv !== undefined && sv <= localVersionRef.current) return;
+      if (sv !== undefined && sv < localVersionRef.current) return;
       if (sv !== undefined) localVersionRef.current = sv;
       handler(data as T);
     };
