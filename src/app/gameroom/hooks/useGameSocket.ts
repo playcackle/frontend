@@ -186,6 +186,8 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       "play_again_count_update",
       "play_again_player_update",
       "play_again_result",
+      "unified_message",
+      "message_error",
     ];
 
     socket.on("lobby_tick", debouncedLobbyTick);
