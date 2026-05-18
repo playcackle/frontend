@@ -151,7 +151,11 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         }
       })),
 
-      onEvent("lobby_tick", versionGate((data: LobbyTickPayload) => {
+      onEvent("lobby_tick", (data: LobbyTickPayload) => {
+        // lobby_tick is a periodic heartbeat — always apply regardless of
+        // stateVersion, since it keeps timers counting down and self-corrects
+        // phase desync. State transition events (round_over, new_round_started)
+        // are version-gated; the tick is not.
         updateGameState({
           playerCount: data.player_count,
           timeRemaining: data.time_remaining_seconds ?? 0,
@@ -159,7 +163,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           lobbyStatus: data.status,
           isRoundBreak: data.status === "ROUND_BREAK",
         });
-      })),
+      }),
 
       onEvent("round_over", versionGate((data: RoundOverPayload) => {
         updateGameState({
