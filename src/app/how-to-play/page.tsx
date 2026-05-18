@@ -3,6 +3,45 @@
 import Link from "next/link";
 import styles from "./page.module.css";
 
+const STEPS = [
+  {
+    id: 1,
+    icon: "?",
+    title: "Welcome to Cackle",
+    body: "Trivia reinvented! Jump into a game room and get started.",
+  },
+  {
+    id: 2,
+    icon: "#",
+    title: "Round Topic",
+    body: "Each game has X rounds. Every round has a topic. Type answers that fit the topic.",
+  },
+  {
+    id: 3,
+    icon: "*",
+    title: "Find the Answers",
+    body: "Each round has a set number of answers to uncover. Every correct answer fills a slot on the board. Look for purple slots — those answers are rare and worth extra points.",
+  },
+  {
+    id: 4,
+    icon: ">",
+    title: "Type Fast",
+    body: "Type answers directly in the chat. No submit button. No turns. If your answer is correct, it instantly fills a slot. If you're first — you claim it.",
+  },
+  {
+    id: 5,
+    icon: "!",
+    title: "Hints",
+    body: "Stuck? Hints may drop mid-round below the answer grid as cyan chips. Bot Bob will also snipe clues in the chat — keep an eye on what he says.",
+  },
+  {
+    id: 6,
+    icon: "@",
+    title: "Beat the Clock",
+    body: "Every room has a countdown timer. Find as many answers as you can before time runs out. Between rounds and after the game, Bot Bob will announce accolades and highlight top performers in the chat.",
+  },
+];
+
 export default function HowToPlayPage() {
   return (
     <div className={styles.wrapper}>
@@ -12,6 +51,21 @@ export default function HowToPlayPage() {
           A quick tour of the game room — find answers, beat the clock, climb
           the board.
         </p>
+      </div>
+
+      {/* ── Step cards ── */}
+      <div className={styles.stepsGrid}>
+        {STEPS.map((step) => (
+          <div key={step.id} className={styles.stepCard}>
+            <div className={styles.stepIcon} aria-hidden="true">
+              {step.icon}
+            </div>
+            <div className={styles.stepCardBody}>
+              <h2 className={styles.stepCardTitle}>{step.title}</h2>
+              <p className={styles.stepCardText}>{step.body}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* ── Annotated UI ── */}

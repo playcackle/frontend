@@ -58,6 +58,10 @@ export default async function Home({
             started
           </p>
 
+          <Link href="/how-to-play" className={styles.howToPlayLink}>
+            How to Play
+          </Link>
+
           {authError && (
             <div className={styles.authErrorBanner}>
               <span className={styles.authErrorIcon}>!</span>
