@@ -20,8 +20,6 @@ import { playerAccoladesAtom } from "../store/gameAtoms";
 import type { PlayerAccolade } from "../types/payloads";
 import styles from "./PostgameShowcase.module.css";
 
-// ── Constants ────────────────────────────────────────────────────────────────
-
 const COLORS = [
   "var(--neon-pink)",
   "var(--neon-green)",
