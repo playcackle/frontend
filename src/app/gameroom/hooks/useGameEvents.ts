@@ -58,6 +58,17 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const prevLobbyIdRef = useRef<string | null>(null);
   const graceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasReceivedFirstSync = useRef(false);
+  const localVersionRef = useRef(0);
+
+  // Wrap a handler to discard stale events based on server's stateVersion
+  const versionGate = <T extends Record<string, unknown>>(handler: (data: T) => void) => {
+    return (data: T & { stateVersion?: number }) => {
+      const sv = data.stateVersion;
+      if (sv !== undefined && sv <= localVersionRef.current) return;
+      if (sv !== undefined) localVersionRef.current = sv;
+      handler(data as T);
+    };
+  };
 
   useEffect(() => {
     const isHealthy = isConnected && connectionStatus === "connected";
@@ -97,7 +108,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
   useEffect(() => {
     const cleanups = [
-      onEvent("lobby_state_sync", (data: LobbySyncPayload) => {
+      onEvent("lobby_state_sync", versionGate((data: LobbySyncPayload) => {
         hasReceivedFirstSync.current = true;
 
         // Clear room-scoped transient state when joining a different lobby
@@ -138,9 +149,9 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         } else if (data.status !== "POST_GAME_SHOWCASE") {
           resetPlayAgainState();
         }
-      }),
+      })),
 
-      onEvent("lobby_tick", (data: LobbyTickPayload) => {
+      onEvent("lobby_tick", versionGate((data: LobbyTickPayload) => {
         updateGameState({
           playerCount: data.player_count,
           timeRemaining: data.time_remaining_seconds ?? 0,
@@ -148,9 +159,9 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           lobbyStatus: data.status,
           isRoundBreak: data.status === "ROUND_BREAK",
         });
-      }),
+      })),
 
-      onEvent("round_over", (data: RoundOverPayload) => {
+      onEvent("round_over", versionGate((data: RoundOverPayload) => {
         updateGameState({
           isRoundBreak: true,
           lobbyStatus: "ROUND_BREAK",
@@ -159,7 +170,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           timeRemaining: data.break_duration_seconds ?? 0,
         });
         playSound("timeUp");
-      }),
+      })),
 
       onEvent("game_start_cancelled", () => {
         updateGameState({ lobbyStatus: "WAITING", showCountDown: false });
@@ -169,7 +180,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         updateGameState({ showCountDown: true });
       }),
 
-      onEvent("new_round_started", (data: NewRoundStartedPayload) => {
+      onEvent("new_round_started", versionGate((data: NewRoundStartedPayload) => {
         updateGameState({
           isRoundBreak: false,
           roundName: data.topic_name,
@@ -183,9 +194,9 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         });
         clearRoundHints();
         playSound("newRound");
-      }),
+      })),
 
-      onEvent("game_over", (data: GameOverPayload) => {
+      onEvent("game_over", versionGate((data: GameOverPayload) => {
         updateGameState({
           finalScore: data.final_scores,
           playerAccolades: data.player_accolades ?? [],
@@ -195,9 +206,9 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           lobbyStatus: "POST_GAME_SHOWCASE",
         });
         playSound("timeUp");
-      }),
+      })),
 
-      onEvent("play_again_prompt", (data: PlayAgainPromptPayload) => {
+      onEvent("play_again_prompt", versionGate((data: PlayAgainPromptPayload) => {
         // Server re-sends play_again_prompt when players join/leave (players_waiting changes).
         // Preserve existing user response and confirmed count so they aren't wiped on each update.
         const existing = store.get(playAgainStateAtom);
@@ -213,17 +224,17 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           userResponse: alreadyResponded ? existing.userResponse : null,
           playerResponses: alreadyResponded ? existing.playerResponses : {},
         });
-      }),
+      })),
 
-      onEvent("play_again_count_update", (data: PlayAgainCountUpdatePayload) => {
+      onEvent("play_again_count_update", versionGate((data: PlayAgainCountUpdatePayload) => {
         updatePlayAgainState({
           confirmedCount: data.confirmed_count,
           totalWaiting: data.total_waiting,
           neededToStart: data.needed_to_start,
         });
-      }),
+      })),
 
-      onEvent("play_again_player_update", (data: PlayAgainPlayerUpdatePayload) => {
+      onEvent("play_again_player_update", versionGate((data: PlayAgainPlayerUpdatePayload) => {
         const existing = store.get(playAgainStateAtom);
         updatePlayAgainState({
           playerResponses: {
@@ -234,9 +245,9 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
             },
           },
         });
-      }),
+      })),
 
-      onEvent("lobby_resetting_for_new_game", () => {
+      onEvent("lobby_resetting_for_new_game", versionGate(() => {
         const playAgainState = store.get(playAgainStateAtom);
 
         // Clear the game state for new round
@@ -261,23 +272,23 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         if (playAgainState.userResponse !== "yes") {
           router.push("/");
         }
-      }),
+      })),
 
-      onEvent("slot_snapped", (data: SlotSnappedPayload) => {
+      onEvent("slot_snapped", versionGate((data: SlotSnappedPayload) => {
         updateGameState({
           slots: data.slots,
           scores: data.scores,
         });
         playSound(getRandomSnappedSound());
-      }),
+      })),
 
-      onEvent("submission_feedback", (data: SubmissionFeedbackPayload) => {
+      onEvent("submission_feedback", versionGate((data: SubmissionFeedbackPayload) => {
         if (data.status === "success") {
           playSound(getRandomSuccessSound());
         }
-      }),
+      })),
 
-      onEvent("waiting_for_players", (data: WaitingForPlayersPayload) => {
+      onEvent("waiting_for_players", versionGate((data: WaitingForPlayersPayload) => {
         const currentStatus = store.get(gameStateAtom).lobbyStatus;
         const isRoundActive =
           currentStatus === "IN_ROUND" ||
@@ -289,7 +300,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           playerCount: data.current_players,
           minPlayersNeeded: data.min_players_needed,
         });
-      }),
+      })),
     ];
 
     return () => cleanups.forEach((fn) => fn?.());
