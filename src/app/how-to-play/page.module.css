@@ -1,380 +1,258 @@
 /* ── Page wrapper ────────────────────────────────────────── */
 .wrapper {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.heading {
-  text-align: center;
-}
-
-.title {
-  font-family: var(--retro-font);
-  font-size: 2.2rem;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--neon-blue);
-  text-shadow: 0 0 18px var(--neon-blue);
-  margin-bottom: 0.5rem;
-}
-
-.subtitle {
-  font-family: var(--retro-font);
-  font-size: 0.8rem;
-  letter-spacing: 1.5px;
-  color: rgba(255, 255, 255, 0.55);
-  text-transform: uppercase;
-}
-
-/* ── Scene container (UI + callouts) ─────────────────────── */
-.scene {
-  position: relative;
-  /* Leave room above & below for the callouts */
-  padding-top: 160px;
-  padding-bottom: 190px;
-}
-
-/* ── Frozen game frame ───────────────────────────────────── */
-.gameFrame {
-  position: relative;
-  border: 1px solid rgba(0, 221, 255, 0.25);
-  border-radius: 10px;
-  background: rgba(10, 10, 31, 0.92);
-  backdrop-filter: blur(6px);
-  box-shadow:
-    0 0 40px rgba(0, 221, 255, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.04);
-  overflow: hidden;
-  /* Slightly muted so callouts pop */
-  filter: brightness(0.88);
-}
-
-/* ── Header bar ──────────────────────────────────────────── */
-.uiHeader {
-  background: rgba(0, 0, 0, 0.6);
-  border-bottom: 1px solid rgba(0, 221, 255, 0.15);
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem 1rem;
+  padding: 2rem 1rem;
 }
 
-.uiRoomName {
-  font-family: var(--retro-font);
-  font-size: 1rem;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: var(--neon-pink);
-  text-shadow: 0 0 12px var(--neon-pink);
-}
-
-/* ── Stats row ───────────────────────────────────────────── */
-.uiStatsRow {
-  display: flex;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid rgba(0, 221, 255, 0.08);
-}
-
-.uiStatTile {
-  flex: 1;
-  background: rgba(20, 20, 40, 0.7);
-  border: 1px solid rgba(0, 221, 255, 0.2);
-  border-radius: 6px;
-  padding: 0.35rem 0.5rem;
+/* ── Content container ───────────────────────────────────── */
+.content {
+  width: min(520px, calc(100vw - 2rem));
+  background: rgba(10, 5, 30, 0.97);
+  border: 1px solid rgba(183, 0, 255, 0.35);
+  border-radius: 10px;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
+  box-shadow:
+    0 0 40px rgba(183, 0, 255, 0.2),
+    0 0 80px rgba(183, 0, 255, 0.08),
+    inset 0 0 30px rgba(57, 39, 64, 0.04);
+}
+
+.contentWide {
+  width: min(960px, calc(100vw - 2rem));
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.header {
+  display: flex;
   align-items: center;
-  gap: 2px;
-  min-width: 0;
+  justify-content: space-between;
 }
 
-.uiStatLabel {
-  font-family: var(--retro-font);
-  font-size: 0.55rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--neon-blue);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.uiStatValue {
-  font-family: var(--retro-font);
-  font-size: 0.7rem;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.timerVal {
-  color: var(--neon-blue);
-  text-shadow: 0 0 8px var(--neon-blue);
-}
-
-/* ── Content row ─────────────────────────────────────────── */
-.uiContentRow {
-  display: grid;
-  grid-template-columns: 3fr 4fr 2fr;
-  gap: 0.6rem;
-  padding: 0.6rem 0.75rem;
-  min-height: 220px;
-}
-
-/* Chat column */
-.uiChatCol {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  border: 1px solid rgba(183, 0, 255, 0.3);
-  border-radius: 6px;
-  background: rgba(20, 20, 40, 0.6);
-  padding: 0.5rem;
-  overflow: hidden;
-}
-
-.uiMessages {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  overflow: hidden;
-}
-
-.uiMessage {
+.headerLabel {
   font-family: var(--retro-font);
   font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-  padding: 0.2rem 0.4rem;
+  letter-spacing: 4px;
+  color: rgba(183, 0, 255, 0.7);
+  text-transform: uppercase;
 }
 
-.uiInput {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(0, 221, 255, 0.3);
+.skipBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.35);
+  padding: 0.3rem 0.8rem;
   border-radius: 4px;
-  padding: 0.3rem 0.5rem;
   font-family: var(--retro-font);
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
 }
 
-/* Slots column */
-.uiSlotsCol {
-  border: 1px solid var(--neon-pink);
-  border-radius: 6px;
-  background: rgba(20, 20, 40, 0.7);
-  padding: 0.5rem;
+.skipBtn:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Step body ────────────────────────────────────────────── */
+.stepBody {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  box-shadow: 0 0 8px rgba(255, 0, 170, 0.25);
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  min-height: 200px;
+  justify-content: center;
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-.uiSlotsHeader {
+.stepBodyHidden {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.stepBodyVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stepBodyTour {
+  min-height: unset;
+  justify-content: flex-start;
+  align-items: stretch;
+  text-align: left;
+  padding: 0;
+}
+
+.stepIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  border: 2px solid rgba(183, 0, 255, 0.5);
+  background: rgba(183, 0, 255, 0.08);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  font-family: var(--retro-font);
+  font-size: 2rem;
+  color: rgba(183, 0, 255, 0.9);
+  text-shadow: 0 0 12px rgba(183, 0, 255, 0.8);
+  box-shadow: 0 0 20px rgba(183, 0, 255, 0.2);
+  flex-shrink: 0;
 }
 
-.uiSlotsCount {
+.stepTitle {
   font-family: var(--retro-font);
   font-size: 1.4rem;
-  color: var(--neon-pink);
-  text-shadow: 0 0 10px var(--neon-pink);
-  line-height: 1;
-}
-
-.uiSlotsLabel {
-  font-family: var(--retro-font);
-  font-size: 0.55rem;
-  letter-spacing: 1px;
+  font-weight: bold;
+  color: white;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 2px;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(183, 0, 255, 0.5);
 }
 
-.uiSlotsDots {
+.stepText {
+  font-family: var(--retro-font-alt);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.65;
+  margin: 0;
+  max-width: 380px;
+}
+
+/* ── Progress dots ────────────────────────────────────────── */
+.dots {
   display: flex;
-  gap: 3px;
-  margin-left: auto;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
 }
 
-.uiSlotDot {
+.dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
-.dotFilled {
-  background: var(--neon-pink);
-  box-shadow: 0 0 4px var(--neon-pink);
+.dotDone {
+  background: rgba(183, 0, 255, 0.4);
+  width: 8px;
+  height: 8px;
 }
 
-.dotPurple {
-  background: var(--neon-purple) !important;
-  box-shadow: 0 0 4px var(--neon-purple) !important;
-}
-
-.uiSlotsGrid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
-  flex: 1;
-}
-
-.uiSlot {
+.dotActive {
+  background: rgba(183, 0, 255, 1);
+  box-shadow: 0 0 8px rgba(183, 0, 255, 0.9);
+  width: 24px;
   border-radius: 4px;
-  background: var(--neon-pink);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ── Navigation ───────────────────────────────────────────── */
+.nav {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25rem;
-  min-height: 44px;
-  gap: 2px;
+  gap: 0.75rem;
+  justify-content: space-between;
 }
 
-.uiSlotPurple {
-  background: var(--neon-purple);
-  box-shadow: 0 0 8px var(--neon-purple);
-}
-
-.uiSlotEmpty {
-  background: rgba(255, 0, 170, 0.12);
-  border: 1px dashed rgba(255, 0, 170, 0.35);
-}
-
-.uiSlotAnswer {
-  font-family: var(--retro-font);
-  font-size: 0.6rem;
-  font-weight: bold;
-  color: #fff;
-  letter-spacing: 1px;
-}
-
-.uiSlotPlayer {
-  font-family: var(--retro-font);
-  font-size: 0.5rem;
-  color: rgba(255, 255, 255, 0.65);
-}
-
-.uiSlotQ {
-  font-family: var(--retro-font);
-  font-size: 1.1rem;
-  color: rgba(255, 0, 170, 0.4);
-}
-
-/* Leaderboard column */
-.uiLeaderCol {
-  border: 1px solid rgba(255, 0, 170, 0.3);
+.navBtn {
+  flex: 1;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0.75rem 1rem;
   border-radius: 6px;
-  background: rgba(20, 20, 40, 0.7);
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  box-shadow: 0 0 8px rgba(255, 0, 170, 0.15);
-}
-
-.uiLeaderTitle {
   font-family: var(--retro-font);
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--neon-pink);
-  margin-bottom: 4px;
-  text-shadow: 0 0 6px var(--neon-pink);
-}
-
-.uiLeaderRow {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 4px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.uiLeaderRank {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--retro-font);
-  font-size: 0.55rem;
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  flex-shrink: 0;
 }
 
-.rankGold   { background: linear-gradient(45deg, #ffd700, #ff9900); color: #000; }
-.rankSilver { background: linear-gradient(45deg, #c0c0c0, #999); color: #000; }
-.rankBronze { background: linear-gradient(45deg, #cd7f32, #8b4513); color: #fff; }
-
-.uiLeaderName {
-  flex: 1;
-  font-family: var(--retro-font);
-  font-size: 0.55rem;
-  color: rgba(255, 255, 255, 0.75);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.navBtn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
 }
 
-.uiLeaderScore {
-  font-family: var(--retro-font);
-  font-size: 0.6rem;
-  font-weight: bold;
+.navBtn:not(:disabled):hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+}
+
+.navBtnPrimary {
+  border-color: var(--neon-pink);
   color: var(--neon-pink);
 }
 
-.uiLeaderMore {
-  font-family: var(--retro-font);
-  font-size: 0.5rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: rgba(0, 221, 255, 0.4);
-  text-align: center;
-  margin-top: 4px;
+.navBtnPrimary:not(:disabled):hover {
+  background: rgba(255, 0, 170, 0.1);
+  box-shadow: 0 0 16px rgba(255, 0, 170, 0.3);
+  border-color: var(--neon-pink) !important;
+  color: var(--neon-pink) !important;
 }
 
-/* ── Callout bubbles ─────────────────────────────────────── */
-.callout {
-  position: absolute;
+/* ── Step counter ─────────────────────────────────────────── */
+.stepCounter {
+  font-family: var(--retro-font-alt);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.2);
+  text-align: center;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+/* ── Tour layout ──────────────────────────────────────────── */
+.tourWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.tourTopRow,
+.tourBottomRow {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+/* Callout bubbles */
+.tourCallout {
+  position: relative;
   background: #fff;
   color: #111;
   border-radius: 6px;
-  padding: 0.8rem 1rem;
-  width: 220px;
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(0, 0, 0, 0.08);
+  padding: 0.65rem 0.75rem;
+  flex: 1;
   display: flex;
   gap: 0.5rem;
   align-items: flex-start;
-  z-index: 20;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
-.calloutNumber {
+.tourCalloutNum {
   flex-shrink: 0;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #111;
   color: #fff;
@@ -382,176 +260,548 @@
   align-items: center;
   justify-content: center;
   font-family: var(--retro-font);
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: bold;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
-.calloutBody {
+.tourCalloutBody {
   flex: 1;
 }
 
-.calloutTitle {
-  font-family: var(--retro-font);
-  font-size: 0.78rem;
-  font-weight: bold;
-  text-decoration: underline;
-  margin-bottom: 0.35rem;
-  color: #111;
-  letter-spacing: 0.5px;
-}
-
-.calloutBody p {
+.tourCalloutTitle {
+  display: block;
   font-family: var(--retro-font);
   font-size: 0.7rem;
-  line-height: 1.55;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #111;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.3px;
+}
+
+.tourCalloutBody p {
+  font-family: var(--retro-font);
+  font-size: 0.62rem;
+  line-height: 1.5;
   color: #222;
+  margin: 0;
 }
 
-.calloutCoda {
-  margin-top: 0.5rem !important;
-}
-
-.purpleText {
+.tourPurple {
   color: #7c3aed;
 }
+.tourCyan {
+  color: #00dcff;
+  font-weight: bold;
+}
+.tourYellow {
+  color: #ffcc00;
+  font-weight: bold;
+}
 
-/* Tail shapes */
-.calloutTail {
+/* Callout tails */
+.tourTail {
   position: absolute;
   width: 0;
   height: 0;
 }
-
-/* Points downward-right (top callouts pointing down into the UI) */
-.tailBottomRight {
-  bottom: -14px;
-  right: 28px;
-  border-left: 10px solid transparent;
+.tourTailDownRight {
+  bottom: -12px;
+  right: 24px;
+  border-left: 9px solid transparent;
   border-right: 0 solid transparent;
-  border-top: 14px solid #fff;
+  border-top: 12px solid #fff;
 }
-
-/* Points downward-left */
-.tailBottomLeft {
-  bottom: -14px;
-  left: 28px;
+.tourTailDownLeft {
+  bottom: -12px;
+  left: 24px;
   border-left: 0 solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 14px solid #fff;
+  border-right: 9px solid transparent;
+  border-top: 12px solid #fff;
 }
-
-/* Points upward-right (bottom callouts pointing up into the UI) */
-.tailTopRight {
-  top: -14px;
-  right: 28px;
-  border-left: 10px solid transparent;
+.tourTailUpRight {
+  top: -12px;
+  right: 24px;
+  border-left: 9px solid transparent;
   border-right: 0 solid transparent;
-  border-bottom: 14px solid #fff;
+  border-bottom: 12px solid #fff;
 }
-
-/* Points upward-center */
-.tailTopCenter {
-  top: -14px;
+.tourTailUpCenter {
+  top: -12px;
   left: 50%;
   transform: translateX(-50%);
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 14px solid #fff;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 12px solid #fff;
 }
-
-/* Points upward-left */
-.tailTopLeft {
-  top: -14px;
-  left: 28px;
+.tourTailUpLeft {
+  top: -12px;
+  left: 24px;
   border-left: 0 solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 14px solid #fff;
+  border-right: 9px solid transparent;
+  border-bottom: 12px solid #fff;
 }
-
-/* ── Callout positions ───────────────────────────────────── */
-
-/* 1 — Round topic: top-left, tail points to stats row */
-.callout1 {
-  top: 0;
-  left: 0;
-}
-
-/* 4 — BotBob: top-right, tail points to chat/message area */
-.callout4 {
-  top: 0;
-  right: 0;
-}
-
-/* 3 — Type fast: bottom-left, tail points to input */
-.callout3 {
-  bottom: 0;
-  left: 0;
-}
-
-/* 2 — Find answers: bottom-center, tail points to slot grid */
-.callout2 {
-  bottom: 0;
+.tourTailDownCenter {
+  bottom: -12px;
   left: 50%;
   transform: translateX(-50%);
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 12px solid #fff;
 }
 
-/* 5 — Beat clock: bottom-right, tail points to leaderboard */
-.callout5 {
-  bottom: 0;
-  right: 0;
-}
-
-/* ── CTA ─────────────────────────────────────────────────── */
-.cta {
+/* Slots + hints wrapper */
+.tourSlotsWrapper {
   display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* Hints strip below slots */
+.tourHintsStrip {
+  background: rgba(20, 20, 40, 0.8);
+  border: 1px solid rgba(0, 221, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.3rem 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tourHintsLabel {
+  font-family: var(--retro-font);
+  font-size: 0.45rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(0, 221, 255, 0.7);
+}
+
+.tourHintsChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+}
+
+.tourHintChip {
+  font-family: var(--retro-font);
+  font-size: 0.48rem;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  padding: 0.1rem 0.3rem;
+}
+
+/* Frozen game UI */
+.tourGame {
+  border: 1px solid rgba(0, 221, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(10, 10, 31, 0.95);
+  overflow: hidden;
+  filter: brightness(0.88);
+  flex-shrink: 0;
+}
+
+.tourStatsRow {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid rgba(0, 221, 255, 0.08);
+}
+
+.tourStatTile {
+  flex: 1;
+  background: rgba(20, 20, 40, 0.7);
+  border: 1px solid rgba(0, 221, 255, 0.2);
+  border-radius: 5px;
+  padding: 0.25rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tourStatLabel {
+  font-family: var(--retro-font);
+  font-size: 0.48rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--neon-blue);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.tourStatValue {
+  font-family: var(--retro-font);
+  font-size: 0.6rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.tourStatAccent {
+  color: #ffcc00;
+  text-shadow: 0 0 6px rgba(255, 204, 0, 0.8);
+  animation: timerPulseTour 1s infinite;
+}
+
+@keyframes timerPulseTour {
+  0% {
+    text-shadow: 0 0 6px rgba(255, 204, 0, 0.6);
+  }
+  50% {
+    text-shadow:
+      0 0 14px rgba(255, 204, 0, 1),
+      0 0 20px rgba(255, 204, 0, 0.5);
+  }
+  100% {
+    text-shadow: 0 0 6px rgba(255, 204, 0, 0.6);
+  }
+}
+
+.tourStatTileTimer {
+  border-color: rgba(255, 204, 0, 0.4);
+  box-shadow: 0 0 6px rgba(255, 204, 0, 0.2);
+}
+
+.tourContentRow {
+  display: grid;
+  grid-template-columns: 3fr 4fr 2fr;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  min-height: 160px;
+}
+
+.tourChat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  border: 1px solid rgba(183, 0, 255, 0.3);
+  border-radius: 5px;
+  background: rgba(20, 20, 40, 0.6);
+  padding: 0.4rem;
+  overflow: hidden;
+}
+
+.tourMessages {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+}
+
+.tourMsg {
+  font-family: var(--retro-font);
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  padding: 0.15rem 0.35rem;
+}
+
+.tourInput {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 221, 255, 0.3);
+  border-radius: 3px;
+  padding: 0.25rem 0.4rem;
+  font-family: var(--retro-font);
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Tour Answer Grid - Hero */
+.tourAnswerHero {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem;
+  background: rgba(20, 20, 40, 0.7);
+  border: 1px solid var(--neon-pink);
+  border-radius: 5px;
+  box-shadow: 0 0 6px rgba(255, 0, 170, 0.2);
+}
+
+.tourProgressRing {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.tourProgressSvg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.tourProgressFill {
+  filter: drop-shadow(0 0 4px var(--neon-pink));
+}
+
+.tourProgressLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.tourProgressCount {
+  font-family: var(--retro-font);
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 6px var(--neon-pink);
+}
+
+.tourProgressTotal {
+  font-family: var(--retro-font-alt);
+  font-size: 0.45rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.tourAnswerStatus {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tourAnswerTitle {
+  font-family: var(--retro-font);
+  font-size: 0.55rem;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  text-shadow: 0 0 5px var(--neon-pink);
+}
+
+.tourAnswerSub {
+  font-family: var(--retro-font-alt);
+  font-size: 0.45rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+/* Tour Dot Row */
+.tourDotRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.tourDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-.ctaBtn {
-  font-family: var(--retro-font);
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--neon-blue);
-  border: 1px solid var(--neon-blue);
-  border-radius: 4px;
-  padding: 0.6rem 1.4rem;
-  background: rgba(0, 221, 255, 0.05);
-  box-shadow: 0 0 8px rgba(0, 221, 255, 0.2);
-  transition: background 0.2s ease, box-shadow 0.2s ease;
+.tourDotFound {
+  background: var(--neon-pink);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 4px rgba(255, 0, 170, 0.5);
 }
 
-.ctaBtn:hover {
-  background: rgba(0, 221, 255, 0.12);
-  box-shadow: 0 0 16px rgba(0, 221, 255, 0.45);
+.tourDotEmpty {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px dashed rgba(255, 0, 170, 0.4);
+}
+
+.tourDotPurple {
+  background: var(--neon-purple, #b700ff);
+  border-color: var(--neon-purple, #b700ff);
+  box-shadow: 0 0 4px rgba(183, 0, 255, 0.6);
+}
+
+.tourDotPurple.tourDotEmpty {
+  background: rgba(183, 0, 255, 0.1);
+  border: 2px dashed rgba(183, 0, 255, 0.5);
+}
+
+.tourDot2x {
+  font-family: var(--retro-font);
+  font-size: 0.45rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 3px rgba(183, 0, 255, 0.8);
+}
+
+/* Tour Chip Grid */
+.tourChipGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.tourChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--neon-pink);
+  background: rgba(255, 0, 170, 0.12);
+}
+
+.tourChipPurple {
+  border-color: var(--neon-purple, #b700ff);
+  background: rgba(183, 0, 255, 0.12);
+}
+
+.tourChipContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tourChipText {
+  font-family: var(--retro-font);
+  font-size: 0.42rem;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.tourChipPlayer {
+  font-family: var(--retro-font-alt);
+  font-size: 0.35rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.tourChipMultiplier {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--neon-purple, #b700ff);
+  font-family: var(--retro-font);
+  font-size: 0.4rem;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 0 4px rgba(183, 0, 255, 0.6);
+}
+
+.tourLeader {
+  border: 1px solid rgba(255, 0, 170, 0.3);
+  border-radius: 5px;
+  background: rgba(20, 20, 40, 0.7);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tourLeaderTitle {
+  font-family: var(--retro-font);
+  font-size: 0.52rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--neon-pink);
+  margin-bottom: 3px;
+  text-shadow: 0 0 5px var(--neon-pink);
+}
+
+.tourLeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 3px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tourRank {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--retro-font);
+  font-size: 0.48rem;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rankGold {
+  background: linear-gradient(45deg, #ffd700, #ff9900);
+  color: #000;
+}
+.rankSilver {
+  background: linear-gradient(45deg, #c0c0c0, #999);
+  color: #000;
+}
+.rankBronze {
+  background: linear-gradient(45deg, #cd7f32, #8b4513);
+  color: #fff;
+}
+
+.tourLeaderName {
+  flex: 1;
+  font-family: var(--retro-font);
+  font-size: 0.48rem;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tourLeaderScore {
+  font-family: var(--retro-font);
+  font-size: 0.52rem;
+  font-weight: bold;
+  color: var(--neon-pink);
 }
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .scene {
-    padding-top: 0;
-    padding-bottom: 0;
+  .contentWide {
+    width: calc(100vw - 1rem);
+    padding: 1rem;
   }
 
-  .callout {
-    position: static;
+  .tourTopRow,
+  .tourBottomRow {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .tourCallout {
     width: 100%;
-    transform: none !important;
-    margin-bottom: 0.75rem;
   }
 
-  .calloutTail {
+  .tourTail {
     display: none;
   }
 
-  .scene {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  .tourContentRow {
+    grid-template-columns: 1fr;
+    min-height: unset;
   }
 
-  .gameFrame {
+  .tourChat {
+    min-height: 100px;
+  }
+
+  .tourLeader {
     order: -1;
   }
 }

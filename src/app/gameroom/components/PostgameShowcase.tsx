@@ -190,7 +190,7 @@ export default function PostgameShowcase() {
 
   return (
     <div className={styles.showcase}>
-      <p className={styles.label}>Postgame Awards</p>
+      <p className={styles.title}>Postgame Awards</p>
 
       <div className={styles.carouselRow}>
         {total > 1 && (
