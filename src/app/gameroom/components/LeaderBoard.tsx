@@ -26,18 +26,14 @@ const ACCOLADE_ICONS: Record<string, LucideIcon> = {
   // Speed-based
   speed_demon: Zap,
   first_blood: Sword, // Crosshair for being first on target
-
   // Accuracy-based
   precision: Target, // Bullseye for precision
   perfectionist: BadgeCheck,
-
   // Volume-based
   machine_gun: Zap, // Fast = Zap
   snapping_spree: Flame,
-
   // Streak-based
   hot_streak: TrendingUp,
-
   // Special achievements
   clutch_player: Timer,
   sniper: Crosshair, // Hunter/target shooter
