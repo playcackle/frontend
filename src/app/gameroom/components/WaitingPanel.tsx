@@ -193,18 +193,6 @@ function buildScoreTaunt(
   return taunts[Math.floor(Math.random() * taunts.length)];
 }
 
-// ─── Avatar initials color ────────────────────────────────────────────────────
-
-const AVATAR_COLORS = ["#ff00aa", "#b700ff", "#00ddff", "#00ff66", "#ff6600"];
-
-function avatarColor(name: string): string {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
-
 // ─── Player Card ──────────────────────────────────────────────────────────────
 
 interface PlayerCardProps {
@@ -241,8 +229,6 @@ function PlayerCard({ player, isCurrentUser, entryDelay }: PlayerCardProps) {
       cancelled = true;
     };
   }, [player.player_id, isCurrentUser]);
-
-  const color = avatarColor(player.display_name);
 
   return (
     <div

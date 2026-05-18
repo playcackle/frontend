@@ -97,6 +97,7 @@ export default function GameroomTile(props: GameroomTileProps) {
   };
 
   return (
+    <>
     <div className={styles.lobbyCard} onClick={handleClick}>
       <h3 className={styles.lobbyName}>{gameroom.collection_name}</h3>
       <div className={styles.statusBadgeWrapper}>
@@ -137,13 +138,14 @@ export default function GameroomTile(props: GameroomTileProps) {
           Join Voice Channel
         </a>
       )}
-      <ErrorModal
-        onOpenChange={setShowModal}
-        open={showModal}
-        title="Unable to join gameroom"
-        message={errorMessage ?? "Unable to join. Please try again."}
-        showHomeButton={false}
-      />
     </div>
+    <ErrorModal
+      onOpenChange={setShowModal}
+      open={showModal}
+      title="Unable to join gameroom"
+      message={errorMessage ?? "Unable to join. Please try again."}
+      showHomeButton={false}
+    />
+    </>
   );
 }
