@@ -38,7 +38,7 @@ export default function ConnectionBanner({ onRetry }: ConnectionBannerProps) {
           setVisible(false);
           bannerWasShownRef.current = false;
           hideTimerRef.current = null;
-        }, 2000);
+        }, 500);
       } else {
         setVisible(false);
       }

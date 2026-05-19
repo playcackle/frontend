@@ -147,7 +147,7 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     socket.io.on("reconnect_failed", () => {
       setSocketState((prev) => ({
         ...prev,
-        connectionStatus: "error",
+        connectionStatus: "disconnected",
         error: "Max reconnection attempts reached",
       }));
     });
