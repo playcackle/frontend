@@ -72,7 +72,7 @@ export default function ConnectionBanner({ onRetry }: ConnectionBannerProps) {
       {displayStatus === "reconnecting" && (
         <>
           <div className={styles.spinner} />
-          <span>Reconnecting\u2026</span>
+          <span>Reconnecting…</span>
         </>
       )}
       {displayStatus === "disconnected" && (
