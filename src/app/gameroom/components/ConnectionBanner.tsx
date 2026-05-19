@@ -3,39 +3,17 @@
 import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import {
-  chatConnectionStatusAtom,
   connectionStatusAtom,
   type ConnectionStatus,
 } from "../store/gameAtoms";
 import styles from "./ConnectionBanner.module.css";
 
-// Higher rank = worse; banner shows the worst active status
-const STATUS_RANK: Record<ConnectionStatus, number> = {
-  connected: 0,
-  connecting: 0,
-  reconnecting: 1,
-  disconnected: 2,
-  error: 2,
-};
-
 interface ConnectionBannerProps {
   onRetry?: () => void;
-  onChatRetry?: () => void;
 }
 
-export default function ConnectionBanner({
-  onRetry,
-  onChatRetry,
-}: ConnectionBannerProps) {
-  const gameStatus = useAtomValue(connectionStatusAtom);
-  const chatStatus = useAtomValue(chatConnectionStatusAtom);
-
-  const status: ConnectionStatus =
-    STATUS_RANK[gameStatus] >= STATUS_RANK[chatStatus]
-      ? gameStatus
-      : chatStatus;
-
-  const isChatOnly = STATUS_RANK[chatStatus] > STATUS_RANK[gameStatus];
+export default function ConnectionBanner({ onRetry }: ConnectionBannerProps) {
+  const status = useAtomValue(connectionStatusAtom);
 
   const [visible, setVisible] = useState(false);
   const [displayStatus, setDisplayStatus] = useState<ConnectionStatus>(status);
@@ -85,8 +63,6 @@ export default function ConnectionBanner({
         ? styles.disconnected
         : styles.connected;
 
-  const retryHandler = isChatOnly ? onChatRetry : onRetry;
-
   return (
     <div
       className={`${styles.banner} ${bannerClass}`}
@@ -96,14 +72,14 @@ export default function ConnectionBanner({
       {displayStatus === "reconnecting" && (
         <>
           <div className={styles.spinner} />
-          <span>{isChatOnly ? "Chat reconnecting…" : "Reconnecting…"}</span>
+          <span>Reconnecting\u2026</span>
         </>
       )}
       {displayStatus === "disconnected" && (
         <>
-          <span>{isChatOnly ? "Chat connection lost" : "Connection lost"}</span>
-          {retryHandler && (
-            <button className={styles.retryButton} onClick={retryHandler}>
+          <span>Connection lost</span>
+          {onRetry && (
+            <button className={styles.retryButton} onClick={onRetry}>
               Retry
             </button>
           )}

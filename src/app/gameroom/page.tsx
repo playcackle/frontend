@@ -27,11 +27,9 @@ import OptInPanel from "./components/OptInPanel";
 import PostgameShowcase from "./components/PostgameShowcase";
 import WaitingPanel from "./components/WaitingPanel";
 import { useAnswerBubbles } from "./hooks/useAnswerBubbles";
-import { useChatSocket } from "./hooks/useChatWs";
 import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
 import {
-  chatConnectionStatusAtom,
   currentUserIdAtom,
   isRoundBreakAtom,
   loadingAtom,
@@ -156,17 +154,7 @@ export default function GameroomPage() {
   };
 
   // Chat socket connection
-  const baseWsUrl = (gameroom?.game_ws_url ?? "").replace(/\/(game|chat)$/, "");
-  const {
-    sendMessage: sendChatMessage,
-    connectionStatus: chatConnectionStatus,
-    reconnect: reconnectChat,
-  } = useChatSocket(baseWsUrl, gameroom?.token ?? "");
 
-  const setChatConnectionStatus = useSetAtom(chatConnectionStatusAtom);
-  useEffect(() => {
-    setChatConnectionStatus(chatConnectionStatus);
-  }, [chatConnectionStatus, setChatConnectionStatus]);
 
   // Unified submission handler — returns false if the message could not be sent
   const handleUnifiedSubmit = (message: string, isAnswer: boolean): boolean => {
@@ -175,7 +163,8 @@ export default function GameroomPage() {
       submitAnswer(message, sendEvent);
       return true;
     }
-    return sendChatMessage(message);
+    sendEvent("send_message", message);
+    return true;
   };
 
   const handleSoundsLoaded = useRef(false);
@@ -193,7 +182,7 @@ export default function GameroomPage() {
 
   return (
     <>
-      <ConnectionBanner onRetry={reconnectGame} onChatRetry={reconnectChat} />
+      <ConnectionBanner onRetry={reconnectGame} />
       {loading && <Progress />}
       {!loading && (
         <div className={styles.container}>

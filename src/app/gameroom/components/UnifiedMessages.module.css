@@ -112,7 +112,7 @@
   padding-left: 0.5rem;
   border-radius: 6px;
   font-size: 0.7rem;
-  animation: messageAppear 0.3s ease-out;
+  /* animation: messageAppear 0.3s ease-out;  — removed for testing perceived chat lag */
   font-family: var(--retro-font-alt);
   border-left: 3px solid transparent;
   background-color: rgba(0, 0, 0, 0.2);

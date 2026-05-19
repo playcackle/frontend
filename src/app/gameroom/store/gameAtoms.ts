@@ -93,7 +93,6 @@ export type ConnectionStatus =
   | "disconnected"
   | "error";
 export const connectionStatusAtom = atom<ConnectionStatus>("connecting");
-export const chatConnectionStatusAtom = atom<ConnectionStatus>("connecting");
 
 // Actions atoms (write-only atoms for state updates)
 export const updateGameStateAtom = atom(

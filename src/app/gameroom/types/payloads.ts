@@ -2,7 +2,7 @@
 // Base Types
 // ========================
 
-import { Accolade, FinalScore, PodiumPlayer, Score, Slot } from "./state";
+import { Accolade, FinalScore, LobbyStatus, PodiumPlayer, Score, Slot } from "./state";
 
 export type GameEvent =
   | "connection_success"
@@ -25,11 +25,9 @@ export type GameEvent =
   | "play_again_count_update"
   | "play_again_player_update"
   | "play_again_result"
-  | "play_again_response";
-
-export type ChatEvent =
-  | "connection_success_chat"
-  | "new_message"
+  | "play_again_response"
+  | "send_message"
+  | "unified_message"
   | "message_error";
 
 // ========================
@@ -91,6 +89,7 @@ export type LobbySyncPayload = {
 };
 
 export type LobbyTickPayload = {
+  status: LobbyStatus;
   time_remaining_seconds: number | null;
   player_count: number;
   scores: Score[];
@@ -243,6 +242,9 @@ export type EventPayloadMap = {
   submission_feedback: SubmissionFeedbackPayload;
   lobby_state_sync: LobbySyncPayload;
   submit_answer: any;
+  send_message: string;
+  unified_message: any;
+  message_error: { error: string };
   request_state_sync: undefined;
   play_again_prompt: PlayAgainPromptPayload;
   play_again_count_update: PlayAgainCountUpdatePayload;

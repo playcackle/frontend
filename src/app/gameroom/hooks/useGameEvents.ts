@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import {
   clearRoundHintsAtom,
+  addUnifiedMessageAtom,
   clearUnifiedMessagesAtom,
   connectionStatusAtom,
   gameStateAtom,
@@ -10,8 +11,10 @@ import {
   resetPlayAgainStateAtom,
   updateGameStateAtom,
   updatePlayAgainStateAtom,
+  type UnifiedMessage,
 } from "../store/gameAtoms";
 import {
+  GameStartCancelledPayload,
   GameOverPayload,
   LobbySyncPayload,
   LobbyTickPayload,
@@ -44,6 +47,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const setConnectionStatus = useSetAtom(connectionStatusAtom);
   const updatePlayAgainState = useSetAtom(updatePlayAgainStateAtom);
   const resetPlayAgainState = useSetAtom(resetPlayAgainStateAtom);
+  const addUnifiedMessage = useSetAtom(addUnifiedMessageAtom);
 
   // ---------------------------------------------------------------------------
   // Connection → loading gate with grace period
@@ -54,9 +58,9 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   //   2. Only set `loading: true` if the disconnection persists beyond the grace
   //      period — giving socket.io time to reconnect transparently.
   // ---------------------------------------------------------------------------
+  const prevLobbyIdRef = useRef<string | null>(null);
   const graceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasReceivedFirstSync = useRef(false);
-
   useEffect(() => {
     const isHealthy = isConnected && connectionStatus === "connected";
 
@@ -97,6 +101,14 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     const cleanups = [
       onEvent("lobby_state_sync", (data: LobbySyncPayload) => {
         hasReceivedFirstSync.current = true;
+
+        // Clear room-scoped transient state when joining a different lobby
+        if (prevLobbyIdRef.current && prevLobbyIdRef.current !== data.lobby_id) {
+          clearRoundHints();
+          clearUnifiedMessages();
+        }
+        prevLobbyIdRef.current = data.lobby_id;
+
         updateGameState({
           roundNumber: data.round_number,
           roundExample: data.topic_example,
@@ -131,10 +143,16 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
       }),
 
       onEvent("lobby_tick", (data: LobbyTickPayload) => {
+        // lobby_tick is a periodic heartbeat — always apply regardless of
+        // stateVersion, since it keeps timers counting down and self-corrects
+        // phase desync. State transition events (round_over, new_round_started)
+        // are version-gated; the tick is not.
         updateGameState({
           playerCount: data.player_count,
           timeRemaining: data.time_remaining_seconds ?? 0,
           scores: data.scores ?? [],
+          lobbyStatus: data.status,
+          isRoundBreak: data.status === "ROUND_BREAK",
         });
       }),
 
@@ -147,7 +165,10 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           timeRemaining: data.break_duration_seconds ?? 0,
         });
         playSound("timeUp");
-        sendEvent("request_state_sync", undefined);
+      }),
+
+      onEvent("game_start_cancelled", () => {
+        updateGameState({ lobbyStatus: "WAITING", showCountDown: false });
       }),
 
       onEvent("round_starting_soon", () => {
@@ -275,6 +296,14 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           minPlayersNeeded: data.min_players_needed,
         });
       }),
+
+      onEvent("unified_message", (data: UnifiedMessage) => {
+        addUnifiedMessage(data);
+      }),
+
+      onEvent("message_error", (data: { error?: string }) => {
+        console.warn("Message error:", data?.error);
+      }),
     ];
 
     return () => cleanups.forEach((fn) => fn?.());
@@ -283,6 +312,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     updateGameState,
     clearRoundHints,
     clearUnifiedMessages,
+    addUnifiedMessage,
     sendEvent,
     router,
     store,

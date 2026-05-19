@@ -140,12 +140,8 @@ export const useGameSocket = (baseUrl: string, token: string) => {
         error: null,
         reconnectAttempts: 0,
       });
-      // After a mid-session drop+reconnect, the server may not auto-push
-      // lobby_state_sync (unlike initial connect). Requesting it here ensures
-      // loading clears and the client catches up on any missed state.
-      // Safe to do here because "reconnect" only fires on re-connections,
-      // not on the initial connect, so there's no race with fresh joins.
-      socket.emit("request_state_sync");
+      // The server already emits lobby_state_sync on the underlying "connect"
+      // event (which fires before "reconnect"), so no request_state_sync is needed.
     });
 
     socket.io.on("reconnect_failed", () => {
@@ -190,6 +186,8 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       "play_again_count_update",
       "play_again_player_update",
       "play_again_result",
+      "unified_message",
+      "message_error",
     ];
 
     socket.on("lobby_tick", debouncedLobbyTick);
@@ -222,33 +220,32 @@ export const useGameSocket = (baseUrl: string, token: string) => {
 
   // ==================== PUBLIC API ====================
 
-  // Send events to server (with debouncing to prevent spam)
+  // Send events to server immediately (no debounce — submissions are time-sensitive)
   const sendEvent = useCallback(
-    debounce(
-      <T extends GameEvent>(
-        event: T,
-        data: T extends "submit_answer"
+    <T extends GameEvent>(
+      event: T,
+      data: T extends "submit_answer"
+        ? string
+        : T extends "send_message"
           ? string
           : T extends "play_again_response"
             ? { want_to_play: boolean }
             : EventPayloadMap[T],
-      ) => {
-        const socket = socketRef.current;
-        if (!socket?.connected) {
-          console.warn(`Cannot send ${event}: socket not connected`);
-          return false;
-        }
+    ) => {
+      const socket = socketRef.current;
+      if (!socket?.connected) {
+        console.warn(`Cannot send ${event}: socket not connected`);
+        return false;
+      }
 
-        try {
-          socket.emit(event, data);
-          return true;
-        } catch (error) {
-          debouncedErrorLog(`Error sending ${event}:`, error);
-          return false;
-        }
-      },
-      100,
-    ),
+      try {
+        socket.emit(event, data);
+        return true;
+      } catch (error) {
+        debouncedErrorLog(`Error sending ${event}:`, error);
+        return false;
+      }
+    },
     [debouncedErrorLog],
   );
 
