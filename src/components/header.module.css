@@ -272,7 +272,7 @@
   border-radius: 4px;
   padding: 0.4rem 1rem;
   background: rgba(183, 0, 255, 0.05);
-  box-shadow: 0 0 8px rgba(183, 0, 255, 0.15);
+  box-shadow: 0 0 8px rgba(183, 0, 255, 0.25);
   transition:
     background 0.2s ease,
     box-shadow 0.2s ease,
