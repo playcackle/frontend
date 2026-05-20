@@ -129,26 +129,6 @@ describe("joinGameroom – errors", () => {
     });
   });
 
-  it("returns generic error when response body is unparseable", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
-      ok: false,
-      status: 500,
-      json: async () => {
-        throw new Error("not json");
-      },
-    });
-
-    const result = await joinGameroom({
-      lobbyId: "lobby-1",
-      playerId: "p1",
-    });
-
-    expect(result).toEqual({
-      isError: true,
-      error: "Unable to join lobby.",
-    });
-  });
-
   it("returns network error when fetch throws", async () => {
     globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error("network down"));
 

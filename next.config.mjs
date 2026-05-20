@@ -1,5 +1,5 @@
-import { withSentryConfig } from '@sentry/nextjs';
 import bundleAnalyzer from '@next/bundle-analyzer';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -31,7 +31,7 @@ export default withSentryConfig(withBundleAnalyzer(nextConfig), {
 
   org: "cackle-n4",
 
-  project: "javascript-nextjs",
+  project: "next-frontend",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
