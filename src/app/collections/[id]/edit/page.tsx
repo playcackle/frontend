@@ -1,6 +1,5 @@
-"use client";
 import * as Form from "@radix-ui/react-form";
-import { useParams, useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
@@ -50,11 +49,10 @@ const availableRounds: Round[] = [
   },
 ];
 
-export default function EditCollectionPage() {
-  const router = useRouter();
-  const params = useParams();
+export default function EditCollectionPage({ id }: { id: string }) {
+  const navigate = useNavigate();
   const [collection, setCollection] = useState<Collection>({
-    id: params.id as string,
+    id,
     name: "",
     rounds: [],
   });
@@ -64,7 +62,7 @@ export default function EditCollectionPage() {
   useEffect(() => {
     // Load existing collection data
     const existingCollection = {
-      id: params.id as string,
+      id,
       name: "80s Pop Culture",
       rounds: [
         { roundId: "r1", order: 1 },
@@ -72,15 +70,15 @@ export default function EditCollectionPage() {
       ],
     };
     setCollection(existingCollection);
-  }, [params.id]);
+  }, [id]);
 
   const handleSave = () => {
     console.log("[v0] Saving collection:", collection);
-    router.push("/collections");
+    navigate({ to: "/collections" });
   };
 
   const handleCancel = () => {
-    router.push("/collections");
+    navigate({ to: "/collections" });
   };
 
   const addRound = (roundId: string) => {

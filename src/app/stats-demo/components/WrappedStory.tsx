@@ -1,4 +1,3 @@
-"use client";
 
 import { ChevronRight, Hand, PartyPopper, Share2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";

@@ -1,4 +1,3 @@
-"use client";
 
 import { AlertTriangle, ArrowLeft, CheckCircle, ClipboardList, Rocket, Search, Star, X } from "lucide-react";
 import { useState } from "react";

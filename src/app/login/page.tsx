@@ -1,11 +1,8 @@
-"use client";
-
 import { createClient } from "@/lib/supabase/client";
 import { Box, Button, Flex } from "@radix-ui/themes";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { AtSign, Lock } from "lucide-react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../login/auth.module.css";
 
@@ -15,15 +12,15 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const ref = useRef<HTMLFormElement>(null);
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const navigate = useNavigate();
+  const search = useSearch({ strict: false });
   const supabase = useMemo(() => createClient(), []);
 
   // Show callback errors from URL params
   useEffect(() => {
-    const errorDesc = searchParams.get("error_description");
+    const errorDesc = search.error_description;
     if (errorDesc) setError(errorDesc);
-  }, [searchParams]);
+  }, [search]);
 
   useEffect(() => {
     let isMounted = true;
@@ -33,7 +30,7 @@ export default function LoginPage() {
       const { data } = await supabase.auth.getSession();
       if (!isMounted) return;
       if (data.session) {
-        router.replace("/");
+        navigate({ to: "/", replace: true });
       }
     };
     checkSession();
@@ -45,7 +42,7 @@ export default function LoginPage() {
       (event: AuthChangeEvent, session: Session | null) => {
         if (!isMounted) return;
         if (event === "SIGNED_IN") {
-          router.replace("/");
+          navigate({ to: "/", replace: true });
         }
       }
     );
@@ -54,7 +51,7 @@ export default function LoginPage() {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [supabase, router]);
+  }, [supabase, navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,8 +73,7 @@ export default function LoginPage() {
         return;
       }
 
-      // Navigate immediately; auth listener is a fallback
-      router.replace("/");
+      navigate({ to: "/", replace: true });
     } catch (err) {
       console.error("Login error:", err);
       setError("An unexpected error occurred");
@@ -93,7 +89,6 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className={styles.formContainer}
         autoComplete="off"
-        suppressHydrationWarning
       >
         <h1 className={styles.title}>
           <span className={styles.neonText}>Back for more?</span>
@@ -173,7 +168,7 @@ export default function LoginPage() {
                 data-lpignore="true"
                 data-1p-ignore="true"
                 data-dashlaneignore="true"
-                suppressHydrationWarning
+
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.input}
@@ -197,7 +192,7 @@ export default function LoginPage() {
                 data-lpignore="true"
                 data-1p-ignore="true"
                 data-dashlaneignore="true"
-                suppressHydrationWarning
+
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={styles.input}
@@ -218,7 +213,7 @@ export default function LoginPage() {
 
         <p className={styles.switchText}>
           Don&apos;t have an account?{" "}
-          <Link href="/register" className={styles.switchLink}>
+          <Link to="/register" className={styles.switchLink}>
             Register
           </Link>
         </p>

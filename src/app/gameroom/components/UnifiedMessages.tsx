@@ -1,4 +1,3 @@
-"use client";
 
 import { Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";

@@ -1,4 +1,3 @@
-"use client";
 
 import { useState } from "react";
 import { Target, Star, TrendingUp, Gamepad2 } from "lucide-react";

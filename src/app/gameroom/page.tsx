@@ -1,5 +1,3 @@
-"use client";
-
 import SoundEffects from "@/components/sound-effects";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./gameroom.module.css";
@@ -7,7 +5,7 @@ import styles from "./gameroom.module.css";
 // Import custom hooks
 import { useUser } from "@/hooks/useUser";
 import { useAtomValue, useSetAtom } from "jotai";
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import Progress from "../loading";
 import { gameRoomAtom } from "../store/gameRoom";
 import CountdownOverlay from "./components/CountdownOverlay";
@@ -54,7 +52,7 @@ function NoGameroom() {
     >
       <div style={{ textAlign: "center" }}>
         <p style={{ marginBottom: "1rem" }}>No gameroom selected.</p>
-        <Link href="/gamerooms" className={styles.backLink}>
+        <Link to="/gamerooms" className={styles.backLink}>
           Browse gamerooms
         </Link>
       </div>

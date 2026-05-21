@@ -1,12 +1,8 @@
-"use client";
-
 import { createClient } from "@/lib/supabase/client";
 import { Box, Button, Flex } from "@radix-ui/themes";
 import { AlertTriangle, AtSign, Check, CheckCircle, Lock, User } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
-import { signUp } from "../../actions/auth";
 import styles from "../login/auth.module.css";
 
 export default function RegisterPage() {
@@ -20,9 +16,9 @@ export default function RegisterPage() {
     "idle" | "checking" | "available" | "taken"
   >("idle");
   const [usernameError, setUsernameError] = useState("");
-  const router = useRouter();
+  const navigate = useNavigate();
   const ref = useRef<HTMLFormElement>(null);
-  const usernameCheckTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
+  const usernameCheckTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const supabase = useMemo(() => createClient(), []);
 
   // Real-time username validation
@@ -44,7 +40,7 @@ export default function RegisterPage() {
 
     try {
       const backendUrl =
-        process.env.NEXT_PUBLIC_PLAYER_SERVICE_URL || "http://localhost:8004";
+        import.meta.env.VITE_PLAYER_SERVICE_URL || "http://localhost:8004";
       const response = await fetch(
         `${backendUrl}/players/check-username/${encodeURIComponent(username)}`,
       );
@@ -104,14 +100,15 @@ export default function RegisterPage() {
     return errorMessage;
   };
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setError("");
     setSuccess("");
     setLoading(true);
 
     try {
       const backendUrl =
-        process.env.NEXT_PUBLIC_PLAYER_SERVICE_URL || "http://localhost:8004";
+        import.meta.env.VITE_PLAYER_SERVICE_URL || "http://localhost:8004";
 
       // Pre-flight check: Verify both username and email are available
       const checkResponse = await fetch(
@@ -119,10 +116,7 @@ export default function RegisterPage() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: formData.get("name"),
-            email: formData.get("email"),
-          }),
+          body: JSON.stringify({ username: name, email }),
         },
       );
 
@@ -132,28 +126,35 @@ export default function RegisterPage() {
         return;
       }
 
-      // If availability check passed, proceed with Supabase signup
-      const result = await signUp(formData);
+      const emailRedirectTo = `${window.location.origin}/auth/callback`;
 
-      if (result?.error) {
-        setError(parseSignupError(result.error));
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo,
+          data: { name },
+        },
+      });
+
+      if (signUpError) {
+        setError(parseSignupError(signUpError.message));
         return;
       }
 
-      if (result?.message) {
-        // Email confirmation required - show success but DON'T redirect
-        setSuccess(result.message);
+      // Email confirmation required — user exists but no session
+      if (data.user && !data.session) {
+        setSuccess("Account created! Please check your email to confirm your account before logging in.");
         setName("");
         setEmail("");
         setPassword("");
         setUsernameStatus("idle");
         ref.current?.reset();
-        // Note: NOT redirecting here so user sees the confirmation message
         return;
       }
 
-      // Signup was successful and user is auto-logged in — show onboarding
-      router.push("/?onboarding=1");
+      // User is auto-logged in — show onboarding
+      navigate({ to: "/", search: { onboarding: "1" } });
     } catch (err) {
       console.error("Unexpected error:", err);
       setError("An unexpected error occurred. Please try again.");
@@ -166,10 +167,9 @@ export default function RegisterPage() {
     <Flex align="center" direction="column">
       <form
         ref={ref}
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className={styles.formContainer}
         autoComplete="off"
-        suppressHydrationWarning
       >
         <h1 className={styles.title}>
           <span className={styles.neonText}>So, a new</span>
@@ -264,7 +264,7 @@ export default function RegisterPage() {
                 data-lpignore="true"
                 data-1p-ignore="true"
                 data-dashlaneignore="true"
-                suppressHydrationWarning
+
                 value={name}
                 onChange={(e) => handleNameChange(e.target.value)}
                 className={styles.input}
@@ -326,7 +326,7 @@ export default function RegisterPage() {
                 data-lpignore="true"
                 data-1p-ignore="true"
                 data-dashlaneignore="true"
-                suppressHydrationWarning
+
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.input}
@@ -350,7 +350,7 @@ export default function RegisterPage() {
                 data-lpignore="true"
                 data-1p-ignore="true"
                 data-dashlaneignore="true"
-                suppressHydrationWarning
+
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={styles.input}
@@ -371,7 +371,7 @@ export default function RegisterPage() {
 
         <p className={styles.switchText}>
           Already have an account?{" "}
-          <Link href="/login" className={styles.switchLink}>
+          <Link to="/login" className={styles.switchLink}>
             Login
           </Link>
         </p>

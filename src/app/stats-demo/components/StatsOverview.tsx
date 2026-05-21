@@ -1,4 +1,3 @@
-"use client";
 
 import { useState, useEffect } from "react";
 import { Trophy, Gamepad2, Zap, Target, Gem, Medal, BarChart3, Cpu } from "lucide-react";

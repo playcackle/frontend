@@ -2,8 +2,45 @@
  * API client for admin CRUD operations
  */
 
+import { createClient } from "@/lib/supabase/client";
+
+const LOBBY_MANAGER_URL = import.meta.env.VITE_LOBBY_MANAGER_URL || "http://localhost:8001";
+const CONTENT_SERVICE_URL = import.meta.env.VITE_CONTENT_SERVICE_URL || "http://localhost:8003";
+const PLAYER_SERVICE_URL = import.meta.env.VITE_PLAYER_SERVICE_URL || "http://localhost:8004";
+
+const CONTENT_PATHS = ["/collections", "/topics", "/slots", "/generate"];
+const PLAYER_PATHS = ["/players"];
+
+const resolveUrl = (path: string): string => {
+  // Normalize and strip the /admin prefix that all call sites use
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  const stripped = normalized.startsWith("/admin")
+    ? normalized.substring("/admin".length)
+    : normalized;
+
+  if (CONTENT_PATHS.some((p) => stripped.startsWith(p))) {
+    return `${CONTENT_SERVICE_URL}${stripped}`;
+  }
+  if (PLAYER_PATHS.some((p) => stripped.startsWith(p))) {
+    return `${PLAYER_SERVICE_URL}${stripped}`;
+  }
+  // Lobbies, gamerooms, and everything else go to lobby_manager with /admin prefix
+  return `${LOBBY_MANAGER_URL}/admin${stripped}`;
+};
+
 const apiFetch = async (path: string, init?: RequestInit): Promise<Response> => {
-  const res = await fetch(`/api${path.startsWith("/") ? path : `/${path}`}`, init);
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session?.access_token) {
+    throw new Error("You must be logged in to access this.");
+  }
+
+  const url = resolveUrl(path);
+  const headers = new Headers(init?.headers);
+  headers.set("Authorization", `Bearer ${session.access_token}`);
+
+  const res = await fetch(url, { ...init, headers });
   if (res.status === 401) throw new Error("You must be logged in to access this.");
   if (res.status === 403) throw new Error("You don't have permission to access this.");
   return res;

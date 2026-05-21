@@ -29,7 +29,7 @@ const formatJoinUrl = (baseUrl: string) => {
 };
 
 const resolveLobbyManagerUrl = () => {
-  const baseUrl = process.env.NEXT_PUBLIC_LOBBY_MANAGER_URL;
+  const baseUrl = import.meta.env.VITE_LOBBY_MANAGER_URL;
   if (!baseUrl) {
     throw new Error("Lobby Manager URL is not configured.");
   }

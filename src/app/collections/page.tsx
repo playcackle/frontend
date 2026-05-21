@@ -1,6 +1,4 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import styles from "./page.module.css";
 
@@ -21,7 +19,7 @@ type Collection = {
 };
 
 export default function CollectionsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [collections, setCollections] = useState<Collection[]>([
     {
       id: "1",
@@ -34,11 +32,11 @@ export default function CollectionsPage() {
   ]);
 
   const handleCreateNew = () => {
-    router.push("/collections/new");
+    navigate({ to: "/collections/new" });
   };
 
   const handleEdit = (id: string) => {
-    router.push(`/collections/${id}/edit`);
+    navigate({ to: "/collections/$id/edit", params: { id } });
   };
 
   const handleDelete = (id: string) => {

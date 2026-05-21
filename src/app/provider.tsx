@@ -1,17 +1,11 @@
-"use client";
-
-import dynamic from "next/dynamic";
 import { PerformanceInitializer } from "@/components/performance-initializer";
 import { PerformanceModal } from "@/components/performance-modal";
 import { Provider as JotaiProvider } from "jotai";
 import type React from "react";
+import { lazy, Suspense } from "react";
 
-// SentryUserSync only sets Sentry user context — no SSR value, safe to defer.
-// Dynamic import from Provider (Client Component) produces a genuine webpack code split,
-// moving the Supabase 645KB chunk out of the main entry bundle.
-const SentryUserSync = dynamic(
-  () => import("@/components/SentryUserSync").then((m) => ({ default: m.SentryUserSync })),
-  { ssr: false }
+const SentryUserSync = lazy(() =>
+  import("@/components/SentryUserSync").then((m) => ({ default: m.SentryUserSync }))
 );
 
 type Props = {
@@ -22,7 +16,9 @@ export const Provider = ({ children }: Props) => {
   return (
     <JotaiProvider>
       <PerformanceInitializer />
-      <SentryUserSync />
+      <Suspense fallback={null}>
+        <SentryUserSync />
+      </Suspense>
       <PerformanceModal />
       {children}
     </JotaiProvider>

@@ -1,4 +1,3 @@
-"use client";
 
 import LoadingGrid from "@/components/loading-grid";
 import { useEffect, useState } from "react";

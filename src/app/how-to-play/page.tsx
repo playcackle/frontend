@@ -1,6 +1,4 @@
-"use client";
-
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import styles from "./page.module.css";
 
@@ -330,7 +328,7 @@ export default function HowToPlayPage() {
         {/* Header */}
         <div className={styles.header}>
           <span className={styles.headerLabel}>HOW TO PLAY</span>
-          <Link href="/" className={styles.skipBtn}>
+          <Link to="/" className={styles.skipBtn}>
             BACK TO HOME
           </Link>
         </div>
@@ -383,7 +381,7 @@ export default function HowToPlayPage() {
           </button>
           {isLast ? (
             <Link
-              href="/"
+              to="/"
               className={`${styles.navBtn} ${styles.navBtnPrimary}`}
             >
               {"LET'S GO"}

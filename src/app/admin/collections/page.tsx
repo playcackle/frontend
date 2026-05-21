@@ -1,12 +1,10 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { collectionsApi, type Collection } from "@/lib/api/admin";
 import styles from "./page.module.css";
 
 export default function CollectionsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +58,7 @@ export default function CollectionsPage() {
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/admin/collections/${id}`);
+    navigate({ to: `/admin/collections/${id}` });
   };
 
   const handleDelete = async (id: number, name: string) => {

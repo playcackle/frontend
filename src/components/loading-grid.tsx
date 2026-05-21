@@ -1,4 +1,3 @@
-"use client";
 
 import { gsap, Power2, Power3 } from "gsap";
 import { useEffect, useRef } from "react";

@@ -1,7 +1,6 @@
 // src/lib/sentry.ts
 // Central Sentry abstraction — all application code uses these helpers.
-// Direct @sentry/nextjs imports are forbidden outside this file and global-error.tsx.
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from "@sentry/react";
 import type { User } from "@supabase/supabase-js";
 
 export function setSentryUser(user: User): void {

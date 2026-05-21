@@ -1,5 +1,3 @@
-"use client";
-
 import { useUser } from "@/hooks/useUser";
 import { useEffect, useState, useCallback } from "react";
 import {
@@ -10,8 +8,7 @@ import {
   type PlayerProfileStats,
   type PlayerComparisonsResponse,
 } from "@/lib/api/players";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { useNavigate } from "@tanstack/react-router";
 import styles from "./page.module.css";
 import { EMPTY_PLAYSTYLE_PROFILE } from "./playstyle";
 
@@ -189,7 +186,7 @@ function PlaystyleRadar({
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useUser();
-  const router = useRouter();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<PlayerProfileStats | null>(null);
   const [playstyle, setPlaystyle] = useState<PlayerPlaystyleProfile | null>(null);
   const [accoladeStats, setAccoladeStats] = useState<PlayerAccoladeStats | null>(null);
@@ -226,11 +223,11 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/login");
+      navigate({ to: "/login" });
       return;
     }
     if (user?.id) loadProfile();
-  }, [authLoading, user?.id, router, loadProfile]);
+  }, [authLoading, user?.id, navigate, loadProfile]);
 
   if (loading) {
     return (
@@ -285,7 +282,7 @@ export default function ProfilePage() {
           <div className={styles.profileInfoColumn}>
             <div className={styles.profileIdentity}>
               {profile.avatar_url ? (
-                <Image
+                <img
                   src={profile.avatar_url}
                   alt={`${profile.name}'s avatar`}
                   width={72}
