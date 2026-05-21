@@ -145,7 +145,6 @@ export type Lobby = {
   admin_base_url?: string | null;
   join_base_url?: string | null;
   game_ws_url?: string | null;
-  chat_ws_url?: string | null;
   visibility?: "public" | "private" | "hidden";
   is_spawned?: boolean;
   railway_service_id?: string | null;

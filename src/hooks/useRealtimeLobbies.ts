@@ -12,7 +12,6 @@ export type LobbyInfo = {
   max_players?: number | null;
   join_base_url?: string | null;
   game_ws_url?: string | null;
-  chat_ws_url?: string | null;
   admin_base_url?: string | null;
   discord_url?: string | null;
   discord_invite_url?: string | null;
@@ -46,7 +45,6 @@ export function useRealtimeLobbies(initialLobbies: LobbyInfo[]) {
               max_players: payload.new.max_players,
               join_base_url: payload.new.join_base_url,
               game_ws_url: payload.new.game_ws_url,
-              chat_ws_url: payload.new.chat_ws_url,
               admin_base_url: payload.new.admin_base_url,
               discord_url: payload.new.discord_url,
               discord_invite_url: payload.new.discord_invite_url,
@@ -63,7 +61,6 @@ export function useRealtimeLobbies(initialLobbies: LobbyInfo[]) {
                       max_players: payload.new.max_players,
                       join_base_url: payload.new.join_base_url,
                       game_ws_url: payload.new.game_ws_url,
-                      chat_ws_url: payload.new.chat_ws_url,
                       discord_invite_url: payload.new.discord_invite_url,
                     }
                   : lobby
