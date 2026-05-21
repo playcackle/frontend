@@ -10,7 +10,6 @@ type LobbyInfo = {
   max_players?: number | null;
   join_base_url?: string | null;
   game_ws_url?: string | null;
-  chat_ws_url?: string | null;
   discord_url?: string | null;
 };
 
