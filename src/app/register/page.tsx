@@ -16,6 +16,7 @@ export default function RegisterPage() {
     "idle" | "checking" | "available" | "taken"
   >("idle");
   const [usernameError, setUsernameError] = useState("");
+  const [marketingOptIn, setMarketingOptIn] = useState(false);
   const navigate = useNavigate();
   const ref = useRef<HTMLFormElement>(null);
   const usernameCheckTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -133,7 +134,7 @@ export default function RegisterPage() {
         password,
         options: {
           emailRedirectTo,
-          data: { name },
+          data: { name, marketing_opt_in: marketingOptIn },
         },
       });
 
@@ -358,6 +359,26 @@ export default function RegisterPage() {
                 required
               />
             </div>
+          </div>
+
+          <div className={styles.consentSection}>
+            <p className={styles.legalText}>
+              By signing up, you agree to our{" "}
+              <Link to="/terms" className={styles.legalLink}>Terms of Service</Link>
+              {" "}and{" "}
+              <Link to="/privacy" className={styles.legalLink}>Privacy Policy</Link>.
+            </p>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={marketingOptIn}
+                onChange={(e) => setMarketingOptIn(e.target.checked)}
+                className={styles.checkbox}
+              />
+              <span className={styles.checkboxText}>
+                Keep me updated with product news and feature updates
+              </span>
+            </label>
           </div>
 
           <Button
