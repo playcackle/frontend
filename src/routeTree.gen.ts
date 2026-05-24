@@ -19,6 +19,7 @@ import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as HowToPlayRouteImport } from './routes/how-to-play'
 import { Route as GameroomsRouteImport } from './routes/gamerooms'
 import { Route as GameroomRouteImport } from './routes/gameroom'
+import { Route as AccoladesDemoRouteImport } from './routes/accolades-demo'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CollectionsIndexRouteImport } from './routes/collections/index'
@@ -82,6 +83,11 @@ const GameroomsRoute = GameroomsRouteImport.update({
 const GameroomRoute = GameroomRouteImport.update({
   id: '/gameroom',
   path: '/gameroom',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccoladesDemoRoute = AccoladesDemoRouteImport.update({
+  id: '/accolades-demo',
+  path: '/accolades-demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -158,6 +164,7 @@ const AdminCollectionsIdRoute = AdminCollectionsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/accolades-demo': typeof AccoladesDemoRoute
   '/gameroom': typeof GameroomRoute
   '/gamerooms': typeof GameroomsRoute
   '/how-to-play': typeof HowToPlayRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/accolades-demo': typeof AccoladesDemoRoute
   '/gameroom': typeof GameroomRoute
   '/gamerooms': typeof GameroomsRoute
   '/how-to-play': typeof HowToPlayRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/accolades-demo': typeof AccoladesDemoRoute
   '/gameroom': typeof GameroomRoute
   '/gamerooms': typeof GameroomsRoute
   '/how-to-play': typeof HowToPlayRoute
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/accolades-demo'
     | '/gameroom'
     | '/gamerooms'
     | '/how-to-play'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/accolades-demo'
     | '/gameroom'
     | '/gamerooms'
     | '/how-to-play'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/accolades-demo'
     | '/gameroom'
     | '/gamerooms'
     | '/how-to-play'
@@ -316,6 +328,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  AccoladesDemoRoute: typeof AccoladesDemoRoute
   GameroomRoute: typeof GameroomRoute
   GameroomsRoute: typeof GameroomsRoute
   HowToPlayRoute: typeof HowToPlayRoute
@@ -402,6 +415,13 @@ declare module '@tanstack/react-router' {
       path: '/gameroom'
       fullPath: '/gameroom'
       preLoaderRoute: typeof GameroomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accolades-demo': {
+      id: '/accolades-demo'
+      path: '/accolades-demo'
+      fullPath: '/accolades-demo'
+      preLoaderRoute: typeof AccoladesDemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -534,6 +554,7 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  AccoladesDemoRoute: AccoladesDemoRoute,
   GameroomRoute: GameroomRoute,
   GameroomsRoute: GameroomsRoute,
   HowToPlayRoute: HowToPlayRoute,
