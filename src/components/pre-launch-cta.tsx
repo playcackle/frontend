@@ -1,9 +1,8 @@
-"use client";
 
 import { MessageSquare } from "lucide-react";
 import styles from "./pre-launch-cta.module.css";
 
-const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL ?? "https://discord.gg/ZFHaCs7ut6";
+const DISCORD_URL = import.meta.env.VITE_DISCORD_URL ?? "https://discord.gg/ZFHaCs7ut6";
 
 export default function PreLaunchCta() {
   return (

@@ -1,4 +1,3 @@
-"use client";
 
 import { performanceModeAtom } from "@/atoms/performance-atom";
 import { useAtom } from "jotai";

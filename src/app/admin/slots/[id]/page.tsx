@@ -1,7 +1,5 @@
-"use client";
-
 import { AlertTriangle, ArrowLeft, Pencil, Star, X } from "lucide-react";
-import { useRouter, useParams } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
   slotsApi,
@@ -10,10 +8,9 @@ import {
 } from "@/lib/api/admin";
 import styles from "./page.module.css";
 
-export default function SlotDetailPage() {
-  const router = useRouter();
-  const params = useParams();
-  const slotId = parseInt(params.id as string);
+export default function SlotDetailPage({ id }: { id: string }) {
+  const navigate = useNavigate();
+  const slotId = parseInt(id);
 
   const [slot, setSlot] = useState<SlotDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -116,7 +113,7 @@ export default function SlotDetailPage() {
       <div className={styles.container}>
         <div className={styles.error}>
           <p><AlertTriangle size={16} /> {error || "Slot not found"}</p>
-          <button onClick={() => router.back()}><ArrowLeft size={16} /> BACK</button>
+          <button onClick={() => window.history.back()}><ArrowLeft size={16} /> BACK</button>
         </div>
       </div>
     );
@@ -131,7 +128,7 @@ export default function SlotDetailPage() {
             <span className={styles.neonTextPink}>SLOT</span>
           </h1>
 
-          <button className={styles.backButton} onClick={() => router.back()}>
+          <button className={styles.backButton} onClick={() => window.history.back()}>
             <ArrowLeft size={16} /> BACK
           </button>
         </div>

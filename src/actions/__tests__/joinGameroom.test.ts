@@ -20,7 +20,7 @@ function mockFetchOnce(response: {
 }
 
 beforeEach(() => {
-  vi.stubEnv("NEXT_PUBLIC_LOBBY_MANAGER_URL", "http://localhost:8001");
+  vi.stubEnv("VITE_LOBBY_MANAGER_URL", "http://localhost:8001");
   consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
@@ -143,8 +143,8 @@ describe("joinGameroom – errors", () => {
     });
   });
 
-  it("throws when NEXT_PUBLIC_LOBBY_MANAGER_URL is missing and no joinBaseUrl", async () => {
-    vi.stubEnv("NEXT_PUBLIC_LOBBY_MANAGER_URL", "");
+  it("throws when VITE_LOBBY_MANAGER_URL is missing and no joinBaseUrl", async () => {
+    vi.stubEnv("VITE_LOBBY_MANAGER_URL", "");
 
     const result = await joinGameroom({
       lobbyId: "lobby-1",

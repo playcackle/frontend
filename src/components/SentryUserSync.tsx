@@ -1,5 +1,4 @@
 // src/components/SentryUserSync.tsx
-"use client";
 
 import { useEffect } from "react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";

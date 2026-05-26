@@ -1,5 +1,5 @@
 import { useSetAtom, useStore } from "jotai";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import {
   clearRoundHintsAtom,
@@ -35,7 +35,7 @@ import { useGameSocket } from "./useGameSocket";
 const LOADING_GRACE_PERIOD_MS = 3000;
 
 export const useGameEvents = (gameWsUrl: string, token: string) => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { onEvent, sendEvent, isConnected, connectionStatus, reconnect } =
     useGameSocket(gameWsUrl, token);
   const store = useStore();
@@ -59,7 +59,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   //      period — giving socket.io time to reconnect transparently.
   // ---------------------------------------------------------------------------
   const prevLobbyIdRef = useRef<string | null>(null);
-  const graceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const graceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasReceivedFirstSync = useRef(false);
   useEffect(() => {
     const isHealthy = isConnected && connectionStatus === "connected";
@@ -265,7 +265,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         // If player opted in ("yes"), stay in lobby to receive new game content
         // Otherwise redirect to home
         if (playAgainState.userResponse !== "yes") {
-          router.push("/");
+          navigate({ to: "/" });
         }
       }),
 
@@ -314,7 +314,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
     clearUnifiedMessages,
     addUnifiedMessage,
     sendEvent,
-    router,
+    navigate,
     store,
   ]);
 

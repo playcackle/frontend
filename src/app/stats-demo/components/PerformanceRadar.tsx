@@ -1,4 +1,3 @@
-"use client";
 
 import { BarChart2, Gamepad2, Gem, Target, TrendingUp, Trophy, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";

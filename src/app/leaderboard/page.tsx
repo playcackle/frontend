@@ -1,4 +1,3 @@
-"use client";
 
 import SynthwaveBackground from "@/components/synthwave-background";
 import { Button } from "@radix-ui/themes";

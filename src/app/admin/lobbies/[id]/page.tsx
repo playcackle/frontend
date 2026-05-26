@@ -1,6 +1,4 @@
-"use client";
-
-import { useRouter, useParams } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
   lobbiesApi,
@@ -18,10 +16,9 @@ import { ChevronDown } from "lucide-react";
 import styles from "./page.module.css";
 import { BotControls } from "./components/BotControls";
 
-export default function LobbyDetailPage() {
-  const router = useRouter();
-  const params = useParams();
-  const lobbyId = params.id as string;
+export default function LobbyDetailPage({ id }: { id: string }) {
+  const navigate = useNavigate();
+  const lobbyId = id;
 
   const [lobby, setLobby] = useState<Lobby | null>(null);
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -277,7 +274,7 @@ export default function LobbyDetailPage() {
         <div className={styles.errorContainer}>
           <h3>Failed to load gameroom</h3>
           <p>{error}</p>
-          <button className={styles.button} onClick={() => router.back()}>
+          <button className={styles.button} onClick={() => window.history.back()}>
             Go Back
           </button>
         </div>
@@ -288,7 +285,7 @@ export default function LobbyDetailPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <button className={styles.backButton} onClick={() => router.back()}>
+        <button className={styles.backButton} onClick={() => window.history.back()}>
           ← Back to Lobbies
         </button>
         <h1 className={styles.title}>

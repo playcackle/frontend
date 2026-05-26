@@ -1,7 +1,5 @@
-"use client";
-
 import { AlertTriangle, ArrowLeft, Eye, Pencil, X } from "lucide-react";
-import { useRouter, useParams } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
   collectionsApi,
@@ -11,10 +9,9 @@ import {
 } from "@/lib/api/admin";
 import styles from "./page.module.css";
 
-export default function CollectionDetailPage() {
-  const router = useRouter();
-  const params = useParams();
-  const collectionId = parseInt(params.id as string);
+export default function CollectionDetailPage({ id }: { id: string }) {
+  const navigate = useNavigate();
+  const collectionId = parseInt(id);
 
   const [collection, setCollection] = useState<CollectionDetail | null>(null);
   const [availableTopics, setAvailableTopics] = useState<Topic[]>([]);
@@ -88,7 +85,7 @@ export default function CollectionDetailPage() {
   };
 
   const handleViewTopic = (topicId: number) => {
-    router.push(`/admin/topics/${topicId}`);
+    navigate({ to: `/admin/topics/${topicId}` });
   };
 
   const filteredTopics = availableTopics.filter((topic) =>
@@ -111,7 +108,7 @@ export default function CollectionDetailPage() {
       <div className={styles.container}>
         <div className={styles.error}>
           <p><AlertTriangle size={16} /> {error || "Collection not found"}</p>
-          <button onClick={() => router.push("/admin/collections")}>
+          <button onClick={() => navigate({ to: "/admin/collections" })}>
             <ArrowLeft size={16} /> BACK TO COLLECTIONS
           </button>
         </div>
@@ -130,7 +127,7 @@ export default function CollectionDetailPage() {
 
           <button
             className={styles.backButton}
-            onClick={() => router.push("/admin/collections")}
+            onClick={() => navigate({ to: "/admin/collections" })}
           >
             <ArrowLeft size={16} /> BACK
           </button>

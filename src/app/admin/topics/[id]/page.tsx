@@ -1,5 +1,3 @@
-"use client";
-
 import {
   collectionsApi,
   slotsApi,
@@ -8,7 +6,7 @@ import {
   type TopicDetail,
 } from "@/lib/api/admin";
 import { AlertTriangle, ArrowLeft, Bot, ClipboardList, Pencil, Star, Trash2, X } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import AIGenerate from "../../components/AIGenerate";
 import SlotBulkEdit from "../../components/SlotBulkEdit";
@@ -28,10 +26,9 @@ const CATEGORIES = [
   "Pop Culture",
 ] as const;
 
-export default function TopicDetailPage() {
-  const router = useRouter();
-  const params = useParams();
-  const topicId = parseInt(params.id as string);
+export default function TopicDetailPage({ id }: { id: string }) {
+  const navigate = useNavigate();
+  const topicId = parseInt(id);
 
   const [topic, setTopic] = useState<TopicDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -136,7 +133,7 @@ export default function TopicDetailPage() {
   };
 
   const handleViewSlot = (slotId: number) => {
-    router.push(`/admin/slots/${slotId}`);
+    navigate({ to: `/admin/slots/${slotId}` });
   };
 
   const getCollectionNames = (collectionIds: number[]) => {
@@ -168,7 +165,7 @@ export default function TopicDetailPage() {
       <div className={styles.container}>
         <div className={styles.error}>
           <p><AlertTriangle size={16} /> {error || "Topic not found"}</p>
-          <button onClick={() => router.push("/admin/collections")}>
+          <button onClick={() => navigate({ to: "/admin/collections" })}>
             <ArrowLeft size={16} /> BACK TO COLLECTIONS
           </button>
         </div>
@@ -185,7 +182,7 @@ export default function TopicDetailPage() {
             <span className={styles.neonTextPink}>TOPIC</span>
           </h1>
 
-          <button className={styles.backButton} onClick={() => router.back()}>
+          <button className={styles.backButton} onClick={() => window.history.back()}>
             <ArrowLeft size={16} /> BACK
           </button>
         </div>

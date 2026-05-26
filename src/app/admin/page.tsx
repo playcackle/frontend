@@ -1,15 +1,13 @@
-"use client";
-
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function AdminPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Redirect to collections by default
-    router.replace("/admin/collections");
-  }, [router]);
+    navigate({ to: "/admin/collections", replace: true });
+  }, [navigate]);
 
   return (
     <div style={{ padding: "2rem", color: "white", fontFamily: "Orbitron" }}>

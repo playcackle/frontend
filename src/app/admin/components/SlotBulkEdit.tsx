@@ -1,4 +1,3 @@
-"use client";
 
 import { AlertTriangle, ArrowLeft, CheckCircle, Pencil, RotateCcw, Save, Search, X } from "lucide-react";
 import { useState, useEffect } from "react";

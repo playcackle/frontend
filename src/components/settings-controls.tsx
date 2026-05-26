@@ -1,4 +1,3 @@
-"use client";
 
 import { Settings, X } from "lucide-react";
 import type React from "react";

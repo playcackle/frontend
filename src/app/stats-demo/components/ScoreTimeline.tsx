@@ -1,4 +1,3 @@
-"use client";
 
 import { ArrowDown, ArrowUp, TrendingUp } from "lucide-react";
 import { useState } from "react";

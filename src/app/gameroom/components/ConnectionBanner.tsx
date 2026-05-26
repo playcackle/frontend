@@ -1,4 +1,3 @@
-"use client";
 
 import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
@@ -17,7 +16,7 @@ export default function ConnectionBanner({ onRetry }: ConnectionBannerProps) {
 
   const [visible, setVisible] = useState(false);
   const [displayStatus, setDisplayStatus] = useState<ConnectionStatus>(status);
-  const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bannerWasShownRef = useRef(false);
 
   useEffect(() => {

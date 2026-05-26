@@ -1,8 +1,6 @@
-"use client";
-
 import { Button, Dialog, Flex, Text } from "@radix-ui/themes";
 import { AlertTriangle, Home, RefreshCw, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import styles from "./error-modal.module.css";
 
@@ -27,7 +25,7 @@ export default function ErrorModal({
   onRetry,
   showHomeButton = true,
 }: ErrorModalProps) {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleClose = () => {
     onOpenChange(false);
@@ -35,7 +33,7 @@ export default function ErrorModal({
 
   const handleNavigateHome = () => {
     handleClose();
-    router.push(redirectTo);
+    navigate({ to: redirectTo });
   };
 
   const handleRetry = () => {

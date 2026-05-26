@@ -1,11 +1,6 @@
-import Link from "next/link";
-import type { Metadata } from "next";
+import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import styles from "./page.module.css";
-
-export const metadata: Metadata = {
-  title: "Terms of Service — Cackle",
-};
 
 export default function TermsPage() {
   return (
@@ -110,10 +105,10 @@ export default function TermsPage() {
       </div>
 
       <div className={styles.footer}>
-        <Link href="/" className={styles.backLink}>
+        <Link to="/" className={styles.backLink}>
           <ArrowLeft size={16} /> Back to home
         </Link>
-        <Link href="/privacy" className={styles.backLink}>
+        <Link to="/privacy" className={styles.backLink}>
           Privacy Policy <ArrowRight size={16} />
         </Link>
       </div>

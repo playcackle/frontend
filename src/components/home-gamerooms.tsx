@@ -1,9 +1,7 @@
-"use client";
-
 import styles from "./home-gamerooms.module.css";
 import GameroomTile from "@/components/gameroom-tile";
 import { useRealtimeLobbies, type LobbyInfo } from "@/hooks/useRealtimeLobbies";
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 
 type Props = { initialGamerooms: LobbyInfo[] };
 
@@ -31,7 +29,7 @@ export default function HomeGamerooms({ initialGamerooms }: Props) {
 
       {gamerooms.length > PREVIEW_COUNT && (
         <div className={styles.gameroomsFooter}>
-          <Link href="/gamerooms" className={styles.browseAllBtn}>
+          <Link to="/gamerooms" className={styles.browseAllBtn}>
             Browse All {gamerooms.length} Rooms
           </Link>
         </div>

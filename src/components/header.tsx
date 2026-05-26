@@ -1,12 +1,9 @@
-"use client";
-
 import { gameRoomAtom } from "@/app/store/gameRoom";
 import { useUser } from "@/hooks/useUser";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import styles from "./header.module.css";
 
@@ -14,28 +11,27 @@ export default function Header() {
   const { user, loading } = useUser();
   const [signingOut, setSigningOut] = useState(false);
   const supabase = useMemo(() => createClient(), []);
-  const router = useRouter();
-  const pathname = usePathname();
+  const navigate = useNavigate();
+  const location = useLocation();
   const gameroom = useAtomValue(gameRoomAtom);
-  const inGameroom = pathname === "/gameroom";
-  const isLaunched = process.env.NEXT_PUBLIC_LAUNCHED === "true";
+  const inGameroom = location.pathname === "/gameroom";
+  const isLaunched = import.meta.env.VITE_LAUNCHED === "true";
   const discordUrl =
     inGameroom && gameroom?.discord_invite_url
       ? gameroom.discord_invite_url
-      : (process.env.NEXT_PUBLIC_DISCORD_URL ?? null);
+      : (import.meta.env.VITE_DISCORD_URL ?? null);
 
   const handleSignOut = async () => {
     setSigningOut(true);
     await supabase.auth.signOut();
-    router.refresh();
-    router.push("/login");
+    navigate({ to: "/login" });
     setSigningOut(false);
   };
 
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
-        <Link href="/">
+        <Link to="/">
           <span className={styles.logoText}>
             CAC<span className={styles.logoHighlight}>KLE</span>
           </span>
@@ -43,7 +39,7 @@ export default function Header() {
       </div>
       <div className={styles.auth}>
         {!inGameroom && (
-          <Link href="/how-to-play" className={styles.howToPlayLink}>
+          <Link to="/how-to-play" className={styles.howToPlayLink}>
             How to Play
           </Link>
         )}
@@ -72,7 +68,7 @@ export default function Header() {
         )}
         {!loading && user && (
           <>
-            <Link href="/profile" className={styles.playerName}>
+            <Link to="/profile" className={styles.playerName}>
               {user.identities?.[0]?.identity_data?.["name"] ||
                 user.user_metadata.name.replace(".#0") ||
                 user.email}
@@ -88,10 +84,10 @@ export default function Header() {
         )}
         {!loading && !user && isLaunched && (
           <>
-            <Link href="/login" className={styles.loginLink}>
+            <Link to="/login" className={styles.loginLink}>
               Back for more
             </Link>
-            <Link href="/register" className={styles.registerLink}>
+            <Link to="/register" className={styles.registerLink}>
               Join the greatness
             </Link>
           </>
