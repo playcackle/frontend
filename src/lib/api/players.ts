@@ -2,11 +2,21 @@
  * API client for player-related operations
  */
 
-const apiFetch = (path: string, init?: RequestInit) => {
-  const normalizedPath = path.startsWith("/players")
-    ? path.substring("/players".length)
-    : path;
-  return fetch(`/api/players${normalizedPath}`, init);
+import { createClient } from "@/lib/supabase/client";
+
+const PLAYER_SERVICE_URL = (import.meta.env.VITE_PLAYER_SERVICE_URL || "http://localhost:8004").replace(/\/+$/, "");
+
+const apiFetch = async (path: string, init?: RequestInit): Promise<Response> => {
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  const url = `${PLAYER_SERVICE_URL}/players${path.startsWith("/players") ? path.substring("/players".length) : path}`;
+  const headers = new Headers(init?.headers);
+  if (session?.access_token) {
+    headers.set("Authorization", `Bearer ${session.access_token}`);
+  }
+
+  return fetch(url, { ...init, headers });
 };
 
 const getErrorMessage = async (res: Response, fallback: string) => {

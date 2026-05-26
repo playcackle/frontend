@@ -1,4 +1,3 @@
-"use client";
 
 import { Check, Flame, Gem, Heart, Lock, LockKeyhole, Medal, Star, Trophy } from "lucide-react";
 import type { LucideIcon } from "lucide-react";

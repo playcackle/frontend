@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { useSearchParams } from "next/navigation";
+import { useSearch } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import {
   isRoundBreakAtom,
@@ -38,8 +38,8 @@ const StatsRow = React.memo(() => {
 
   const [roundText, setRoundText] = useState("Round number");
   const [timeText, setTimeText] = useState("Time remaining");
-  const searchParams = useSearchParams();
-  const queryRoomName = searchParams.get("name") ?? "";
+  const search = useSearch({ strict: false });
+  const queryRoomName = (search as Record<string, string | undefined>).name ?? "";
 
   const timeRemainingMessages: string[] = [
     "Hurry up.",

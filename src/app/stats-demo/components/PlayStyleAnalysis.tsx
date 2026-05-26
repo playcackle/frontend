@@ -1,4 +1,3 @@
-"use client";
 
 import { Dices, Flame, Gem, Lightbulb, Scale, Sparkles, Target, Zap, Brain } from "lucide-react";
 import type { LucideIcon } from "lucide-react";

@@ -1,4 +1,3 @@
-"use client";
 
 import { useState, useEffect } from "react";
 import { playersApi, LeaderboardEntry as ApiLeaderboardEntry } from "@/lib/api/players";

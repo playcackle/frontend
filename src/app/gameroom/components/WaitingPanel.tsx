@@ -1,4 +1,3 @@
-"use client";
 
 import { PlayerCategoryStatsResponse, playersApi } from "@/lib/api/players";
 import { useAtomValue } from "jotai";
@@ -265,7 +264,7 @@ interface PlayerCarouselProps {
 function PlayerCarousel({ scores, currentUserId }: PlayerCarouselProps) {
   const [index, setIndex] = useState(0);
   const [exiting, setExiting] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Clamp index if scores shrink
   const safeIndex = Math.min(index, Math.max(0, scores.length - 1));
@@ -353,7 +352,7 @@ function PlayerCarousel({ scores, currentUserId }: PlayerCarouselProps) {
 function TipCarousel() {
   const [index, setIndex] = useState(0);
   const [exiting, setExiting] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const advance = (dir: 1 | -1 = 1) => {
     setExiting(true);

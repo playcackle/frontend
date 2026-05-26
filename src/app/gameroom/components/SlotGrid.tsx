@@ -1,4 +1,3 @@
-"use client";
 
 import { useAtomValue } from "jotai";
 import React, { useState } from "react";

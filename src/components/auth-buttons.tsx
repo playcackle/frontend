@@ -1,7 +1,5 @@
-"use client";
-
 import { Key, Sparkles } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import styles from "./auth-buttons.module.css";
 
 export function AuthButtons() {
@@ -15,7 +13,7 @@ export function AuthButtons() {
       </div>
 
       <div className={styles.buttonsContainer}>
-        <Link href="/login" className={styles.loginButton}>
+        <Link to="/login" className={styles.loginButton}>
           <div className={styles.buttonContent}>
             <span className={styles.buttonIcon}><Key size={16} /></span>
             <div className={styles.buttonTextContainer}>
@@ -24,7 +22,7 @@ export function AuthButtons() {
             </div>
           </div>
         </Link>
-        <Link href="/register" className={styles.signupButton}>
+        <Link to="/register" className={styles.signupButton}>
           <div className={styles.buttonContent}>
             <span className={styles.buttonIcon}><Sparkles size={16} /></span>
             <div className={styles.buttonTextContainer}>

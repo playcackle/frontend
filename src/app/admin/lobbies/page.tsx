@@ -1,13 +1,11 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { lobbiesApi, type Lobby } from "@/lib/api/admin";
 import { Settings, Trash2, Globe } from "lucide-react";
 import styles from "./page.module.css";
 
 export default function LobbiesPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [lobbies, setLobbies] = useState<Lobby[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -81,7 +79,7 @@ export default function LobbiesPage() {
   };
 
   const handleConfigure = (lobbyId: string) => {
-    router.push(`/admin/lobbies/${lobbyId}`);
+    navigate({ to: `/admin/lobbies/${lobbyId}` });
   };
 
   const getStatusColor = (status: string) => {

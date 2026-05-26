@@ -1,4 +1,3 @@
-'use client';
 
 import { BarChart2 as BarChart2Icon, PieChart as PieChartIcon, Signal, Sparkles, Target, TrendingDown, TrendingUp } from "lucide-react";
 import type { LucideIcon } from "lucide-react";

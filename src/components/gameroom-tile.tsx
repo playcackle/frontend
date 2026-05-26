@@ -1,10 +1,8 @@
-"use client";
-
 import { joinGameroom } from "@/actions/joinGameroom";
 import { gameRoomAtom } from "@/app/store/gameRoom";
 import { useUser } from "@/hooks/useUser";
 import { useSetAtom } from "jotai";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import ErrorModal from "./error-modal";
 import styles from "./gameroom-tile.module.css";
@@ -43,7 +41,7 @@ function getStatusClass(status: string, playerCount: number, maxPlayers: number 
 export default function GameroomTile(props: GameroomTileProps) {
   const { gameroom } = props;
   const { user } = useUser();
-  const router = useRouter();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const setGameroom = useSetAtom(gameRoomAtom);
@@ -69,7 +67,7 @@ export default function GameroomTile(props: GameroomTileProps) {
     }
     setErrorMessage(undefined);
     setGameroom({ ...gameRoom, discord_invite_url: gameroom.discord_invite_url ?? null });
-    router.push(`/gameroom?name=${gameroom.collection_name}`);
+    navigate({ to: "/gameroom", search: { name: gameroom.collection_name } });
   };
 
   const handleDiscordClick = (e: React.MouseEvent<HTMLAnchorElement>) => {

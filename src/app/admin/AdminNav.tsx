@@ -1,6 +1,4 @@
-"use client";
-
-import { usePathname, useRouter } from "next/navigation";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 import styles from "./layout.module.css";
 
 const navItems = [
@@ -10,16 +8,16 @@ const navItems = [
 ];
 
 export default function AdminNav() {
-  const pathname = usePathname();
-  const router = useRouter();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <nav className={styles.tabNav}>
       {navItems.map((item) => (
         <button
           key={item.path}
-          className={`${styles.tab} ${pathname.startsWith(item.path) ? styles.active : ""}`}
-          onClick={() => router.push(item.path)}
+          className={`${styles.tab} ${location.pathname.startsWith(item.path) ? styles.active : ""}`}
+          onClick={() => navigate({ to: item.path })}
         >
           {item.label}
         </button>

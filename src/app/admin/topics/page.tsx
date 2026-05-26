@@ -1,6 +1,4 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { topicsApi, collectionsApi, type Topic, type Collection } from "@/lib/api/admin";
 import AIGenerate from "../components/AIGenerate";
@@ -8,7 +6,7 @@ import { AlertTriangle, Pencil, Trash2, Zap } from "lucide-react";
 import styles from "./page.module.css";
 
 export default function TopicsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +36,7 @@ export default function TopicsPage() {
   };
 
   const handleViewTopic = (topicId: number) => {
-    router.push(`/admin/topics/${topicId}`);
+    navigate({ to: `/admin/topics/${topicId}` });
   };
 
   const handleDeleteTopic = async (topicId: number, topicName: string) => {

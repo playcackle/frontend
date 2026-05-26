@@ -1,6 +1,5 @@
-"use client";
 import * as Form from "@radix-ui/react-form";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import styles from "../[id]/edit/page.module.css";
 
@@ -51,7 +50,7 @@ const availableRounds: Round[] = [
 ];
 
 export default function NewCollectionPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [collection, setCollection] = useState<Collection>({
     id: Date.now().toString(),
     name: "",
@@ -70,11 +69,11 @@ export default function NewCollectionPage() {
       return;
     }
     console.log("[v0] Creating new collection:", collection);
-    router.push("/collections");
+    navigate({ to: "/collections" });
   };
 
   const handleCancel = () => {
-    router.push("/collections");
+    navigate({ to: "/collections" });
   };
 
   const addRound = (roundId: string) => {

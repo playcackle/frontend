@@ -251,6 +251,72 @@
   color: #ffcc00;
 }
 
+.consentSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.legalText {
+  font-size: 0.8rem;
+  color: #999;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.legalLink {
+  color: var(--neon-blue);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.legalLink:hover {
+  text-shadow: 0 0 5px var(--neon-blue);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border: 1px solid rgba(0, 221, 255, 0.4);
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  margin-top: 2px;
+  transition: all 0.2s ease;
+}
+
+.checkbox:checked {
+  background-color: var(--neon-blue);
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 6px rgba(0, 221, 255, 0.5);
+}
+
+.checkbox:checked::after {
+  content: "✓";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #000;
+  font-weight: bold;
+}
+
+.checkboxText {
+  font-size: 0.8rem;
+  color: #999;
+  line-height: 1.4;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

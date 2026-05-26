@@ -1,4 +1,3 @@
-"use client";
 import styles from "./synthwave-background.module.css";
 
 interface SynthwaveBackgroundProps {

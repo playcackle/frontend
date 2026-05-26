@@ -1,8 +1,6 @@
-"use client";
-
 import * as Dialog from "@radix-ui/react-dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import styles from "./onboarding-modal.module.css";
 
@@ -316,7 +314,7 @@ export default function OnboardingModal({ show }: OnboardingModalProps) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [animating, setAnimating] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (show) {
@@ -327,7 +325,7 @@ export default function OnboardingModal({ show }: OnboardingModalProps) {
 
   const dismiss = () => {
     setOpen(false);
-    router.replace("/");
+    navigate({ to: "/" });
   };
 
   const goTo = (next: number) => {
