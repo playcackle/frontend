@@ -17,13 +17,18 @@ export default function PrivacyPage() {
           <ul>
             <li>Your email address</li>
             <li>Your display name (from your account or OAuth provider)</li>
-            <li>Your profile picture URL (if provided by your OAuth provider)</li>
-            <li>Game activity: answers submitted, scores, and leaderboard positions</li>
+            <li>
+              Your profile picture URL (if provided by your OAuth provider)
+            </li>
+            <li>
+              Game activity: answers submitted, scores, and leaderboard
+              positions
+            </li>
           </ul>
           <p>
-            When you sign in with Google or Discord, your OAuth provider shares
-            your basic profile information (name, email, avatar) with us. We do
-            not receive your password from these providers.
+            When you sign in Discord, your OAuth provider shares your basic
+            profile information (name, email, avatar) with us. We do not receive
+            your password from these providers.
           </p>
         </section>
 
@@ -64,18 +69,6 @@ export default function PrivacyPage() {
               )
             </li>
             <li>
-              <strong>Google OAuth</strong> — optional sign-in (
-              <a
-                href="https://policies.google.com/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.link}
-              >
-                privacy policy
-              </a>
-              )
-            </li>
-            <li>
               <strong>Discord OAuth</strong> — optional sign-in (
               <a
                 href="https://discord.com/privacy"
@@ -106,9 +99,7 @@ export default function PrivacyPage() {
             <li>Correct inaccurate data</li>
             <li>Delete your account and all associated data</li>
           </ul>
-          <p>
-            To exercise these rights, contact us at the address below.
-          </p>
+          <p>To exercise these rights, contact us at the address below.</p>
         </section>
 
         <section className={styles.section}>

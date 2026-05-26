@@ -24,13 +24,21 @@
 
 .neonText {
   color: #fff;
-  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff,
+  text-shadow:
+    0 0 5px #0ff,
+    0 0 10px #0ff,
+    0 0 20px #0ff,
+    0 0 40px #0ff,
     0 0 80px #0ff;
 }
 
 .neonTextPink {
   color: #fff;
-  text-shadow: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px #f0f, 0 0 40px #f0f,
+  text-shadow:
+    0 0 5px #f0f,
+    0 0 10px #f0f,
+    0 0 20px #f0f,
+    0 0 40px #f0f,
     0 0 80px #f0f;
 }
 
@@ -189,16 +197,6 @@
 
 .discordButton {
   background-color: #5865f2;
-  padding: 1rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-family: var(--retro-font);
-}
-
-.googleButton {
-  background-color: #4285f4;
   padding: 1rem;
   font-size: 1.1rem;
   font-weight: 600;

@@ -25,8 +25,8 @@ export default function TermsPage() {
             <li>You must provide accurate information when registering.</li>
             <li>You are responsible for keeping your account secure.</li>
             <li>
-              You may sign in using email/password, Google, or Discord. By using
-              a third-party sign-in, you also agree to that provider&apos;s terms.
+              You may sign in using email/password or Discord. By using a
+              third-party sign-in, you also agree to that provider&apos;s terms.
             </li>
             <li>One account per person. Do not share accounts.</li>
           </ul>
@@ -36,7 +36,9 @@ export default function TermsPage() {
           <h2 className={styles.sectionTitle}>3. Acceptable Use</h2>
           <p>You agree not to:</p>
           <ul>
-            <li>Cheat, exploit bugs, or use automated bots to gain an advantage</li>
+            <li>
+              Cheat, exploit bugs, or use automated bots to gain an advantage
+            </li>
             <li>Harass, abuse, or impersonate other players</li>
             <li>Attempt to access or disrupt our servers or infrastructure</li>
             <li>Submit content that is illegal, offensive, or harmful</li>
@@ -64,9 +66,9 @@ export default function TermsPage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>6. Availability</h2>
           <p>
-            Cackle is provided &quot;as is&quot;. We do not guarantee uninterrupted
-            availability. We may modify, suspend, or discontinue the service at
-            any time without notice.
+            Cackle is provided &quot;as is&quot;. We do not guarantee
+            uninterrupted availability. We may modify, suspend, or discontinue
+            the service at any time without notice.
           </p>
         </section>
 
