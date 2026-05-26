@@ -15,12 +15,14 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: "22"
-  # Dummy env vars required by the build (not secret — just enough to pass validation)
-  NEXT_PUBLIC_SUPABASE_URL: "https://placeholder.supabase.co"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder-anon-key"
-  NEXT_PUBLIC_LOBBY_MANAGER_URL: "http://localhost:8001"
-  NEXT_TELEMETRY_DISABLED: "1"
+  # Match the Node major Railway builds with (see railway.toml / package.json engines)
+  NODE_VERSION: "20"
+  # Dummy env vars required by the Vite build (not secret — just enough to pass validation)
+  VITE_SUPABASE_URL: "https://placeholder.supabase.co"
+  VITE_SUPABASE_ANON_KEY: "placeholder-anon-key"
+  VITE_LOBBY_MANAGER_URL: "http://localhost:8001"
+  VITE_PLAYER_SERVICE_URL: "http://localhost:8002"
+  VITE_CONTENT_SERVICE_URL: "http://localhost:8003"
   SENTRY_AUTH_TOKEN: "" # Skip Sentry source map upload in CI
 
 jobs:
@@ -89,15 +91,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Next.js
-        run: npx next build
+      - name: Build (Vite)
+        run: npm run build
 
       - name: Bundle size report
         run: |
           echo "## Bundle Size Report" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          du -sh .next/ >> $GITHUB_STEP_SUMMARY
+          du -sh dist/ >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Top 20 JS files:" >> $GITHUB_STEP_SUMMARY
-          find .next -name "*.js" -not -path "*/cache/*" | xargs du -sh 2>/dev/null | sort -rh | head -20 >> $GITHUB_STEP_SUMMARY
+          find dist -name "*.js" | xargs du -sh 2>/dev/null | sort -rh | head -20 >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
