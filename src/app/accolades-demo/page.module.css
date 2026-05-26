@@ -122,6 +122,12 @@
   box-shadow: 0 0 8px rgba(255, 0, 170, 0.25);
 }
 
+.sectionLabelRoast {
+  color: var(--neon-green);
+  background: rgba(0, 255, 100, 0.08);
+  box-shadow: 0 0 8px rgba(0, 255, 100, 0.25);
+}
+
 .sectionDescription {
   font-family: var(--retro-font);
   font-size: 0.75rem;
