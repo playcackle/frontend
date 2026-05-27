@@ -2,16 +2,20 @@ import { Link } from "@tanstack/react-router";
 import {
   AlertCircle,
   BadgeCheck,
+  Crosshair,
   Donut,
   Flame,
+  Magnet,
+  Search,
+  Shield,
   Skull,
-  Snail,
-  Sprout,
   Sword,
   Swords,
   Target,
   Timer,
+  Trash2,
   TrendingUp,
+  Trophy,
   Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -36,111 +40,154 @@ const ROUND_ACCOLADES: AccoladeEntry[] = [
     color: "#8b0000",
   },
   {
-    key: "machine_gun",
-    title: "Machine Gun",
-    description: "Submitted the highest volume of answers.",
-    rule: "Given to the player who fired off the most total submissions (correct or wrong) in the round. Pure typing throughput — quality not required.",
+    key: "sprinter",
+    title: "Sprinter",
+    description: "Two snaps within ten seconds.",
+    rule: "Earned when you snap two slots with less than 10 seconds between them. Quick double-tap on the board.",
     icon: Zap,
-    color: "#ff4500",
+    color: "#ff6b00",
   },
   {
     key: "snapping_spree",
     title: "Snapping Spree",
-    description: "On an unstoppable snapping streak.",
-    rule: "Earned when you snap multiple slots in rapid succession in a round without another player breaking your streak. Back-to-back claims dominate the board.",
+    description: "Snapped the most slots this round.",
+    rule: "Given to the player who snagged the highest number of correct answers in the round. Board domination.",
     icon: Flame,
     color: "#ff1493",
   },
   {
+    key: "sniper",
+    title: "Sniper",
+    description: "Stole someone else's near-miss.",
+    rule: "Awarded when you claim a slot that another player almost had right — their fuzzy match was a near-miss, but you snapped it first. Ruthless.",
+    icon: Swords,
+    color: "#9932cc",
+  },
+  {
+    key: "detective",
+    title: "Detective",
+    description: "Cracked a slot after Bot Bob's clue.",
+    rule: "Bot Bob dropped a hint, and you snapped the slot before anyone else. Clues are for players who listen.",
+    icon: Search,
+    color: "#2e4053",
+  },
+  {
+    key: "save",
+    title: "Save",
+    description: "Recovered your own near-miss.",
+    rule: "You nearly had it — then you actually got it. Snapping a slot after you yourself had a near-miss on it.",
+    icon: Shield,
+    color: "#00bfff",
+  },
+  {
+    key: "hot_streak",
+    title: "Hot Streak",
+    description: "Three or more correct in a row.",
+    rule: "String together 3+ consecutive correct answers without a miss in between. Pure momentum.",
+    icon: TrendingUp,
+    color: "#ff00aa",
+  },
+  {
     key: "close_call",
     title: "Close Call",
-    description: "Barely made it — but still got the snap.",
-    rule: "Awarded when one of your successful answers in the round was a near-miss — a fuzzy match that just barely passed the similarity threshold. You scraped through.",
+    description: "High near-miss rate this round.",
+    rule: "Awarded to the player with the highest rate of near-miss submissions. Almost isn't good enough — but Bot Bob noticed the effort.",
     icon: AlertCircle,
     color: "#ffa500",
   },
   {
+    key: "clean_up",
+    title: "Clean Up",
+    description: "Snapped the last remaining slot.",
+    rule: "You mopped up the final unsnapped slot of the round. The board was almost clear, and you took out the trash.",
+    icon: Trash2,
+    color: "#9b59b6",
+  },
+  {
+    key: "clutch_player",
+    title: "Clutch Player",
+    description: "Snagged a rare slot in the final seconds.",
+    rule: "Claimed a high-value rare slot with 30 seconds or less left in the round. Pressure player.",
+    icon: Timer,
+    color: "#1e90ff",
+  },
+];
+
+const ROAST_ACCOLADES: AccoladeEntry[] = [
+  {
     key: "donut",
     title: "Donut",
-    description: "Zero on the board this round.",
-    rule: "Handed to a player who finishes a round with 0 points. A full lap around the scoreboard. Bot Bob is going to make sure everyone notices.",
+    description: "Zero points this round.",
+    rule: "Finished a round with no points. A full lap around the scoreboard. Bot Bob will make sure everyone notices.",
     icon: Donut,
     color: "#ff8fb1",
   },
   {
-    key: "late_bloomers",
-    title: "Late Bloomers",
-    description: "Last to land a correct answer this round.",
-    rule: "Awarded to the player whose only (or final) correct answer of the round came last among all scorers. Better late than never — but barely.",
-    icon: Sprout,
-    color: "#9fff5a",
-  },
-  {
-    key: "fossil_fingers",
-    title: "Fossil Fingers",
-    description: "Slowest typist in the room.",
-    rule: "Given to the player with the longest average gap between submissions in the round. Either deep in thought or just… slow. Bot Bob isn't picky.",
-    icon: Snail,
-    color: "#c7b56e",
+    key: "clue_leech",
+    title: "Clue Leech",
+    description: "Most hint-dependent snaps in the round.",
+    rule: "Awarded to the player who relied on Bot Bob's clues more than anyone else. Without the hints, you'd be quiet.",
+    icon: Skull,
+    color: "#556b2f",
   },
 ];
 
 const POSTGAME_ACCOLADES: AccoladeEntry[] = [
   {
-    key: "speed_demon",
-    title: "Speed Demon",
-    description: "Answered with blazing speed across multiple rounds.",
-    rule: "Awarded to the player with the fastest average snap time across the whole game. Bot Bob averages your reaction time across every round — lowest number wins.",
-    icon: Zap,
-    color: "#ff6b00",
+    key: "top_scorer",
+    title: "Top Scorer",
+    description: "Highest score in the game.",
+    rule: "Awarded to the overall winner. Highest total points across all rounds. The rest of the lobby is just playing for second.",
+    icon: Trophy,
+    color: "#f1c40f",
   },
   {
     key: "precision",
     title: "Precision",
-    description: "Consistently snapped correct answers without misses.",
-    rule: "Earned when your correct-to-total submission ratio across the game is the highest among players (typically ~80%+ accuracy). Think before you type.",
+    description: "Best accuracy across the whole game.",
+    rule: "Highest correct-to-submission ratio among all players across all rounds. Quality over quantity.",
     icon: Target,
     color: "#00ff66",
   },
   {
     key: "perfectionist",
     title: "Perfectionist",
-    description: "Flawless performance — no wrong answers submitted.",
-    rule: "Awarded when you finish the entire game with zero failed submissions. Every word you typed counted. Stricter than Precision — one miss disqualifies you.",
+    description: "Zero wrong submissions all game.",
+    rule: "Every submission was a success. Minimum 5 attempts across the game. Flawless run — one miss disqualifies you.",
     icon: BadgeCheck,
     color: "#00ffff",
   },
   {
-    key: "hot_streak",
-    title: "Hot Streak",
-    description: "Kept momentum going round after round.",
-    rule: "Awarded when you score in several consecutive rounds without going scoreless. Consistency across the whole game, not just one big round.",
-    icon: TrendingUp,
-    color: "#ff00aa",
+    key: "magnet",
+    title: "Magnet",
+    description: "Most rare slots claimed.",
+    rule: "Hoovered up more rare (250pt) slots than anyone else across the whole game. Drawn to the high-value targets.",
+    icon: Magnet,
+    color: "#8e44ad",
   },
   {
-    key: "clutch_player",
-    title: "Clutch Player",
-    description: "Delivered when the pressure was highest.",
-    rule: "Given to the player who lands the most snaps in the final seconds of rounds across the whole game. Clock running out and you're still claiming.",
-    icon: Timer,
-    color: "#1e90ff",
+    key: "sherlock",
+    title: "Sherlock",
+    description: "Most clue-cracked snaps in the game.",
+    rule: "Followed Bot Bob's hints to more correct answers than anyone else across all rounds. Elementary.",
+    icon: Search,
+    color: "#5d4037",
   },
   {
-    key: "sniper",
-    title: "Sniper",
-    description: "Locked on and never missed the target.",
-    rule: "Earned when most of your snaps across the game are on rare (purple) or high-point slots, claimed on the first try. Patience over volume.",
-    icon: Swords,
-    color: "#9932cc",
+    key: "heat_seeker",
+    title: "Heat Seeker",
+    description: "Sniped the most players.",
+    rule: "Awarded to the player who stole the most near-misses across the whole game. You were hunting.",
+    icon: Crosshair,
+    color: "#c0392b",
   },
   {
-    key: "hunting_season",
-    title: "Hunting Season",
+    key: "bullied",
+    title: "Bullied",
     description: "Got sniped more than anyone else.",
-    rule: "Awarded postgame to the player whose answers were sniped (claimed first by someone else) most often across the whole game. The board had a target on your back.",
+    rule: "Your near-misses were stolen more often than any other player's across the game. The board had a target on your back.",
     icon: Skull,
-    color: "#c4413a",
+    color: "#2c3e50",
   },
 ];
 
@@ -212,11 +259,27 @@ export default function AccoladesDemoPage() {
 
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <span className={`${styles.sectionLabel} ${styles.sectionLabelPostgame}`}>
-              POSTGAME AWARDS
+            <span className={`${styles.sectionLabel} ${styles.sectionLabelRoast}`}>
+              THE ROAST ROOM
             </span>
             <p className={styles.sectionDescription}>
-              Tallied across the whole game and revealed in the postgame showcase.
+              Bot Bob's spicier takes. Also awarded between rounds — if you earned it, you earned it.
+            </p>
+          </div>
+          <div className={styles.grid}>
+            {ROAST_ACCOLADES.map((accolade) => (
+              <AccoladeCard key={accolade.key} accolade={accolade} />
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <span className={`${styles.sectionLabel} ${styles.sectionLabelPostgame}`}>
+              POSTGAME SHOWCASE
+            </span>
+            <p className={styles.sectionDescription}>
+              Tallied across the whole game and revealed at the end. These are the ones that stick.
             </p>
           </div>
           <div className={styles.grid}>
