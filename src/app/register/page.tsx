@@ -367,17 +367,6 @@ export default function RegisterPage() {
               </Link>
               .
             </p>
-            <label className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={marketingOptIn}
-                onChange={(e) => setMarketingOptIn(e.target.checked)}
-                className={styles.checkbox}
-              />
-              <span className={styles.checkboxText}>
-                Keep me updated with product news and feature updates
-              </span>
-            </label>
           </div>
 
           <Button
