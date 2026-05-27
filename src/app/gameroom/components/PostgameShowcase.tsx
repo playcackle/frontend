@@ -7,10 +7,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Crosshair,
-  Flame,
   Target,
   Timer,
-  TrendingUp,
   Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -34,55 +32,55 @@ interface AccoladeMeta {
 }
 
 const ACCOLADE_LIST: Record<string, AccoladeMeta> = {
-  speed_demon: {
-    title: "Speed Demon",
-    description: "Answered with blazing speed across multiple rounds.",
-    icon: Zap,
+  board_lord: {
+    title: "Board Lord",
+    description: "Topped the lobby. Everyone else was decorative.",
+    icon: Award,
   },
-  first_blood: {
-    title: "First Blood",
-    description: "First to snap an answer in the round.",
-    icon: Crosshair,
-  },
-  precision: {
-    title: "Precision",
-    description: "Consistently snapped correct answers without misses.",
+  aimbot: {
+    title: "Aimbot",
+    description: "Annoyingly clean accuracy across the whole game.",
     icon: Target,
   },
-  perfectionist: {
-    title: "Perfectionist",
-    description: "Flawless performance — no wrong answers submitted.",
+  flawless: {
+    title: "Flawless",
+    description: "No misses. Suspicious behavior, honestly.",
     icon: BadgeCheck,
   },
-  machine_gun: {
-    title: "Machine Gun",
-    description: "Submitted the highest volume of answers.",
-    icon: Zap,
+  loot_goblin: {
+    title: "Loot Goblin",
+    description: "Hoarded the rare slots. Share the wealth, goblin.",
+    icon: Award,
   },
-  snapping_spree: {
-    title: "Snapping Spree",
-    description: "On an unstoppable snapping streak.",
-    icon: Flame,
+  prompt_dependent: {
+    title: "Prompt Dependent",
+    description: "Bot Bob basically co-authored that score.",
+    icon: AlertCircle,
   },
-  hot_streak: {
-    title: "Hot Streak",
-    description: "Kept momentum going round after round.",
-    icon: TrendingUp,
-  },
-  clutch_player: {
-    title: "Clutch Player",
-    description: "Delivered when the pressure was highest.",
-    icon: Timer,
-  },
-  sniper: {
-    title: "Sniper",
-    description: "Locked on and never missed the target.",
+  hunting_season: {
+    title: "Hunting Season",
+    description: "Sniped answers until the lobby stopped feeling safe.",
     icon: Crosshair,
   },
-  close_call: {
-    title: "Close Call",
-    description: "Barely made it — but still got the snap.",
+  pinata: {
+    title: "Piñata",
+    description: "Got cracked open for candy by the lobby.",
     icon: AlertCircle,
+  },
+  dial_up: {
+    title: "Dial-Up",
+    description: "Eventually answered. We all aged.",
+    icon: Timer,
+  },
+  still_typing: {
+    title: "Still Typing",
+    description: "Knew the answers, just after everyone else.",
+    icon: Zap,
+  },
+  bakery_run: {
+    title: "Bakery Run",
+    description: "Collected donuts. Deliciously tragic.",
+    icon: Award,
   },
 };
 

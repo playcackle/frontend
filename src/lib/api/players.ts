@@ -103,6 +103,7 @@ export type PlayerPlaystyleDimension = {
   label: string;
   raw: number;
   normalized: number;
+  description?: string | null;
 };
 
 export type PlayerPlaystyleProfile = {

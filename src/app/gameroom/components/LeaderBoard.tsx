@@ -8,7 +8,6 @@ import {
   Swords,
   Target,
   Timer,
-  TrendingUp,
   Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -22,21 +21,23 @@ import styles from "./leaderboard.module.css";
 
 // Map accolade types to dedicated vector icons for a sharper look
 const ACCOLADE_ICONS: Record<string, LucideIcon> = {
-  // Speed-based
-  speed_demon: Zap,
   first_blood: Sword,
-  // Accuracy-based
-  precision: Target, // Bullseye for precision
-  perfectionist: BadgeCheck,
-  // Volume-based
-  machine_gun: Zap, // Fast = Zap
-  snapping_spree: Flame,
-  // Streak-based
-  hot_streak: TrendingUp,
-  // Special achievements
-  clutch_player: Timer,
-  sniper: Swords,
-  close_call: AlertCircle, // Near-miss warning
+  double_tap: Zap,
+  absolutely_feral: Flame,
+  the_cleaner: Swords,
+  ice_cold: Timer,
+  almost_famous: AlertCircle,
+  donut: Award,
+  board_lord: Award,
+  aimbot: Target,
+  flawless: BadgeCheck,
+  loot_goblin: Award,
+  prompt_dependent: AlertCircle,
+  hunting_season: Target,
+  pinata: AlertCircle,
+  dial_up: Timer,
+  still_typing: Zap,
+  bakery_run: Award,
 };
 
 function AccoladeChip({ accolade }: { accolade: Accolade }) {

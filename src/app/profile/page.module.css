@@ -71,8 +71,9 @@
 .heroMeta {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.65rem;
   justify-content: center;
+  min-width: 0;
 }
 
 .playerName {
@@ -103,30 +104,33 @@
 }
 
 .heroCategoryMiniGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
 .heroCategoryMiniCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(0, 221, 255, 0.12);
-  border-radius: 10px;
-  padding: 0.65rem 0.75rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
 }
 
 .heroCategoryMiniLabel {
   color: #8a9cb0;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 0.68rem;
-  margin-bottom: 0.2rem;
+  letter-spacing: 0.8px;
+  font-size: 0.62rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .heroCategoryMiniValue {
-  color: #fff;
-  font-size: 0.92rem;
-  letter-spacing: 0.3px;
+  color: #cdd6df;
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ── Sections ────────────────────────────────────────────── */
@@ -179,8 +183,18 @@
 
 .radarWrap {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   flex: 0 0 360px;
+  gap: 0.75rem;
+}
+
+.radarFrame {
+  position: relative;
+  width: 360px;
+  max-width: 100%;
+  padding-bottom: 56px;
 }
 
 .radarChart {
@@ -201,6 +215,11 @@
   stroke-width: 1;
 }
 
+.radarAxisActive {
+  stroke: rgba(255, 195, 0, 0.75);
+  stroke-width: 1.5;
+}
+
 .radarArea {
   fill: rgba(255, 0, 170, 0.22);
   stroke: rgba(0, 221, 255, 0.95);
@@ -211,6 +230,11 @@
   fill: #ffc300;
   stroke: rgba(255, 255, 255, 0.9);
   stroke-width: 1.5;
+  cursor: help;
+}
+
+.radarDotActive {
+  fill: #fff;
 }
 
 .radarLabel {
@@ -218,6 +242,52 @@
   font-size: 11px;
   letter-spacing: 0.8px;
   text-transform: uppercase;
+  cursor: help;
+  outline: none;
+}
+
+.radarLabelActive {
+  fill: #ffc300;
+  text-shadow: 0 0 8px rgba(255, 195, 0, 0.65);
+}
+
+.radarTooltip {
+  position: absolute;
+  left: 50%;
+  bottom: 0.35rem;
+  transform: translateX(-50%);
+  width: min(290px, calc(100% - 2rem));
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 195, 0, 0.24);
+  background: rgba(3, 6, 18, 0.92);
+  box-shadow: 0 0 20px rgba(255, 0, 170, 0.12), 0 0 18px rgba(0, 221, 255, 0.1);
+  pointer-events: none;
+}
+
+.radarTooltipHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+  color: #fff;
+  font-family: var(--retro-font);
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.radarTooltipHeader strong {
+  color: #ffc300;
+  font-weight: 800;
+}
+
+.radarTooltip p {
+  margin: 0;
+  color: #9fc7d8;
+  font-size: 0.75rem;
+  line-height: 1.35;
 }
 
 /* ── Spotlight & Accolades ──────────────────────────────── */
