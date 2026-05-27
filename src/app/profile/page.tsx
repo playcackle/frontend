@@ -81,7 +81,17 @@ function PlaystyleRadar({
 }: {
   dimensions: Array<{ key: string; label: string; normalized: number; raw: number; description?: string | null }>;
 }) {
+  const orderedDimensions = [
+    dimensions.find((d) => d.key === "quickdraw"),
+    dimensions.find((d) => d.key === "deadeye"),
+    dimensions.find((d) => d.key === "board_pressure"),
+    dimensions.find((d) => d.key === "gremlin_energy"),
+    dimensions.find((d) => d.key === "ice_blood"),
+  ].filter(Boolean) as typeof dimensions;
+
   const [activeKey, setActiveKey] = useState<string | null>(null);
+  const activeDimension = orderedDimensions.find((d) => d.key === activeKey);
+
   const width = 340;
   const height = 300;
   const centerX = width / 2;
@@ -89,10 +99,9 @@ function PlaystyleRadar({
   const radius = 116;
   const labelRadius = 132;
   const levels = 4;
-  const activeDimension = dimensions.find((dimension) => dimension.key === activeKey) ?? dimensions.find((dimension) => dimension.raw > 0) ?? dimensions[0];
 
   const getPoint = (index: number, value: number, customRadius?: number) => {
-    const angle = -Math.PI / 2 + (index * Math.PI * 2) / dimensions.length;
+    const angle = -Math.PI / 2 + (index * Math.PI * 2) / orderedDimensions.length;
     const distance = customRadius ?? (value / 100) * radius;
     return {
       x: centerX + Math.cos(angle) * distance,
@@ -100,7 +109,7 @@ function PlaystyleRadar({
     };
   };
 
-  const polygonPoints = dimensions
+  const polygonPoints = orderedDimensions
     .map((dimension, index) => {
       const point = getPoint(index, dimension.normalized);
       return `${point.x},${point.y}`;
@@ -118,25 +127,18 @@ function PlaystyleRadar({
         >
           {Array.from({ length: levels }).map((_, levelIndex) => {
             const levelValue = ((levelIndex + 1) / levels) * 100;
-            const ringPoints = dimensions
+            const ringPoints = orderedDimensions
               .map((_, index) => {
                 const point = getPoint(index, levelValue);
                 return `${point.x},${point.y}`;
               })
               .join(" ");
-
-            return (
-              <polygon
-                key={levelValue}
-                points={ringPoints}
-                className={styles.radarRing}
-              />
-            );
+            return <polygon key={levelValue} points={ringPoints} className={styles.radarRing} />;
           })}
 
-          {dimensions.map((dimension, index) => {
+          {orderedDimensions.map((dimension, index) => {
             const outer = getPoint(index, 100);
-            const isActive = activeDimension?.key === dimension.key;
+            const isActive = activeKey === dimension.key;
             return (
               <line
                 key={dimension.key}
@@ -151,32 +153,31 @@ function PlaystyleRadar({
 
           <polygon points={polygonPoints} className={styles.radarArea} />
 
-          {dimensions.map((dimension, index) => {
+          {orderedDimensions.map((dimension, index) => {
             const point = getPoint(index, dimension.normalized);
-            const isActive = activeDimension?.key === dimension.key;
+            const isActive = activeKey === dimension.key;
             return (
               <circle
                 key={dimension.key}
                 cx={point.x}
                 cy={point.y}
-                r={isActive ? "6" : "4"}
+                r="4"
                 className={`${styles.radarDot} ${isActive ? styles.radarDotActive : ""}`}
                 onMouseEnter={() => setActiveKey(dimension.key)}
                 onFocus={() => setActiveKey(dimension.key)}
+                onMouseLeave={() => setActiveKey(null)}
+                onBlur={() => setActiveKey(null)}
                 tabIndex={0}
-              >
-                <title>{`${dimension.label}: ${dimension.description ?? "Playstyle signal"}`}</title>
-              </circle>
+              />
             );
           })}
 
-          {dimensions.map((dimension, index) => {
+          {orderedDimensions.map((dimension, index) => {
             const labelPoint = getPoint(index, 100, labelRadius);
             const isLeft = labelPoint.x < centerX - 12;
             const isRight = labelPoint.x > centerX + 12;
             const anchor = isLeft ? "end" : isRight ? "start" : "middle";
-            const isActive = activeDimension?.key === dimension.key;
-
+            const isActive = activeKey === dimension.key;
             return (
               <text
                 key={`${dimension.key}-label`}
@@ -187,41 +188,25 @@ function PlaystyleRadar({
                 className={`${styles.radarLabel} ${isActive ? styles.radarLabelActive : ""}`}
                 onMouseEnter={() => setActiveKey(dimension.key)}
                 onFocus={() => setActiveKey(dimension.key)}
+                onMouseLeave={() => setActiveKey(null)}
+                onBlur={() => setActiveKey(null)}
                 tabIndex={0}
               >
-                <title>{`${dimension.label}: ${dimension.description ?? "Playstyle signal"}`}</title>
                 {dimension.label}
               </text>
             );
           })}
         </svg>
 
-        {activeDimension ? (
+        {activeDimension && (
           <div className={styles.radarTooltip} role="status" aria-live="polite">
             <div className={styles.radarTooltipHeader}>
               <span>{activeDimension.label}</span>
               <strong>{activeDimension.normalized}%</strong>
             </div>
-            <p>{activeDimension.description ?? "Playstyle signal"}</p>
+            <p>{activeDimension.description}</p>
           </div>
-        ) : null}
-      </div>
-
-      <div className={styles.radarLegend}>
-        {dimensions.map((dimension) => (
-          <button
-            key={dimension.key}
-            type="button"
-            className={`${styles.radarLegendChip} ${activeDimension?.key === dimension.key ? styles.radarLegendChipActive : ""}`}
-            onMouseEnter={() => setActiveKey(dimension.key)}
-            onFocus={() => setActiveKey(dimension.key)}
-            onClick={() => setActiveKey(dimension.key)}
-            title={dimension.description ?? undefined}
-          >
-            <span>{dimension.label}</span>
-            <strong>{dimension.normalized}%</strong>
-          </button>
-        ))}
+        )}
       </div>
     </div>
   );
