@@ -79,8 +79,9 @@ function CategoryBar({
 function PlaystyleRadar({
   dimensions,
 }: {
-  dimensions: Array<{ key: string; label: string; normalized: number; raw: number }>;
+  dimensions: Array<{ key: string; label: string; normalized: number; raw: number; description?: string | null }>;
 }) {
+  const [activeKey, setActiveKey] = useState<string | null>(null);
   const width = 340;
   const height = 300;
   const centerX = width / 2;
@@ -88,6 +89,7 @@ function PlaystyleRadar({
   const radius = 116;
   const labelRadius = 132;
   const levels = 4;
+  const activeDimension = dimensions.find((dimension) => dimension.key === activeKey) ?? dimensions.find((dimension) => dimension.raw > 0) ?? dimensions[0];
 
   const getPoint = (index: number, value: number, customRadius?: number) => {
     const angle = -Math.PI / 2 + (index * Math.PI * 2) / dimensions.length;
@@ -107,79 +109,120 @@ function PlaystyleRadar({
 
   return (
     <div className={styles.radarWrap}>
-      <svg
-        viewBox={`0 0 ${width} ${height}`}
-        className={styles.radarChart}
-        role="img"
-        aria-label="Playstyle radar chart"
-      >
-        {Array.from({ length: levels }).map((_, levelIndex) => {
-          const levelValue = ((levelIndex + 1) / levels) * 100;
-          const ringPoints = dimensions
-            .map((_, index) => {
-              const point = getPoint(index, levelValue);
-              return `${point.x},${point.y}`;
-            })
-            .join(" ");
+      <div className={styles.radarFrame}>
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          className={styles.radarChart}
+          role="img"
+          aria-label="Playstyle radar chart"
+        >
+          {Array.from({ length: levels }).map((_, levelIndex) => {
+            const levelValue = ((levelIndex + 1) / levels) * 100;
+            const ringPoints = dimensions
+              .map((_, index) => {
+                const point = getPoint(index, levelValue);
+                return `${point.x},${point.y}`;
+              })
+              .join(" ");
 
-          return (
-            <polygon
-              key={levelValue}
-              points={ringPoints}
-              className={styles.radarRing}
-            />
-          );
-        })}
+            return (
+              <polygon
+                key={levelValue}
+                points={ringPoints}
+                className={styles.radarRing}
+              />
+            );
+          })}
 
-        {dimensions.map((dimension, index) => {
-          const outer = getPoint(index, 100);
-          return (
-            <line
-              key={dimension.key}
-              x1={centerX}
-              y1={centerY}
-              x2={outer.x}
-              y2={outer.y}
-              className={styles.radarAxis}
-            />
-          );
-        })}
+          {dimensions.map((dimension, index) => {
+            const outer = getPoint(index, 100);
+            const isActive = activeDimension?.key === dimension.key;
+            return (
+              <line
+                key={dimension.key}
+                x1={centerX}
+                y1={centerY}
+                x2={outer.x}
+                y2={outer.y}
+                className={`${styles.radarAxis} ${isActive ? styles.radarAxisActive : ""}`}
+              />
+            );
+          })}
 
-        <polygon points={polygonPoints} className={styles.radarArea} />
+          <polygon points={polygonPoints} className={styles.radarArea} />
 
-        {dimensions.map((dimension, index) => {
-          const point = getPoint(index, dimension.normalized);
-          return (
-            <circle
-              key={dimension.key}
-              cx={point.x}
-              cy={point.y}
-              r="4"
-              className={styles.radarDot}
-            />
-          );
-        })}
+          {dimensions.map((dimension, index) => {
+            const point = getPoint(index, dimension.normalized);
+            const isActive = activeDimension?.key === dimension.key;
+            return (
+              <circle
+                key={dimension.key}
+                cx={point.x}
+                cy={point.y}
+                r={isActive ? "6" : "4"}
+                className={`${styles.radarDot} ${isActive ? styles.radarDotActive : ""}`}
+                onMouseEnter={() => setActiveKey(dimension.key)}
+                onFocus={() => setActiveKey(dimension.key)}
+                tabIndex={0}
+              >
+                <title>{`${dimension.label}: ${dimension.description ?? "Playstyle signal"}`}</title>
+              </circle>
+            );
+          })}
 
-        {dimensions.map((dimension, index) => {
-          const labelPoint = getPoint(index, 100, labelRadius);
-          const isLeft = labelPoint.x < centerX - 12;
-          const isRight = labelPoint.x > centerX + 12;
-          const anchor = isLeft ? "end" : isRight ? "start" : "middle";
+          {dimensions.map((dimension, index) => {
+            const labelPoint = getPoint(index, 100, labelRadius);
+            const isLeft = labelPoint.x < centerX - 12;
+            const isRight = labelPoint.x > centerX + 12;
+            const anchor = isLeft ? "end" : isRight ? "start" : "middle";
+            const isActive = activeDimension?.key === dimension.key;
 
-          return (
-            <text
-              key={`${dimension.key}-label`}
-              x={labelPoint.x}
-              y={labelPoint.y}
-              textAnchor={anchor}
-              dominantBaseline="middle"
-              className={styles.radarLabel}
-            >
-              {dimension.label}
-            </text>
-          );
-        })}
-      </svg>
+            return (
+              <text
+                key={`${dimension.key}-label`}
+                x={labelPoint.x}
+                y={labelPoint.y}
+                textAnchor={anchor}
+                dominantBaseline="middle"
+                className={`${styles.radarLabel} ${isActive ? styles.radarLabelActive : ""}`}
+                onMouseEnter={() => setActiveKey(dimension.key)}
+                onFocus={() => setActiveKey(dimension.key)}
+                tabIndex={0}
+              >
+                <title>{`${dimension.label}: ${dimension.description ?? "Playstyle signal"}`}</title>
+                {dimension.label}
+              </text>
+            );
+          })}
+        </svg>
+
+        {activeDimension ? (
+          <div className={styles.radarTooltip} role="status" aria-live="polite">
+            <div className={styles.radarTooltipHeader}>
+              <span>{activeDimension.label}</span>
+              <strong>{activeDimension.normalized}%</strong>
+            </div>
+            <p>{activeDimension.description ?? "Playstyle signal"}</p>
+          </div>
+        ) : null}
+      </div>
+
+      <div className={styles.radarLegend}>
+        {dimensions.map((dimension) => (
+          <button
+            key={dimension.key}
+            type="button"
+            className={`${styles.radarLegendChip} ${activeDimension?.key === dimension.key ? styles.radarLegendChipActive : ""}`}
+            onMouseEnter={() => setActiveKey(dimension.key)}
+            onFocus={() => setActiveKey(dimension.key)}
+            onClick={() => setActiveKey(dimension.key)}
+            title={dimension.description ?? undefined}
+          >
+            <span>{dimension.label}</span>
+            <strong>{dimension.normalized}%</strong>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -375,7 +418,7 @@ export default function ProfilePage() {
 
       {/* Signature accolades */}
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>What You’re Known For</h2>
+        <h2 className={styles.sectionTitle}>Known Crimes</h2>
         {topAccolades.length > 0 ? (
           <div className={styles.accoladeStatsRow}>
             {topAccolades.map((accolade) => (
