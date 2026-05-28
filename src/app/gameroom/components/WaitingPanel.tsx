@@ -323,7 +323,7 @@ function PlayerCarousel({ scores, currentUserId }: PlayerCarouselProps) {
               onClick={() => {
                 if (intervalRef.current) clearInterval(intervalRef.current);
                 advance(1);
-                intervalRef.current = setInterval(() => advance(1), 6000);
+                intervalRef.current = setInterval(() => advance(1), 7000);
               }}
               aria-label="Next player"
             >
@@ -399,7 +399,7 @@ function TipCarousel() {
             onClick={() => {
               if (intervalRef.current) clearInterval(intervalRef.current);
               advance(1);
-              intervalRef.current = setInterval(() => advance(1), 6000);
+              intervalRef.current = setInterval(() => advance(1), 7000);
             }}
             aria-label="Next tip"
           >
