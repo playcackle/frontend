@@ -13,6 +13,17 @@ export function createClient() {
     throw new Error('Missing Supabase environment variables');
   }
 
-  client = createSupabaseClient(supabaseUrl, supabaseAnonKey);
+  client = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      // Use PKCE so OAuth (Discord) returns `?code=` to /auth/callback,
+      // which the callback exchanges via exchangeCodeForSession().
+      flowType: 'pkce',
+      // We exchange the code manually in the callback, so don't let the
+      // client auto-consume it first (that would make the manual call fail).
+      detectSessionInUrl: false,
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  });
   return client;
 }
