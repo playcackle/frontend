@@ -1,4 +1,3 @@
-
 import { PlayerCategoryStatsResponse, playersApi } from "@/lib/api/players";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
@@ -281,7 +280,7 @@ function PlayerCarousel({ scores, currentUserId }: PlayerCarouselProps) {
   useEffect(() => {
     if (scores.length <= 1) return;
     const startDelay = setTimeout(() => {
-      intervalRef.current = setInterval(() => advance(1), 700);
+      intervalRef.current = setInterval(() => advance(1), 7000);
     }, 2000); // 2s initial offset vs tips carousel
     return () => {
       clearTimeout(startDelay);
