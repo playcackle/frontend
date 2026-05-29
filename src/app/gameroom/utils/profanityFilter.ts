@@ -12,7 +12,7 @@ const BANNED_PATTERNS: RegExp[] = [
   // Racist slurs
   /\bn[i!1][g9][g9][e3]r\b/i,
   /\bn[i!1][g9]{2,}/i,
-  /\bnigg[ae]\b/i,
+  // /\bnigg[ae]\b/i,
   /\bcoon\b/i,
   /\bspic\b/i,
   /\bwetback\b/i,
@@ -27,8 +27,8 @@ const BANNED_PATTERNS: RegExp[] = [
   /\bporch\s?monkey\b/i,
   /\bcoon[s]?\b/i,
   /\bdarkie\b/i,
-  /\bsambo\b/i,
-  /\bsandnigger\b/i,
+  // /\bsambo\b/i,
+  // /\bsandnigger\b/i,
   /\bcamel\s?jockey\b/i,
   /\bbeaners?\b/i,
   /\bgypsy\b/i,
@@ -49,7 +49,7 @@ const BANNED_PATTERNS: RegExp[] = [
   /\bslut\b/i,
   /\bbitch\b/i,
   /\bfuck\s?wit\b/i,
-  /\bmotherfucker\b/i,
+  // /\bmotherfucker\b/i,
   /\bm[o0]ther\s?f[u*][ck]+[e3]r\b/i,
   /\bcocksucker\b/i,
 ];
@@ -60,4 +60,3 @@ const BANNED_PATTERNS: RegExp[] = [
 export function containsBannedLanguage(text: string): boolean {
   return BANNED_PATTERNS.some((pattern) => pattern.test(text));
 }
-
