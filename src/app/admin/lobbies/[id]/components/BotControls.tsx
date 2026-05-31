@@ -112,7 +112,7 @@ export function BotControls({ lobbyId }: BotControlsProps) {
         <div className={styles.statCard}>
           <span className={styles.statLabel}>Running:</span>
           <span className={styles.statValue}>
-            {activeBots.filter((b) => b.status === "running").length}
+            {activeBots.filter((b) => b.status === "running" || b.status === "connected").length}
           </span>
         </div>
       </div>

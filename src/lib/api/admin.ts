@@ -895,9 +895,10 @@ export const fuzzyMatchConfigApi = {
 
 export type BotInfo = {
   name: string;
-  player_id: string;
+  player_id: string | null;
   lobby_id: string;
-  status: 'running' | 'stopped';
+  status: 'reserved' | 'creating_player' | 'starting' | 'connected' | 'running' | 'join_failed' | 'ws_failed' | 'stopping' | 'stopped';
+  error?: string | null;
 };
 
 export type BotAddRequest = {
