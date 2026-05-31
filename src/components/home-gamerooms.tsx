@@ -1,5 +1,6 @@
 import styles from "./home-gamerooms.module.css";
 import GameroomTile from "@/components/gameroom-tile";
+import LobbyCardSkeleton from "@/components/lobby-card-skeleton";
 import type { LobbyInfo } from "@/hooks/useRealtimeLobbies";
 import { Link } from "@tanstack/react-router";
 
@@ -17,8 +18,10 @@ export default function HomeGamerooms({ gamerooms, loading = false, error = null
 
   if (loading && gamerooms.length === 0) {
     return (
-      <div className={styles.gameroomsEmpty}>
-        <p>Loading game rooms...</p>
+      <div className={styles.gameroomsSection} aria-label="Loading game rooms">
+        <div className={styles.gameroomsGrid}>
+          <LobbyCardSkeleton count={PREVIEW_COUNT} />
+        </div>
       </div>
     );
   }

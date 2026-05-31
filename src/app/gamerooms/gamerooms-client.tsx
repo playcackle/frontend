@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import GameroomTile from "@/components/gameroom-tile";
+import LobbyCardSkeleton from "@/components/lobby-card-skeleton";
 import { Link } from "@tanstack/react-router";
 import styles from "./gamerooms.module.css";
 import { usePublicLobbies, type LobbyInfo } from "@/hooks/useRealtimeLobbies";
@@ -150,8 +151,8 @@ export default function GameroomsClient() {
 
       {/* Grid */}
       {loading && gamerooms.length === 0 ? (
-        <div className={styles.emptyState}>
-          <p className={styles.emptyStateText}>Loading game rooms...</p>
+        <div className={styles.gameroomsGrid} aria-label="Loading game rooms">
+          <LobbyCardSkeleton count={6} />
         </div>
       ) : error && gamerooms.length === 0 ? (
         <div className={styles.emptyState}>
