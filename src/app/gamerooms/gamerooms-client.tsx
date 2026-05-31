@@ -1,8 +1,8 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import GameroomTile from "@/components/gameroom-tile";
 import { Link } from "@tanstack/react-router";
 import styles from "./gamerooms.module.css";
-import { useRealtimeLobbies, type LobbyInfo } from "@/hooks/useRealtimeLobbies";
+import { usePublicLobbies, type LobbyInfo } from "@/hooks/useRealtimeLobbies";
 
 type SortKey = "name" | "players_asc" | "players_desc" | "availability";
 type StatusFilter = "all" | "open" | "in_progress" | "full";
@@ -17,21 +17,12 @@ export default function GameroomsClient() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortKey, setSortKey] = useState<SortKey>("availability");
-  const [initialLobbies, setInitialLobbies] = useState<LobbyInfo[]>([]);
-
-  useEffect(() => {
-    const baseUrl = import.meta.env.VITE_LOBBY_MANAGER_URL;
-    if (!baseUrl) return;
-    fetch(`${baseUrl}/lobbies`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error fetching lobbies: ${res.status}`);
-        return res.json();
-      })
-      .then(setInitialLobbies)
-      .catch((err) => console.error("Failed to fetch lobbies:", err));
-  }, []);
-
-  const gamerooms = useRealtimeLobbies(initialLobbies);
+  const {
+    lobbies: gamerooms,
+    loading,
+    error,
+    refetch,
+  } = usePublicLobbies();
 
   const filtered = useMemo(() => {
     let list = gamerooms.filter((r) => {
@@ -158,7 +149,21 @@ export default function GameroomsClient() {
       </div>
 
       {/* Grid */}
-      {filtered.length === 0 ? (
+      {loading && gamerooms.length === 0 ? (
+        <div className={styles.emptyState}>
+          <p className={styles.emptyStateText}>Loading game rooms...</p>
+        </div>
+      ) : error && gamerooms.length === 0 ? (
+        <div className={styles.emptyState}>
+          <p className={styles.emptyStateText}>Could not load game rooms.</p>
+          <button
+            className={styles.clearFiltersBtn}
+            onClick={() => void refetch()}
+          >
+            Retry
+          </button>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className={styles.emptyState}>
           <p className={styles.emptyStateText}>
             {gamerooms.length === 0
