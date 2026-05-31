@@ -1,4 +1,3 @@
-
 import { PlayerCategoryStatsResponse, playersApi } from "@/lib/api/players";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
@@ -280,12 +279,17 @@ function PlayerCarousel({ scores, currentUserId }: PlayerCarouselProps) {
   // Auto-advance at 7s, offset from tips carousel which runs at 6s
   useEffect(() => {
     if (scores.length <= 1) return;
+    // Guard against a leftover interval (e.g. HMR or rapid re-render) running alongside this one.
+    if (intervalRef.current) clearInterval(intervalRef.current);
     const startDelay = setTimeout(() => {
-      intervalRef.current = setInterval(() => advance(1), 700);
+      intervalRef.current = setInterval(() => advance(1), 7000);
     }, 2000); // 2s initial offset vs tips carousel
     return () => {
       clearTimeout(startDelay);
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
   }, [scores.length]);
 
@@ -324,7 +328,7 @@ function PlayerCarousel({ scores, currentUserId }: PlayerCarouselProps) {
               onClick={() => {
                 if (intervalRef.current) clearInterval(intervalRef.current);
                 advance(1);
-                intervalRef.current = setInterval(() => advance(1), 6000);
+                intervalRef.current = setInterval(() => advance(1), 7000);
               }}
               aria-label="Next player"
             >
@@ -400,7 +404,7 @@ function TipCarousel() {
             onClick={() => {
               if (intervalRef.current) clearInterval(intervalRef.current);
               advance(1);
-              intervalRef.current = setInterval(() => advance(1), 6000);
+              intervalRef.current = setInterval(() => advance(1), 7000);
             }}
             aria-label="Next tip"
           >

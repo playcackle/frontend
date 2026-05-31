@@ -154,9 +154,7 @@ export default function RegisterPage() {
 
       // Email confirmation required — user exists but no session
       if (data.user && !data.session) {
-        setSuccess(
-          "Account created! Please check your email to confirm your account before logging in.",
-        );
+        setSuccess("Account created, lets go!");
         setName("");
         setEmail("");
         setPassword("");
