@@ -5,25 +5,20 @@ import OnboardingModal from "@/components/onboarding-modal";
 import PreLaunchCta from "@/components/pre-launch-cta";
 import SettingsControls from "@/components/settings-controls";
 import { useUser } from "@/hooks/useUser";
+import { usePublicLobbies } from "@/hooks/useRealtimeLobbies";
 import { Link, useSearch } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import HomeLeaderboard from "../components/home-leaderboard";
 import styles from "./page.module.css";
-
-type LobbyInfo = {
-  lobby_id: string;
-  collection_name: string;
-  status: string;
-  player_count: number;
-  join_base_url?: string | null;
-  game_ws_url?: string | null;
-  chat_ws_url?: string | null;
-};
 
 export default function Home() {
   const { user, loading: authLoading } = useUser();
   const search = useSearch({ strict: false });
-  const [gamerooms, setGamerooms] = useState<LobbyInfo[]>([]);
+  const {
+    lobbies: gamerooms,
+    loading: gameroomsLoading,
+    error: gameroomsError,
+    refetch: refetchGamerooms,
+  } = usePublicLobbies();
 
   const isLaunched = import.meta.env.VITE_LAUNCHED === "true";
 
@@ -32,19 +27,6 @@ export default function Home() {
     .error_description;
   const showOnboarding =
     (search as Record<string, string | undefined>).onboarding === "1";
-
-  useEffect(() => {
-    const baseUrl = import.meta.env.VITE_LOBBY_MANAGER_URL;
-    if (!baseUrl) return;
-
-    fetch(`${baseUrl}/lobbies`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error fetching lobbies: ${res.status}`);
-        return res.json();
-      })
-      .then(setGamerooms)
-      .catch((err) => console.error("Failed to fetch lobbies:", err));
-  }, []);
 
   if (authLoading) return null;
 
@@ -105,7 +87,12 @@ export default function Home() {
                   Browse All
                 </Link>
               </div>
-              <HomeGamerooms initialGamerooms={gamerooms} />
+              <HomeGamerooms
+                gamerooms={gamerooms}
+                loading={gameroomsLoading}
+                error={gameroomsError}
+                onRetry={() => void refetchGamerooms()}
+              />
             </section>
 
             {/* Right column: Stats + Leaderboard stacked */}

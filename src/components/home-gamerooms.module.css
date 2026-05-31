@@ -81,6 +81,20 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
+.retryButton {
+  margin-top: 0.9rem;
+  padding: 0.4rem 1.25rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 0, 170, 0.4);
+  background: rgba(255, 0, 170, 0.08);
+  color: var(--neon-pink);
+  font-family: var(--retro-font);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
 @media (max-width: 640px) {
   .gameroomsGrid {
     grid-template-columns: 1fr;
