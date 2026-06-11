@@ -1,11 +1,34 @@
 :root {
+  /* ── Neon palette ─────────────────────────────────────────── */
   --neon-blue: #00ddff;
   --neon-pink: #ff00aa;
   --neon-purple: #b700ff;
   --neon-green: #00ff66;
+  --neon-gold: #ffd700;
   --dark-bg: #0a0a1f;
   --grid-color: rgba(25, 25, 50, 0.3);
-  --retro-font: monospace, "Courier New", Courier, monospace;
+  --white: #f5f5ff;
+
+  /* ── Typography ───────────────────────────────────────────────
+     --retro-font      → display / titles / headings (geometric, wide)
+     --retro-font-alt  → UI + body text (clean, highly legible)
+     --font-mono       → scores, timers, numeric readouts
+     Previously --retro-font-alt was undefined and silently fell back
+     to serif (Times New Roman) across ~16 components. */
+  --retro-font: "Orbitron", "Courier New", Courier, monospace;
+  --font-display: "Orbitron", "Courier New", Courier, monospace;
+  --retro-font-alt: "Rajdhani", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Share Tech Mono", ui-monospace, "Courier New", monospace;
+
+  /* ── Glow scale (use as: box-shadow: var(--glow-md) var(--neon-pink)) ── */
+  --glow-sm: 0 0 5px;
+  --glow-md: 0 0 12px;
+  --glow-lg: 0 0 24px;
+
+  /* ── Surfaces ─────────────────────────────────────────────── */
+  --surface-panel: rgba(20, 20, 40, 0.72);
+  --surface-panel-strong: rgba(20, 20, 40, 0.88);
+  --border-soft: rgba(255, 255, 255, 0.1);
 }
 
 * {

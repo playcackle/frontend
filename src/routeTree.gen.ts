@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StatsDemoRouteImport } from './routes/stats-demo'
+import { Route as SoundLabRouteImport } from './routes/sound-lab'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -43,6 +44,11 @@ const TermsRoute = TermsRouteImport.update({
 const StatsDemoRoute = StatsDemoRouteImport.update({
   id: '/stats-demo',
   path: '/stats-demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SoundLabRoute = SoundLabRouteImport.update({
+  id: '/sound-lab',
+  path: '/sound-lab',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -173,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
+  '/sound-lab': typeof SoundLabRoute
   '/stats-demo': typeof StatsDemoRoute
   '/terms': typeof TermsRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
+  '/sound-lab': typeof SoundLabRoute
   '/stats-demo': typeof StatsDemoRoute
   '/terms': typeof TermsRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
+  '/sound-lab': typeof SoundLabRoute
   '/stats-demo': typeof StatsDemoRoute
   '/terms': typeof TermsRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -256,6 +265,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/register'
+    | '/sound-lab'
     | '/stats-demo'
     | '/terms'
     | '/auth/callback'
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/register'
+    | '/sound-lab'
     | '/stats-demo'
     | '/terms'
     | '/auth/callback'
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/register'
+    | '/sound-lab'
     | '/stats-demo'
     | '/terms'
     | '/auth/callback'
@@ -337,6 +349,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
+  SoundLabRoute: typeof SoundLabRoute
   StatsDemoRoute: typeof StatsDemoRoute
   TermsRoute: typeof TermsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
@@ -359,6 +372,13 @@ declare module '@tanstack/react-router' {
       path: '/stats-demo'
       fullPath: '/stats-demo'
       preLoaderRoute: typeof StatsDemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sound-lab': {
+      id: '/sound-lab'
+      path: '/sound-lab'
+      fullPath: '/sound-lab'
+      preLoaderRoute: typeof SoundLabRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -563,6 +583,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
+  SoundLabRoute: SoundLabRoute,
   StatsDemoRoute: StatsDemoRoute,
   TermsRoute: TermsRoute,
   AuthCallbackRoute: AuthCallbackRoute,

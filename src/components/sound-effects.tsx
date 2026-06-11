@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 type SoundEffectProps = {
   onLoad?: () => void;
@@ -26,6 +26,92 @@ export type SoundType =
 
 // Audio context singleton to prevent multiple instances
 let globalAudioContext: AudioContext | null = null;
+// Shared master bus — every voice routes through here so the whole
+// soundscape gets the same warmth, glue and space instead of dry,
+// slightly-clipping raw oscillators hitting the destination directly.
+let masterBus: GainNode | null = null;
+
+/** Generate a short, smooth impulse response for a plate-style reverb. */
+const makeImpulse = (
+  ctx: BaseAudioContext,
+  seconds: number,
+  decay: number,
+): AudioBuffer => {
+  const rate = ctx.sampleRate;
+  const length = Math.floor(rate * seconds);
+  const impulse = ctx.createBuffer(2, length, rate);
+  for (let ch = 0; ch < 2; ch++) {
+    const data = impulse.getChannelData(ch);
+    for (let i = 0; i < length; i++) {
+      // exponential decay tail with a tiny early-fade to avoid a click
+      const env = Math.pow(1 - i / length, decay);
+      const fadeIn = Math.min(1, i / (rate * 0.002));
+      data[i] = (Math.random() * 2 - 1) * env * fadeIn;
+    }
+  }
+  return impulse;
+};
+
+/**
+ * Build the master signal chain:
+ *   voices → [input] → warmth high-shelf → bus compressor →┬→ dry ─┐
+ *                                                          └→ reverb → wet ─┤→ out → destination
+ * The high-shelf tames harsh square/saw upper harmonics, the
+ * compressor glues stacked voices and stops the crackle from many
+ * oscillators summing past 0 dBFS, and the short reverb adds space.
+ */
+export const buildMasterChain = (ctx: BaseAudioContext): GainNode => {
+  const input = ctx.createGain();
+  input.gain.value = 0.9;
+
+  const warmth = ctx.createBiquadFilter();
+  warmth.type = "highshelf";
+  warmth.frequency.value = 3400;
+  warmth.gain.value = -5.5;
+
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -16;
+  comp.knee.value = 22;
+  comp.ratio.value = 3;
+  comp.attack.value = 0.003;
+  comp.release.value = 0.25;
+
+  const reverb = ctx.createConvolver();
+  reverb.buffer = makeImpulse(ctx, 1.1, 2.6);
+  const wet = ctx.createGain();
+  wet.gain.value = 0.16;
+  const dry = ctx.createGain();
+  dry.gain.value = 1.0;
+
+  const out = ctx.createGain();
+  out.gain.value = 0.82;
+
+  input.connect(warmth);
+  warmth.connect(comp);
+  comp.connect(dry);
+  comp.connect(reverb);
+  reverb.connect(wet);
+  dry.connect(out);
+  wet.connect(out);
+  out.connect(ctx.destination);
+
+  return input;
+};
+
+/**
+ * Where a sound's voices get their context + output bus from. Making this
+ * swappable lets the *exact same* generators render through an
+ * OfflineAudioContext (for exporting .wav samples) instead of the live
+ * realtime context, so previewed and exported audio are identical.
+ */
+export type AudioBus = { context: BaseAudioContext; bus: AudioNode };
+export type AudioProvider = () => Promise<AudioBus | null>;
+
+const realtimeProvider: AudioProvider = async () => {
+  const context = await getOrCreateAudioContext();
+  if (!context) return null;
+  return { context, bus: masterBus ?? context.destination };
+};
 
 const getOrCreateAudioContext = async (): Promise<AudioContext | null> => {
   if (typeof window === "undefined") return null;
@@ -36,6 +122,7 @@ const getOrCreateAudioContext = async (): Promise<AudioContext | null> => {
         window.AudioContext || (window as any).webkitAudioContext;
       if (AudioContext) {
         globalAudioContext = new AudioContext();
+        masterBus = buildMasterChain(globalAudioContext);
       } else {
         console.error("Web Audio API not supported in this browser");
         return null;
@@ -58,7 +145,7 @@ const getOrCreateAudioContext = async (): Promise<AudioContext | null> => {
 };
 
 const scheduleCleanup = (
-  context: AudioContext,
+  _context: BaseAudioContext,
   nodes: AudioNode[],
   duration: number,
 ) => {
@@ -77,11 +164,14 @@ const scheduleCleanup = (
 };
 
 // Sound generation functions
-const createSoundGenerators = () => {
+export const createSoundGenerators = (
+  provider: AudioProvider = realtimeProvider,
+) => {
   const playCelebratoryCorrectSound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.2;
@@ -95,7 +185,7 @@ const createSoundGenerators = () => {
       blip1Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
 
       blip1.connect(blip1Gain);
-      blip1Gain.connect(context.destination);
+      blip1Gain.connect(bus);
       blip1.start(now);
       blip1.stop(now + 0.08);
 
@@ -108,7 +198,7 @@ const createSoundGenerators = () => {
       blip2Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
 
       blip2.connect(blip2Gain);
-      blip2Gain.connect(context.destination);
+      blip2Gain.connect(bus);
       blip2.start(now + 0.06);
       blip2.stop(now + 0.16);
 
@@ -122,7 +212,7 @@ const createSoundGenerators = () => {
       triGain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
 
       tri.connect(triGain);
-      triGain.connect(context.destination);
+      triGain.connect(bus);
       tri.start(now);
       tri.stop(now + 0.18);
 
@@ -135,7 +225,7 @@ const createSoundGenerators = () => {
       subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
 
       sub.connect(subGain);
-      subGain.connect(context.destination);
+      subGain.connect(bus);
       sub.start(now);
       sub.stop(now + 0.12);
 
@@ -152,8 +242,9 @@ const createSoundGenerators = () => {
   // Bonus Sound 1: Epic ascending scale
   const playEpicBonusSound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.7;
@@ -174,7 +265,7 @@ const createSoundGenerators = () => {
       const noiseGain = context.createGain();
       noiseGain.gain.value = 0.4;
       noise.connect(noiseGain);
-      noiseGain.connect(context.destination);
+      noiseGain.connect(bus);
       noise.start(now);
 
       const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98, 2093.0];
@@ -195,7 +286,7 @@ const createSoundGenerators = () => {
         );
 
         blip.connect(blipGain);
-        blipGain.connect(context.destination);
+        blipGain.connect(bus);
         blip.start(now + intervals[i]);
         blip.stop(now + intervals[i] + 0.12);
         allNodes.push(blipGain);
@@ -212,7 +303,7 @@ const createSoundGenerators = () => {
         );
 
         tri.connect(triGain);
-        triGain.connect(context.destination);
+        triGain.connect(bus);
         tri.start(now + intervals[i]);
         tri.stop(now + intervals[i] + 0.12);
         allNodes.push(triGain);
@@ -241,7 +332,7 @@ const createSoundGenerators = () => {
       chord1.connect(chordGain);
       chord2.connect(chordGain);
       chord3.connect(chordGain);
-      chordGain.connect(context.destination);
+      chordGain.connect(bus);
 
       chord1.start(now + 0.05);
       chord2.start(now + 0.05);
@@ -260,7 +351,7 @@ const createSoundGenerators = () => {
       kickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
 
       kick.connect(kickGain);
-      kickGain.connect(context.destination);
+      kickGain.connect(bus);
       kick.start(now);
       kick.stop(now + 0.25);
 
@@ -274,7 +365,7 @@ const createSoundGenerators = () => {
       kick2Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
 
       kick2.connect(kick2Gain);
-      kick2Gain.connect(context.destination);
+      kick2Gain.connect(bus);
       kick2.start(now + 0.37);
       kick2.stop(now + 0.6);
 
@@ -288,8 +379,9 @@ const createSoundGenerators = () => {
   // Bonus Sound 2: Cheeky Wobble Bass Drop
   const playBonus2Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.8;
@@ -305,7 +397,7 @@ const createSoundGenerators = () => {
       hornGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
 
       horn.connect(hornGain);
-      hornGain.connect(context.destination);
+      hornGain.connect(bus);
       horn.start(now);
       horn.stop(now + 0.2);
 
@@ -332,7 +424,7 @@ const createSoundGenerators = () => {
 
       wobble.connect(wobbleFilter);
       wobbleFilter.connect(wobbleGain);
-      wobbleGain.connect(context.destination);
+      wobbleGain.connect(bus);
 
       wobble.start(now + 0.2);
       lfo.start(now + 0.2);
@@ -348,8 +440,9 @@ const createSoundGenerators = () => {
   // Bonus Sound 3: Sarcastic "Ta-Da!"
   const playBonus3Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.6;
@@ -363,7 +456,7 @@ const createSoundGenerators = () => {
       flourish1Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
 
       flourish1.connect(flourish1Gain);
-      flourish1Gain.connect(context.destination);
+      flourish1Gain.connect(bus);
       flourish1.start(now);
       flourish1.stop(now + 0.08);
 
@@ -376,7 +469,7 @@ const createSoundGenerators = () => {
       flourish2Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
 
       flourish2.connect(flourish2Gain);
-      flourish2Gain.connect(context.destination);
+      flourish2Gain.connect(bus);
       flourish2.start(now + 0.08);
       flourish2.stop(now + 0.16);
 
@@ -399,7 +492,7 @@ const createSoundGenerators = () => {
       stab1.connect(stabGain);
       stab2.connect(stabGain);
       stab3.connect(stabGain);
-      stabGain.connect(context.destination);
+      stabGain.connect(bus);
 
       stab1.start(now + 0.16);
       stab2.start(now + 0.16);
@@ -421,8 +514,9 @@ const createSoundGenerators = () => {
   // Bonus Sound 4: Goofy Slide Whistle Up
   const playBonus4Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.5;
@@ -438,7 +532,7 @@ const createSoundGenerators = () => {
       whistleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
 
       whistle.connect(whistleGain);
-      whistleGain.connect(context.destination);
+      whistleGain.connect(bus);
       whistle.start(now);
       whistle.stop(now + 0.45);
 
@@ -451,7 +545,7 @@ const createSoundGenerators = () => {
       popGain.gain.exponentialRampToValueAtTime(0.01, now + 0.48);
 
       pop.connect(popGain);
-      popGain.connect(context.destination);
+      popGain.connect(bus);
       pop.start(now + 0.4);
       pop.stop(now + 0.48);
 
@@ -464,8 +558,9 @@ const createSoundGenerators = () => {
   // Bonus Sound 5: Rapid Fire Blips
   const playBonus5Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.5;
@@ -488,7 +583,7 @@ const createSoundGenerators = () => {
         );
 
         blip.connect(blipGain);
-        blipGain.connect(context.destination);
+        blipGain.connect(bus);
         blip.start(now + i * timing);
         blip.stop(now + i * timing + 0.08);
 
@@ -504,7 +599,7 @@ const createSoundGenerators = () => {
       dingGain.gain.exponentialRampToValueAtTime(0.01, now + 0.48);
 
       ding.connect(dingGain);
-      dingGain.connect(context.destination);
+      dingGain.connect(bus);
       ding.start(now + 0.35);
       ding.stop(now + 0.48);
 
@@ -519,8 +614,9 @@ const createSoundGenerators = () => {
   // Success Sound 1: Victory Fanfare
   const playCelebratorySuccess1Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.5;
@@ -534,7 +630,7 @@ const createSoundGenerators = () => {
       explosionGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
 
       explosion.connect(explosionGain);
-      explosionGain.connect(context.destination);
+      explosionGain.connect(bus);
       explosion.start(now);
       explosion.stop(now + 0.06);
 
@@ -547,7 +643,7 @@ const createSoundGenerators = () => {
       note1Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
 
       note1.connect(note1Gain);
-      note1Gain.connect(context.destination);
+      note1Gain.connect(bus);
       note1.start(now + 0.05);
       note1.stop(now + 0.15);
 
@@ -560,7 +656,7 @@ const createSoundGenerators = () => {
       note2Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
 
       note2.connect(note2Gain);
-      note2Gain.connect(context.destination);
+      note2Gain.connect(bus);
       note2.start(now + 0.1);
       note2.stop(now + 0.2);
 
@@ -573,7 +669,7 @@ const createSoundGenerators = () => {
       note3Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
 
       note3.connect(note3Gain);
-      note3Gain.connect(context.destination);
+      note3Gain.connect(bus);
       note3.start(now + 0.15);
       note3.stop(now + 0.25);
 
@@ -586,7 +682,7 @@ const createSoundGenerators = () => {
       note4Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
 
       note4.connect(note4Gain);
-      note4Gain.connect(context.destination);
+      note4Gain.connect(bus);
       note4.start(now + 0.2);
       note4.stop(now + 0.35);
 
@@ -599,7 +695,7 @@ const createSoundGenerators = () => {
       subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
 
       sub.connect(subGain);
-      subGain.connect(context.destination);
+      subGain.connect(bus);
       sub.start(now);
       sub.stop(now + 0.4);
 
@@ -621,8 +717,9 @@ const createSoundGenerators = () => {
   // Success Sound 2: Sparkly Arpeggio
   const playCelebratorySuccess2Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.6;
@@ -636,7 +733,7 @@ const createSoundGenerators = () => {
       pulseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
 
       pulse.connect(pulseGain);
-      pulseGain.connect(context.destination);
+      pulseGain.connect(bus);
       pulse.start(now);
       pulse.stop(now + 0.04);
 
@@ -683,7 +780,7 @@ const createSoundGenerators = () => {
       blipGain1.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
 
       blip1.connect(blipGain1);
-      blipGain1.connect(context.destination);
+      blipGain1.connect(bus);
       blip1.start(now + 0.03);
       blip1.stop(now + 0.1);
 
@@ -696,7 +793,7 @@ const createSoundGenerators = () => {
       blipGain2.gain.exponentialRampToValueAtTime(0.01, now + 0.19);
 
       blip2.connect(blipGain2);
-      blipGain2.connect(context.destination);
+      blipGain2.connect(bus);
       blip2.start(now + 0.12);
       blip2.stop(now + 0.19);
 
@@ -709,7 +806,7 @@ const createSoundGenerators = () => {
       blipGain3.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
 
       blip3.connect(blipGain3);
-      blipGain3.connect(context.destination);
+      blipGain3.connect(bus);
       blip3.start(now + 0.21);
       blip3.stop(now + 0.28);
 
@@ -737,8 +834,8 @@ const createSoundGenerators = () => {
       arpGain1.connect(filter);
       arpGain2.connect(filter);
       arpGain3.connect(filter);
-      filter.connect(context.destination);
-      subGain.connect(context.destination);
+      filter.connect(bus);
+      subGain.connect(bus);
 
       arp1.start(now + 0.03);
       arp2.start(now + 0.03);
@@ -770,8 +867,9 @@ const createSoundGenerators = () => {
   // Success Sound 3: Power Chord Explosion
   const playCelebratorySuccess3Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.55;
@@ -786,7 +884,7 @@ const createSoundGenerators = () => {
       explosionGain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
 
       explosion.connect(explosionGain);
-      explosionGain.connect(context.destination);
+      explosionGain.connect(bus);
       explosion.start(now);
       explosion.stop(now + 0.08);
 
@@ -810,7 +908,7 @@ const createSoundGenerators = () => {
       root.connect(chordGain);
       fifth.connect(chordGain);
       octave.connect(chordGain);
-      chordGain.connect(context.destination);
+      chordGain.connect(bus);
 
       root.start(now + 0.08);
       fifth.start(now + 0.08);
@@ -829,7 +927,7 @@ const createSoundGenerators = () => {
       sparkleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
 
       sparkle.connect(sparkleGain);
-      sparkleGain.connect(context.destination);
+      sparkleGain.connect(bus);
       sparkle.start(now + 0.08);
       sparkle.stop(now + 0.4);
 
@@ -844,8 +942,9 @@ const createSoundGenerators = () => {
   // Success Sound 4: Triumphant Horn Section
   const playCelebratorySuccess4Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.65;
@@ -860,7 +959,7 @@ const createSoundGenerators = () => {
       stabGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
 
       stab.connect(stabGain);
-      stabGain.connect(context.destination);
+      stabGain.connect(bus);
       stab.start(now);
       stab.stop(now + 0.06);
 
@@ -874,7 +973,7 @@ const createSoundGenerators = () => {
       horn1Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
 
       horn1.connect(horn1Gain);
-      horn1Gain.connect(context.destination);
+      horn1Gain.connect(bus);
       horn1.start(now + 0.1);
       horn1.stop(now + 0.25);
 
@@ -887,7 +986,7 @@ const createSoundGenerators = () => {
       horn2Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.37);
 
       horn2.connect(horn2Gain);
-      horn2Gain.connect(context.destination);
+      horn2Gain.connect(bus);
       horn2.start(now + 0.22);
       horn2.stop(now + 0.37);
 
@@ -900,7 +999,7 @@ const createSoundGenerators = () => {
       horn3Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.49);
 
       horn3.connect(horn3Gain);
-      horn3Gain.connect(context.destination);
+      horn3Gain.connect(bus);
       horn3.start(now + 0.34);
       horn3.stop(now + 0.49);
 
@@ -913,7 +1012,7 @@ const createSoundGenerators = () => {
       horn4Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.62);
 
       horn4.connect(horn4Gain);
-      horn4Gain.connect(context.destination);
+      horn4Gain.connect(bus);
       horn4.start(now + 0.46);
       horn4.stop(now + 0.62);
 
@@ -927,7 +1026,7 @@ const createSoundGenerators = () => {
       bassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
 
       bass.connect(bassGain);
-      bassGain.connect(context.destination);
+      bassGain.connect(bus);
       bass.start(now + 0.1);
       bass.stop(now + 0.6);
 
@@ -949,8 +1048,9 @@ const createSoundGenerators = () => {
   // Success Sound 5: Epic Game Show Win
   const playCelebratorySuccess5Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.7;
@@ -981,7 +1081,7 @@ const createSoundGenerators = () => {
 
       crash.connect(crashFilter);
       crashFilter.connect(crashGain);
-      crashGain.connect(context.destination);
+      crashGain.connect(bus);
       crash.start(now);
 
       // Triumphant ascending chord progression
@@ -1004,7 +1104,7 @@ const createSoundGenerators = () => {
       chord1_1.connect(chord1Gain);
       chord1_2.connect(chord1Gain);
       chord1_3.connect(chord1Gain);
-      chord1Gain.connect(context.destination);
+      chord1Gain.connect(bus);
 
       chord1_1.start(now + 0.08);
       chord1_2.start(now + 0.08);
@@ -1033,7 +1133,7 @@ const createSoundGenerators = () => {
       chord2_1.connect(chord2Gain);
       chord2_2.connect(chord2Gain);
       chord2_3.connect(chord2Gain);
-      chord2Gain.connect(context.destination);
+      chord2Gain.connect(bus);
 
       chord2_1.start(now + 0.25);
       chord2_2.start(now + 0.25);
@@ -1052,7 +1152,7 @@ const createSoundGenerators = () => {
       twinkle1Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
 
       twinkle1.connect(twinkle1Gain);
-      twinkle1Gain.connect(context.destination);
+      twinkle1Gain.connect(bus);
       twinkle1.start(now + 0.15);
       twinkle1.stop(now + 0.28);
 
@@ -1065,7 +1165,7 @@ const createSoundGenerators = () => {
       twinkle2Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.48);
 
       twinkle2.connect(twinkle2Gain);
-      twinkle2Gain.connect(context.destination);
+      twinkle2Gain.connect(bus);
       twinkle2.start(now + 0.3);
       twinkle2.stop(now + 0.48);
 
@@ -1079,7 +1179,7 @@ const createSoundGenerators = () => {
       subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
 
       sub.connect(subGain);
-      subGain.connect(context.destination);
+      subGain.connect(bus);
       sub.start(now + 0.08);
       sub.stop(now + 0.6);
 
@@ -1101,8 +1201,9 @@ const createSoundGenerators = () => {
 
   const playTimeUpSound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.5;
@@ -1117,7 +1218,7 @@ const createSoundGenerators = () => {
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
 
       oscillator.connect(gain);
-      gain.connect(context.destination);
+      gain.connect(bus);
       oscillator.start(now);
       oscillator.stop(now + 0.5);
 
@@ -1129,8 +1230,9 @@ const createSoundGenerators = () => {
 
   const playNewRoundSound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.6;
@@ -1144,7 +1246,7 @@ const createSoundGenerators = () => {
       blip1Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
 
       blip1.connect(blip1Gain);
-      blip1Gain.connect(context.destination);
+      blip1Gain.connect(bus);
       blip1.start(now);
       blip1.stop(now + 0.1);
 
@@ -1157,7 +1259,7 @@ const createSoundGenerators = () => {
       blip2Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
 
       blip2.connect(blip2Gain);
-      blip2Gain.connect(context.destination);
+      blip2Gain.connect(bus);
       blip2.start(now + 0.15);
       blip2.stop(now + 0.25);
 
@@ -1170,7 +1272,7 @@ const createSoundGenerators = () => {
       blip3Gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
 
       blip3.connect(blip3Gain);
-      blip3Gain.connect(context.destination);
+      blip3Gain.connect(bus);
       blip3.start(now + 0.3);
       blip3.stop(now + 0.5);
 
@@ -1183,8 +1285,9 @@ const createSoundGenerators = () => {
   // Player Snap Sound 1: Quick Upward Sweep
   const playPlayerSnap1Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.15;
@@ -1199,7 +1302,7 @@ const createSoundGenerators = () => {
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
 
       osc.connect(gain);
-      gain.connect(context.destination);
+      gain.connect(bus);
       osc.start(now);
       osc.stop(now + 0.1);
 
@@ -1212,8 +1315,9 @@ const createSoundGenerators = () => {
   // Player Snap Sound 2: Punchy Square Wave
   const playPlayerSnap2Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.15;
@@ -1228,7 +1332,7 @@ const createSoundGenerators = () => {
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
 
       osc.connect(gain);
-      gain.connect(context.destination);
+      gain.connect(bus);
       osc.start(now);
       osc.stop(now + 0.08);
 
@@ -1241,8 +1345,9 @@ const createSoundGenerators = () => {
   // Player Snap Sound 3: Double-Tap Snap
   const playPlayerSnap3Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.15;
@@ -1256,7 +1361,7 @@ const createSoundGenerators = () => {
       gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
 
       osc1.connect(gain1);
-      gain1.connect(context.destination);
+      gain1.connect(bus);
       osc1.start(now);
       osc1.stop(now + 0.04);
 
@@ -1269,7 +1374,7 @@ const createSoundGenerators = () => {
       gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
 
       osc2.connect(gain2);
-      gain2.connect(context.destination);
+      gain2.connect(bus);
       osc2.start(now + 0.05);
       osc2.stop(now + 0.1);
 
@@ -1282,8 +1387,9 @@ const createSoundGenerators = () => {
   // Player Snap Sound 4: Sharp Descending Click
   const playPlayerSnap4Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.15;
@@ -1298,7 +1404,7 @@ const createSoundGenerators = () => {
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
 
       osc.connect(gain);
-      gain.connect(context.destination);
+      gain.connect(bus);
       osc.start(now);
       osc.stop(now + 0.09);
 
@@ -1311,8 +1417,9 @@ const createSoundGenerators = () => {
   // Player Snap Sound 5: Bouncy Triple-Note
   const playPlayerSnap5Sound = async () => {
     try {
-      const context = await getOrCreateAudioContext();
-      if (!context) return;
+      const audio = await provider();
+      if (!audio) return;
+      const { context, bus } = audio;
 
       const now = context.currentTime;
       const duration = 0.15;
@@ -1328,7 +1435,7 @@ const createSoundGenerators = () => {
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.11);
 
       osc.connect(gain);
-      gain.connect(context.destination);
+      gain.connect(bus);
       osc.start(now);
       osc.stop(now + 0.11);
 
@@ -1360,69 +1467,100 @@ const createSoundGenerators = () => {
   };
 };
 
+export type SoundGenerators = ReturnType<typeof createSoundGenerators>;
+
+/** Maps each SoundType to the generator method that produces it. */
+const SOUND_METHOD: Record<SoundType, keyof SoundGenerators> = {
+  correct: "playCelebratoryCorrectSound",
+  bonus1: "playEpicBonusSound",
+  bonus2: "playBonus2Sound",
+  bonus3: "playBonus3Sound",
+  bonus4: "playBonus4Sound",
+  bonus5: "playBonus5Sound",
+  success1: "playCelebratorySuccess1Sound",
+  success2: "playCelebratorySuccess2Sound",
+  success3: "playCelebratorySuccess3Sound",
+  success4: "playCelebratorySuccess4Sound",
+  success5: "playCelebratorySuccess5Sound",
+  timeUp: "playTimeUpSound",
+  newRound: "playNewRoundSound",
+  playerSnap1: "playPlayerSnap1Sound",
+  playerSnap2: "playPlayerSnap2Sound",
+  playerSnap3: "playPlayerSnap3Sound",
+  playerSnap4: "playPlayerSnap4Sound",
+  playerSnap5: "playPlayerSnap5Sound",
+};
+
+/** Play one sound by type against a given generator set. */
+export const invokeSound = (
+  generators: SoundGenerators,
+  type: SoundType,
+): Promise<void> => {
+  const method = SOUND_METHOD[type];
+  if (!method) {
+    console.error("Unknown sound type:", type);
+    return Promise.resolve();
+  }
+  return generators[method]();
+};
+
+/** UI-facing catalog: ordered groups of sounds with friendly labels,
+    used by the Sound Lab page to render an audition board. */
+export const SOUND_CATALOG: {
+  group: string;
+  blurb: string;
+  sounds: { type: SoundType; label: string }[];
+}[] = [
+  {
+    group: "Core",
+    blurb: "Fire constantly during play — kept short and dry.",
+    sounds: [
+      { type: "correct", label: "Correct" },
+      { type: "newRound", label: "New Round" },
+      { type: "timeUp", label: "Time Up" },
+    ],
+  },
+  {
+    group: "Player Snap",
+    blurb: "Tiny confirmation blips when a slot is snapped.",
+    sounds: [
+      { type: "playerSnap1", label: "Snap 1 · Sweep" },
+      { type: "playerSnap2", label: "Snap 2 · Punch" },
+      { type: "playerSnap3", label: "Snap 3 · Double-tap" },
+      { type: "playerSnap4", label: "Snap 4 · Click" },
+      { type: "playerSnap5", label: "Snap 5 · Bounce" },
+    ],
+  },
+  {
+    group: "Success",
+    blurb: "Mid-tier celebratory stings.",
+    sounds: [
+      { type: "success1", label: "Success 1 · Fanfare" },
+      { type: "success2", label: "Success 2 · Arpeggio" },
+      { type: "success3", label: "Success 3 · Power Chord" },
+      { type: "success4", label: "Success 4 · Horns" },
+      { type: "success5", label: "Success 5 · Game Show" },
+    ],
+  },
+  {
+    group: "Bonus",
+    blurb: "Big moments — the loudest, longest sounds.",
+    sounds: [
+      { type: "bonus1", label: "Bonus 1 · Epic Scale" },
+      { type: "bonus2", label: "Bonus 2 · Wobble Drop" },
+      { type: "bonus3", label: "Bonus 3 · Ta-Da" },
+      { type: "bonus4", label: "Bonus 4 · Slide Whistle" },
+      { type: "bonus5", label: "Bonus 5 · Rapid Blips" },
+    ],
+  },
+];
+
 const SoundEffects = ({ onLoad }: SoundEffectProps) => {
-  const soundGenerators = createSoundGenerators();
+  const soundGenerators = useMemo(() => createSoundGenerators(), []);
 
   const playSound = useCallback(
     async (soundType: SoundType) => {
-      switch (soundType) {
-        case "correct":
-          await soundGenerators.playCelebratoryCorrectSound();
-          break;
-        case "bonus1":
-          await soundGenerators.playEpicBonusSound();
-          break;
-        case "bonus2":
-          await soundGenerators.playBonus2Sound();
-          break;
-        case "bonus3":
-          await soundGenerators.playBonus3Sound();
-          break;
-        case "bonus4":
-          await soundGenerators.playBonus4Sound();
-          break;
-        case "bonus5":
-          await soundGenerators.playBonus5Sound();
-          break;
-        case "success1":
-          await soundGenerators.playCelebratorySuccess1Sound();
-          break;
-        case "success2":
-          await soundGenerators.playCelebratorySuccess2Sound();
-          break;
-        case "success3":
-          await soundGenerators.playCelebratorySuccess3Sound();
-          break;
-        case "success4":
-          await soundGenerators.playCelebratorySuccess4Sound();
-          break;
-        case "success5":
-          await soundGenerators.playCelebratorySuccess5Sound();
-          break;
-        case "timeUp":
-          await soundGenerators.playTimeUpSound();
-          break;
-        case "newRound":
-          await soundGenerators.playNewRoundSound();
-          break;
-        case "playerSnap1":
-          await soundGenerators.playPlayerSnap1Sound();
-          break;
-        case "playerSnap2":
-          await soundGenerators.playPlayerSnap2Sound();
-          break;
-        case "playerSnap3":
-          await soundGenerators.playPlayerSnap3Sound();
-          break;
-        case "playerSnap4":
-          await soundGenerators.playPlayerSnap4Sound();
-          break;
-        case "playerSnap5":
-          await soundGenerators.playPlayerSnap5Sound();
-          break;
-        default:
-          console.error("Unknown sound type:", soundType);
-      }
+      await invokeSound(soundGenerators, soundType);
     },
     [soundGenerators],
   );
