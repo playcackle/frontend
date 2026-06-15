@@ -304,6 +304,24 @@
   letter-spacing: 1px;
 }
 
+.topicNameHeader {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #00ffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topicPromptHeader {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 0.15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .slotsCount {
   margin-left: auto;
   background: rgba(0, 255, 0, 0.15);
@@ -311,6 +329,7 @@
   padding: 0.15rem 0.5rem;
   border-radius: 10px;
   font-size: 0.75rem;
+  flex-shrink: 0;
 }
 
 .slotsPanelContent {

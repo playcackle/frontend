@@ -470,12 +470,11 @@ export default function AgentChat({
   );
 
   const handleSubmitComment = useCallback(
-    (index: number) => {
-      const comment = slotComments[index] || "";
-      if (!comment.trim()) return;
-      handleSlotComment(index, comment);
+    (index: number, text: string) => {
+      if (!text.trim()) return;
+      handleSlotComment(index, text);
     },
-    [slotComments, handleSlotComment]
+    [handleSlotComment]
   );
 
   const handleSave = useCallback(async () => {
@@ -756,13 +755,15 @@ export default function AgentChat({
                             }))
                           }
                           onKeyDown={(e) => {
-                            if (e.key === "Enter") handleSubmitComment(index);
+                            if (e.key === "Enter") {
+                              handleSubmitComment(index, (e.target as HTMLInputElement).value);
+                            }
                           }}
-                          placeholder="Comment for agent..."
+                          placeholder="Tell the agent..."
                         />
                         <button
                           className={styles.commentButton}
-                          onClick={() => handleSubmitComment(index)}
+                          onClick={() => handleSubmitComment(index, slotComments[index] || "")}
                         >
                           <MessageCircle size={14} />
                         </button>
