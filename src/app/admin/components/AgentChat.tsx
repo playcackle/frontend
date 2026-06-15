@@ -448,12 +448,12 @@ export default function AgentChat({
         topic_type: undefined,
       });
 
-      // Create all slots
+      // Create all slots (prompt is required, min_length=1 on backend)
       await generationApi.createSlotsBulk(
         topic.id,
         slots.map((s) => ({
           canonical_text: s.canonical_text,
-          prompt: "",
+          prompt: s.bot_bob_clue || `About ${s.canonical_text}`,
           bot_bob_clue: s.bot_bob_clue || undefined,
           is_rare: s.is_rare,
           aliases: s.aliases || [],
