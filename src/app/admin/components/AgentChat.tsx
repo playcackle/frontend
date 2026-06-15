@@ -230,15 +230,22 @@ export default function AgentChat({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Connect WebSocket
+  // Connect WebSocket (ref-based to handle StrictMode double-mount safely)
   useEffect(() => {
+    const abortController = new AbortController();
     let ws: WebSocket | null = null;
 
     getWsUrl().then((url) => {
+      if (abortController.signal.aborted) return;
+
       ws = new WebSocket(url);
       wsRef.current = ws;
 
       ws.onopen = () => {
+        if (abortController.signal.aborted) {
+          ws?.close();
+          return;
+        }
         setConnected(true);
 
         // Send initial greeting
@@ -253,6 +260,7 @@ export default function AgentChat({
       };
 
       ws.onmessage = (event) => {
+        if (abortController.signal.aborted) return;
         try {
           const msg: AgentMessage = JSON.parse(event.data);
           handleMessage(msg);
@@ -262,16 +270,21 @@ export default function AgentChat({
       };
 
       ws.onclose = () => {
-        setConnected(false);
+        if (!abortController.signal.aborted) {
+          setConnected(false);
+        }
       };
 
       ws.onerror = (e) => {
-        console.error("Agent WS error:", e);
-        setConnected(false);
+        if (!abortController.signal.aborted) {
+          console.error("Agent WS error:", e);
+          setConnected(false);
+        }
       };
     });
 
     return () => {
+      abortController.abort();
       if (ws) ws.close();
       wsRef.current = null;
     };
