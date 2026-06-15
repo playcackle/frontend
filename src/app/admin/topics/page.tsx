@@ -2,7 +2,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { topicsApi, collectionsApi, type Topic, type Collection } from "@/lib/api/admin";
 import AIGenerate from "../components/AIGenerate";
-import AgentChat from "../components/AgentChat";
 import { AlertTriangle, Pencil, Sparkles, Trash2, Zap } from "lucide-react";
 import styles from "./page.module.css";
 
@@ -14,7 +13,6 @@ export default function TopicsPage() {
   const [error, setError] = useState<string | null>(null);
   const [filterCollection, setFilterCollection] = useState<number | null>(null);
   const [showAIGenerate, setShowAIGenerate] = useState(false);
-  const [showAgentChat, setShowAgentChat] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -100,24 +98,18 @@ export default function TopicsPage() {
         </h1>
         <button
           className={styles.uploadToggle}
-          onClick={() => {
-            setShowAgentChat(false);
-            setShowAIGenerate(true);
-          }}
+          onClick={() => setShowAIGenerate(true)}
         >
           ＋ NEW TOPIC
         </button>
         <button
           className={styles.uploadToggle}
           style={{
-            background: showAgentChat ? "rgba(255,0,255,0.25)" : "rgba(255,0,255,0.1)",
+            background: "rgba(255,0,255,0.1)",
             borderColor: "#ff00ff",
             color: "#ff00ff",
           }}
-          onClick={() => {
-            setShowAIGenerate(false);
-            setShowAgentChat(!showAgentChat);
-          }}
+          onClick={() => navigate({ to: "/admin/topics/agent" })}
         >
           <Sparkles size={16} /> AI CHAT
         </button>
@@ -134,15 +126,7 @@ export default function TopicsPage() {
         </div>
       )}
 
-      {/* AI Chat — Agentic Topic Creator */}
-      {showAgentChat && (
-        <div className={styles.uploadSection}>
-          <AgentChat
-            onComplete={() => { loadData(); setShowAgentChat(false); }}
-            onClose={() => setShowAgentChat(false)}
-          />
-        </div>
-      )}
+
 
       {/* Filter */}
       <div className={styles.filterSection}>

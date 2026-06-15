@@ -479,94 +479,88 @@ export default function AgentChat({
     }
   }, [slots, topicName, onComplete]);
 
-  return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <h3 className={styles.title}>
-          <Sparkles size={18} /> Topic Creator AI
-        </h3>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span
-            className={styles.connectionIndicator}
-            style={{ color: connected ? "#00ff00" : "#ff6b6b" }}
-          >
-            {connected ? "● Connected" : "○ Disconnected"}
-          </span>
-          {onClose && (
-            <button className={styles.closeButton} onClick={onClose}>
-              <X size={16} />
-            </button>
-          )}
-        </div>
+  const chatPanel = (
+    <div className={styles.chatPanel}>
+      <div className={styles.chatHeader}>
+        <Bot size={18} className={styles.chatHeaderIcon} />
+        <span className={styles.chatHeaderTitle}>Conversation</span>
+        <span
+          className={styles.connectionIndicator}
+          style={{ color: connected ? "#00ff00" : "#ff6b6b" }}
+        >
+          {connected ? "● Connected" : "○ Disconnected"}
+        </span>
       </div>
 
-      {/* Chat Messages */}
-      <div className={styles.chatArea}>
-        {messages.length === 0 && (
+      <div className={styles.chatMessages}>
+        {messages.length === 0 ? (
           <div className={styles.emptyChat}>
             <Bot size={48} />
             <p>Connecting to Topic Creator AI...</p>
           </div>
+        ) : (
+          messages.map((msg, i) => {
+            if (msg.type === "thought") {
+              return (
+                <div key={i} className={styles.thought}>
+                  <span className={styles.thoughtIcon}>⚡</span>
+                  <span>
+                    {msg.tool_call
+                      ? `Running: ${msg.tool_call}...`
+                      : msg.content || "Thinking..."}
+                  </span>
+                </div>
+              );
+            }
+
+            if (msg.type === "chat" && msg.role === "user") {
+              return (
+                <div key={i} className={styles.userBubble}>
+                  {msg.content}
+                </div>
+              );
+            }
+
+            if (msg.type === "chat" || msg.type === "saved") {
+              return (
+                <div key={i} className={styles.agentBubble}>
+                  <Bot size={16} className={styles.agentIcon} />
+                  <div>
+                    <p style={{ margin: 0 }}>{msg.content}</p>
+                  </div>
+                </div>
+              );
+            }
+
+            if (msg.type === "result" && msg.tool_result) {
+              const slotsCount = (msg.tool_result.slots_count as number) || 0;
+              return (
+                <div key={i} className={styles.resultBanner}>
+                  <div className={styles.resultHeader}>
+                    <CheckCircle size={16} />
+                    <strong>Generated {slotsCount} slots</strong>
+                  </div>
+                  {msg.content && (
+                    <p style={{ margin: "0.25rem 0", fontSize: "0.85rem", color: "#ccc" }}>
+                      {msg.content}
+                    </p>
+                  )}
+                </div>
+              );
+            }
+
+            if (msg.type === "error") {
+              return (
+                <div key={i} className={styles.errorBubble}>
+                  <AlertTriangle size={14} />
+                  {msg.content}
+                </div>
+              );
+            }
+
+            return null;
+          })
         )}
-
-        {messages.map((msg, i) => {
-          if (msg.type === "thought") {
-            return (
-              <div key={i} className={styles.thought}>
-                <span className={styles.thoughtIcon}>⚡</span>
-                <span className={styles.thoughtText}>
-                  {msg.tool_call
-                    ? `Running: ${msg.tool_call}...`
-                    : msg.content || "Thinking..."}
-                </span>
-              </div>
-            );
-          }
-
-          if (msg.type === "chat" && msg.role === "user") {
-            return (
-              <div key={i} className={styles.userBubble}>
-                {msg.content}
-              </div>
-            );
-          }
-
-          if (msg.type === "chat" || msg.type === "saved") {
-            return (
-              <div key={i} className={styles.agentBubble}>
-                <Bot size={16} className={styles.agentIcon} />
-                <div>
-                  <p style={{ margin: 0 }}>{msg.content}</p>
-                </div>
-              </div>
-            );
-          }
-
-          if (msg.type === "result" && msg.tool_result) {
-            const slotsCount = (msg.tool_result.slots_count as number) || 0;
-            return (
-              <div key={i} className={styles.resultBanner}>
-                <div className={styles.resultHeader}>
-                  <CheckCircle size={16} />
-                  <strong>Generated {slotsCount} slots</strong>
-                </div>
-                {msg.content && <p style={{ margin: "0.25rem 0", fontSize: "0.85rem", color: "#ccc" }}>{msg.content}</p>}
-              </div>
-            );
-          }
-
-          if (msg.type === "error") {
-            return (
-              <div key={i} className={styles.errorBubble}>
-                <AlertTriangle size={14} />
-                {msg.content}
-              </div>
-            );
-          }
-
-          return null;
-        })}
 
         {thinking && (
           <div className={styles.thinking}>
@@ -575,119 +569,10 @@ export default function AgentChat({
             <div className={styles.typingDot} />
           </div>
         )}
-
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Slot Preview (when generated) */}
-      {slots.length > 0 && (
-        <div className={styles.slotSection}>
-          <DraftReviewBanner
-            draftReview={draftReview as any}
-            qaReport={qaReport as any}
-            membershipReport={membershipReport as any}
-          />
-
-          <div className={styles.slotsList}>
-            {slots.map((slot, index) => (
-              <div key={index} className={styles.slotRow}>
-                <div className={styles.slotFields}>
-                  <input
-                    type="text"
-                    className={styles.slotInput}
-                    value={slot.canonical_text}
-                    onChange={(e) =>
-                      handleSlotEdit(index, "canonical_text", e.target.value)
-                    }
-                    placeholder="Answer"
-                  />
-                  <input
-                    type="text"
-                    className={styles.slotClue}
-                    value={slot.bot_bob_clue}
-                    onChange={(e) =>
-                      handleSlotEdit(index, "bot_bob_clue", e.target.value)
-                    }
-                    placeholder="Bot Bob clue"
-                  />
-                  <input
-                    type="text"
-                    className={styles.slotAliases}
-                    value={slot.aliases?.join(", ") || ""}
-                    onChange={(e) => {
-                      const vals = e.target.value
-                        .split(",")
-                        .map((s) => s.trim())
-                        .filter(Boolean);
-                      handleSlotEdit(index, "aliases", vals);
-                    }}
-                    placeholder="Aliases (comma separated)"
-                  />
-                </div>
-                <div className={styles.slotActions}>
-                  <label className={styles.rareCheckbox}>
-                    <input
-                      type="checkbox"
-                      checked={slot.is_rare}
-                      onChange={(e) =>
-                        handleSlotEdit(index, "is_rare", e.target.checked)
-                      }
-                    />
-                    Rare
-                  </label>
-                  <div className={styles.commentArea}>
-                    <input
-                      type="text"
-                      className={styles.commentInput}
-                      value={slotComments[index] || ""}
-                      onChange={(e) =>
-                        setSlotComments((prev) => ({
-                          ...prev,
-                          [index]: e.target.value,
-                        }))
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleSubmitComment(index);
-                      }}
-                      placeholder="Comment for agent..."
-                    />
-                    <button
-                      className={styles.commentButton}
-                      onClick={() => handleSubmitComment(index)}
-                      title="Send comment to agent"
-                    >
-                      <MessageCircle size={14} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.slotActionsBar}>
-            <span className={styles.slotCount}>
-              {slots.length} slot{slots.length !== 1 ? "s" : ""}
-            </span>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              {saveError && (
-                <span style={{ color: "#ff6b6b", fontSize: "0.85rem", alignSelf: "center" }}>
-                  {saveError}
-                </span>
-              )}
-              <button
-                className={styles.saveButton}
-                onClick={handleSave}
-                disabled={saving || slots.length === 0}
-              >
-                {saving ? "Saving..." : `SAVE ${slots.length} SLOTS`}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Input Area */}
-      <div className={styles.inputArea}>
+      <div className={styles.chatInputArea}>
         <input
           type="text"
           className={styles.chatInput}
@@ -701,7 +586,7 @@ export default function AgentChat({
           }}
           placeholder={
             slots.length > 0
-              ? "Ask the agent to refine, add, or remove slots..."
+              ? "Ask the agent to refine slots..."
               : "Describe the topic you want to create..."
           }
           disabled={!connected || thinking}
@@ -714,6 +599,133 @@ export default function AgentChat({
           <Send size={16} />
         </button>
       </div>
+    </div>
+  );
+
+  const slotsPanel = (
+    <div className={styles.slotsPanel}>
+      <div className={styles.slotsPanelHeader}>
+        <Sparkles size={18} />
+        <span>Working Slots</span>
+        {slots.length > 0 && (
+          <span className={styles.slotsCount}>{slots.length}</span>
+        )}
+      </div>
+
+      <div className={styles.slotsPanelContent}>
+        {slots.length === 0 ? (
+          <div className={styles.emptySlots}>
+            <p>Chat with the agent to generate slots.</p>
+            <p style={{ fontSize: "0.8rem", color: "#666", marginTop: "0.25rem" }}>
+              Results will appear here once generated.
+            </p>
+          </div>
+        ) : (
+          <>
+            <DraftReviewBanner
+              draftReview={draftReview as any}
+              qaReport={qaReport as any}
+              membershipReport={membershipReport as any}
+            />
+
+            <div className={styles.slotsList}>
+              {slots.map((slot, index) => (
+                <div key={index} className={styles.slotCard}>
+                  <div className={styles.slotNumber}>{index + 1}</div>
+                  <div className={styles.slotBody}>
+                    <input
+                      type="text"
+                      className={styles.slotInput}
+                      value={slot.canonical_text}
+                      onChange={(e) =>
+                        handleSlotEdit(index, "canonical_text", e.target.value)
+                      }
+                      placeholder="Answer"
+                    />
+                    <input
+                      type="text"
+                      className={styles.slotClue}
+                      value={slot.bot_bob_clue}
+                      onChange={(e) =>
+                        handleSlotEdit(index, "bot_bob_clue", e.target.value)
+                      }
+                      placeholder="Bot Bob clue"
+                    />
+                    <input
+                      type="text"
+                      className={styles.slotAliases}
+                      value={slot.aliases?.join(", ") || ""}
+                      onChange={(e) => {
+                        const vals = e.target.value
+                          .split(",")
+                          .map((s) => s.trim())
+                          .filter(Boolean);
+                        handleSlotEdit(index, "aliases", vals);
+                      }}
+                      placeholder="Aliases (comma separated)"
+                    />
+                    <div className={styles.slotFooter}>
+                      <label className={styles.rareCheckbox}>
+                        <input
+                          type="checkbox"
+                          checked={slot.is_rare}
+                          onChange={(e) =>
+                            handleSlotEdit(index, "is_rare", e.target.checked)
+                          }
+                        />
+                        Rare
+                      </label>
+                      <div className={styles.commentArea}>
+                        <input
+                          type="text"
+                          className={styles.commentInput}
+                          value={slotComments[index] || ""}
+                          onChange={(e) =>
+                            setSlotComments((prev) => ({
+                              ...prev,
+                              [index]: e.target.value,
+                            }))
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") handleSubmitComment(index);
+                          }}
+                          placeholder="Comment for agent..."
+                        />
+                        <button
+                          className={styles.commentButton}
+                          onClick={() => handleSubmitComment(index)}
+                        >
+                          <MessageCircle size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.slotsPanelFooter}>
+              {saveError && (
+                <span className={styles.saveError}>{saveError}</span>
+              )}
+              <button
+                className={styles.saveButton}
+                onClick={handleSave}
+                disabled={saving || slots.length === 0}
+              >
+                {saving ? "Saving..." : `SAVE ${slots.length} SLOTS`}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className={styles.twoColumn}>
+      {chatPanel}
+      {slotsPanel}
     </div>
   );
 }

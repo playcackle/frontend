@@ -31,6 +31,7 @@ import { Route as AdminTopicsIndexRouteImport } from './routes/admin/topics/inde
 import { Route as AdminLobbiesIndexRouteImport } from './routes/admin/lobbies/index'
 import { Route as AdminCollectionsIndexRouteImport } from './routes/admin/collections/index'
 import { Route as CollectionsIdEditRouteImport } from './routes/collections/$id.edit'
+import { Route as AdminTopicsAgentRouteImport } from './routes/admin/topics/agent'
 import { Route as AdminTopicsIdRouteImport } from './routes/admin/topics/$id'
 import { Route as AdminSlotsIdRouteImport } from './routes/admin/slots/$id'
 import { Route as AdminLobbiesIdRouteImport } from './routes/admin/lobbies/$id'
@@ -146,6 +147,11 @@ const CollectionsIdEditRoute = CollectionsIdEditRouteImport.update({
   path: '/collections/$id/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTopicsAgentRoute = AdminTopicsAgentRouteImport.update({
+  id: '/topics/agent',
+  path: '/topics/agent',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminTopicsIdRoute = AdminTopicsIdRouteImport.update({
   id: '/topics/$id',
   path: '/topics/$id',
@@ -190,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/admin/lobbies/$id': typeof AdminLobbiesIdRoute
   '/admin/slots/$id': typeof AdminSlotsIdRoute
   '/admin/topics/$id': typeof AdminTopicsIdRoute
+  '/admin/topics/agent': typeof AdminTopicsAgentRoute
   '/collections/$id/edit': typeof CollectionsIdEditRoute
   '/admin/collections/': typeof AdminCollectionsIndexRoute
   '/admin/lobbies/': typeof AdminLobbiesIndexRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/admin/lobbies/$id': typeof AdminLobbiesIdRoute
   '/admin/slots/$id': typeof AdminSlotsIdRoute
   '/admin/topics/$id': typeof AdminTopicsIdRoute
+  '/admin/topics/agent': typeof AdminTopicsAgentRoute
   '/collections/$id/edit': typeof CollectionsIdEditRoute
   '/admin/collections': typeof AdminCollectionsIndexRoute
   '/admin/lobbies': typeof AdminLobbiesIndexRoute
@@ -246,6 +254,7 @@ export interface FileRoutesById {
   '/admin/lobbies/$id': typeof AdminLobbiesIdRoute
   '/admin/slots/$id': typeof AdminSlotsIdRoute
   '/admin/topics/$id': typeof AdminTopicsIdRoute
+  '/admin/topics/agent': typeof AdminTopicsAgentRoute
   '/collections/$id/edit': typeof CollectionsIdEditRoute
   '/admin/collections/': typeof AdminCollectionsIndexRoute
   '/admin/lobbies/': typeof AdminLobbiesIndexRoute
@@ -276,6 +285,7 @@ export interface FileRouteTypes {
     | '/admin/lobbies/$id'
     | '/admin/slots/$id'
     | '/admin/topics/$id'
+    | '/admin/topics/agent'
     | '/collections/$id/edit'
     | '/admin/collections/'
     | '/admin/lobbies/'
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/admin/lobbies/$id'
     | '/admin/slots/$id'
     | '/admin/topics/$id'
+    | '/admin/topics/agent'
     | '/collections/$id/edit'
     | '/admin/collections'
     | '/admin/lobbies'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/admin/lobbies/$id'
     | '/admin/slots/$id'
     | '/admin/topics/$id'
+    | '/admin/topics/agent'
     | '/collections/$id/edit'
     | '/admin/collections/'
     | '/admin/lobbies/'
@@ -514,6 +526,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectionsIdEditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/topics/agent': {
+      id: '/admin/topics/agent'
+      path: '/topics/agent'
+      fullPath: '/admin/topics/agent'
+      preLoaderRoute: typeof AdminTopicsAgentRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/topics/$id': {
       id: '/admin/topics/$id'
       path: '/topics/$id'
@@ -551,6 +570,7 @@ interface AdminRouteRouteChildren {
   AdminLobbiesIdRoute: typeof AdminLobbiesIdRoute
   AdminSlotsIdRoute: typeof AdminSlotsIdRoute
   AdminTopicsIdRoute: typeof AdminTopicsIdRoute
+  AdminTopicsAgentRoute: typeof AdminTopicsAgentRoute
   AdminCollectionsIndexRoute: typeof AdminCollectionsIndexRoute
   AdminLobbiesIndexRoute: typeof AdminLobbiesIndexRoute
   AdminTopicsIndexRoute: typeof AdminTopicsIndexRoute
@@ -562,6 +582,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminLobbiesIdRoute: AdminLobbiesIdRoute,
   AdminSlotsIdRoute: AdminSlotsIdRoute,
   AdminTopicsIdRoute: AdminTopicsIdRoute,
+  AdminTopicsAgentRoute: AdminTopicsAgentRoute,
   AdminCollectionsIndexRoute: AdminCollectionsIndexRoute,
   AdminLobbiesIndexRoute: AdminLobbiesIndexRoute,
   AdminTopicsIndexRoute: AdminTopicsIndexRoute,
