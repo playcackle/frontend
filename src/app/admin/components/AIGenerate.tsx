@@ -5,8 +5,11 @@ import {
   type SlotProposal,
   type TopicAnalysisResponse,
   type TopicGenerateResponse,
+  type DraftReview,
+  type QaReport,
+  type MembershipReport,
 } from "@/lib/api/admin";
-import { AlertTriangle, ArrowLeft, Bot, Rocket, Save, Search, Trash2, X } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Bot, CheckCircle, ChevronDown, ChevronUp, Rocket, Save, Search, ShieldAlert, Trash2, X } from "lucide-react";
 import React, { useState } from "react";
 import styles from "./AIGenerate.module.css";
 
@@ -41,6 +44,215 @@ interface AIGenerateProps {
   title?: React.ReactNode;
 }
 
+function DraftReviewBanner({
+  draftReview,
+  qaReport,
+  initialQaReport,
+  membershipReport,
+  repairReport,
+  showQaDetails,
+  showMembershipDetails,
+  onToggleQa,
+  onToggleMembership,
+}: {
+  draftReview: DraftReview;
+  qaReport?: QaReport;
+  initialQaReport?: QaReport;
+  membershipReport?: MembershipReport;
+  repairReport?: { applied: boolean; actions: string[] };
+  showQaDetails: boolean;
+  showMembershipDetails: boolean;
+  onToggleQa: () => void;
+  onToggleMembership: () => void;
+}) {
+  const { status, suggestions, requested_slots, generated_slots } =
+    draftReview;
+
+  const statusConfig = {
+    ready: {
+      icon: <CheckCircle size={18} />,
+      color: "#00ff00",
+      bg: "rgba(0, 255, 0, 0.1)",
+      border: "1px solid #00ff00",
+      label: "Ready to Save",
+    },
+    needs_review: {
+      icon: <ShieldAlert size={18} />,
+      color: "#ffa500",
+      bg: "rgba(255, 165, 0, 0.1)",
+      border: "1px solid #ffa500",
+      label: "Needs Review",
+    },
+    blocked: {
+      icon: <AlertTriangle size={18} />,
+      color: "#ff6b6b",
+      bg: "rgba(255, 107, 107, 0.1)",
+      border: "1px solid #ff6b6b",
+      label: "Blocked",
+    },
+  };
+
+  const cfg = statusConfig[status];
+
+  return (
+    <div
+      style={{
+        padding: "0.75rem 1rem",
+        background: cfg.bg,
+        border: cfg.border,
+        borderRadius: "8px",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          color: cfg.color,
+          fontWeight: 700,
+          fontSize: "0.9rem",
+          textTransform: "uppercase",
+          letterSpacing: "1px",
+        }}
+      >
+        {cfg.icon}
+        {cfg.label}
+        <span style={{ fontWeight: 400, fontSize: "0.8rem", opacity: 0.7 }}>
+          ({requested_slots} requested, {generated_slots} generated)
+        </span>
+      </div>
+
+      {suggestions.length > 0 && (
+        <ul style={{ margin: "0.5rem 0 0", paddingLeft: "1.5rem", fontSize: "0.85rem", color: cfg.color }}>
+          {suggestions.map((s, i) => (
+            <li key={i} style={{ marginBottom: "0.25rem" }}>{s}</li>
+          ))}
+        </ul>
+      )}
+
+      {/* QA Report Summary */}
+      {qaReport && (
+        <div style={{ marginTop: "0.75rem" }}>
+          <button
+            onClick={onToggleQa}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#a0a0ff",
+              cursor: "pointer",
+              fontSize: "0.85rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.25rem",
+              padding: "0.25rem 0",
+            }}
+          >
+            {showQaDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            QA: {qaReport.issues.length} issues, {qaReport.warnings.length} warnings
+            {initialQaReport && (
+              <span style={{ opacity: 0.6, marginLeft: "0.25rem" }}>
+                (was {initialQaReport.issues.length}i / {initialQaReport.warnings.length}w before repair)
+              </span>
+            )}
+          </button>
+
+          {showQaDetails && (
+            <div style={{ fontSize: "0.8rem", color: "#ccc", paddingLeft: "1.25rem" }}>
+              {qaReport.issues.length > 0 && (
+                <div style={{ marginBottom: "0.5rem" }}>
+                  <p style={{ color: "#ff6b6b", fontWeight: 600, margin: "0.25rem 0" }}>Issues:</p>
+                  <ul style={{ margin: 0, paddingLeft: "1rem" }}>
+                    {qaReport.issues.map((issue, i) => (
+                      <li key={i} style={{ marginBottom: "0.15rem" }}>{issue}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {qaReport.warnings.length > 0 && (
+                <div>
+                  <p style={{ color: "#ffa500", fontWeight: 600, margin: "0.25rem 0" }}>Warnings:</p>
+                  <ul style={{ margin: 0, paddingLeft: "1rem" }}>
+                    {qaReport.warnings.map((w, i) => (
+                      <li key={i} style={{ marginBottom: "0.15rem" }}>{w}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {qaReport.issues.length === 0 && qaReport.warnings.length === 0 && (
+                <p style={{ color: "#00ff00" }}>All QA checks passed ✓</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Membership Report */}
+      {membershipReport && (
+        <div style={{ marginTop: "0.5rem" }}>
+          <button
+            onClick={onToggleMembership}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#a0a0ff",
+              cursor: "pointer",
+              fontSize: "0.85rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.25rem",
+              padding: "0.25rem 0",
+            }}
+          >
+            {showMembershipDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            Membership: {membershipReport.possible_missing.length} possible missing, {membershipReport.possible_invalid.length} possible invalid
+            <span style={{ opacity: 0.6, marginLeft: "0.25rem" }}>
+              ({membershipReport.confidence} confidence)
+            </span>
+          </button>
+
+          {showMembershipDetails && (
+            <div style={{ fontSize: "0.8rem", color: "#ccc", paddingLeft: "1.25rem" }}>
+              {membershipReport.possible_missing.length > 0 && (
+                <div style={{ marginBottom: "0.5rem" }}>
+                  <p style={{ color: "#ffa500", fontWeight: 600, margin: "0.25rem 0" }}>Possibly Missing:</p>
+                  <ul style={{ margin: 0, paddingLeft: "1rem" }}>
+                    {membershipReport.possible_missing.map((m, i) => (
+                      <li key={i} style={{ marginBottom: "0.15rem" }}>{m}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {membershipReport.possible_invalid.length > 0 && (
+                <div style={{ marginBottom: "0.5rem" }}>
+                  <p style={{ color: "#ff6b6b", fontWeight: 600, margin: "0.25rem 0" }}>Possibly Invalid:</p>
+                  <ul style={{ margin: 0, paddingLeft: "1rem" }}>
+                    {membershipReport.possible_invalid.map((iv, i) => (
+                      <li key={i} style={{ marginBottom: "0.15rem" }}>{iv}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {membershipReport.basis && (
+                <p style={{ opacity: 0.6, fontStyle: "italic", margin: "0.25rem 0" }}>
+                  {membershipReport.basis}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Repair report (minimal) */}
+      {repairReport?.applied && (
+        <p style={{ fontSize: "0.75rem", color: "#888", marginTop: "0.5rem" }}>
+          Auto-repair removed {repairReport.actions.length} unsafe alias(es)
+        </p>
+      )}
+    </div>
+  );
+}
+
+
 export default function AIGenerate({
   topicName = "",
   onComplete,
@@ -54,6 +266,7 @@ export default function AIGenerate({
   // Input state
   const [name, setName] = useState(topicName);
   const [example, setExample] = useState("");
+  const [userInstructions, setUserInstructions] = useState("");
 
   // Analysis state
   const [analysis, setAnalysis] = useState<TopicAnalysisResponse | null>(null);
@@ -70,6 +283,10 @@ export default function AIGenerate({
   const [error, setError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
 
+  // Expandable report sections
+  const [showQaDetails, setShowQaDetails] = useState(false);
+  const [showMembershipDetails, setShowMembershipDetails] = useState(false);
+
   // Saving state
   const [selectedCollectionIds] = useState<number[]>([]);
 
@@ -77,6 +294,7 @@ export default function AIGenerate({
     setStep("input");
     setName(topicName);
     setExample("");
+    setUserInstructions("");
     setAnalysis(null);
     setConfirmedCategory("");
     setConfirmedMode("mainstream");
@@ -86,6 +304,8 @@ export default function AIGenerate({
     setEditedSlots([]);
     setError(null);
     setStatusMessage("");
+    setShowQaDetails(false);
+    setShowMembershipDetails(false);
   };
 
   const handleClose = () => {
@@ -103,7 +323,7 @@ export default function AIGenerate({
     setStep("analysing");
 
     try {
-      const result = await generationApi.analyseTopic(name, example);
+      const result = await generationApi.analyseTopic(name, example, userInstructions || undefined);
       setAnalysis(result);
       setConfirmedCategory(result.category);
       setConfirmedMode(result.mode);
@@ -134,6 +354,7 @@ export default function AIGenerate({
         topic_type: confirmedTopicType,
         category: confirmedCategory,
         mode: confirmedMode,
+        user_instructions: userInstructions || undefined,
       });
 
       setGenerationResult(result);
@@ -251,9 +472,23 @@ export default function AIGenerate({
               placeholder="e.g., Star Trek"
               onKeyDown={(e) => e.key === "Enter" && handleAnalyse()}
             />
+          </div>
+
+          <div className={styles.formField}>
+            <label className={styles.label}>
+              User Instructions{" "}
+              <span className={styles.hint}>(optional constraints)</span>
+            </label>
+            <textarea
+              className={styles.instructionsInput}
+              value={userInstructions}
+              onChange={(e) => setUserInstructions(e.target.value)}
+              placeholder="e.g., Only include TV shows that aired after 2000, focus on mainstream hits, exclude miniseries"
+              rows={3}
+              maxLength={1000}
+            />
             <p className={styles.helpText}>
-              The AI will classify the topic and estimate scope before
-              generating
+              Guide scope, answer set, and clue tone. Passed to research and analysis.
             </p>
           </div>
 
@@ -426,8 +661,28 @@ export default function AIGenerate({
             <p style={{ fontSize: "0.8rem", color: "#aaa" }}>
               {generationResult.category} · {generationResult.mode} ·{" "}
               {generationResult.topic_type}
+              {generationResult.user_instructions && (
+                <> · User instructions: "{generationResult.user_instructions}"</>
+              )}
             </p>
           </div>
+
+          {/* Draft Review Banner */}
+          {generationResult.draft_review && (
+            <DraftReviewBanner
+              draftReview={generationResult.draft_review}
+              qaReport={generationResult.qa_report}
+              initialQaReport={generationResult.initial_qa_report}
+              membershipReport={generationResult.membership_report}
+              repairReport={generationResult.repair_report}
+              showQaDetails={showQaDetails}
+              showMembershipDetails={showMembershipDetails}
+              onToggleQa={() => setShowQaDetails(!showQaDetails)}
+              onToggleMembership={() =>
+                setShowMembershipDetails(!showMembershipDetails)
+              }
+            />
+          )}
 
           <div className={styles.slotsInfo}>
             <p>{editedSlots.length} slots generated</p>

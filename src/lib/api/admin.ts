@@ -546,6 +546,7 @@ export type TopicGenerateRequest = {
   topic_type?: string;
   category?: string;
   mode?: string;
+  user_instructions?: string;
 };
 
 export type SlotProposal = {
@@ -554,6 +555,39 @@ export type SlotProposal = {
   bot_bob_clue: string | null;
   is_rare: boolean;
   aliases: string[];
+};
+
+export type DraftReview = {
+  status: "ready" | "needs_review" | "blocked";
+  suggestions: string[];
+  requested_slots: number;
+  generated_slots: number;
+};
+
+export type QaReport = {
+  topic: string;
+  total_slots: number;
+  issues: string[];
+  warnings: string[];
+};
+
+export type RepairReport = {
+  applied: boolean;
+  actions: string[];
+  initial_issue_count?: number;
+  initial_warning_count?: number;
+  remaining_issue_count?: number;
+  remaining_warning_count?: number;
+};
+
+export type MembershipReport = {
+  missing: string[];
+  invalid: string[];
+  possible_missing: string[];
+  possible_invalid: string[];
+  advisory: boolean;
+  confidence: string;
+  basis: string;
 };
 
 export type TopicGenerateResponse = {
@@ -567,6 +601,12 @@ export type TopicGenerateResponse = {
   mode: string | null;
   topic_type: string | null;
   metadata: Record<string, unknown>;
+  qa_report?: QaReport;
+  initial_qa_report?: QaReport;
+  repair_report?: RepairReport;
+  draft_review?: DraftReview;
+  membership_report?: MembershipReport;
+  user_instructions?: string;
 };
 
 export type TopicPromptResponse = {
@@ -595,10 +635,14 @@ export const generationApi = {
    * This takes ~15-30 seconds
    */
   async generateTopic(request: TopicGenerateRequest): Promise<TopicGenerateResponse> {
+    // Strip undefined fields to keep request clean
+    const body = Object.fromEntries(
+      Object.entries(request).filter(([_, v]) => v !== undefined)
+    );
     const res = await apiFetch(`/admin/generate/topic`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request),
+      body: JSON.stringify(body),
     });
     if (!res.ok) {
       const error = await res.json();
@@ -624,8 +668,12 @@ export const generationApi = {
    * Analyse a topic before generation — fast single LLM call.
    * Returns classification (type, category, mode), estimated count, suitability, and slot recommendation.
    */
-  async analyseTopic(topicName: string, example: string): Promise<TopicAnalysisResponse> {
-    const res = await apiFetch(`/admin/generate/analyse?topic_name=${encodeURIComponent(topicName)}&example=${encodeURIComponent(example)}`);
+  async analyseTopic(topicName: string, example: string, userInstructions?: string): Promise<TopicAnalysisResponse> {
+    let url = `/admin/generate/analyse?topic_name=${encodeURIComponent(topicName)}&example=${encodeURIComponent(example)}`;
+    if (userInstructions) {
+      url += `&user_instructions=${encodeURIComponent(userInstructions)}`;
+    }
+    const res = await apiFetch(url);
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.detail || 'Failed to analyse topic');
