@@ -222,6 +222,10 @@ export default function AgentChat({
   const [membershipReport, setMembershipReport] = useState<Record<string, unknown> | null>(null);
   const [slotComments, setSlotComments] = useState<Record<number, string>>({});
 
+  // Topic metadata from generation
+  const [currentTopicName, setCurrentTopicName] = useState(topicName);
+  const [currentTopicPrompt, setCurrentTopicPrompt] = useState("");
+
   // Saving state
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -324,6 +328,14 @@ export default function AgentChat({
           setSlots(newSlots);
         }
 
+        // Store topic metadata from generation
+        if (result.topic_name) {
+          setCurrentTopicName(result.topic_name as string);
+        }
+        if (result.topic_prompt) {
+          setCurrentTopicPrompt(result.topic_prompt as string);
+        }
+
         if (result.draft_review) {
           setDraftReview(result.draft_review as Record<string, unknown>);
         }
@@ -340,22 +352,54 @@ export default function AgentChat({
         setMessages((prev) => [...prev, msg]);
         setThinking(false);
         setHasThought(false);
-        if (msg.tool_result?.canonical_text) {
-          const result = msg.tool_result as Record<string, unknown>;
-          const idx = result.index as number;
-          setSlots((prev) => {
-            const updated = [...prev];
-            if (idx >= 0 && idx < updated.length) {
-              updated[idx] = {
-                ...updated[idx],
-                canonical_text: (result.canonical_text as string) || updated[idx].canonical_text,
-                bot_bob_clue: (result.bot_bob_clue as string) || updated[idx].bot_bob_clue,
-                is_rare: (result.is_rare as boolean) ?? updated[idx].is_rare,
-                aliases: (result.aliases as string[]) || updated[idx].aliases,
-              };
+        {
+          const toolName = msg.tool_call;
+          const result = msg.tool_result as Record<string, unknown> | undefined;
+          if (!result) break;
+
+          if (toolName === "add_slots") {
+            // Bulk add — need a full refresh from the next generation result
+            // The agent will usually follow up with a status update
+            break;
+          }
+
+          if (toolName === "add_single_slot" || toolName === "add_slot") {
+            const idx = result.index as number;
+            const newSlot: SlotData = {
+              canonical_text: (result.canonical_text as string) || "",
+              bot_bob_clue: (result.bot_bob_clue as string) || "",
+              is_rare: !!(result.is_rare as boolean),
+              aliases: (result.aliases as string[]) || [],
+            };
+            setSlots((prev) => {
+              const updated = [...prev];
+              if (idx >= 0 && idx < updated.length) {
+                updated.splice(idx, 0, newSlot);
+              } else {
+                updated.push(newSlot);
+              }
+              return updated;
+            });
+          } else if (toolName === "remove_slot") {
+            const removedIdx = result.removed_index as number;
+            setSlots((prev) => prev.filter((_, i) => i !== removedIdx));
+          } else if (toolName === "edit_slot" || toolName === "regenerate_clue") {
+            const idx = result.index as number;
+            if (idx >= 0 && result.canonical_text) {
+              setSlots((prev) => {
+                const updated = [...prev];
+                if (idx < updated.length) {
+                  updated[idx] = {
+                    canonical_text: (result.canonical_text as string) || updated[idx].canonical_text,
+                    bot_bob_clue: (result.bot_bob_clue as string) || updated[idx].bot_bob_clue,
+                    is_rare: (result.is_rare as boolean) ?? updated[idx].is_rare,
+                    aliases: (result.aliases as string[]) || updated[idx].aliases,
+                  };
+                }
+                return updated;
+              });
             }
-            return updated;
-          });
+          }
         }
         break;
 
@@ -437,10 +481,10 @@ export default function AgentChat({
     setSaveError(null);
 
     try {
-      // Create the topic
+      // Create the topic with the agreed topic prompt
       const topic = await topicsApi.create({
-        name: topicName || "Generated Topic",
-        prompt: "Generated via Topic Creator AI",
+        name: currentTopicName,
+        prompt: currentTopicPrompt || undefined,
         example_text: slots[0]?.canonical_text || undefined,
         collection_ids: [],
         category: undefined,
@@ -448,12 +492,12 @@ export default function AgentChat({
         topic_type: undefined,
       });
 
-      // Create all slots (prompt is required, min_length=1 on backend)
+      // Create all slots with the agreed topic prompt
       await generationApi.createSlotsBulk(
         topic.id,
         slots.map((s) => ({
           canonical_text: s.canonical_text,
-          prompt: s.bot_bob_clue || `About ${s.canonical_text}`,
+          prompt: currentTopicPrompt || `About ${s.canonical_text}`,
           bot_bob_clue: s.bot_bob_clue || undefined,
           is_rare: s.is_rare,
           aliases: s.aliases || [],
@@ -478,7 +522,7 @@ export default function AgentChat({
     } finally {
       setSaving(false);
     }
-  }, [slots, topicName, onComplete]);
+  }, [slots, currentTopicName, currentTopicPrompt, onComplete]);
 
   const chatPanel = (
     <div className={styles.chatPanel}>
@@ -603,13 +647,34 @@ export default function AgentChat({
     </div>
   );
 
+  const hasTopic = currentTopicName || slots.length > 0;
   const slotsPanel = (
     <div className={styles.slotsPanel}>
       <div className={styles.slotsPanelHeader}>
-        <Sparkles size={18} />
-        <span>Working Slots</span>
-        {slots.length > 0 && (
-          <span className={styles.slotsCount}>{slots.length}</span>
+        {hasTopic ? (
+          <>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <Sparkles size={16} style={{ flexShrink: 0 }} />
+                <span className={styles.topicNameHeader}>
+                  {currentTopicName || "Topic"}
+                </span>
+                {slots.length > 0 && (
+                  <span className={styles.slotsCount}>{slots.length}</span>
+                )}
+              </div>
+              {currentTopicPrompt && (
+                <div className={styles.topicPromptHeader}>
+                  {currentTopicPrompt}
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <Sparkles size={16} />
+            <span style={{ color: "#666", fontWeight: 400 }}>Waiting for generation...</span>
+          </>
         )}
       </div>
 
