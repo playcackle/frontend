@@ -358,8 +358,11 @@ export default function AgentChat({
           if (!result) break;
 
           if (toolName === "add_slots") {
-            // Bulk add — need a full refresh from the next generation result
-            // The agent will usually follow up with a status update
+            // Bulk add — append all new slots to the list
+            const newSlots = (result.slots as SlotData[]) || [];
+            if (newSlots.length > 0) {
+              setSlots((prev) => [...prev, ...newSlots]);
+            }
             break;
           }
 
