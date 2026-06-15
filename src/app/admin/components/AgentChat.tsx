@@ -12,9 +12,9 @@ import {
   Send,
   ShieldAlert,
   Sparkles,
-  X,
 } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import styles from "./AgentChat.module.css";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -212,6 +212,7 @@ export default function AgentChat({
   const [messages, setMessages] = useState<AgentMessage[]>([]);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
+  const [hasThought, setHasThought] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Slot state (from generation result)
@@ -248,15 +249,11 @@ export default function AgentChat({
         }
         setConnected(true);
 
-        // Send initial greeting
+        // Send initial greeting (not displayed to user)
         const initialMessage = topicName
           ? `I want to create a topic about "${topicName}". Can you help me brainstorm and generate it?`
           : "Hi! I want to create a new trivia topic for Cackle. Can you help?";
         ws!.send(JSON.stringify({ type: "message", content: initialMessage }));
-        setMessages((prev) => [
-          ...prev,
-          { type: "chat", content: initialMessage, role: "user" },
-        ]);
       };
 
       ws.onmessage = (event) => {
@@ -299,11 +296,9 @@ export default function AgentChat({
         break;
 
       case "thought":
-        // Tool execution indicator — don't add to visible messages
-        // but do set thinking based on the tool name
-        // Show briefly as an ephemeral indicator
+        setThinking(true);
+        setHasThought(true);
         setMessages((prev) => {
-          // Replace last thought if it exists, otherwise append
           const last = prev[prev.length - 1];
           if (last?.type === "thought") {
             return [...prev.slice(0, -1), msg];
@@ -315,11 +310,13 @@ export default function AgentChat({
       case "chat":
         setMessages((prev) => [...prev, msg]);
         setThinking(false);
+        setHasThought(false);
         break;
 
       case "result": {
         setMessages((prev) => [...prev, msg]);
         setThinking(false);
+        setHasThought(false);
 
         const result = msg.tool_result || {};
         const newSlots = buildSlotFromResult(result);
@@ -341,6 +338,8 @@ export default function AgentChat({
 
       case "slot_updated":
         setMessages((prev) => [...prev, msg]);
+        setThinking(false);
+        setHasThought(false);
         if (msg.tool_result?.canonical_text) {
           const result = msg.tool_result as Record<string, unknown>;
           const idx = result.index as number;
@@ -370,11 +369,13 @@ export default function AgentChat({
       case "saved":
         setMessages((prev) => [...prev, msg]);
         setThinking(false);
+        setHasThought(false);
         break;
 
       case "error":
         setMessages((prev) => [...prev, msg]);
         setThinking(false);
+        setHasThought(false);
         break;
 
       default:
@@ -525,8 +526,8 @@ export default function AgentChat({
               return (
                 <div key={i} className={styles.agentBubble}>
                   <Bot size={16} className={styles.agentIcon} />
-                  <div>
-                    <p style={{ margin: 0 }}>{msg.content}</p>
+                  <div className={styles.markdown}>
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
                   </div>
                 </div>
               );
@@ -562,7 +563,7 @@ export default function AgentChat({
           })
         )}
 
-        {thinking && (
+        {thinking && !hasThought && (
           <div className={styles.thinking}>
             <div className={styles.typingDot} />
             <div className={styles.typingDot} />
