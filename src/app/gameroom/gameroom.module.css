@@ -247,6 +247,9 @@
      the board (the focus) isn't the narrowest; leaderboard stays at 2/9. */
   grid-template-columns: 3.5fr 3.5fr 2fr;
   gap: 1rem;
+  /* Grow to fill the height the viewport-lock makes available so the panels
+     expand to the screen instead of floating at the top of a tall monitor. */
+  flex: 1;
   min-height: 0;
   margin-top: 0.5rem;
 }
@@ -256,6 +259,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  flex: 1;
   min-height: 0;
   margin-top: 1rem;
 }
