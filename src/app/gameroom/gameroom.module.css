@@ -5,6 +5,10 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  /* Fill the height made available by the viewport-lock so .main can scroll
+     its content internally instead of growing the page. */
+  height: 100%;
+  min-height: 0;
 }
 
 .main {
@@ -89,8 +93,8 @@
 }
 
 .leaderboardPlayer .playerRank {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,8 +156,8 @@
 }
 
 .playerRank {
-  width: 20px; /* Increased size */
-  height: 20px; /* Increased size */
+  width: 1.25rem; /* scales with fluid root font */
+  height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,8 +171,8 @@
 
 /* Enhanced player avatar — inline 24×24 avatar in page.tsx leaderboard */
 .playerAvatar {
-  width: 24px; /* Increased size */
-  height: 24px; /* Increased size */
+  width: 1.5rem; /* scales with fluid root font */
+  height: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -239,7 +243,9 @@
 /* Second row: Slots grid and chat */
 .contentRow {
   display: grid;
-  grid-template-columns: 4fr 3fr 2fr;
+  /* chat : answer board : leaderboard — chat and board share width equally so
+     the board (the focus) isn't the narrowest; leaderboard stays at 2/9. */
+  grid-template-columns: 3.5fr 3.5fr 2fr;
   gap: 1rem;
   min-height: 0;
   margin-top: 0.5rem;

@@ -135,6 +135,14 @@ export default function GameroomPage() {
     setCurrentUserId(user?.id ?? null);
   }, [user?.id, setCurrentUserId]);
 
+  // Lock the gameroom to the viewport so its panels scroll internally instead
+  // of the whole page growing past the screen (which pushed the stats row
+  // off-screen on short monitors). Scoped via a body class — see globals.css.
+  useEffect(() => {
+    document.body.classList.add("gameroom-locked");
+    return () => document.body.classList.remove("gameroom-locked");
+  }, []);
+
   // WebSocket connections — must be called unconditionally before any conditional return
   const { sendEvent, reconnect: reconnectGame } = useGameEvents(
     gameroom?.game_ws_url ?? "",
@@ -196,7 +204,11 @@ export default function GameroomPage() {
                 isWaiting ? styles.waitingContentRow : styles.contentRow
               }
             >
-              <Flex direction="column" gap="3">
+              <Flex
+                direction="column"
+                gap="3"
+                style={{ height: "100%", minHeight: 0 }}
+              >
                 <UnifiedMessages />
                 <div className={styles.answerRow}>
                   <UnifiedInputForm

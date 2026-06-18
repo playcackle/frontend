@@ -2,21 +2,21 @@
 .answerGridContainer {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: clamp(0.6rem, 1.8vmin, 1.5rem);
   width: 100%;
 }
 
 .answerGridHero {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: clamp(0.75rem, 2.4vmin, 2rem);
 }
 
 .progressRingWrapper {
   position: relative;
   flex-shrink: 0;
-  width: 120px;
-  height: 120px;
+  width: clamp(64px, 11vmin, 120px);
+  height: clamp(64px, 11vmin, 120px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,14 +87,14 @@
 .answerDotRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: clamp(4px, 0.9vmin, 7px);
   margin-top: 0.5rem;
 }
 
 .answerDot {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: clamp(26px, 4.6vmin, 48px);
+  height: clamp(26px, 4.6vmin, 48px);
   border-radius: 5px;
   border: 1px solid transparent;
   transition:
@@ -321,8 +321,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  height: 28px;
+  min-width: clamp(18px, 3vmin, 28px);
+  height: clamp(18px, 3vmin, 28px);
   border-radius: 4px;
   background: var(--neon-purple);
   border: 1px solid var(--neon-purple);

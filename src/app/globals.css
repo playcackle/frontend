@@ -37,6 +37,15 @@
   margin: 0;
 }
 
+html {
+  /* Fluid root font: every rem-based size scales from here.
+     Height-driven (0.96vh) because the game is fit-to-viewport and the
+     binding constraint is vertical (e.g. fitting all answer slots).
+     Hits ~16px at 1080p (no change for large monitors), ~13px at 768p,
+     floored at 11px so it never collapses on very short windows. */
+  font-size: clamp(11px, 0.96vh + 5.6px, 16px);
+}
+
 html,
 body {
   max-width: 100vw;
@@ -71,6 +80,22 @@ a {
 main {
   position: relative;
   z-index: 5;
+}
+
+/* Gameroom viewport-lock (toggled by a body class from the gameroom page).
+   Makes the shell a flex column so <main> fills exactly the space below the
+   header; the gameroom container then bounds its children and scrolls them
+   internally rather than letting the page grow off-screen. */
+body.gameroom-locked .crt-content {
+  display: flex;
+  flex-direction: column;
+}
+
+body.gameroom-locked main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 button,
