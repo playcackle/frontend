@@ -112,9 +112,8 @@ const StatsRow = React.memo(() => {
           {formatTime(timeRemaining)}
         </div>
       </StatsTileWithTooltip>
-      <StatsTileWithTooltip tooltip="The name of this game room.">
-        <h3 className={styles.statsTitle}>Gameroom:</h3>
-        <div className={styles.statsValue}>{queryRoomName}</div>
+      <StatsTileWithTooltip tooltip={`Game room: ${queryRoomName}`}>
+        <div className={styles.statsRoomName}>{queryRoomName}</div>
       </StatsTileWithTooltip>
     </div>
   );

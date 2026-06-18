@@ -160,6 +160,22 @@
   flex-shrink: 0;
 }
 
+/* Gameroom tile: just the room name, no label, wraps up to 2 lines */
+.statsRoomName {
+  font-family: var(--retro-font);
+  font-size: clamp(0.72rem, 1.3vw, 1.05rem);
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px rgba(0, 221, 255, 0.7);
+  line-height: 1.15;
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .statsMetaAccentValue {
   font-family: var(--retro-font);
   font-size: clamp(0.55rem, 0.95vw, 0.78rem);
