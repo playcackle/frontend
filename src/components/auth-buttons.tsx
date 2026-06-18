@@ -1,5 +1,5 @@
-import { Key, Sparkles } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { Key, Sparkles } from "lucide-react";
 import styles from "./auth-buttons.module.css";
 
 export function AuthButtons() {
@@ -15,7 +15,9 @@ export function AuthButtons() {
       <div className={styles.buttonsContainer}>
         <Link to="/login" className={styles.loginButton}>
           <div className={styles.buttonContent}>
-            <span className={styles.buttonIcon}><Key size={16} /></span>
+            <span className={styles.buttonIcon}>
+              <Key size={32} />
+            </span>
             <div className={styles.buttonTextContainer}>
               <span className={styles.buttonTitle}>BACK FOR MORE</span>
               <span className={styles.buttonSubtitle}>Couldnt get enough!</span>
@@ -24,7 +26,9 @@ export function AuthButtons() {
         </Link>
         <Link to="/register" className={styles.signupButton}>
           <div className={styles.buttonContent}>
-            <span className={styles.buttonIcon}><Sparkles size={16} /></span>
+            <span className={styles.buttonIcon}>
+              <Sparkles size={16} />
+            </span>
             <div className={styles.buttonTextContainer}>
               <span className={styles.buttonTitle}>JOIN THE GREATNESS</span>
               <span className={styles.buttonSubtitle}>
