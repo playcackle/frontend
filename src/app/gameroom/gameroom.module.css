@@ -24,6 +24,8 @@
   overflow-y: auto;
   box-sizing: border-box;
   min-height: 0;
+  /* Small breathing room so the panels don't run flush to the screen edge */
+  padding-bottom: 1rem;
 }
 
 .leaderboardTile {
