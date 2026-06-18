@@ -89,11 +89,18 @@ const StatsRow = React.memo(() => {
           }
           wide
         >
-          <h3 className={styles.statsTitle}>Looking for:</h3>
-          <div className={styles.statsCategory}>{roundName}</div>
-          {roundExample && (
-            <div className={styles.statsExample}>e.g. {roundExample}</div>
-          )}
+          <div className={styles.categoryInner}>
+            <div className={styles.categoryMain}>
+              <h3 className={styles.statsTitle}>Looking for:</h3>
+              <div className={styles.statsCategory}>{roundName}</div>
+            </div>
+            {roundExample && (
+              <div className={styles.statsExampleChip}>
+                <span className={styles.statsExampleLabel}>e.g.</span>
+                <span className={styles.statsExampleValue}>{roundExample}</span>
+              </div>
+            )}
+          </div>
         </StatsTileWithTooltip>
       )}
       <StatsTileWithTooltip
