@@ -67,7 +67,7 @@ const StatsRow = React.memo(() => {
         <StatsTileWithTooltip
           tooltip={
             roundExample
-              ? `${roundPrompt || roundName} — e.g. ${roundExample}`
+              ? `${roundPrompt || roundName} — example: ${roundExample}`
               : roundPrompt || roundName || ""
           }
           wide
@@ -76,7 +76,7 @@ const StatsRow = React.memo(() => {
             <h3 className={styles.statsTitle}>Looking for:</h3>
             {roundExample && (
               <span className={styles.statsMetaAccent}>
-                <span className={styles.statsMetaAccentLabel}>e.g.</span>
+                <span className={styles.statsMetaAccentLabel}>Example</span>
                 <span className={styles.statsMetaAccentValue}>
                   {roundExample}
                 </span>
