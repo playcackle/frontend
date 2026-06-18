@@ -3,7 +3,6 @@ import { useSearch } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import {
   isRoundBreakAtom,
-  playerCountAtom,
   roundExampleAtom,
   roundNameAtom,
   roundNumberAtom,
@@ -17,17 +16,19 @@ import styles from "./StatsRow.module.css";
 interface StatsTileProps {
   tooltip: string;
   children: React.ReactNode;
+  wide?: boolean;
 }
 
-const StatsTileWithTooltip = ({ tooltip, children }: StatsTileProps) => (
-  <div className={styles.statsTileWrapper}>
+const StatsTileWithTooltip = ({ tooltip, children, wide }: StatsTileProps) => (
+  <div
+    className={`${styles.statsTileWrapper} ${wide ? styles.statsTileWrapperWide : ""}`}
+  >
     <div className={styles.statsTile}>{children}</div>
     <div className={styles.statsTileTooltip}>{tooltip}</div>
   </div>
 );
 
 const StatsRow = React.memo(() => {
-  const playerCount = useAtomValue(playerCountAtom);
   const roundName = useAtomValue(roundNameAtom);
   const roundExample = useAtomValue(roundExampleAtom);
   const roundNumber = useAtomValue(roundNumberAtom);
@@ -80,16 +81,20 @@ const StatsRow = React.memo(() => {
   return (
     <div className={styles.statsRow}>
       {!isRoundBreak && (
-        <>
-          <StatsTileWithTooltip tooltip={roundPrompt || ""}>
-            <h3 className={styles.statsTitle}>Looking for:</h3>
-            <div className={styles.statsValue}>{roundName}</div>
-          </StatsTileWithTooltip>
-          <StatsTileWithTooltip tooltip="A sample answer that fits the category — use it as a hint for what counts.">
-            <h3 className={styles.statsTitle}>Example, n00b:</h3>
-            <p className={styles.statsValue}>{roundExample || ""}</p>
-          </StatsTileWithTooltip>
-        </>
+        <StatsTileWithTooltip
+          tooltip={
+            roundExample
+              ? `${roundPrompt || roundName} — e.g. ${roundExample}`
+              : roundPrompt || roundName || ""
+          }
+          wide
+        >
+          <h3 className={styles.statsTitle}>Looking for:</h3>
+          <div className={styles.statsCategory}>{roundName}</div>
+          {roundExample && (
+            <div className={styles.statsExample}>e.g. {roundExample}</div>
+          )}
+        </StatsTileWithTooltip>
       )}
       <StatsTileWithTooltip
         tooltip={
@@ -115,11 +120,7 @@ const StatsRow = React.memo(() => {
           {roundNumber} / {totalRounds}
         </div>
       </StatsTileWithTooltip>
-      <StatsTileWithTooltip tooltip="Total number of players currently in the game room.">
-        <h3 className={styles.statsTitle}>Dorks in arena:</h3>
-        <div className={styles.statsValue}>{playerCount}</div>
-      </StatsTileWithTooltip>
-      <StatsTileWithTooltip tooltip="Total number of players currently in the game room.">
+      <StatsTileWithTooltip tooltip="The name of this game room.">
         <h3 className={styles.statsTitle}>Gameroom:</h3>
         <div className={styles.statsValue}>{queryRoomName}</div>
       </StatsTileWithTooltip>

@@ -39,10 +39,16 @@
   display: flex;
   height: 100%;
   flex: 1;
+  min-width: 0; /* allow flex items to shrink so values can ellipsis/wrap */
+}
+
+/* Merged "Looking for" tile gets extra horizontal room */
+.statsTileWrapperWide {
+  flex: 2.4;
 }
 
 .statsTileWrapper .statsTile {
-  min-width: unset;
+  min-width: 0;
   flex: 1;
   cursor: default;
 }
@@ -102,6 +108,36 @@
   color: white;
   text-shadow: 0 0 10px rgba(0, 221, 255, 0.7);
   font-family: var(--retro-font);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Merged category tile: prominent name (up to 2 lines) + example subtitle */
+.statsCategory {
+  font-size: clamp(0.7rem, 1.5vw, 1.15rem);
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px rgba(0, 221, 255, 0.7);
+  font-family: var(--retro-font);
+  line-height: 1.1;
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statsExample {
+  margin-top: 0.15rem;
+  font-size: clamp(0.5rem, 0.9vw, 0.72rem);
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--retro-font-alt);
+  text-transform: none;
+  letter-spacing: 0;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
