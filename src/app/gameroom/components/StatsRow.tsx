@@ -37,7 +37,6 @@ const StatsRow = React.memo(() => {
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
   const timeRemaining = useAtomValue(timeRemainingAtom);
 
-  const [roundText, setRoundText] = useState("Round number");
   const [timeText, setTimeText] = useState("Time remaining");
   const search = useSearch({ strict: false });
   const queryRoomName = (search as Record<string, string | undefined>).name ?? "";
@@ -54,23 +53,7 @@ const StatsRow = React.memo(() => {
     "Figure it out.",
   ];
 
-  const roundMessages: string[] = [
-    "Try harder.",
-    "Don't mess up.",
-    "Prove something.",
-    "Impress me… somehow.",
-    "Shock me. Please.",
-    "Don't flop again.",
-    "Keep up.",
-    "Don't embarrass yourself.",
-    "Let's see you struggle.",
-  ];
-
   useEffect(() => {
-    const roundMessage =
-      roundMessages[Math.floor(Math.random() * roundMessages.length)];
-
-    setRoundText(roundMessage.replace("X", String(roundNumber)));
     const timeRemaining =
       timeRemainingMessages[
         Math.floor(Math.random() * timeRemainingMessages.length)
@@ -89,12 +72,14 @@ const StatsRow = React.memo(() => {
           }
           wide
         >
-          <div className={styles.categoryMeta}>
+          <div className={styles.statsMetaRow}>
             <h3 className={styles.statsTitle}>Looking for:</h3>
             {roundExample && (
-              <span className={styles.statsExampleInline}>
-                <span className={styles.statsExampleLabel}>e.g.</span>
-                <span className={styles.statsExampleValue}>{roundExample}</span>
+              <span className={styles.statsMetaAccent}>
+                <span className={styles.statsMetaAccentLabel}>e.g.</span>
+                <span className={styles.statsMetaAccentValue}>
+                  {roundExample}
+                </span>
               </span>
             )}
           </div>
@@ -104,25 +89,27 @@ const StatsRow = React.memo(() => {
       <StatsTileWithTooltip
         tooltip={
           isRoundBreak
-            ? "Take a breather. The next round starts shortly."
-            : "Time left in this round. Type faster."
+            ? `Take a breather. The next round starts shortly. Round ${roundNumber} of ${totalRounds}.`
+            : `Time left in this round. Type faster. Round ${roundNumber} of ${totalRounds}.`
         }
       >
-        <h3 className={styles.statsTitle}>
-          {isRoundBreak ? "Intermission" : timeText}
-        </h3>
+        <div className={styles.statsMetaRow}>
+          <h3 className={styles.statsTitle}>
+            {isRoundBreak ? "Intermission" : timeText}
+          </h3>
+          <span className={styles.statsMetaAccent}>
+            <span className={styles.statsMetaAccentLabel}>Round</span>
+            <span className={styles.statsMetaAccentValue}>
+              {roundNumber} / {totalRounds}
+            </span>
+          </span>
+        </div>
         <div
           className={`${styles.statsValue} ${
             !isRoundBreak && timeRemaining <= 30 ? styles.timerWarning : ""
           }`}
         >
           {formatTime(timeRemaining)}
-        </div>
-      </StatsTileWithTooltip>
-      <StatsTileWithTooltip tooltip="Which round you're on out of the total rounds in this game.">
-        <h3 className={styles.statsTitle}>{roundText}</h3>
-        <div className={styles.statsValue}>
-          {roundNumber} / {totalRounds}
         </div>
       </StatsTileWithTooltip>
       <StatsTileWithTooltip tooltip="The name of this game room.">

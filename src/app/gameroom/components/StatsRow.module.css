@@ -114,8 +114,8 @@
   white-space: nowrap;
 }
 
-/* Merged category tile: small meta row (label + example) above the big name */
-.categoryMeta {
+/* Merged tiles: a small meta row (label + accent) above the big hero value */
+.statsMetaRow {
   display: flex;
   flex-direction: row;
   align-items: baseline;
@@ -141,8 +141,8 @@
   text-overflow: ellipsis;
 }
 
-/* Example sits in the meta row beside the label, divided by a thin rule */
-.statsExampleInline {
+/* Accent sits in the meta row beside the label, divided by a thin rule */
+.statsMetaAccent {
   display: inline-flex;
   align-items: baseline;
   gap: 0.3rem;
@@ -151,7 +151,7 @@
   border-left: 1px solid rgba(0, 221, 255, 0.25);
 }
 
-.statsExampleLabel {
+.statsMetaAccentLabel {
   font-size: clamp(0.5rem, 0.85vw, 0.7rem);
   color: rgba(255, 255, 255, 0.45);
   text-transform: uppercase;
@@ -160,7 +160,7 @@
   flex-shrink: 0;
 }
 
-.statsExampleValue {
+.statsMetaAccentValue {
   font-family: var(--retro-font);
   font-size: clamp(0.55rem, 0.95vw, 0.78rem);
   font-weight: bold;
