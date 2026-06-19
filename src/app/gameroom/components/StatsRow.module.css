@@ -6,7 +6,7 @@
   display: flex;
   direction: row;
   justify-content: center;
-  gap: clamp(0.5rem, 1vw, 1rem);
+  gap: clamp(0.5rem, 1vmin, 1rem);
   height: clamp(60px, 10vh, 95px);
   flex-shrink: 0;
 }
@@ -25,7 +25,7 @@
   text-align: center;
   height: 100%; /* Ensure full height */
   overflow: hidden; /* Prevent overflow */
-  font-size: clamp(0.55rem, 1vw, 0.8rem);
+  font-size: 0.8rem;
   color: var(--neon-blue);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -103,7 +103,7 @@
 /* ── Shared value/label classes ───────────────────────────── */
 
 .statsValue {
-  font-size: clamp(0.75rem, 1.8vw, 1.3rem);
+  font-size: 1.3rem;
   font-weight: bold;
   color: white;
   text-shadow: 0 0 10px rgba(0, 221, 255, 0.7);
@@ -127,7 +127,7 @@
 }
 
 .statsCategory {
-  font-size: clamp(0.7rem, 1.5vw, 1.15rem);
+  font-size: 1.15rem;
   font-weight: bold;
   color: white;
   text-shadow: 0 0 10px rgba(0, 221, 255, 0.7);
@@ -152,7 +152,7 @@
 }
 
 .statsMetaAccentLabel {
-  font-size: clamp(0.5rem, 0.85vw, 0.7rem);
+  font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.45);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -163,7 +163,7 @@
 /* Gameroom tile: just the room name, no label, wraps up to 2 lines */
 .statsRoomName {
   font-family: var(--retro-font);
-  font-size: clamp(0.72rem, 1.3vw, 1.05rem);
+  font-size: 1.05rem;
   font-weight: bold;
   color: white;
   text-shadow: 0 0 10px rgba(0, 221, 255, 0.7);
@@ -178,7 +178,7 @@
 
 .statsMetaAccentValue {
   font-family: var(--retro-font);
-  font-size: clamp(0.55rem, 0.95vw, 0.78rem);
+  font-size: 0.78rem;
   font-weight: bold;
   color: var(--neon-blue);
   text-shadow: 0 0 6px rgba(0, 221, 255, 0.4);
@@ -201,7 +201,7 @@
 
 /* Also used by page.tsx leaderboard — will be duplicated in gameroom.module.css until Plan 06 cleanup */
 .statsTitle {
-  font-size: clamp(0.55rem, 1vw, 0.85rem);
+  font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
   letter-spacing: 1px;

@@ -12,9 +12,11 @@
   flex-direction: column;
   transition: all 0.3s ease;
   margin-left: 4px;
-  min-height: 50vh;
-  flex-grow: 1;
-  max-height: 60vh;
+  /* Fill the grid cell so the chat bottom aligns with the answers/leaderboard
+     panels; the inner .messagesScrollArea handles overflow. (Replaces the old
+     50vh/60vh caps that left the chat short of the other columns.) */
+  flex: 1;
+  min-height: 0;
 }
 
 /* ============================

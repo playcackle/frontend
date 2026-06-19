@@ -13,7 +13,7 @@
 }
 
 .title {
-  font-size: clamp(0.8rem, 1.2vw, 1rem);
+  font-size: 1rem;
   margin-bottom: clamp(0.25rem, 0.5vh, 0.5rem);
   color: #fff;
   text-shadow: 0 0 10px rgba(255, 0, 170, 0.7);
@@ -24,14 +24,14 @@
 
 .subtitle {
   color: rgba(255, 255, 255, 0.7);
-  font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+  font-size: 0.8rem;
   margin: 0 0 clamp(0.5rem, 1vh, 0.75rem) 0;
   font-family: var(--retro-font);
 }
 
 .buttonGroup {
   display: flex;
-  gap: clamp(0.5rem, 1vw, 0.75rem);
+  gap: clamp(0.5rem, 1vmin, 0.75rem);
   justify-content: center;
   margin-bottom: clamp(0.5rem, 1vh, 0.75rem);
 }
@@ -41,15 +41,15 @@
   flex-direction: column;
   align-items: center;
   gap: clamp(0.25rem, 0.5vh, 0.4rem);
-  padding: clamp(0.5rem, 1vh, 0.75rem) clamp(0.75rem, 1.5vw, 1rem);
+  padding: clamp(0.5rem, 1vh, 0.75rem) clamp(0.75rem, 1.5vmin, 1rem);
   border-radius: 4px;
-  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   border: 1px solid transparent;
   outline: none;
-  min-width: clamp(60px, 8vw, 80px);
+  min-width: clamp(60px, 8vmin, 80px);
   font-family: var(--retro-font);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -61,8 +61,8 @@
 }
 
 .button svg {
-  width: clamp(16px, 2vw, 20px);
-  height: clamp(16px, 2vw, 20px);
+  width: clamp(16px, 2vmin, 20px);
+  height: clamp(16px, 2vmin, 20px);
 }
 
 .yesButton {
@@ -112,13 +112,13 @@
 .playerIndicators {
   display: flex;
   justify-content: center;
-  gap: clamp(0.25rem, 0.5vw, 0.4rem);
+  gap: clamp(0.25rem, 0.5vmin, 0.4rem);
   margin-bottom: clamp(0.5rem, 1vh, 0.75rem);
 }
 
 .playerCircle {
-  width: clamp(16px, 2vw, 20px);
-  height: clamp(16px, 2vw, 20px);
+  width: clamp(16px, 2vmin, 20px);
+  height: clamp(16px, 2vmin, 20px);
   border-radius: 50%;
   border: 1px solid;
   transition: all 0.3s ease;
@@ -147,7 +147,7 @@
 
 .optInCount {
   color: rgba(255, 255, 255, 0.9);
-  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  font-size: 0.85rem;
   font-family: var(--retro-font);
   margin: 0 0 clamp(0.25rem, 0.4vh, 0.35rem) 0;
   letter-spacing: 1px;
@@ -155,7 +155,7 @@
 
 .playersNeeded {
   color: #fbbf24;
-  font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+  font-size: 0.8rem;
   font-family: var(--retro-font);
   margin: 0 0 clamp(0.4rem, 0.75vh, 0.6rem) 0;
   letter-spacing: 0.5px;
@@ -164,7 +164,7 @@
 .responseStatus {
   color: var(--neon-green);
   font-weight: 600;
-  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  font-size: 0.85rem;
   margin: 0;
   text-shadow: 0 0 5px var(--neon-green);
   font-family: var(--retro-font);
@@ -172,7 +172,7 @@
 
 .needMore {
   color: #fbbf24;
-  font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+  font-size: 0.8rem;
   margin: 0 0 clamp(0.4rem, 0.75vh, 0.6rem) 0;
   font-family: var(--retro-font);
 }
@@ -196,7 +196,7 @@
 
 .timeout {
   color: rgba(255, 255, 255, 0.4);
-  font-size: clamp(0.6rem, 0.85vw, 0.75rem);
+  font-size: 0.75rem;
   margin: 0;
   font-family: var(--retro-font);
 }

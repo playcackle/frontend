@@ -13,7 +13,7 @@
 }
 
 .title {
-  font-size: clamp(0.6rem, 1vw, 0.75rem);
+  font-size: 0.75rem;
   margin-bottom: clamp(0.25rem, 0.5vh, 0.5rem);
   color: #fff;
   text-shadow: 0 0 10px rgba(255, 0, 170, 0.7);
@@ -34,7 +34,7 @@
 .entry {
   display: flex;
   align-items: center;
-  gap: clamp(0.25rem, 0.5vw, 1rem);
+  gap: clamp(0.25rem, 0.5vmin, 1rem);
   padding: clamp(0.15rem, 0.4vh, 0.25rem);
   margin-bottom: clamp(0.25rem, 0.5vh, 0.5rem);
   background-color: rgba(10, 10, 30, 0.5);
@@ -64,10 +64,10 @@
 }
 
 .rank {
-  font-size: clamp(0.7rem, 1vw, 1rem);
+  font-size: 1rem;
   font-weight: bold;
   color: var(--neon-pink);
-  min-width: clamp(25px, 3vw, 40px);
+  min-width: clamp(25px, 3vmin, 40px);
   text-align: center;
   font-family: var(--retro-font);
   flex-shrink: 0;
@@ -98,11 +98,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: clamp(0.25rem, 0.5vw, 1rem);
+  gap: clamp(0.25rem, 0.5vmin, 1rem);
 }
 
 .username {
-  font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+  font-size: 0.75rem;
   font-weight: bold;
   color: white;
   overflow: hidden;
@@ -112,7 +112,7 @@
 }
 
 .score {
-  font-size: clamp(0.7rem, 1vw, 1rem);
+  font-size: 1rem;
   font-weight: bold;
   color: rgba(255, 255, 255, 0.9);
   flex-shrink: 0;
@@ -140,7 +140,7 @@
 .accoladesRow {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(0.2rem, 0.4vw, 0.4rem);
+  gap: clamp(0.2rem, 0.4vmin, 0.4rem);
   margin-top: clamp(0.25rem, 0.4vh, 0.5rem);
 }
 
@@ -149,7 +149,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
-  padding: clamp(0.1rem, 0.2vh, 0.25rem) clamp(0.2rem, 0.4vw, 0.5rem);
+  padding: clamp(0.1rem, 0.2vh, 0.25rem) clamp(0.2rem, 0.4vmin, 0.5rem);
   background: linear-gradient(
     135deg,
     rgba(255, 0, 170, 0.2),
@@ -157,7 +157,7 @@
   );
   border: 1px solid rgba(255, 0, 170, 0.4);
   border-radius: 12px;
-  font-size: clamp(0.55rem, 0.8vw, 0.75rem);
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -177,10 +177,10 @@
 }
 
 .accoladeIcon {
-  font-size: clamp(0.6rem, 0.9vw, 0.9rem);
+  font-size: 0.9rem;
   line-height: 1;
-  width: clamp(12px, 1.5vw, 16px);
-  height: clamp(12px, 1.5vw, 16px);
+  width: clamp(12px, 1.5vmin, 16px);
+  height: clamp(12px, 1.5vmin, 16px);
 }
 
 .accoladeTitle {
@@ -233,7 +233,7 @@
   font-weight: bold;
   color: var(--neon-pink);
   margin-bottom: 0.5rem;
-  font-size: clamp(0.7rem, 1vw, 0.9rem);
+  font-size: 0.9rem;
   text-shadow: 0 0 5px rgba(255, 0, 170, 0.5);
 }
 
@@ -242,7 +242,7 @@
 }
 
 .accoladePopoverDescription {
-  font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+  font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.4;
 }
