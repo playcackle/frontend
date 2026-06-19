@@ -9,6 +9,7 @@ import {
   gameStateAtom,
   playAgainStateAtom,
   resetPlayAgainStateAtom,
+  timeRemainingAtom,
   updateGameStateAtom,
   updatePlayAgainStateAtom,
   type UnifiedMessage,
@@ -48,6 +49,27 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
   const updatePlayAgainState = useSetAtom(updatePlayAgainStateAtom);
   const resetPlayAgainState = useSetAtom(resetPlayAgainStateAtom);
   const addUnifiedMessage = useSetAtom(addUnifiedMessageAtom);
+
+  // ---------------------------------------------------------------------------
+  // Local countdown: derives timeRemaining from the server-authoritative
+  // phaseEndsAt timestamp once per second. This keeps the timer smooth
+  // regardless of lobby_tick frequency and resilient to dropped ticks.
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const state = store.get(gameStateAtom);
+      if (state.phaseEndsAt) {
+        const remaining = Math.max(0, Math.round(
+          (new Date(state.phaseEndsAt).getTime() - Date.now()) / 1000
+        ));
+        const current = store.get(timeRemainingAtom);
+        if (remaining !== current) {
+          store.set(updateGameStateAtom, { timeRemaining: remaining });
+        }
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [store]);
 
   // ---------------------------------------------------------------------------
   // Connection → loading gate with grace period
@@ -117,6 +139,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           playerCount: data.player_count,
           timeRemaining: data.time_remaining_seconds ?? 0,
           roundName: data.topic_name ?? "",
+          phaseEndsAt: data.round_ends_at ?? null,
           showCountDown:
             data.time_remaining_seconds! < 5 &&
             data.time_remaining_seconds! > 0 &&
@@ -128,7 +151,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           loading: false,
           lobbyStatus: data.status,
         });
-        
+
         // Restore opt-in state from state sync (for reconnects during showcase)
         if (data.status === "POST_GAME_SHOWCASE" && data.play_again_state) {
           updatePlayAgainState({
@@ -147,12 +170,16 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         // stateVersion, since it keeps timers counting down and self-corrects
         // phase desync. State transition events (round_over, new_round_started)
         // are version-gated; the tick is not.
+        //
+        // Store authoritative phaseEndsAt when available. The local countdown
+        // interval derives smooth timeRemaining from this anchor.
         updateGameState({
           playerCount: data.player_count,
           timeRemaining: data.time_remaining_seconds ?? 0,
           scores: data.scores ?? [],
           lobbyStatus: data.status,
           isRoundBreak: data.status === "ROUND_BREAK",
+          phaseEndsAt: data.round_ends_at ?? null,
         });
       }),
 
@@ -163,6 +190,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           scores: data.scores ?? [],
           accolades: data.accolades ?? [],
           timeRemaining: data.break_duration_seconds ?? 0,
+          phaseEndsAt: data.break_end_timestamp_utc ?? null,
         });
         playSound("timeUp");
       }),
@@ -186,6 +214,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           showCountDown: false,
           accolades: [],
           lobbyStatus: "IN_ROUND",
+          phaseEndsAt: data.round_end_timestamp_utc,
         });
         clearRoundHints();
         playSound("newRound");
@@ -199,6 +228,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           timeRemaining: 0,
           isRoundBreak: false,
           lobbyStatus: "POST_GAME_SHOWCASE",
+          phaseEndsAt: data.new_game_cycle_start_timestamp_utc,
         });
         playSound("timeUp");
       }),
@@ -258,9 +288,10 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           playerAccolades: [],
           showCountDown: false,
           lobbyStatus: "WAITING",
+          phaseEndsAt: null,
         });
         clearUnifiedMessages();
-        
+
         store.set(resetPlayAgainStateAtom);
         // If player opted in ("yes"), stay in lobby to receive new game content
         // Otherwise redirect to home

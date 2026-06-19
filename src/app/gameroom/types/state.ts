@@ -55,6 +55,7 @@ export type LobbyStatus =
 export type GameState = {
   playerCount: number;
   timeRemaining: number;
+  phaseEndsAt: string | null;
   roundName: string;
   roundPrompt?: string;
   roundExample?: string;

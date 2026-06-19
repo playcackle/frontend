@@ -49,6 +49,7 @@ const initGameState = {
   showCountDown: false,
   lobbyStatus: null as import("../types/state").LobbyStatus,
   minPlayersNeeded: 0,
+  phaseEndsAt: null as string | null,
 };
 // Core game state atoms
 export const gameStateAtom = atom<GameState>(initGameState);
@@ -110,6 +111,11 @@ export const updateGameStateAtom = atom(
     // Explicit preservation of totalRounds to prevent lobby_tick from clearing it
     if (update.totalRounds === undefined && current.totalRounds !== undefined) {
       merged.totalRounds = current.totalRounds;
+    }
+    // Preserve phaseEndsAt — only events that explicitly include it should update it.
+    // This prevents a lobby_tick that arrives without round_ends_at from clearing it.
+    if (update.phaseEndsAt === undefined && current.phaseEndsAt !== undefined) {
+      merged.phaseEndsAt = current.phaseEndsAt;
     }
     set(gameStateAtom, merged);
   },
