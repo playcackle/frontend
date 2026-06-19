@@ -13,7 +13,7 @@ function SlotGrid() {
 
   return (
     <div className={styles.slotGridWrapper}>
-      {/* <div className={styles.gridModeToggle}>
+      <div className={styles.gridModeToggle}>
         <button
           className={`${styles.gridModeBtn} ${gridMode === "answers" ? styles.gridModeBtnActive : ""}`}
           onClick={() => setGridMode("answers")}
@@ -28,7 +28,7 @@ function SlotGrid() {
         >
           Questions
         </button>
-      </div> */}
+      </div>
 
       {gridMode === "answers" ? (
         <AnswerGrid slots={slots} />

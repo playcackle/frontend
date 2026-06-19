@@ -86,8 +86,8 @@ export const QuestionGrid: React.FC<QuestionGridProps> = ({ slots }) => {
                 <span className={styles.questionListText}>
                   {slot.is_snapped
                     ? slot.canonical_text
-                    : slot.text_preview
-                      ? slot.text_preview
+                    : slot.hint_text
+                      ? slot.hint_text
                       : "???"}
                 </span>
                 {slot.is_snapped && slot.snapped_by_display_name && (
@@ -141,8 +141,8 @@ export const QuestionGrid: React.FC<QuestionGridProps> = ({ slots }) => {
                       <p className={styles.carouselQuestion}>
                         {currentSlot.is_snapped
                           ? currentSlot.canonical_text
-                          : currentSlot.text_preview
-                            ? currentSlot.text_preview
+                          : currentSlot.hint_text
+                            ? currentSlot.hint_text
                             : "???"}
                       </p>
                       {currentSlot.is_rare && (

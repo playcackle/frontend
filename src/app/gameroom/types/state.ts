@@ -8,6 +8,7 @@ export type Slot = {
   snapped_by_player_id: string | null;
   snapped_by_display_name: string | null;
   text_preview: string;
+  hint_text: string;
   canonical_text: string;
   is_rare: boolean;
   failed_attempts: number;
