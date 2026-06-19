@@ -113,7 +113,7 @@ export const updateGameStateAtom = atom(
       merged.totalRounds = current.totalRounds;
     }
     // Preserve phaseEndsAt — only events that explicitly include it should update it.
-    // This prevents a lobby_tick that arrives without round_ends_at from clearing it.
+    // This prevents a lobby_tick that arrives without phase_ends_at from clearing it.
     if (update.phaseEndsAt === undefined && current.phaseEndsAt !== undefined) {
       merged.phaseEndsAt = current.phaseEndsAt;
     }
