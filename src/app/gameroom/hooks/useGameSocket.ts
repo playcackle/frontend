@@ -101,13 +101,21 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     });
 
     socket.on("disconnect", (reason) => {
+      // socket.io auto-reconnects for transient drops ("transport close",
+      // "ping timeout", etc.) but NOT when either side closed deliberately
+      // ("io server disconnect" / "io client disconnect"). Only surface
+      // "disconnected" (which exposes the Retry button) when no automatic
+      // recovery is coming — otherwise show "reconnecting" so a user can't fire
+      // a manual connect() in parallel with socket.io's own pending attempt and
+      // end up with two concurrent connections.
+      const willAutoReconnect =
+        reason !== "io server disconnect" && reason !== "io client disconnect";
       setSocketState((prev) => ({
         ...prev,
         isConnected: false,
-        connectionStatus: "disconnected",
+        connectionStatus: willAutoReconnect ? "reconnecting" : "disconnected",
         error: `Disconnected: ${reason}`,
       }));
-      // socket.io will auto-reconnect unless user manually disconnected
     });
 
     socket.on("connect_error", (error) => {
@@ -274,18 +282,33 @@ export const useGameSocket = (baseUrl: string, token: string) => {
   // Manual reconnect function (for "Retry" button in UI)
   const reconnect = useCallback(() => {
     const socket = socketRef.current;
-    if (socket && !socket.connected) {
-      // Reset the Manager's attempt counter so reconnection logic fires fully
-      socket.io.reconnectionAttempts(SOCKET_MAX_RECONNECT_ATTEMPTS);
-      setSocketState((prev) => ({
-        ...prev,
-        reconnectAttempts: 0,
-        connectionStatus: "reconnecting",
-        error: null,
-      }));
-      socket.connect();
+    if (!socket) return;
+
+    // Idempotent: never stack a manual connect on top of an in-flight attempt
+    // (socket.io's own auto-reconnection, or a previous Retry click). Without
+    // this guard each click calls connect() again, spawning extra engine
+    // connections that linger as duplicate sockets.
+    if (
+      socket.connected ||
+      socketState.connectionStatus === "reconnecting" ||
+      socketState.connectionStatus === "connecting"
+    ) {
+      return;
     }
-  }, []);
+
+    // Fully tear down any half-open engine before reopening so we always end up
+    // with exactly one connection rather than racing a stale one.
+    socket.disconnect();
+    // Reset the Manager's attempt counter so reconnection logic fires fully
+    socket.io.reconnectionAttempts(SOCKET_MAX_RECONNECT_ATTEMPTS);
+    setSocketState((prev) => ({
+      ...prev,
+      reconnectAttempts: 0,
+      connectionStatus: "reconnecting",
+      error: null,
+    }));
+    socket.connect();
+  }, [socketState.connectionStatus]);
 
   return {
     sendEvent,
