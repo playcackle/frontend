@@ -179,13 +179,19 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         // derives it from phaseEndsAt. Setting it from the tick would snap
         // the timer back to the server's rounded value every tick interval,
         // undoing the smooth per-second countdown.
-        updateGameState({
+        const tickUpdate: Record<string, unknown> = {
           playerCount: data.player_count,
           scores: data.scores ?? [],
           lobbyStatus: data.status,
           isRoundBreak: data.status === "ROUND_BREAK",
-          phaseEndsAt: data.phase_ends_at ?? null,
-        });
+        };
+        // Only update phaseEndsAt when the tick explicitly provides it.
+        // Setting it to null on every tick would wipe the anchor set by
+        // phase transition events (round_over, new_round_started, etc).
+        if (data.phase_ends_at) {
+          tickUpdate.phaseEndsAt = data.phase_ends_at;
+        }
+        updateGameState(tickUpdate as any);
       }),
 
       onEvent("game_starting_soon", (data: GameStartingSoonPayload) => {
