@@ -16,6 +16,7 @@ import {
 } from "../store/gameAtoms";
 import {
   GameStartCancelledPayload,
+  GameStartingSoonPayload,
   GameOverPayload,
   LobbySyncPayload,
   LobbyTickPayload,
@@ -24,6 +25,7 @@ import {
   PlayAgainPlayerUpdatePayload,
   PlayAgainPromptPayload,
   RoundOverPayload,
+  RoundStartingSoonPayload,
   SlotSnappedPayload,
   SubmissionFeedbackPayload,
   WaitingForPlayersPayload,
@@ -139,7 +141,7 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           playerCount: data.player_count,
           timeRemaining: data.time_remaining_seconds ?? 0,
           roundName: data.topic_name ?? "",
-          phaseEndsAt: data.round_ends_at ?? null,
+          phaseEndsAt: data.phase_ends_at ?? null,
           showCountDown:
             data.time_remaining_seconds! < 5 &&
             data.time_remaining_seconds! > 0 &&
@@ -179,7 +181,23 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
           scores: data.scores ?? [],
           lobbyStatus: data.status,
           isRoundBreak: data.status === "ROUND_BREAK",
-          phaseEndsAt: data.round_ends_at ?? null,
+          phaseEndsAt: data.phase_ends_at ?? null,
+        });
+      }),
+
+      onEvent("game_starting_soon", (data: GameStartingSoonPayload) => {
+        updateGameState({
+          showCountDown: true,
+          lobbyStatus: "STARTING_SOON",
+          timeRemaining: data.countdown_seconds,
+          phaseEndsAt: data.start_timestamp_utc,
+        });
+      }),
+
+      onEvent("round_starting_soon", (data: RoundStartingSoonPayload) => {
+        updateGameState({
+          showCountDown: true,
+          phaseEndsAt: data.start_timestamp_utc,
         });
       }),
 
@@ -197,10 +215,6 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
 
       onEvent("game_start_cancelled", () => {
         updateGameState({ lobbyStatus: "WAITING", showCountDown: false });
-      }),
-
-      onEvent("round_starting_soon", () => {
-        updateGameState({ showCountDown: true });
       }),
 
       onEvent("new_round_started", (data: NewRoundStartedPayload) => {

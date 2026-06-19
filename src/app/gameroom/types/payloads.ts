@@ -81,7 +81,7 @@ export type LobbySyncPayload = {
   slots: Slot[];
   scores: Score[];
   accolades: PlayerAccolade[];
-  round_ends_at?: string | null;
+  phase_ends_at?: string | null;
   play_again_state?: {
     confirmed_count: number;
     total_waiting: number;
@@ -94,7 +94,7 @@ export type LobbyTickPayload = {
   time_remaining_seconds: number | null;
   player_count: number;
   scores: Score[];
-  round_ends_at?: string | null;
+  phase_ends_at?: string | null;
 };
 
 export type NewRoundStartedPayload = {
