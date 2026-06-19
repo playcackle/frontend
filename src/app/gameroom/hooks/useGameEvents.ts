@@ -175,9 +175,12 @@ export const useGameEvents = (gameWsUrl: string, token: string) => {
         //
         // Store authoritative phaseEndsAt when available. The local countdown
         // interval derives smooth timeRemaining from this anchor.
+        // Do NOT set timeRemaining here — the local countdown interval
+        // derives it from phaseEndsAt. Setting it from the tick would snap
+        // the timer back to the server's rounded value every tick interval,
+        // undoing the smooth per-second countdown.
         updateGameState({
           playerCount: data.player_count,
-          timeRemaining: data.time_remaining_seconds ?? 0,
           scores: data.scores ?? [],
           lobbyStatus: data.status,
           isRoundBreak: data.status === "ROUND_BREAK",
