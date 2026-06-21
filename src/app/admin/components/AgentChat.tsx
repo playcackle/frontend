@@ -74,6 +74,7 @@ const TOOL_STATUS_LABELS: Record<string, string> = {
   add_slots: "Generating extra slot details",
   remove_slot: "Removing slot",
   regenerate_clue: "Rewriting Bot Bob clue",
+  remove_slots: "Pruning slots",
   run_qa: "Running QA checks",
   propose_refinements: "Looking for refinements",
   save_topic: "Saving topic",
@@ -453,6 +454,9 @@ export default function AgentChat({
           } else if (toolName === "remove_slot") {
             const removedIdx = result.removed_index as number;
             setSlots((prev) => prev.filter((_, i) => i !== removedIdx));
+          } else if (toolName === "remove_slots") {
+            const removedIndices = new Set((result.removed_indices as number[]) || []);
+            setSlots((prev) => prev.filter((_, i) => !removedIndices.has(i)));
           } else if (toolName === "edit_slot" || toolName === "regenerate_clue") {
             const idx = result.index as number;
             if (idx >= 0 && result.canonical_text) {
