@@ -37,13 +37,17 @@ const resolveLobbyManagerUrl = () => {
   return baseUrl;
 };
 
-const postJoin = async (url: string, playerId: string) => {
+const postJoin = async (url: string, playerId: string, lobbyId: string) => {
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ player_id: playerId }),
+    // lobby_id is required so a multi-tenant gameroom (many rooms behind one
+    // join URL) registers the player in the right room. The lobby_manager proxy
+    // path ignores it (it injects lobby_id from the URL), so sending it is safe
+    // on both paths.
+    body: JSON.stringify({ player_id: playerId, lobby_id: lobbyId }),
   });
 
   if (!response.ok) {
@@ -70,13 +74,14 @@ export const joinGameroom = async ({
 }: JoinPayload): Promise<LobbyJoinResponse> => {
   try {
     if (joinBaseUrl) {
-      return await postJoin(formatJoinUrl(joinBaseUrl), playerId);
+      return await postJoin(formatJoinUrl(joinBaseUrl), playerId, lobbyId);
     }
 
     const lobbyManagerUrl = resolveLobbyManagerUrl();
     return await postJoin(
       `${lobbyManagerUrl}/lobbies/${lobbyId}/join`,
-      playerId
+      playerId,
+      lobbyId
     );
   } catch (error) {
     console.error("Failed during lobby join:", error);

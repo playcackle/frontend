@@ -53,7 +53,7 @@ describe("joinGameroom – success", () => {
       "http://localhost:8001/lobbies/lobby-1/join",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ player_id: "p1" }),
+        body: JSON.stringify({ player_id: "p1", lobby_id: "lobby-1" }),
       })
     );
   });
@@ -74,10 +74,13 @@ describe("joinGameroom – success", () => {
     });
 
     expect(result).toEqual(successData);
-    // Should use joinBaseUrl + /join, not lobby manager
+    // Should use joinBaseUrl + /join, not lobby manager — and MUST include
+    // lobby_id in the body so a multi-tenant server resolves the right room.
     expect(fetch).toHaveBeenCalledWith(
       "http://gameroom-2:8000/join",
-      expect.anything()
+      expect.objectContaining({
+        body: JSON.stringify({ player_id: "p2", lobby_id: "lobby-2" }),
+      })
     );
   });
 
