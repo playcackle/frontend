@@ -64,6 +64,30 @@ function buildSlotFromResult(toolResult?: Record<string, unknown>): SlotData[] {
   }));
 }
 
+const TOOL_STATUS_LABELS: Record<string, string> = {
+  brainstorm_topics: "Brainstorming topic angles",
+  generate_topic: "Researching + generating slots",
+  edit_slot: "Editing slot",
+  add_single_slot: "Adding slot",
+  add_slot: "Adding slot",
+  add_slots: "Generating extra slot details",
+  remove_slot: "Removing slot",
+  regenerate_clue: "Rewriting Bot Bob clue",
+  run_qa: "Running QA checks",
+  propose_refinements: "Looking for refinements",
+  save_topic: "Saving topic",
+};
+
+function getToolStatus(msg: AgentMessage): string {
+  const toolName =
+    msg.tool_call ||
+    (typeof msg.data?.tool === "string" ? msg.data.tool : undefined) ||
+    msg.content.match(/Running:\s*([\w_]+)/)?.[1];
+
+  if (!toolName) return "BotBob is thinking";
+  return TOOL_STATUS_LABELS[toolName] || toolName.replaceAll("_", " ");
+}
+
 // ─── Draft Review Banner ─────────────────────────────────────────────────────
 
 function DraftReviewBanner({
@@ -212,7 +236,7 @@ export default function AgentChat({
   const [messages, setMessages] = useState<AgentMessage[]>([]);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
-  const [hasThought, setHasThought] = useState(false);
+  const [toolStatus, setToolStatus] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Slot state (from generation result)
@@ -252,12 +276,6 @@ export default function AgentChat({
           return;
         }
         setConnected(true);
-
-        // Send initial greeting (not displayed to user)
-        const initialMessage = topicName
-          ? `I want to create a topic about "${topicName}". Can you help me brainstorm and generate it?`
-          : "Hi! I want to create a new trivia topic for Cackle. Can you help?";
-        ws!.send(JSON.stringify({ type: "message", content: initialMessage }));
       };
 
       ws.onmessage = (event) => {
@@ -301,26 +319,29 @@ export default function AgentChat({
 
       case "thought":
         setThinking(true);
-        setHasThought(true);
-        setMessages((prev) => {
-          const last = prev[prev.length - 1];
-          if (last?.type === "thought") {
-            return [...prev.slice(0, -1), msg];
-          }
-          return [...prev, msg];
-        });
+        setToolStatus(getToolStatus(msg));
         break;
 
-      case "chat":
-        setMessages((prev) => [...prev, msg]);
-        setThinking(false);
-        setHasThought(false);
+      case "chat": {
+        const content = msg.content?.trim() || "";
+
+        // Some tool results are sent as empty chat messages so the LLM can
+        // continue its loop. They are internal plumbing, not user-visible chat.
+        if (content) {
+          setMessages((prev) => [...prev, msg]);
+          setThinking(false);
+          setToolStatus(null);
+        } else if (!msg.tool_result) {
+          setThinking(false);
+          setToolStatus(null);
+        }
         break;
+      }
 
       case "result": {
         setMessages((prev) => [...prev, msg]);
         setThinking(false);
-        setHasThought(false);
+        setToolStatus(null);
 
         const result = msg.tool_result || {};
         const newSlots = buildSlotFromResult(result);
@@ -351,7 +372,7 @@ export default function AgentChat({
       case "slot_updated":
         setMessages((prev) => [...prev, msg]);
         setThinking(false);
-        setHasThought(false);
+        setToolStatus(null);
         {
           const toolName = msg.tool_call;
           const result = msg.tool_result as Record<string, unknown> | undefined;
@@ -408,6 +429,8 @@ export default function AgentChat({
 
       case "qa_report":
         setMessages((prev) => [...prev, msg]);
+        setThinking(false);
+        setToolStatus(null);
         if (msg.tool_result) {
           setQaReport(msg.tool_result as Record<string, unknown>);
         }
@@ -416,13 +439,13 @@ export default function AgentChat({
       case "saved":
         setMessages((prev) => [...prev, msg]);
         setThinking(false);
-        setHasThought(false);
+        setToolStatus(null);
         break;
 
       case "error":
         setMessages((prev) => [...prev, msg]);
         setThinking(false);
-        setHasThought(false);
+        setToolStatus(null);
         break;
 
       default:
@@ -436,6 +459,7 @@ export default function AgentChat({
       if (!text.trim() || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
 
       setThinking(true);
+      setToolStatus(null);
       wsRef.current.send(JSON.stringify({ type: "message", content: text }));
       setMessages((prev) => [
         ...prev,
@@ -543,23 +567,14 @@ export default function AgentChat({
         {messages.length === 0 ? (
           <div className={styles.emptyChat}>
             <Bot size={48} />
-            <p>Connecting to Topic Creator AI...</p>
+            <p>
+              {connected
+                ? "Tell me the hunting ground: “Eurovision villains”, “90s footballers”, “chaotic office supplies”…"
+                : "Connecting to Topic Creator AI..."}
+            </p>
           </div>
         ) : (
           messages.map((msg, i) => {
-            if (msg.type === "thought") {
-              return (
-                <div key={i} className={styles.thought}>
-                  <span className={styles.thoughtIcon}>⚡</span>
-                  <span>
-                    {msg.tool_call
-                      ? `Running: ${msg.tool_call}...`
-                      : msg.content || "Thinking..."}
-                  </span>
-                </div>
-              );
-            }
-
             if (msg.type === "chat" && msg.role === "user") {
               return (
                 <div key={i} className={styles.userBubble}>
@@ -609,11 +624,15 @@ export default function AgentChat({
           })
         )}
 
-        {thinking && !hasThought && (
-          <div className={styles.thinking}>
-            <div className={styles.typingDot} />
-            <div className={styles.typingDot} />
-            <div className={styles.typingDot} />
+        {thinking && (
+          <div className={styles.activityIndicator} aria-live="polite">
+            <span className={styles.activityBolt}>⚡</span>
+            <span>{toolStatus || "BotBob is thinking"}</span>
+            <span className={styles.loadingDots} aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </div>
         )}
         <div ref={messagesEndRef} />
