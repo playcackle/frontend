@@ -12,6 +12,7 @@ import {
   Send,
   ShieldAlert,
   Sparkles,
+  Trash2,
 } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -88,6 +89,36 @@ function getToolStatus(msg: AgentMessage): string {
   return TOOL_STATUS_LABELS[toolName] || toolName.replaceAll("_", " ");
 }
 
+function BouncingDots() {
+  const [activeDot, setActiveDot] = useState(0);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveDot((current) => (current + 1) % 3);
+    }, 160);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return (
+    <span className={styles.loadingDots} aria-hidden="true">
+      {[0, 1, 2].map((dot) => (
+        <span
+          key={dot}
+          className={styles.loadingDot}
+          style={{
+            opacity: activeDot === dot ? 1 : 0.45,
+            transform:
+              activeDot === dot
+                ? "translate3d(0, -7px, 0) scale(1.1)"
+                : "translate3d(0, 0, 0) scale(0.9)",
+          }}
+        />
+      ))}
+    </span>
+  );
+}
+
 // ─── Draft Review Banner ─────────────────────────────────────────────────────
 
 function DraftReviewBanner({
@@ -112,44 +143,54 @@ function DraftReviewBanner({
   const [showQa, setShowQa] = useState(false);
   const [showMembership, setShowMembership] = useState(false);
 
-  if (!draftReview) return null;
+  if (!draftReview && !qaReport && !membershipReport) return null;
 
-  const statusConfig: Record<string, { icon: React.ReactNode; color: string; bg: string; label: string }> = {
-    ready: {
-      icon: <CheckCircle size={18} />,
-      color: "#00ff00",
-      bg: "rgba(0,255,0,0.1)",
-      label: "Ready to Save",
-    },
-    needs_review: {
-      icon: <ShieldAlert size={18} />,
-      color: "#ffa500",
-      bg: "rgba(255,165,0,0.1)",
-      label: "Needs Review",
-    },
-    blocked: {
-      icon: <AlertTriangle size={18} />,
-      color: "#ff6b6b",
-      bg: "rgba(255,107,107,0.1)",
-      label: "Blocked",
-    },
-  };
+  const issues = qaReport?.issues ?? [];
+  const warnings = qaReport?.warnings ?? [];
+  const possibleMissing = membershipReport?.possible_missing ?? [];
+  const possibleInvalid = membershipReport?.possible_invalid ?? [];
+  const needsReview =
+    issues.length > 0 ||
+    warnings.length > 0 ||
+    possibleMissing.length > 0 ||
+    possibleInvalid.length > 0;
 
-  const cfg = statusConfig[draftReview.status] || statusConfig.needs_review;
+  const visibleSuggestions = (draftReview?.suggestions ?? []).filter(
+    (suggestion) =>
+      !/requested target|expected count|auto-repair|audit blockers|audit warnings|generated \d+ slots/i.test(
+        suggestion,
+      ),
+  );
+
+  const cfg = needsReview
+    ? {
+        icon: <ShieldAlert size={18} />,
+        color: "#ffa500",
+        bg: "rgba(255,165,0,0.1)",
+        label: "Review Suggested",
+        helper: "QA flagged a few things worth checking. Saving is still up to you.",
+      }
+    : {
+        icon: <CheckCircle size={18} />,
+        color: "#00ff00",
+        bg: "rgba(0,255,0,0.1)",
+        label: "Ready to Review",
+        helper: "Draft looks clean. Prune, tweak, or save when the pack is satisfied.",
+      };
 
   return (
     <div style={{ padding: "0.75rem 1rem", background: cfg.bg, border: `1px solid ${cfg.color}`, borderRadius: "8px", marginBottom: "0.75rem" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: cfg.color, fontWeight: 700, fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "1px" }}>
         {cfg.icon}
         {cfg.label}
-        <span style={{ fontWeight: 400, opacity: 0.7 }}>
-          ({draftReview.requested_slots} requested, {draftReview.generated_slots} generated)
-        </span>
       </div>
+      <p style={{ margin: "0.4rem 0 0", fontSize: "0.8rem", color: "#ccc", lineHeight: 1.4 }}>
+        {cfg.helper}
+      </p>
 
-      {draftReview.suggestions.length > 0 && (
+      {visibleSuggestions.length > 0 && (
         <ul style={{ margin: "0.5rem 0 0", paddingLeft: "1.5rem", fontSize: "0.85rem", color: cfg.color }}>
-          {draftReview.suggestions.map((s, i) => (
+          {visibleSuggestions.map((s, i) => (
             <li key={i} style={{ marginBottom: "0.25rem" }}>{s}</li>
           ))}
         </ul>
@@ -160,31 +201,31 @@ function DraftReviewBanner({
           <button onClick={() => setShowQa(!showQa)}
             style={{ background: "none", border: "none", color: "#a0a0ff", cursor: "pointer", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.25rem", padding: "0.25rem 0" }}>
             {showQa ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            QA: {qaReport.issues?.length || 0} issues, {qaReport.warnings?.length || 0} warnings
+            QA: {issues.length} issues, {warnings.length} warnings
           </button>
           {showQa && (
             <div style={{ fontSize: "0.8rem", color: "#ccc", paddingLeft: "1.25rem" }}>
-              {qaReport.issues?.length > 0 && (
+              {issues.length > 0 && (
                 <div style={{ marginBottom: "0.5rem" }}>
                   <p style={{ color: "#ff6b6b", fontWeight: 600, margin: "0.25rem 0" }}>Issues:</p>
                   <ul style={{ margin: 0, paddingLeft: "1rem" }}>
-                    {qaReport.issues.map((issue, i) => (
+                    {issues.map((issue, i) => (
                       <li key={i} style={{ marginBottom: "0.15rem" }}>{issue}</li>
                     ))}
                   </ul>
                 </div>
               )}
-              {qaReport.warnings?.length > 0 && (
+              {warnings.length > 0 && (
                 <div>
                   <p style={{ color: "#ffa500", fontWeight: 600, margin: "0.25rem 0" }}>Warnings:</p>
                   <ul style={{ margin: 0, paddingLeft: "1rem" }}>
-                    {qaReport.warnings.map((w, i) => (
+                    {warnings.map((w, i) => (
                       <li key={i} style={{ marginBottom: "0.15rem" }}>{w}</li>
                     ))}
                   </ul>
                 </div>
               )}
-              {(!qaReport.issues?.length && !qaReport.warnings?.length) && (
+              {issues.length === 0 && warnings.length === 0 && (
                 <p style={{ color: "#00ff00" }}>All QA checks passed ✓</p>
               )}
             </div>
@@ -197,15 +238,40 @@ function DraftReviewBanner({
           <button onClick={() => setShowMembership(!showMembership)}
             style={{ background: "none", border: "none", color: "#a0a0ff", cursor: "pointer", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.25rem", padding: "0.25rem 0" }}>
             {showMembership ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            Membership: {membershipReport.possible_missing?.length || 0} possible missing
+            Membership: {possibleMissing.length} possible missing, {possibleInvalid.length} possible invalid
+            {membershipReport.confidence && (
+              <span style={{ opacity: 0.6, marginLeft: "0.25rem" }}>
+                ({membershipReport.confidence} confidence)
+              </span>
+            )}
           </button>
-          {showMembership && membershipReport.possible_missing?.length > 0 && (
+          {showMembership && (
             <div style={{ fontSize: "0.8rem", color: "#ccc", paddingLeft: "1.25rem" }}>
-              <ul style={{ margin: 0, paddingLeft: "1rem" }}>
-                {membershipReport.possible_missing.map((m, i) => (
-                  <li key={i} style={{ marginBottom: "0.15rem" }}>{m}</li>
-                ))}
-              </ul>
+              {possibleMissing.length > 0 && (
+                <div style={{ marginBottom: "0.5rem" }}>
+                  <p style={{ color: "#ffa500", fontWeight: 600, margin: "0.25rem 0" }}>Possibly Missing:</p>
+                  <ul style={{ margin: 0, paddingLeft: "1rem" }}>
+                    {possibleMissing.map((m, i) => (
+                      <li key={i} style={{ marginBottom: "0.15rem" }}>{m}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {possibleInvalid.length > 0 && (
+                <div style={{ marginBottom: "0.5rem" }}>
+                  <p style={{ color: "#ff6b6b", fontWeight: 600, margin: "0.25rem 0" }}>Possibly Invalid:</p>
+                  <ul style={{ margin: 0, paddingLeft: "1rem" }}>
+                    {possibleInvalid.map((item, i) => (
+                      <li key={i} style={{ marginBottom: "0.15rem" }}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {membershipReport.basis && (
+                <p style={{ opacity: 0.6, fontStyle: "italic", margin: "0.25rem 0" }}>
+                  {membershipReport.basis}
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -481,24 +547,34 @@ export default function AgentChat({
     []
   );
 
-  const handleSlotComment = useCallback(
-    (index: number, comment: string) => {
-      setSlotComments((prev) => ({ ...prev, [index]: comment }));
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.send(
-          JSON.stringify({ type: "slot_comment", index, comment })
-        );
-      }
-    },
-    []
-  );
+  const handleDeleteSlot = useCallback((index: number) => {
+    setSlots((prev) => prev.filter((_, i) => i !== index));
+    setSlotComments((prev) => {
+      const shifted: Record<number, string> = {};
+      Object.entries(prev).forEach(([key, value]) => {
+        const commentIndex = Number(key);
+        if (commentIndex < index) {
+          shifted[commentIndex] = value;
+        } else if (commentIndex > index) {
+          shifted[commentIndex - 1] = value;
+        }
+      });
+      return shifted;
+    });
+  }, []);
 
   const handleSubmitComment = useCallback(
     (index: number, text: string) => {
-      if (!text.trim()) return;
-      handleSlotComment(index, text);
+      const feedback = text.trim();
+      const slot = slots[index];
+      if (!feedback || !slot) return;
+
+      sendMessage(
+        `Please update slot #${index + 1} ("${slot.canonical_text}") based on this feedback: ${feedback}`
+      );
+      setSlotComments((prev) => ({ ...prev, [index]: "" }));
     },
-    [handleSlotComment]
+    [sendMessage, slots]
   );
 
   const handleSave = useCallback(async () => {
@@ -628,11 +704,7 @@ export default function AgentChat({
           <div className={styles.activityIndicator} aria-live="polite">
             <span className={styles.activityBolt}>⚡</span>
             <span>{toolStatus || "BotBob is thinking"}</span>
-            <span className={styles.loadingDots} aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </span>
+            <BouncingDots />
           </div>
         )}
         <div ref={messagesEndRef} />
@@ -762,6 +834,15 @@ export default function AgentChat({
                         />
                         Rare
                       </label>
+                      <button
+                        type="button"
+                        className={styles.deleteSlotButton}
+                        onClick={() => handleDeleteSlot(index)}
+                        aria-label={`Delete slot ${index + 1}: ${slot.canonical_text}`}
+                        title="Delete slot from draft"
+                      >
+                        <Trash2 size={13} />
+                      </button>
                       <div className={styles.commentArea}>
                         <input
                           type="text"
@@ -778,11 +859,15 @@ export default function AgentChat({
                               handleSubmitComment(index, (e.target as HTMLInputElement).value);
                             }
                           }}
-                          placeholder="Tell the agent..."
+                          placeholder="Ask agent to revise..."
+                          disabled={!connected || thinking}
                         />
                         <button
+                          type="button"
                           className={styles.commentButton}
                           onClick={() => handleSubmitComment(index, slotComments[index] || "")}
+                          disabled={!slotComments[index]?.trim() || !connected || thinking}
+                          title="Send this slot feedback to the agent"
                         >
                           <MessageCircle size={14} />
                         </button>
