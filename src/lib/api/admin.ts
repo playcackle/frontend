@@ -188,6 +188,8 @@ export type Lobby = {
   owner_id?: string | null;
   // Set for multi-tenant rooms (which server hosts them); absent for single-tenant.
   server_id?: string | null;
+  is_baseline?: boolean;
+  baseline_slot?: number | null;
 };
 
 export type LobbyConfigurationUpdate = {

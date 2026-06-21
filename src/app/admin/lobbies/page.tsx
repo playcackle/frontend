@@ -248,6 +248,9 @@ export default function LobbiesPage() {
                     <Trash2 size={16} />
                   </button>
                 )}
+                {lobby.is_baseline && (
+                  <span className={styles.spawnedBadge}>baseline #{lobby.baseline_slot ?? "?"}</span>
+                )}
                 {lobby.server_id ? (
                   <span className={styles.spawnedBadge}>multi-tenant</span>
                 ) : lobby.is_spawned ? (
