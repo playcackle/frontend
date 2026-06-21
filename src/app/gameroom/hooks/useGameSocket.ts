@@ -37,7 +37,11 @@ interface SocketState {
 }
 
 
-export const useGameSocket = (baseUrl: string, token: string) => {
+export const useGameSocket = (
+  baseUrl: string,
+  token: string,
+  lobbyId?: string,
+) => {
   // ==================== REFS AND STATE ====================
 
   const socketRef = useRef<Socket | null>(null);
@@ -74,7 +78,9 @@ export const useGameSocket = (baseUrl: string, token: string) => {
     // Create socket with native reconnection enabled
     const socket = io(baseUrl, {
       transports: ["websocket"],
-      auth: { token },
+      // lobbyId lets a multi-tenant gameroom server route this socket to the
+      // right room; socket.io re-sends auth on reconnect so it persists.
+      auth: lobbyId ? { token, lobbyId } : { token },
       timeout: 10000,
       reconnection: true,
       reconnectionAttempts: SOCKET_MAX_RECONNECT_ATTEMPTS,
@@ -226,7 +232,7 @@ export const useGameSocket = (baseUrl: string, token: string) => {
       // Clearing them during socket re-initialization can leave the new socket
       // connected with no app-level listeners for events such as unified_message.
     };
-  }, [baseUrl, token, debouncedErrorLog]);
+  }, [baseUrl, token, lobbyId, debouncedErrorLog]);
 
   // ==================== PUBLIC API ====================
 

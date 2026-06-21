@@ -8,6 +8,9 @@ export type LobbyJoinSuccess = {
   player_id: string;
   token: string;
   game_ws_url: string;
+  // Multi-tenant: many rooms share one server's game_ws_url, so the client must
+  // send lobby_id in the socket handshake for the server to resolve the room.
+  lobby_id?: string;
   // Not returned by the API — injected client-side from LobbyInfo when joining
   discord_invite_url?: string | null;
 };

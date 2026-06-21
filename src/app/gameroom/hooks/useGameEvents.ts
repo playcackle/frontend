@@ -37,10 +37,14 @@ import { useGameSocket } from "./useGameSocket";
  *  Brief blips (< 3s) show only the reconnection banner, not the loading overlay. */
 const LOADING_GRACE_PERIOD_MS = 3000;
 
-export const useGameEvents = (gameWsUrl: string, token: string) => {
+export const useGameEvents = (
+  gameWsUrl: string,
+  token: string,
+  lobbyId?: string,
+) => {
   const navigate = useNavigate();
   const { onEvent, sendEvent, isConnected, connectionStatus, reconnect } =
-    useGameSocket(gameWsUrl, token);
+    useGameSocket(gameWsUrl, token, lobbyId);
   const store = useStore();
 
   // All Jotai setters are stable references — never cause effect re-runs

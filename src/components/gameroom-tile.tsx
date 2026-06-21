@@ -66,7 +66,13 @@ export default function GameroomTile(props: GameroomTileProps) {
       return;
     }
     setErrorMessage(undefined);
-    setGameroom({ ...gameRoom, discord_invite_url: gameroom.discord_invite_url ?? null });
+    setGameroom({
+      ...gameRoom,
+      // Ensure lobby_id is always present for the socket handshake — the API
+      // returns it, but fall back to the lobby we joined.
+      lobby_id: gameRoom.lobby_id ?? gameroom.lobby_id,
+      discord_invite_url: gameroom.discord_invite_url ?? null,
+    });
     navigate({ to: "/gameroom", search: { name: gameroom.collection_name } });
   };
 

@@ -147,6 +147,7 @@ export default function GameroomPage() {
   const { sendEvent, reconnect: reconnectGame } = useGameEvents(
     gameroom?.game_ws_url ?? "",
     gameroom?.token ?? "",
+    gameroom?.lobby_id,
   );
 
   // Custom hooks
