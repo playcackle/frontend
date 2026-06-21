@@ -186,6 +186,8 @@ export type Lobby = {
   is_spawned?: boolean;
   railway_service_id?: string | null;
   owner_id?: string | null;
+  // Set for multi-tenant rooms (which server hosts them); absent for single-tenant.
+  server_id?: string | null;
 };
 
 export type LobbyConfigurationUpdate = {
@@ -835,6 +837,40 @@ export const lobbiesApi = {
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.detail || "Failed to spawn gameroom");
+    }
+    return res.json();
+  },
+
+  /**
+   * Allocate a room on the warm multi-tenant gameroom fleet (instant, no deploy).
+   * The multi-tenant replacement for spawnGameroom.
+   */
+  async allocateRoom(request?: {
+    collection_id?: number;
+    configuration?: GameConfigurationParameters;
+  }): Promise<{ status: string; lobby_id: string; server_id: string | null; collection_name: string | null; game_status: string }> {
+    const res = await apiFetch(`/admin/gamerooms/allocate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request || {}),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || "Failed to create room");
+    }
+    return res.json();
+  },
+
+  /**
+   * Delete a single room on a multi-tenant server (NOT the Railway service).
+   */
+  async deleteRoom(lobbyId: string): Promise<{ status: string; lobby_id: string }> {
+    const res = await apiFetch(`/admin/lobbies/${lobbyId}/room`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.detail || "Failed to delete room");
     }
     return res.json();
   },

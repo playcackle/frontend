@@ -34,18 +34,34 @@ export default function LobbiesPage() {
   };
 
   const handleSpawn = async () => {
-    if (!confirm("Spawn a new gameroom?\n\nIt will become available in the lobby browser after ~30-90 seconds.")) {
+    if (!confirm("Create a new room on the multi-tenant gameroom fleet?\n\nAllocated instantly on a warm server — it appears in the lobby browser right away.")) {
       return;
     }
     setSpawning(true);
     try {
-      const result = await lobbiesApi.spawnGameroom();
-      alert(`Spawned ${result.railway_service_name} (${result.railway_service_id})\n\nWait ~30-90s for it to register.`);
+      const result = await lobbiesApi.allocateRoom();
+      alert(`Created room ${result.lobby_id} on server ${result.server_id ?? "?"}.`);
       loadLobbies();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to spawn gameroom");
+      alert(err instanceof Error ? err.message : "Failed to create room");
     } finally {
       setSpawning(false);
+    }
+  };
+
+  const handleDeleteRoom = async (lobbyId: string) => {
+    if (!confirm(`Delete room ${lobbyId}?\n\nRemoves this room from its multi-tenant server. The server keeps running and serving its other rooms.`)) {
+      return;
+    }
+    setTearingDown(lobbyId);
+    try {
+      await lobbiesApi.deleteRoom(lobbyId);
+      alert("Room deleted");
+      loadLobbies();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete room");
+    } finally {
+      setTearingDown(null);
     }
   };
 
@@ -125,7 +141,7 @@ export default function LobbiesPage() {
           onClick={handleSpawn}
           disabled={spawning}
         >
-          {spawning ? "Spawning..." : "Spawn Gameroom"}
+          {spawning ? "Creating..." : "Create Room"}
         </button>
       </div>
 
@@ -217,14 +233,26 @@ export default function LobbiesPage() {
                     className={styles.iconButtonDanger}
                     onClick={() => handleTeardown(lobby.railway_service_id!, lobby.lobby_id)}
                     disabled={tearingDown === lobby.railway_service_id}
-                    title={tearingDown === lobby.railway_service_id ? "Tearing down..." : "Teardown"}
+                    title={tearingDown === lobby.railway_service_id ? "Tearing down..." : "Teardown service"}
                   >
                     <Trash2 size={16} />
                   </button>
                 )}
-                {lobby.is_spawned && (
-                  <span className={styles.spawnedBadge}>spawned</span>
+                {lobby.server_id && (
+                  <button
+                    className={styles.iconButtonDanger}
+                    onClick={() => handleDeleteRoom(lobby.lobby_id)}
+                    disabled={tearingDown === lobby.lobby_id}
+                    title={tearingDown === lobby.lobby_id ? "Deleting..." : "Delete room"}
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 )}
+                {lobby.server_id ? (
+                  <span className={styles.spawnedBadge}>multi-tenant</span>
+                ) : lobby.is_spawned ? (
+                  <span className={styles.spawnedBadge}>spawned</span>
+                ) : null}
               </div>
             </div>
           ))}
