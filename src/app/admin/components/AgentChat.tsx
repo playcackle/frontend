@@ -90,31 +90,11 @@ function getToolStatus(msg: AgentMessage): string {
 }
 
 function BouncingDots() {
-  const [activeDot, setActiveDot] = useState(0);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveDot((current) => (current + 1) % 3);
-    }, 160);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
   return (
     <span className={styles.loadingDots} aria-hidden="true">
-      {[0, 1, 2].map((dot) => (
-        <span
-          key={dot}
-          className={styles.loadingDot}
-          style={{
-            opacity: activeDot === dot ? 1 : 0.45,
-            transform:
-              activeDot === dot
-                ? "translate3d(0, -7px, 0) scale(1.1)"
-                : "translate3d(0, 0, 0) scale(0.9)",
-          }}
-        />
-      ))}
+      <span className={styles.loadingDot} />
+      <span className={styles.loadingDot} />
+      <span className={styles.loadingDot} />
     </span>
   );
 }
