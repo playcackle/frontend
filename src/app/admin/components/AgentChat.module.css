@@ -103,34 +103,45 @@
 
 .loadingDots {
   display: inline-flex;
-  align-items: center;
-  gap: 3px;
+  align-items: flex-end;
+  gap: 4px;
+  height: 12px;
   color: #00ffff;
 }
 
 .loadingDots span {
   display: block;
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: currentColor;
-  opacity: 0.35;
-  transform: translateY(0);
-  animation: dotPulse 900ms ease-in-out infinite both;
+  opacity: 0.45;
+  transform: translate3d(0, 0, 0);
+  animation-name: dotBounce;
+  animation-duration: 850ms;
+  animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
   will-change: transform, opacity;
 }
 
-.loadingDots span:nth-child(2) { animation-delay: 120ms; }
-.loadingDots span:nth-child(3) { animation-delay: 240ms; }
+.loadingDots span:nth-child(2) { animation-delay: 130ms; }
+.loadingDots span:nth-child(3) { animation-delay: 260ms; }
 
 @keyframes statusPulse {
   0%, 100% { opacity: 0.55; transform: scale(0.94); }
   50% { opacity: 1; transform: scale(1.08); }
 }
 
-@keyframes dotPulse {
-  0%, 80%, 100% { opacity: 0.35; transform: translateY(0); }
-  40% { opacity: 1; transform: translateY(-3px); }
+@keyframes dotBounce {
+  0%, 70%, 100% {
+    opacity: 0.45;
+    transform: translate3d(0, 0, 0) scale(0.9);
+  }
+  35% {
+    opacity: 1;
+    transform: translate3d(0, -7px, 0) scale(1.1);
+  }
 }
 
 @keyframes fadeIn {
