@@ -7,10 +7,14 @@ import {
   type CollectionDetail,
   type Topic,
 } from "@/lib/api/admin";
+import { Toasts, useToasts } from "@/app/admin/components/Toasts";
+import { useConfirm } from "@/app/admin/components/ConfirmDialog";
 import styles from "./page.module.css";
 
 export default function CollectionDetailPage({ id }: { id: string }) {
   const navigate = useNavigate();
+  const { toasts, showToast } = useToasts();
+  const { confirm, confirmDialog } = useConfirm();
   const collectionId = parseInt(id);
 
   const [collection, setCollection] = useState<CollectionDetail | null>(null);
@@ -58,29 +62,40 @@ export default function CollectionDetailPage({ id }: { id: string }) {
         description: collectionDesc,
       });
       setEditingName(false);
+      showToast("Collection updated");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to update collection");
+      showToast(err instanceof Error ? err.message : "Failed to update collection", "error");
     }
   };
 
   const handleAddTopic = async (topicId: number) => {
     try {
       await collectionsApi.addTopic(collectionId, topicId);
+      showToast("Topic added");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to add topic");
+      showToast(err instanceof Error ? err.message : "Failed to add topic", "error");
     }
   };
 
   const handleRemoveTopic = async (topicId: number) => {
-    if (!confirm("Remove this topic from the collection?")) return;
+    if (
+      !(await confirm({
+        title: "Remove this topic from the collection?",
+        confirmLabel: "Remove",
+        danger: true,
+      }))
+    ) {
+      return;
+    }
 
     try {
       await collectionsApi.removeTopic(collectionId, topicId);
+      showToast("Topic removed");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to remove topic");
+      showToast(err instanceof Error ? err.message : "Failed to remove topic", "error");
     }
   };
 
@@ -281,6 +296,9 @@ export default function CollectionDetailPage({ id }: { id: string }) {
           </div>
         </div>
       </main>
+
+      <Toasts toasts={toasts} />
+      {confirmDialog}
     </div>
   );
 }

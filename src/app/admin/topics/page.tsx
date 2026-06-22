@@ -3,10 +3,14 @@ import { useState, useEffect } from "react";
 import { topicsApi, collectionsApi, type Topic, type Collection } from "@/lib/api/admin";
 import AIGenerate from "../components/AIGenerate";
 import { AlertTriangle, Pencil, Sparkles, Trash2, Zap } from "lucide-react";
+import { Toasts, useToasts } from "@/app/admin/components/Toasts";
+import { useConfirm } from "@/app/admin/components/ConfirmDialog";
 import styles from "./page.module.css";
 
 export default function TopicsPage() {
   const navigate = useNavigate();
+  const { toasts, showToast } = useToasts();
+  const { confirm, confirmDialog } = useConfirm();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,15 +44,23 @@ export default function TopicsPage() {
   };
 
   const handleDeleteTopic = async (topicId: number, topicName: string) => {
-    if (!confirm(`Delete topic "${topicName}"?\n\nThis will delete all slots and aliases in this topic.`)) {
+    if (
+      !(await confirm({
+        title: `Delete topic "${topicName}"?`,
+        message: "This will delete all slots and aliases in this topic.",
+        confirmLabel: "Delete",
+        danger: true,
+      }))
+    ) {
       return;
     }
 
     try {
       await topicsApi.delete(topicId);
+      showToast("Topic deleted");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete topic");
+      showToast(err instanceof Error ? err.message : "Failed to delete topic", "error");
     }
   };
 
@@ -197,6 +209,9 @@ export default function TopicsPage() {
           ))
         )}
       </div>
+
+      <Toasts toasts={toasts} />
+      {confirmDialog}
     </div>
   );
 }

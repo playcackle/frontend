@@ -1,10 +1,14 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { collectionsApi, type Collection } from "@/lib/api/admin";
+import { Toasts, useToasts } from "@/app/admin/components/Toasts";
+import { useConfirm } from "@/app/admin/components/ConfirmDialog";
 import styles from "./page.module.css";
 
 export default function CollectionsPage() {
   const navigate = useNavigate();
+  const { toasts, showToast } = useToasts();
+  const { confirm, confirmDialog } = useConfirm();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +43,7 @@ export default function CollectionsPage() {
 
   const handleCreate = async () => {
     if (!newCollectionName.trim()) {
-      alert("Please enter a collection name");
+      showToast("Please enter a collection name", "error");
       return;
     }
 
@@ -51,9 +55,10 @@ export default function CollectionsPage() {
       setShowCreateDialog(false);
       setNewCollectionName("");
       setNewCollectionDesc("");
+      showToast("Collection created");
       loadCollections();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to create collection");
+      showToast(err instanceof Error ? err.message : "Failed to create collection", "error");
     }
   };
 
@@ -62,15 +67,23 @@ export default function CollectionsPage() {
   };
 
   const handleDelete = async (id: number, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"?\n\nThis will delete all topics and slots in this collection.`)) {
+    if (
+      !(await confirm({
+        title: `Delete "${name}"?`,
+        message: "This will delete all topics and slots in this collection.",
+        confirmLabel: "Delete",
+        danger: true,
+      }))
+    ) {
       return;
     }
 
     try {
       await collectionsApi.delete(id);
+      showToast("Collection deleted");
       loadCollections();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete collection");
+      showToast(err instanceof Error ? err.message : "Failed to delete collection", "error");
     }
   };
 
@@ -198,6 +211,9 @@ export default function CollectionsPage() {
           </div>
         </div>
       )}
+
+      <Toasts toasts={toasts} />
+      {confirmDialog}
     </div>
   );
 }

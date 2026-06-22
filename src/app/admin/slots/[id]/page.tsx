@@ -6,10 +6,14 @@ import {
   aliasesApi,
   type SlotDetail,
 } from "@/lib/api/admin";
+import { Toasts, useToasts } from "@/app/admin/components/Toasts";
+import { useConfirm } from "@/app/admin/components/ConfirmDialog";
 import styles from "./page.module.css";
 
 export default function SlotDetailPage({ id }: { id: string }) {
   const navigate = useNavigate();
+  const { toasts, showToast } = useToasts();
+  const { confirm, confirmDialog } = useConfirm();
   const slotId = parseInt(id);
 
   const [slot, setSlot] = useState<SlotDetail | null>(null);
@@ -51,7 +55,7 @@ export default function SlotDetailPage({ id }: { id: string }) {
 
   const handleSaveSlot = async () => {
     if (!canonicalText.trim() || !prompt.trim()) {
-      alert("Canonical text and prompt are required");
+      showToast("Canonical text and prompt are required", "error");
       return;
     }
 
@@ -63,37 +67,46 @@ export default function SlotDetailPage({ id }: { id: string }) {
         is_rare: isRare,
       });
       setEditingSlot(false);
+      showToast("Slot updated");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to update slot");
+      showToast(err instanceof Error ? err.message : "Failed to update slot", "error");
     }
   };
 
   const handleAddAlias = async () => {
     if (!newAlias.trim()) {
-      alert("Alias text is required");
+      showToast("Alias text is required", "error");
       return;
     }
 
     try {
       await aliasesApi.create(slotId, { alias_text: newAlias });
       setNewAlias("");
+      showToast("Alias added");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to add alias");
+      showToast(err instanceof Error ? err.message : "Failed to add alias", "error");
     }
   };
 
   const handleDeleteAlias = async (aliasId: number, aliasText: string) => {
-    if (!confirm(`Delete alias "${aliasText}"?`)) {
+    if (
+      !(await confirm({
+        title: `Delete alias "${aliasText}"?`,
+        confirmLabel: "Delete",
+        danger: true,
+      }))
+    ) {
       return;
     }
 
     try {
       await aliasesApi.delete(aliasId);
+      showToast("Alias deleted");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete alias");
+      showToast(err instanceof Error ? err.message : "Failed to delete alias", "error");
     }
   };
 
@@ -278,6 +291,9 @@ export default function SlotDetailPage({ id }: { id: string }) {
           </div>
         </div>
       </main>
+
+      <Toasts toasts={toasts} />
+      {confirmDialog}
     </div>
   );
 }

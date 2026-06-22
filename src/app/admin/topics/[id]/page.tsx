@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import AIGenerate from "../../components/AIGenerate";
 import SlotBulkEdit from "../../components/SlotBulkEdit";
 import SlotImport from "../../components/SlotImport";
+import { Toasts, useToasts } from "@/app/admin/components/Toasts";
+import { useConfirm } from "@/app/admin/components/ConfirmDialog";
 import styles from "./page.module.css";
 
 const CATEGORIES = [
@@ -28,6 +30,8 @@ const CATEGORIES = [
 
 export default function TopicDetailPage({ id }: { id: string }) {
   const navigate = useNavigate();
+  const { toasts, showToast } = useToasts();
+  const { confirm, confirmDialog } = useConfirm();
   const topicId = parseInt(id);
 
   const [topic, setTopic] = useState<TopicDetail | null>(null);
@@ -86,15 +90,16 @@ export default function TopicDetailPage({ id }: { id: string }) {
         category: topicCategory || undefined,
       });
       setEditingMetadata(false);
+      showToast("Topic updated");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to update topic");
+      showToast(err instanceof Error ? err.message : "Failed to update topic", "error");
     }
   };
 
   const handleCreateSlot = async () => {
     if (!newSlotCanonical.trim() || !newSlotPrompt.trim()) {
-      alert("Canonical text and prompt are required");
+      showToast("Canonical text and prompt are required", "error");
       return;
     }
 
@@ -113,22 +118,31 @@ export default function TopicDetailPage({ id }: { id: string }) {
       setNewSlotBobClue("");
       setNewSlotIsRare(false);
       setShowCreateSlot(false);
+      showToast("Slot created");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to create slot");
+      showToast(err instanceof Error ? err.message : "Failed to create slot", "error");
     }
   };
 
   const handleDeleteSlot = async (slotId: number) => {
-    if (!confirm("Delete this slot? This will also delete all its aliases.")) {
+    if (
+      !(await confirm({
+        title: "Delete this slot?",
+        message: "This will also delete all its aliases.",
+        confirmLabel: "Delete",
+        danger: true,
+      }))
+    ) {
       return;
     }
 
     try {
       await slotsApi.delete(slotId);
+      showToast("Slot deleted");
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete slot");
+      showToast(err instanceof Error ? err.message : "Failed to delete slot", "error");
     }
   };
 
@@ -521,6 +535,9 @@ export default function TopicDetailPage({ id }: { id: string }) {
           </div>
         </div>
       </main>
+
+      <Toasts toasts={toasts} />
+      {confirmDialog}
     </div>
   );
 }
