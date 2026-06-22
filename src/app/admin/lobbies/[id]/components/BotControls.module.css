@@ -7,6 +7,16 @@
   box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
 }
 
+/* When rendered inside the gameroom config accordion, drop the standalone box. */
+.embedded {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
 .sectionTitle {
   font-size: 1.5rem;
   font-weight: 700;

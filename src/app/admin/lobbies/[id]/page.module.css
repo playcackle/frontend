@@ -1,6 +1,8 @@
 /* ── Page Wrapper & Header ────────────────────────────────── */
 .container {
   padding: 2rem;
+  /* Leave room for the sticky action bar so the last section isn't hidden behind it. */
+  padding-bottom: 7rem;
   color: white;
   min-height: 100%;
   max-width: 1200px;
@@ -8,24 +10,26 @@
 }
 
 .header {
-  text-align: center;
-  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
 }
 
 .backButton {
   background: rgba(0, 255, 255, 0.1);
   border: 2px solid rgba(0, 221, 255, 1);
   color: rgba(0, 221, 255, 1);
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   transition: all 0.3s ease;
   font-family: var(--retro-font);
   text-transform: uppercase;
   letter-spacing: 2px;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .backButton:hover {
@@ -35,13 +39,15 @@
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   line-height: 1.1;
   text-transform: uppercase;
   font-family: var(--retro-font);
-  margin-bottom: 0.5rem;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
+  margin: 0;
+  color: #fff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
 }
 
 .neonText {
@@ -118,55 +124,122 @@
   }
 }
 
-/* ── Apply Mode Section ───────────────────────────────────── */
-.applyModeSection {
-  background: rgba(0, 0, 0, 0.3);
-  border: 2px solid rgba(0, 255, 255, 0.3);
-  border-radius: 12px;
-  padding: 1.5rem;
+/* ── Quick Controls (always visible) ──────────────────────── */
+.quickControls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
-.applyModeButtons {
+.quickCard {
+  background: rgba(20, 20, 40, 0.8);
+  border: 2px solid rgba(0, 221, 255, 0.35);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.12);
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.applyModeButton {
+.quickLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.quickLabel {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #00ddff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: var(--retro-font);
+}
+
+.segmented {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.segmentedButton {
   flex: 1;
-  padding: 1rem;
+  padding: 0.6rem 0.5rem;
   background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.15);
   color: #999;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   font-weight: 600;
-  text-transform: uppercase;
+  text-transform: capitalize;
   font-size: 0.9rem;
 }
 
-.applyModeButton.active {
-  background: rgba(0, 255, 255, 0.2);
-  border-color: #00ffff;
-  color: #00ffff;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+.segmentedButton:hover:not(:disabled):not(.segmentedActive) {
+  border-color: rgba(0, 221, 255, 0.5);
+  color: #00ddff;
 }
 
-.applyModeButton:hover:not(.active) {
-  border-color: rgba(0, 255, 255, 0.5);
-  color: #00ffff;
+.segmentedButton.segmentedActive {
+  background: rgba(0, 221, 255, 0.18);
+  border-color: #00ddff;
+  color: #00ddff;
+  box-shadow: 0 0 15px rgba(0, 221, 255, 0.25);
 }
 
-/* ── Section Layout ───────────────────────────────────────── */
+.segmentedButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Section Layout (collapsible) ─────────────────────────── */
 .section {
   background: rgba(20, 20, 40, 0.8);
   border: 2px solid rgba(255, 0, 170, 0.4);
   border-radius: 12px;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   box-shadow: 0 0 15px rgba(255, 0, 170, 0.2);
+}
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sectionToggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.chevron {
+  color: rgba(255, 0, 170, 1);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.chevron.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.sectionHeaderExtra {
+  flex-shrink: 0;
+}
+
+.sectionBody {
+  margin-top: 1.5rem;
 }
 
 .sectionTitle {
@@ -174,7 +247,6 @@
   font-weight: 700;
   color: rgba(255, 0, 170, 1);
   text-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
-  margin-bottom: 1.5rem;
   text-transform: uppercase;
   font-family: var(--retro-font);
   letter-spacing: 2px;
@@ -342,35 +414,129 @@
   opacity: 0.4;
 }
 
-/* ── Action Buttons ───────────────────────────────────────── */
-.actionButtons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 3rem;
-  justify-content: center;
+/* ── Sticky Action Bar ────────────────────────────────────── */
+/* Fixed (not sticky): the admin layout's .mainContent owns overflow but the
+   document is what actually scrolls, so position: sticky never pins. */
+.actionBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 1rem 2rem;
+  background: rgba(8, 8, 20, 0.92);
+  backdrop-filter: blur(8px);
+  border-top: 2px solid rgba(0, 255, 255, 0.3);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
 }
 
+.actionBarInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.actionBarStatus {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.statusChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--status-color, #999);
+  color: var(--status-color, #999);
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: var(--retro-font);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-color, #999);
+  box-shadow: 0 0 8px var(--status-color, #999);
+}
+
+.statusMeta {
+  color: #cfcfcf;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.pendingBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 234, 0, 0.5);
+  background: rgba(255, 234, 0, 0.12);
+  color: #ffea00;
+  font-size: 0.8rem;
+  font-weight: 600;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.actionBarButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.actionBarDivider {
+  width: 1px;
+  align-self: stretch;
+  min-height: 2rem;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 0 0.25rem;
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
 .button,
 .resetDefaultsButton,
 .forceStartButton,
 .forceResetButton,
-.saveButton {
-  padding: 1rem 2rem;
+.saveButton,
+.saveNowButton {
+  padding: 0.85rem 1.5rem;
   border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  font-size: 1rem;
+  font-size: 0.9rem;
   border: none;
   font-family: var(--retro-font);
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
 }
 
 .resetDefaultsButton {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 0.6rem 1.25rem;
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #999;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: var(--retro-font);
 }
 
 .resetDefaultsButton:hover {
@@ -412,11 +578,23 @@
   box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
 }
 
+.saveNowButton {
+  background: rgba(0, 255, 255, 0.08);
+  border: 2px solid rgba(0, 255, 255, 0.5);
+  color: #00ffff;
+}
+
+.saveNowButton:hover {
+  background: rgba(0, 255, 255, 0.18);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+}
+
 .button:disabled,
 .resetDefaultsButton:disabled,
 .forceStartButton:disabled,
 .forceResetButton:disabled,
-.saveButton:disabled {
+.saveButton:disabled,
+.saveNowButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
@@ -518,8 +696,21 @@
     grid-template-columns: 1fr;
   }
 
-  .actionButtons {
+  .actionBar {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actionBarButtons {
+    justify-content: stretch;
+  }
+
+  .actionBarButtons button {
+    flex: 1;
+  }
+
+  .actionBarDivider {
+    display: none;
   }
 
   .collectionControls {
@@ -527,7 +718,8 @@
   }
 
   .title {
-    font-size: 2rem;
+    font-size: 1.15rem;
+    letter-spacing: 2px;
   }
 }
 

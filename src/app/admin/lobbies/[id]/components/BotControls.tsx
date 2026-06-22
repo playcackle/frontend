@@ -7,9 +7,10 @@ import styles from "./BotControls.module.css";
 interface BotControlsProps {
   lobbyId: string;
   onBotsChanged?: () => void;
+  hideTitle?: boolean;
 }
 
-export function BotControls({ lobbyId, onBotsChanged }: BotControlsProps) {
+export function BotControls({ lobbyId, onBotsChanged, hideTitle }: BotControlsProps) {
   const [botCount, setBotCount] = useState(5);
   const [accuracy, setAccuracy] = useState(70); // Percentage (0-100)
   const [typoRate, setTypoRate] = useState(20); // Percentage (0-100)
@@ -63,10 +64,7 @@ export function BotControls({ lobbyId, onBotsChanged }: BotControlsProps) {
 
   const handleRemoveAll = async () => {
     if (activeBots.length === 0) return;
-
-    if (!confirm(`Remove all ${activeBots.length} bots from this lobby?`)) {
-      return;
-    }
+    // Low-stakes: removed bots are re-addable from this same panel.
 
     setLoading(true);
     setError(null);
@@ -98,8 +96,8 @@ export function BotControls({ lobbyId, onBotsChanged }: BotControlsProps) {
   };
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.sectionTitle}>Bot Stress Testing</h2>
+    <div className={`${styles.container} ${hideTitle ? styles.embedded : ""}`}>
+      {!hideTitle && <h2 className={styles.sectionTitle}>Bot Stress Testing</h2>}
 
       {error && (
         <div className={styles.error}>

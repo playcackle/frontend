@@ -15,6 +15,8 @@ import * as Select from "@radix-ui/react-select";
 import { ChevronDown } from "lucide-react";
 import styles from "./page.module.css";
 import { BotControls } from "./components/BotControls";
+import { Toasts, useToasts } from "@/app/admin/components/Toasts";
+import { useConfirm } from "@/app/admin/components/ConfirmDialog";
 
 export default function LobbyDetailPage({ id }: { id: string }) {
   const navigate = useNavigate();
@@ -43,9 +45,16 @@ export default function LobbyDetailPage({ id }: { id: string }) {
   });
 
   const [selectedCollection, setSelectedCollection] = useState<number | null>(null);
-  const [applyMode, setApplyMode] = useState<"on_next_reset" | "immediate">("on_next_reset");
   const [visibility, setVisibility] = useState<"public" | "private" | "hidden">("public");
   const [visibilitySaving, setVisibilitySaving] = useState(false);
+  const [pendingInfo, setPendingInfo] = useState<{ config: boolean; topics: boolean }>({
+    config: false,
+    topics: false,
+  });
+
+  // Lightweight, non-blocking notifications (replaces alert()).
+  const { toasts, showToast } = useToasts();
+  const { confirm, confirmDialog } = useConfirm();
 
   // Host settings state
   const [hostSettings, setHostSettings] = useState<HostSettings | null>(null);
@@ -59,8 +68,17 @@ export default function LobbyDetailPage({ id }: { id: string }) {
 
   const refreshLobbyState = useCallback(async () => {
     try {
-      const lobbyData = await lobbiesApi.getById(lobbyId);
+      const [lobbyData, gameroomConfig] = await Promise.all([
+        lobbiesApi.getById(lobbyId),
+        lobbiesApi.getGameroomConfig(lobbyId).catch(() => null),
+      ]);
       setLobby(lobbyData);
+      if (gameroomConfig) {
+        setPendingInfo({
+          config: Boolean(gameroomConfig.has_pending_config),
+          topics: Boolean(gameroomConfig.has_pending_topics),
+        });
+      }
     } catch (err) {
       console.error("Failed to refresh lobby state:", err);
     }
@@ -71,6 +89,7 @@ export default function LobbyDetailPage({ id }: { id: string }) {
   }, [lobbyId]);
 
   useEffect(() => {
+    refreshLobbyState();
     const interval = setInterval(refreshLobbyState, 5000);
     return () => clearInterval(interval);
   }, [refreshLobbyState]);
@@ -156,7 +175,7 @@ export default function LobbyDetailPage({ id }: { id: string }) {
       });
       setHostSettings(updated);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to update host setting");
+      showToast(err instanceof Error ? err.message : "Failed to update host setting", "error");
       // Revert the change in UI
       loadHostSettings();
     } finally {
@@ -177,7 +196,7 @@ export default function LobbyDetailPage({ id }: { id: string }) {
       });
       setFuzzyMatchConfig(updated);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to update fuzzy match setting");
+      showToast(err instanceof Error ? err.message : "Failed to update fuzzy match setting", "error");
       // Revert the change in UI
       loadFuzzyMatchConfig();
     } finally {
@@ -185,70 +204,85 @@ export default function LobbyDetailPage({ id }: { id: string }) {
     }
   };
 
-  const handleSaveConfiguration = async () => {
-    try {
-      setSaving(true);
-      await lobbiesApi.reconfigure(lobbyId, {
-        parameters: config,
-        apply_mode: applyMode,
-      });
-      alert(
-        applyMode === "immediate"
-          ? "Configuration applied immediately. Game has been reset."
-          : "Configuration scheduled. Will apply on next game reset."
-      );
-      loadData();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to save configuration");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleChangeCollection = async () => {
-    if (!selectedCollection) {
-      alert("Please select a collection");
+  const handleSave = async (mode: "on_next_reset" | "immediate") => {
+    if (
+      mode === "immediate" &&
+      !(await confirm({
+        title: "Save & reset now?",
+        message:
+          "This applies your changes immediately and interrupts any active round.",
+        confirmLabel: "Save & Reset",
+        danger: true,
+      }))
+    ) {
       return;
     }
 
     try {
       setSaving(true);
-      await lobbiesApi.changeGameroomCollection(lobbyId, {
-        collection_id: selectedCollection,
-        apply_immediately: applyMode === "immediate",
+      await lobbiesApi.reconfigure(lobbyId, {
+        parameters: config,
+        apply_mode: mode,
       });
-      alert(
-        applyMode === "immediate"
-          ? "Collection changed and game reset."
-          : "Collection change scheduled for next reset."
+      showToast(
+        mode === "immediate"
+          ? "Configuration applied — game reset"
+          : "Saved — applies next game"
       );
       loadData();
+      refreshLobbyState();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to change collection");
+      showToast(err instanceof Error ? err.message : "Failed to save configuration", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCollectionSelect = async (collectionId: number) => {
+    const previous = selectedCollection;
+    setSelectedCollection(collectionId);
+
+    try {
+      setSaving(true);
+      await lobbiesApi.changeGameroomCollection(lobbyId, {
+        collection_id: collectionId,
+        apply_immediately: false,
+      });
+      showToast("Collection queued — applies next game");
+      refreshLobbyState();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Failed to change collection", "error");
+      setSelectedCollection(previous);
     } finally {
       setSaving(false);
     }
   };
 
   const handleForceReset = async () => {
-    if (!confirm("Force reset this gameroom?\n\nThis will interrupt active gameplay.")) {
+    if (
+      !(await confirm({
+        title: "Force reset this gameroom?",
+        message: "This will interrupt active gameplay and apply any pending changes.",
+        confirmLabel: "Force Reset",
+        danger: true,
+      }))
+    ) {
       return;
     }
 
     try {
       await lobbiesApi.forceReset(lobbyId, "Admin forced reset");
-      alert("Gameroom reset successfully");
+      showToast("Gameroom reset");
       loadData();
+      refreshLobbyState();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to reset gameroom");
+      showToast(err instanceof Error ? err.message : "Failed to reset gameroom", "error");
     }
   };
 
   const handleForceStart = async () => {
     const countdownSeconds = config.game_start_delay || 10;
-    if (!confirm(`Force start this gameroom in ${countdownSeconds} seconds?\n\nThis bypasses the minimum player requirement for this start only.`)) {
-      return;
-    }
+    // Low-stakes: a stray click just starts a countdown that's reversible by Force Reset.
 
     try {
       setForceStarting(true);
@@ -256,10 +290,10 @@ export default function LobbyDetailPage({ id }: { id: string }) {
         countdown_seconds: countdownSeconds,
         reason: "Admin forced playtest start",
       });
-      alert("Gameroom start countdown triggered");
+      showToast(`Starting in ${countdownSeconds}s`);
       loadData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to force start gameroom");
+      showToast(err instanceof Error ? err.message : "Failed to force start gameroom", "error");
     } finally {
       setForceStarting(false);
     }
@@ -270,8 +304,9 @@ export default function LobbyDetailPage({ id }: { id: string }) {
       setVisibilitySaving(true);
       const result = await lobbiesApi.updateVisibility(lobbyId, newVisibility);
       setVisibility(result.visibility as "public" | "private" | "hidden");
+      showToast(`Visibility set to ${newVisibility}`);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to update visibility");
+      showToast(err instanceof Error ? err.message : "Failed to update visibility", "error");
       loadData();
     } finally {
       setVisibilitySaving(false);
@@ -279,9 +314,7 @@ export default function LobbyDetailPage({ id }: { id: string }) {
   };
 
   const handleResetToDefaults = () => {
-    if (!confirm("Reset all parameters to default values?")) {
-      return;
-    }
+    // Low-stakes: only clears local unsaved edits; the server is untouched.
 
     setConfig({
       num_rounds: 10,
@@ -324,87 +357,54 @@ export default function LobbyDetailPage({ id }: { id: string }) {
   }
 
   const canForceStart = lobby.status === "WAITING" && lobby.player_count > 0;
+  const hasPending = pendingInfo.config || pendingInfo.topics;
+  const pendingLabel =
+    pendingInfo.config && pendingInfo.topics
+      ? "config + collection"
+      : pendingInfo.config
+        ? "config changes"
+        : "collection change";
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <button className={styles.backButton} onClick={() => window.history.back()}>
-          ← Back to Lobbies
+          ← Back
         </button>
-        <h1 className={styles.title}>
-          <span className={styles.neonText}>GAMEROOM</span>
-          <span className={styles.neonTextPink}>CONFIG</span>
-        </h1>
-        <p className={styles.subtitle}>
-          Lobby: <span className={styles.lobbyId}>{lobbyId.slice(0, 16)}</span>
-        </p>
+        <h1 className={styles.title}>Gameroom Config</h1>
+        <span className={styles.lobbyId}>{lobbyId.slice(0, 16)}</span>
       </div>
 
-      {/* Apply Mode Toggle */}
-      <div className={styles.applyModeSection}>
-        <label className={styles.sectionTitle}>Apply Mode</label>
-        <div className={styles.applyModeButtons}>
-          <button
-            className={`${styles.applyModeButton} ${
-              applyMode === "on_next_reset" ? styles.active : ""
-            }`}
-            onClick={() => setApplyMode("on_next_reset")}
-          >
-            On Next Reset (Graceful)
-          </button>
-          <button
-            className={`${styles.applyModeButton} ${
-              applyMode === "immediate" ? styles.active : ""
-            }`}
-            onClick={() => setApplyMode("immediate")}
-          >
-            Immediate (Disruptive)
-          </button>
+      {/* Quick controls — the things changed most often, always visible */}
+      <div className={styles.quickControls}>
+        <div className={styles.quickCard}>
+          <div className={styles.quickLabelRow}>
+            <span className={styles.quickLabel}>Visibility</span>
+            {visibilitySaving && <span className={styles.savingBadge}>Saving...</span>}
+          </div>
+          <div className={styles.segmented}>
+            {(["public", "private", "hidden"] as const).map((v) => (
+              <button
+                key={v}
+                className={`${styles.segmentedButton} ${visibility === v ? styles.segmentedActive : ""}`}
+                onClick={() => handleVisibilityChange(v)}
+                disabled={visibilitySaving}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Visibility Selector */}
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Visibility</h2>
-        <div className={styles.visibilityControls}>
-          <Select.Root
-            value={visibility}
-            onValueChange={(value) => handleVisibilityChange(value as "public" | "private" | "hidden")}
-            disabled={visibilitySaving}
-          >
-            <Select.Trigger className={styles.selectTrigger}>
-              <Select.Value placeholder="Select visibility" />
-              <Select.Icon>
-                <ChevronDown size={16} />
-              </Select.Icon>
-            </Select.Trigger>
-            <Select.Portal>
-              <Select.Content className={styles.selectContent}>
-                <Select.Viewport>
-                  <Select.Item value="public" className={styles.selectItem}>
-                    <Select.ItemText>Public - Visible in lobby browser</Select.ItemText>
-                  </Select.Item>
-                  <Select.Item value="private" className={styles.selectItem}>
-                    <Select.ItemText>Private - Hidden, join via invite only</Select.ItemText>
-                  </Select.Item>
-                  <Select.Item value="hidden" className={styles.selectItem}>
-                    <Select.ItemText>Hidden - Not visible, spawn-only</Select.ItemText>
-                  </Select.Item>
-                </Select.Viewport>
-              </Select.Content>
-            </Select.Portal>
-          </Select.Root>
-          {visibilitySaving && <span className={styles.savingBadge}>Saving...</span>}
-        </div>
-      </div>
-
-      {/* Collection Selector */}
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Collection</h2>
-        <div className={styles.collectionControls}>
+        <div className={styles.quickCard}>
+          <div className={styles.quickLabelRow}>
+            <span className={styles.quickLabel}>Collection</span>
+            {pendingInfo.topics && <span className={styles.savingBadge}>Queued</span>}
+          </div>
           <Select.Root
             value={selectedCollection?.toString()}
-            onValueChange={(value) => setSelectedCollection(Number(value))}
+            onValueChange={(value) => handleCollectionSelect(Number(value))}
+            disabled={saving}
           >
             <Select.Trigger className={styles.selectTrigger}>
               <Select.Value placeholder="Select a collection" />
@@ -428,19 +428,23 @@ export default function LobbyDetailPage({ id }: { id: string }) {
               </Select.Content>
             </Select.Portal>
           </Select.Root>
-          <button
-            className={styles.changeCollectionButton}
-            onClick={handleChangeCollection}
-            disabled={saving}
-          >
-            Change Collection
-          </button>
         </div>
       </div>
 
-      {/* Game Parameters */}
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Game Structure</h2>
+      {/* Gameplay — structure + players + scoring, open by default */}
+      <CollapsibleSection
+        title="Gameplay"
+        defaultOpen
+        headerExtra={
+          <button
+            className={styles.resetDefaultsButton}
+            onClick={handleResetToDefaults}
+            disabled={saving}
+          >
+            Reset to Defaults
+          </button>
+        }
+      >
         <div className={styles.parameterGrid}>
           <ParameterSlider
             label="Number of Rounds"
@@ -466,11 +470,43 @@ export default function LobbyDetailPage({ id }: { id: string }) {
             max={10}
             unit="slots"
           />
+          <ParameterSlider
+            label="Min Players to Start"
+            value={config.min_players_to_start || 2}
+            onChange={(value) => setConfig({ ...config, min_players_to_start: value })}
+            min={1}
+            max={10}
+            unit="players"
+          />
+          <ParameterSlider
+            label="Max Players"
+            value={config.max_players || 25}
+            onChange={(value) => setConfig({ ...config, max_players: value })}
+            min={2}
+            max={100}
+            unit="players"
+          />
+          <ParameterSlider
+            label="Points per Normal Slot"
+            value={config.points_normal_slot || 100}
+            onChange={(value) => setConfig({ ...config, points_normal_slot: value })}
+            min={1}
+            max={1000}
+            unit="points"
+          />
+          <ParameterSlider
+            label="Points per Rare Slot"
+            value={config.points_rare_slot || 250}
+            onChange={(value) => setConfig({ ...config, points_rare_slot: value })}
+            min={1}
+            max={2000}
+            unit="points"
+          />
         </div>
-      </div>
+      </CollapsibleSection>
 
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Timing</h2>
+      {/* Timing */}
+      <CollapsibleSection title="Timing">
         <div className={styles.parameterGrid}>
           <ParameterSlider
             label="Round Duration"
@@ -505,60 +541,18 @@ export default function LobbyDetailPage({ id }: { id: string }) {
             unit="seconds"
           />
         </div>
-      </div>
-
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Player Rules</h2>
-        <div className={styles.parameterGrid}>
-          <ParameterSlider
-            label="Min Players to Start"
-            value={config.min_players_to_start || 2}
-            onChange={(value) => setConfig({ ...config, min_players_to_start: value })}
-            min={1}
-            max={10}
-            unit="players"
-          />
-          <ParameterSlider
-            label="Max Players"
-            value={config.max_players || 25}
-            onChange={(value) => setConfig({ ...config, max_players: value })}
-            min={2}
-            max={100}
-            unit="players"
-          />
-        </div>
-      </div>
-
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Scoring</h2>
-        <div className={styles.parameterGrid}>
-          <ParameterSlider
-            label="Points per Normal Slot"
-            value={config.points_normal_slot || 100}
-            onChange={(value) => setConfig({ ...config, points_normal_slot: value })}
-            min={1}
-            max={1000}
-            unit="points"
-          />
-          <ParameterSlider
-            label="Points per Rare Slot"
-            value={config.points_rare_slot || 250}
-            onChange={(value) => setConfig({ ...config, points_rare_slot: value })}
-            min={1}
-            max={2000}
-            unit="points"
-          />
-        </div>
-      </div>
+      </CollapsibleSection>
 
       {/* Host Settings (BotBob) */}
       {hostSettings && (
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>
-            Host Settings (BotBob)
-            {hostSettingsLoading && <span className={styles.loadingBadge}>Loading...</span>}
-          </h2>
-
+        <CollapsibleSection
+          title={
+            <>
+              Host (BotBob)
+              {hostSettingsLoading && <span className={styles.loadingBadge}>Loading...</span>}
+            </>
+          }
+        >
           <div className={styles.hostSettingsGrid}>
             {/* Enable/Disable Host */}
             <div className={styles.toggleControl}>
@@ -736,17 +730,19 @@ export default function LobbyDetailPage({ id }: { id: string }) {
               )}
             </>
           )}
-        </div>
+        </CollapsibleSection>
       )}
 
       {/* Fuzzy Matching Configuration */}
       {fuzzyMatchConfig && (
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>
-            Fuzzy Matching
-            {fuzzyMatchLoading && <span className={styles.loadingBadge}>Loading...</span>}
-          </h2>
-
+        <CollapsibleSection
+          title={
+            <>
+              Fuzzy Matching
+              {fuzzyMatchLoading && <span className={styles.loadingBadge}>Loading...</span>}
+            </>
+          }
+        >
           <div className={styles.fuzzyMatchDescription}>
             <p>
               Control how typos and variations are handled. Higher similarity scores are stricter.
@@ -824,46 +820,129 @@ export default function LobbyDetailPage({ id }: { id: string }) {
               </button>
             </div>
           </div>
-        </div>
+        </CollapsibleSection>
       )}
 
       {/* Bot Stress Testing */}
-      <BotControls lobbyId={lobbyId} onBotsChanged={handleBotsChanged} />
+      <CollapsibleSection title="Bot Stress Testing">
+        <BotControls lobbyId={lobbyId} onBotsChanged={handleBotsChanged} hideTitle />
+      </CollapsibleSection>
 
-      {/* Action Buttons */}
-      <div className={styles.actionButtons}>
-        <button
-          className={styles.resetDefaultsButton}
-          onClick={handleResetToDefaults}
-          disabled={saving}
-        >
-          Reset to Defaults
-        </button>
-        <button
-          className={styles.forceStartButton}
-          onClick={handleForceStart}
-          disabled={saving || forceStarting || !canForceStart}
-          title={!canForceStart ? "Force start requires a WAITING gameroom with at least one player" : undefined}
-        >
-          {forceStarting ? "Starting..." : "Force Start"}
-        </button>
-        <button
-          className={styles.forceResetButton}
-          onClick={handleForceReset}
-          disabled={saving}
-        >
-          Force Reset Now
-        </button>
-        <button
-          className={styles.saveButton}
-          onClick={handleSaveConfiguration}
-          disabled={saving}
-        >
-          {saving ? "Saving..." : "Save Configuration"}
-        </button>
+      {/* Sticky Action Bar */}
+      <div className={styles.actionBar}>
+        <div className={styles.actionBarInner}>
+        <div className={styles.actionBarStatus}>
+          <span
+            className={styles.statusChip}
+            style={{ "--status-color": getStatusColor(lobby.status) } as React.CSSProperties}
+          >
+            <span className={styles.statusDot} />
+            {lobby.status}
+          </span>
+          <span className={styles.statusMeta}>
+            {lobby.player_count} {lobby.player_count === 1 ? "player" : "players"}
+          </span>
+          {hasPending && (
+            <span className={styles.pendingBadge} title="Changes apply on the next game (or a manual reset)">
+              ⏳ {pendingLabel} pending
+            </span>
+          )}
+        </div>
+
+        <div className={styles.actionBarButtons}>
+          <button
+            className={styles.forceStartButton}
+            onClick={handleForceStart}
+            disabled={saving || forceStarting || !canForceStart}
+            title={!canForceStart ? "Force start requires a WAITING gameroom with at least one player" : undefined}
+          >
+            {forceStarting ? "Starting..." : "Force Start"}
+          </button>
+          <button
+            className={styles.forceResetButton}
+            onClick={handleForceReset}
+            disabled={saving}
+            title={hasPending ? "Resets the game now and applies any pending changes" : "Resets the game now"}
+          >
+            Force Reset Now
+          </button>
+          <span className={styles.actionBarDivider} />
+          <button
+            className={styles.saveButton}
+            onClick={() => handleSave("on_next_reset")}
+            disabled={saving}
+            title="Save changes; they apply when the current game ends or on a manual reset"
+          >
+            {saving ? "Saving..." : "Save (applies next game)"}
+          </button>
+          <button
+            className={styles.saveNowButton}
+            onClick={() => handleSave("immediate")}
+            disabled={saving}
+            title="Save changes and reset the game immediately"
+          >
+            Save & Reset Now
+          </button>
+        </div>
+        </div>
       </div>
+
+      <Toasts toasts={toasts} />
+      {confirmDialog}
     </div>
   );
+}
+
+function CollapsibleSection({
+  title,
+  defaultOpen = false,
+  headerExtra,
+  children,
+}: {
+  title: React.ReactNode;
+  defaultOpen?: boolean;
+  headerExtra?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionHeaderRow}>
+        <button
+          type="button"
+          className={styles.sectionToggle}
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+        >
+          <ChevronDown
+            size={18}
+            className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`}
+          />
+          <span className={styles.sectionTitle}>{title}</span>
+        </button>
+        {headerExtra && open && (
+          <div className={styles.sectionHeaderExtra}>{headerExtra}</div>
+        )}
+      </div>
+      {open && <div className={styles.sectionBody}>{children}</div>}
+    </div>
+  );
+}
+
+function getStatusColor(status: string) {
+  switch (status.toUpperCase()) {
+    case "WAITING":
+      return "#ffc107";
+    case "IN_ROUND":
+      return "#00ff00";
+    case "ROUND_BREAK":
+      return "#00ffff";
+    case "GAME_OVER":
+      return "#ff00ff";
+    default:
+      return "#999";
+  }
 }
 
 function ParameterSlider({
