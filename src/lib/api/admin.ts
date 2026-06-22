@@ -183,10 +183,8 @@ export type Lobby = {
   join_base_url?: string | null;
   game_ws_url?: string | null;
   visibility?: "public" | "private" | "hidden";
-  is_spawned?: boolean;
-  railway_service_id?: string | null;
   owner_id?: string | null;
-  // Set for multi-tenant rooms (which server hosts them); absent for single-tenant.
+  // Which multi-tenant server hosts this room.
   server_id?: string | null;
   is_baseline?: boolean;
   baseline_slot?: number | null;
@@ -825,27 +823,7 @@ export const lobbiesApi = {
   },
 
   /**
-   * Spawn a new gameroom service via Railway API
-   */
-  async spawnGameroom(request?: {
-    collection_id?: number;
-    configuration?: GameConfigurationParameters;
-  }): Promise<{ railway_service_id: string; railway_service_name: string; status: string }> {
-    const res = await apiFetch(`/admin/gamerooms/spawn`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(request || {}),
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.detail || "Failed to spawn gameroom");
-    }
-    return res.json();
-  },
-
-  /**
    * Allocate a room on the warm multi-tenant gameroom fleet (instant, no deploy).
-   * The multi-tenant replacement for spawnGameroom.
    */
   async allocateRoom(request?: {
     collection_id?: number;
@@ -873,34 +851,6 @@ export const lobbiesApi = {
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.detail || "Failed to delete room");
-    }
-    return res.json();
-  },
-
-  /**
-   * Tear down a spawned gameroom service via Railway API
-   */
-  async teardownGameroom(railwayServiceId: string): Promise<{ railway_service_id: string; deleted: boolean }> {
-    const res = await apiFetch(`/admin/gamerooms/${railwayServiceId}/teardown`, {
-      method: "DELETE",
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.detail || "Failed to teardown gameroom");
-    }
-    return res.json();
-  },
-
-  /**
-   * Make a spawned gameroom public so it appears in the lobby browser
-   */
-  async makePublic(lobbyId: string): Promise<{ status: string; lobby_id: string; visibility: string }> {
-    const res = await apiFetch(`/admin/gamerooms/${lobbyId}/make-public`, {
-      method: "POST",
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.detail || "Failed to make gameroom public");
     }
     return res.json();
   },

@@ -352,11 +352,6 @@ export default function LobbyDetailPage({ id }: { id: string }) {
             </Select.Portal>
           </Select.Root>
           {visibilitySaving && <span className={styles.savingBadge}>Saving...</span>}
-          {lobby.is_spawned && visibility === "hidden" && (
-            <span className={styles.visibilityNote}>
-              Spawned gamerooms start hidden. Use this to temporarily hide from players.
-            </span>
-          )}
         </div>
       </div>
 

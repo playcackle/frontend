@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { lobbiesApi, type Lobby } from "@/lib/api/admin";
-import { Settings, Trash2, Globe } from "lucide-react";
+import { Settings, Trash2 } from "lucide-react";
 import styles from "./page.module.css";
 
 export default function LobbiesPage() {
@@ -62,35 +62,6 @@ export default function LobbiesPage() {
       alert(err instanceof Error ? err.message : "Failed to delete room");
     } finally {
       setTearingDown(null);
-    }
-  };
-
-  const handleTeardown = async (railwayServiceId: string, lobbyId: string) => {
-    if (!confirm(`Tear down this spawned gameroom?\n\nRailway service ${railwayServiceId}\n\nThe gameroom will be destroyed and removed from the list.`)) {
-      return;
-    }
-    setTearingDown(railwayServiceId);
-    try {
-      await lobbiesApi.teardownGameroom(railwayServiceId);
-      alert("Gameroom torn down successfully");
-      loadLobbies();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to teardown gameroom");
-    } finally {
-      setTearingDown(null);
-    }
-  };
-
-  const handleMakePublic = async (lobbyId: string) => {
-    if (!confirm("Make this gameroom public?\n\nIt will appear in the public lobby browser for players to join.")) {
-      return;
-    }
-    try {
-      await lobbiesApi.makePublic(lobbyId);
-      alert("Gameroom is now public");
-      loadLobbies();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to make gameroom public");
     }
   };
 
@@ -219,25 +190,6 @@ export default function LobbiesPage() {
                 >
                   <Settings size={16} />
                 </button>
-                {lobby.visibility === "hidden" && lobby.is_spawned && (
-                  <button
-                    className={styles.iconButton}
-                    onClick={() => handleMakePublic(lobby.lobby_id)}
-                    title="Make Public"
-                  >
-                    <Globe size={16} />
-                  </button>
-                )}
-                {lobby.is_spawned && lobby.railway_service_id && (
-                  <button
-                    className={styles.iconButtonDanger}
-                    onClick={() => handleTeardown(lobby.railway_service_id!, lobby.lobby_id)}
-                    disabled={tearingDown === lobby.railway_service_id}
-                    title={tearingDown === lobby.railway_service_id ? "Tearing down..." : "Teardown service"}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                )}
                 {lobby.server_id && (
                   <button
                     className={styles.iconButtonDanger}
@@ -251,11 +203,9 @@ export default function LobbiesPage() {
                 {lobby.is_baseline && (
                   <span className={styles.spawnedBadge}>baseline #{lobby.baseline_slot ?? "?"}</span>
                 )}
-                {lobby.server_id ? (
+                {lobby.server_id && (
                   <span className={styles.spawnedBadge}>multi-tenant</span>
-                ) : lobby.is_spawned ? (
-                  <span className={styles.spawnedBadge}>spawned</span>
-                ) : null}
+                )}
               </div>
             </div>
           ))}
