@@ -5,8 +5,9 @@ import { SOUND_BONUS, SOUND_SNAPPED, SOUND_SUCCESS } from "./constants";
  * Format time as MM:SS
  */
 export const formatTime = (seconds: number): string => {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
+  const wholeSeconds = Math.max(0, Math.ceil(seconds));
+  const mins = Math.floor(wholeSeconds / 60);
+  const secs = wholeSeconds % 60;
   return `${mins.toString().padStart(2, "0")}:${secs
     .toString()
     .padStart(2, "0")}`;

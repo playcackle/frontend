@@ -65,7 +65,7 @@ export const useGameEvents = (
     const interval = setInterval(() => {
       const state = store.get(gameStateAtom);
       if (state.phaseEndsAt) {
-        const remaining = Math.max(0, Math.round(
+        const remaining = Math.max(0, Math.ceil(
           (new Date(state.phaseEndsAt).getTime() - Date.now()) / 1000
         ));
         const current = store.get(timeRemainingAtom);
