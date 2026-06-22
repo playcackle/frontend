@@ -70,7 +70,7 @@ export default function CollectionsPage() {
     if (
       !(await confirm({
         title: `Delete "${name}"?`,
-        message: "This will delete all topics and slots in this collection.",
+        message: "Topics are kept and can be added to other collections.",
         confirmLabel: "Delete",
         danger: true,
       }))
