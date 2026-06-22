@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   lobbiesApi,
   collectionsApi,
@@ -57,9 +57,28 @@ export default function LobbyDetailPage({ id }: { id: string }) {
   const [fuzzyMatchLoading, setFuzzyMatchLoading] = useState(false);
   const [fuzzyMatchSaving, setFuzzyMatchSaving] = useState(false);
 
+  const refreshLobbyState = useCallback(async () => {
+    try {
+      const lobbyData = await lobbiesApi.getById(lobbyId);
+      setLobby(lobbyData);
+    } catch (err) {
+      console.error("Failed to refresh lobby state:", err);
+    }
+  }, [lobbyId]);
+
   useEffect(() => {
     loadData();
   }, [lobbyId]);
+
+  useEffect(() => {
+    const interval = setInterval(refreshLobbyState, 5000);
+    return () => clearInterval(interval);
+  }, [refreshLobbyState]);
+
+  const handleBotsChanged = useCallback(() => {
+    refreshLobbyState();
+    setTimeout(refreshLobbyState, 1000);
+  }, [refreshLobbyState]);
 
   const loadData = async () => {
     try {
@@ -809,7 +828,7 @@ export default function LobbyDetailPage({ id }: { id: string }) {
       )}
 
       {/* Bot Stress Testing */}
-      <BotControls lobbyId={lobbyId} />
+      <BotControls lobbyId={lobbyId} onBotsChanged={handleBotsChanged} />
 
       {/* Action Buttons */}
       <div className={styles.actionButtons}>

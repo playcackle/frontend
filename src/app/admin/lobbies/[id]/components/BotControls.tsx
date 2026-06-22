@@ -6,9 +6,10 @@ import styles from "./BotControls.module.css";
 
 interface BotControlsProps {
   lobbyId: string;
+  onBotsChanged?: () => void;
 }
 
-export function BotControls({ lobbyId }: BotControlsProps) {
+export function BotControls({ lobbyId, onBotsChanged }: BotControlsProps) {
   const [botCount, setBotCount] = useState(5);
   const [accuracy, setAccuracy] = useState(70); // Percentage (0-100)
   const [typoRate, setTypoRate] = useState(20); // Percentage (0-100)
@@ -51,6 +52,7 @@ export function BotControls({ lobbyId }: BotControlsProps) {
         max_delay_seconds: maxDelay,
       });
       await loadBotStatus();
+      onBotsChanged?.();
     } catch (err) {
       console.error("Failed to add bots:", err);
       setError(err instanceof Error ? err.message : "Failed to add bots");
@@ -72,6 +74,7 @@ export function BotControls({ lobbyId }: BotControlsProps) {
     try {
       await botsApi.removeFromLobby(lobbyId);
       await loadBotStatus();
+      onBotsChanged?.();
     } catch (err) {
       console.error("Failed to remove bots:", err);
       setError(err instanceof Error ? err.message : "Failed to remove bots");
