@@ -25,6 +25,7 @@ export default function LobbyDetailPage({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [forceStarting, setForceStarting] = useState(false);
 
   // Parameter state
   const [config, setConfig] = useState<GameConfigurationParameters>({
@@ -224,6 +225,27 @@ export default function LobbyDetailPage({ id }: { id: string }) {
     }
   };
 
+  const handleForceStart = async () => {
+    const countdownSeconds = config.game_start_delay || 10;
+    if (!confirm(`Force start this gameroom in ${countdownSeconds} seconds?\n\nThis bypasses the minimum player requirement for this start only.`)) {
+      return;
+    }
+
+    try {
+      setForceStarting(true);
+      await lobbiesApi.forceStart(lobbyId, {
+        countdown_seconds: countdownSeconds,
+        reason: "Admin forced playtest start",
+      });
+      alert("Gameroom start countdown triggered");
+      loadData();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to force start gameroom");
+    } finally {
+      setForceStarting(false);
+    }
+  };
+
   const handleVisibilityChange = async (newVisibility: "public" | "private" | "hidden") => {
     try {
       setVisibilitySaving(true);
@@ -281,6 +303,8 @@ export default function LobbyDetailPage({ id }: { id: string }) {
       </div>
     );
   }
+
+  const canForceStart = lobby.status === "WAITING" && lobby.player_count > 0;
 
   return (
     <div className={styles.container}>
@@ -795,6 +819,14 @@ export default function LobbyDetailPage({ id }: { id: string }) {
           disabled={saving}
         >
           Reset to Defaults
+        </button>
+        <button
+          className={styles.forceStartButton}
+          onClick={handleForceStart}
+          disabled={saving || forceStarting || !canForceStart}
+          title={!canForceStart ? "Force start requires a WAITING gameroom with at least one player" : undefined}
+        >
+          {forceStarting ? "Starting..." : "Force Start"}
         </button>
         <button
           className={styles.forceResetButton}
