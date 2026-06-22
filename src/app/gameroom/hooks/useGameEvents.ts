@@ -36,6 +36,7 @@ import { useGameSocket } from "./useGameSocket";
 /** Grace period (ms) before a disconnection triggers the full loading screen.
  *  Brief blips (< 3s) show only the reconnection banner, not the loading overlay. */
 const LOADING_GRACE_PERIOD_MS = 3000;
+const COUNTDOWN_REFRESH_MS = 250;
 
 export const useGameEvents = (
   gameWsUrl: string,
@@ -58,8 +59,9 @@ export const useGameEvents = (
 
   // ---------------------------------------------------------------------------
   // Local countdown: derives timeRemaining from the server-authoritative
-  // phaseEndsAt timestamp once per second. This keeps the timer smooth
-  // regardless of lobby_tick frequency and resilient to dropped ticks.
+  // phaseEndsAt timestamp. Refresh more often than once per second so a newly
+  // received countdown does not linger on the starting number for almost two
+  // seconds when displayed with Math.ceil.
   // ---------------------------------------------------------------------------
   useEffect(() => {
     const interval = setInterval(() => {
@@ -73,7 +75,7 @@ export const useGameEvents = (
           store.set(updateGameStateAtom, { timeRemaining: remaining });
         }
       }
-    }, 1000);
+    }, COUNTDOWN_REFRESH_MS);
     return () => clearInterval(interval);
   }, [store]);
 
