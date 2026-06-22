@@ -3,9 +3,13 @@ import { useState, useEffect } from "react";
 import { lobbiesApi, type Lobby } from "@/lib/api/admin";
 import { Settings, Trash2 } from "lucide-react";
 import styles from "./page.module.css";
+import { Toasts, useToasts } from "@/app/admin/components/Toasts";
+import { useConfirm } from "@/app/admin/components/ConfirmDialog";
 
 export default function LobbiesPage() {
   const navigate = useNavigate();
+  const { toasts, showToast } = useToasts();
+  const { confirm, confirmDialog } = useConfirm();
   const [lobbies, setLobbies] = useState<Lobby[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,32 +38,36 @@ export default function LobbiesPage() {
   };
 
   const handleSpawn = async () => {
-    if (!confirm("Create a new room on the multi-tenant gameroom fleet?\n\nAllocated instantly on a warm server — it appears in the lobby browser right away.")) {
-      return;
-    }
     setSpawning(true);
     try {
       const result = await lobbiesApi.allocateRoom();
-      alert(`Created room ${result.lobby_id} on server ${result.server_id ?? "?"}.`);
+      showToast(`Created room ${result.lobby_id} on server ${result.server_id ?? "?"}`);
       loadLobbies();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to create room");
+      showToast(err instanceof Error ? err.message : "Failed to create room", "error");
     } finally {
       setSpawning(false);
     }
   };
 
   const handleDeleteRoom = async (lobbyId: string) => {
-    if (!confirm(`Delete room ${lobbyId}?\n\nRemoves this room from its multi-tenant server. The server keeps running and serving its other rooms.`)) {
+    if (
+      !(await confirm({
+        title: "Delete this room?",
+        message: `Removes ${lobbyId} from its multi-tenant server. The server keeps running and serving its other rooms.`,
+        confirmLabel: "Delete",
+        danger: true,
+      }))
+    ) {
       return;
     }
     setTearingDown(lobbyId);
     try {
       await lobbiesApi.deleteRoom(lobbyId);
-      alert("Room deleted");
+      showToast("Room deleted");
       loadLobbies();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete room");
+      showToast(err instanceof Error ? err.message : "Failed to delete room", "error");
     } finally {
       setTearingDown(null);
     }
@@ -211,6 +219,9 @@ export default function LobbiesPage() {
           ))}
         </div>
       )}
+
+      <Toasts toasts={toasts} />
+      {confirmDialog}
     </div>
   );
 }
