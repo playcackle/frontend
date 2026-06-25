@@ -2,6 +2,7 @@
 // Base Types
 // ========================
 
+import type { GameMode } from "@/lib/api/admin";
 import { Accolade, FinalScore, LobbyStatus, PodiumPlayer, Score, Slot } from "./state";
 
 export type GameEvent =
@@ -86,6 +87,7 @@ export type LobbySyncPayload = {
   scores: Score[];
   accolades: PlayerAccolade[];
   phase_ends_at?: string | null;
+  game_mode?: GameMode;
   play_again_state?: {
     confirmed_count: number;
     total_waiting: number;
@@ -99,6 +101,7 @@ export type LobbyTickPayload = {
   player_count: number;
   scores: Score[];
   phase_ends_at?: string | null;
+  game_mode?: GameMode;
 };
 
 export type NewRoundStartedPayload = {

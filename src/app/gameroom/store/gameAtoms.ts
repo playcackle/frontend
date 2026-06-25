@@ -50,6 +50,7 @@ const initGameState = {
   lobbyStatus: null as import("../types/state").LobbyStatus,
   minPlayersNeeded: 0,
   phaseEndsAt: null as string | null,
+  gameMode: 'hints' as import("@/lib/api/admin").GameMode,
 };
 // Core game state atoms
 export const gameStateAtom = atom<GameState>(initGameState);
@@ -80,6 +81,7 @@ export const countdownTopicNameAtom = atom(
 export const countdownTopicPromptAtom = atom(
   (get) => get(gameStateAtom).countdownTopicPrompt,
 );
+export const gameModeAtom = atom((get) => get(gameStateAtom).gameMode);
 export const lobbyStatusAtom = atom((get) => get(gameStateAtom).lobbyStatus);
 export const minPlayersNeededAtom = atom(
   (get) => get(gameStateAtom).minPlayersNeeded,

@@ -158,6 +158,8 @@ export type SlotAliasCreate = {
   alias_text: string;
 };
 
+export type GameMode = 'hints' | 'slots' | 'questions';
+
 export type GameConfigurationParameters = {
   num_rounds?: number;
   round_duration?: number;
@@ -170,6 +172,7 @@ export type GameConfigurationParameters = {
   points_normal_slot?: number;
   points_rare_slot?: number;
   max_players?: number;
+  game_mode?: GameMode;
 };
 
 export type Lobby = {

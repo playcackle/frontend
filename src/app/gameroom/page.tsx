@@ -14,6 +14,8 @@ import UnifiedMessages from "./components/UnifiedMessages";
 
 // Import optimized components
 import ConnectionBanner from "./components/ConnectionBanner";
+import HintGrid from "./components/HintGrid";
+import { QuestionGrid } from "./components/QuestionGrid";
 import SlotGrid from "./components/SlotGrid";
 import StatsRow from "./components/StatsRow";
 
@@ -31,6 +33,7 @@ import {
   countdownTopicNameAtom,
   countdownTopicPromptAtom,
   currentUserIdAtom,
+  gameModeAtom,
   isRoundBreakAtom,
   loadingAtom,
   lobbyStatusAtom,
@@ -38,6 +41,7 @@ import {
   playerCountAtom,
   scoresAtom,
   showCountDownAtom,
+  slotsAtom,
   timeRemainingAtom,
   updateGameStateAtom,
 } from "./store/gameAtoms";
@@ -75,6 +79,8 @@ export default function GameroomPage() {
   const showCountDown = useAtomValue(showCountDownAtom);
   const countdownTopicName = useAtomValue(countdownTopicNameAtom);
   const countdownTopicPrompt = useAtomValue(countdownTopicPromptAtom);
+  const gameMode = useAtomValue(gameModeAtom);
+  const slots = useAtomValue(slotsAtom);
   const scores = useAtomValue(scoresAtom);
   const lobbyStatus = useAtomValue(lobbyStatusAtom);
   const minPlayersNeeded = useAtomValue(minPlayersNeededAtom);
@@ -247,7 +253,13 @@ export default function GameroomPage() {
                           } as React.CSSProperties
                         }
                       >
-                        <SlotGrid />
+                        {gameMode === 'slots' ? (
+                          <SlotGrid />
+                        ) : gameMode === 'questions' ? (
+                          <QuestionGrid slots={slots} />
+                        ) : (
+                          <HintGrid slots={slots} />
+                        )}
                       </div>
                     </div>
                   )}

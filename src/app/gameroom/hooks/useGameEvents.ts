@@ -158,6 +158,7 @@ export const useGameEvents = (
           slots: data.slots ?? [],
           loading: false,
           lobbyStatus: data.status,
+          ...(data.game_mode ? { gameMode: data.game_mode } : {}),
         });
 
         // Restore opt-in state from state sync (for reconnects during showcase)
@@ -190,6 +191,7 @@ export const useGameEvents = (
           scores: data.scores ?? [],
           lobbyStatus: data.status,
           isRoundBreak: data.status === "ROUND_BREAK",
+          ...(data.game_mode ? { gameMode: data.game_mode } : {}),
         };
         // Only update phaseEndsAt when the tick explicitly provides it.
         // Setting it to null on every tick would wipe the anchor set by

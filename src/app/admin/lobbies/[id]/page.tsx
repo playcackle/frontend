@@ -8,6 +8,7 @@ import {
   type Lobby,
   type Collection,
   type GameConfigurationParameters,
+  type GameMode,
   type HostSettings,
   type FuzzyMatchConfig,
 } from "@/lib/api/admin";
@@ -42,6 +43,7 @@ export default function LobbyDetailPage({ id }: { id: string }) {
     points_normal_slot: 100,
     points_rare_slot: 250,
     max_players: 25,
+    game_mode: "hints",
   });
 
   const [selectedCollection, setSelectedCollection] = useState<number | null>(null);
@@ -328,6 +330,7 @@ export default function LobbyDetailPage({ id }: { id: string }) {
       points_normal_slot: 100,
       points_rare_slot: 250,
       max_players: 25,
+      game_mode: "hints",
     });
   };
 
@@ -428,6 +431,25 @@ export default function LobbyDetailPage({ id }: { id: string }) {
               </Select.Content>
             </Select.Portal>
           </Select.Root>
+        </div>
+
+        <div className={styles.quickCard}>
+          <div className={styles.quickLabelRow}>
+            <span className={styles.quickLabel}>Game Mode</span>
+            {pendingInfo.config && <span className={styles.savingBadge}>Queued</span>}
+          </div>
+          <div className={styles.segmented}>
+            {(["hints", "slots", "questions"] as const).map((m) => (
+              <button
+                key={m}
+                className={`${styles.segmentedButton} ${config.game_mode === m ? styles.segmentedActive : ""}`}
+                onClick={() => setConfig({ ...config, game_mode: m })}
+                disabled={saving}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

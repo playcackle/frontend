@@ -1,3 +1,4 @@
+import type { GameMode } from "@/lib/api/admin";
 import { PlayerAccolade } from "./payloads";
 
 export type Slot = {
@@ -74,4 +75,5 @@ export type GameState = {
   minPlayersNeeded: number;
   countdownTopicName?: string | null;
   countdownTopicPrompt?: string | null;
+  gameMode: GameMode;
 };
