@@ -42,6 +42,8 @@ export type GameStartingSoonPayload = {
   message: string;
   countdown_seconds: number;
   start_timestamp_utc: string;
+  topic_name?: string | null;
+  topic_prompt?: string | null;
 };
 
 export type RoundStartingSoonPayload = {
@@ -49,6 +51,8 @@ export type RoundStartingSoonPayload = {
   round_number: number; // The upcoming round number
   countdown_seconds: number; // Remaining seconds until round start
   start_timestamp_utc: string;
+  topic_name?: string | null;
+  topic_prompt?: string | null;
 };
 
 export type WaitingForPlayersPayload = {

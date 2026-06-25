@@ -3,6 +3,7 @@ import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import "@/app/globals.css";
 import { Provider } from "@/app/provider";
+import Progress from "@/app/loading";
 import Header from "@/components/header";
 import SynthwaveBackground from "@/components/synthwave-background";
 import { Suspense } from "react";
@@ -17,7 +18,7 @@ function RootLayout() {
       <div className="crt-container">
         <div className="crt-content">
           <Provider>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Progress />}>
               <SynthwaveBackground animated={false} />
               <Header />
               <main>

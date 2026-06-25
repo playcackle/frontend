@@ -206,6 +206,8 @@ export const useGameEvents = (
           lobbyStatus: "STARTING_SOON",
           timeRemaining: data.countdown_seconds,
           phaseEndsAt: data.start_timestamp_utc,
+          countdownTopicName: data.topic_name ?? null,
+          countdownTopicPrompt: data.topic_prompt ?? null,
         });
       }),
 
@@ -213,6 +215,8 @@ export const useGameEvents = (
         updateGameState({
           showCountDown: true,
           phaseEndsAt: data.start_timestamp_utc,
+          countdownTopicName: data.topic_name ?? null,
+          countdownTopicPrompt: data.topic_prompt ?? null,
         });
       }),
 
@@ -229,7 +233,7 @@ export const useGameEvents = (
       }),
 
       onEvent("game_start_cancelled", () => {
-        updateGameState({ lobbyStatus: "WAITING", showCountDown: false });
+        updateGameState({ lobbyStatus: "WAITING", showCountDown: false, countdownTopicName: null, countdownTopicPrompt: null });
       }),
 
       onEvent("new_round_started", (data: NewRoundStartedPayload) => {
@@ -241,6 +245,8 @@ export const useGameEvents = (
           slots: data.slots,
           roundNumber: data.round_number,
           showCountDown: false,
+          countdownTopicName: null,
+          countdownTopicPrompt: null,
           accolades: [],
           lobbyStatus: "IN_ROUND",
           phaseEndsAt: data.round_end_timestamp_utc,

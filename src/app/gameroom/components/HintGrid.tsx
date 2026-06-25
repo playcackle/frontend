@@ -1,38 +1,15 @@
-
 import { useAtomValue } from "jotai";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  isRoundBreakAtom,
-  roundHintsAtom,
-  roundPromptAtom,
-} from "../store/gameAtoms";
+import { roundPromptAtom } from "../store/gameAtoms";
 import { Slot } from "../types/state";
-import styles from "./AnswerGrid.module.css";
+import styles from "./HintGrid.module.css";
 
-interface AnswerGridProps {
+interface HintGridProps {
   slots: Slot[];
 }
 
-const BOT_BOB_HINT_LABELS = [
-  "Fine. Here's your help, loser",
-  "Clues. Don't say we never gave you anything",
-  "Ok ok, here's a lifeline. Nerd",
-  "Clues incoming. Pretend you figured it out yourself",
-  "Hints dropped. You're welcome, nerd",
-  "BotBob says: use these, dork",
-] as const;
-
-export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
-  const hints = useAtomValue(roundHintsAtom);
+export const HintGrid: React.FC<HintGridProps> = ({ slots }) => {
   const roundPrompt = useAtomValue(roundPromptAtom);
-  const hintLabel = React.useMemo(
-    () =>
-      BOT_BOB_HINT_LABELS[
-        Math.floor(Math.random() * BOT_BOB_HINT_LABELS.length)
-      ],
-    [],
-  );
-  const isRoundBreak = useAtomValue(isRoundBreakAtom);
   const totalAnswers = slots.length;
   const snappedMap = new Map(
     slots.filter((s) => s.is_snapped).map((s) => [s.id, s]),
@@ -74,9 +51,9 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
   const strokeDash = circumference * fillPct;
 
   return (
-    <div className={styles.answerGridContainer}>
+    <div className={styles.hintGridContainer}>
       {/* Hero: progress ring + status text */}
-      <div className={styles.answerGridHero}>
+      <div className={styles.hintGridHero}>
         <div className={styles.progressRingWrapper}>
           <svg className={styles.progressRingSvg} viewBox="0 0 100 100">
             <circle
@@ -106,27 +83,25 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
           </div>
         </div>
 
-        <div className={styles.answerGridStatus}>
-          <p className={styles.answerGridStatusTitle}>{roundPrompt}</p>
-          <p className={styles.answerGridStatusSub}>
+        <div className={styles.hintGridStatus}>
+          <p className={styles.hintGridStatusTitle}>{roundPrompt}</p>
+          <p className={styles.hintGridStatusSub}>
             {remaining > 0
               ? `${remaining} of ${totalAnswers} still to find — keep typing!`
               : "Amazing round, you got them all!"}
           </p>
 
           {/* Mini dot indicators per slot */}
-          <div className={styles.answerDotRow}>
+          <div className={styles.hintDotRow}>
             {slots.map((slot) => {
               const dotState = slot.is_snapped ? "found" : "empty";
               const isEmptyRare = !slot.is_snapped && slot.is_rare;
               return (
                 <div
                   key={slot.id}
-                  className={`${styles.answerDot} ${styles[`answerDot_${dotState}`]} ${slot.is_rare && slot.is_snapped ? styles.answerDotBonus : ""} ${isEmptyRare ? styles.answerDotEmptyRare : ""}`}
+                  className={`${styles.hintDot} ${styles[`hintDot_${dotState}`]} ${slot.is_rare && slot.is_snapped ? styles.hintDotBonus : ""} ${isEmptyRare ? styles.hintDotEmptyRare : ""}`}
                 >
-                  {isEmptyRare && (
-                    <span className={styles.answerDot2x}>2x</span>
-                  )}
+                  {isEmptyRare && <span className={styles.hintDot2x}>2x</span>}
                 </div>
               );
             })}
@@ -136,7 +111,7 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
 
       {/* Found answer chips */}
       {foundCount > 0 && (
-        <div className={styles.answerChipGrid}>
+        <div className={styles.foundChipGrid}>
           {snappedOrder.flatMap((id) => {
             const slot = snappedMap.get(id);
             if (!slot) return [];
@@ -144,20 +119,20 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
             return [
               <div
                 key={slot.id}
-                className={`${styles.answerChip} ${slot.is_rare ? styles.answerChipBonus : ""} ${isNew ? styles.answerChipNew : ""}`}
+                className={`${styles.foundChip} ${slot.is_rare ? styles.foundChipBonus : ""} ${isNew ? styles.foundChipNew : ""}`}
               >
-                <div className={styles.answerChipContent}>
-                  <span className={styles.answerChipText}>
+                <div className={styles.foundChipContent}>
+                  <span className={styles.foundChipText}>
                     {slot.canonical_text}
                   </span>
                   {slot.snapped_by_display_name && (
-                    <span className={styles.answerChipPlayer}>
+                    <span className={styles.foundChipPlayer}>
                       {slot.snapped_by_display_name}
                     </span>
                   )}
                 </div>
                 {slot.is_rare && (
-                  <span className={styles.answerChipMultiplier}>2x</span>
+                  <span className={styles.foundChipMultiplier}>2x</span>
                 )}
               </div>,
             ];
@@ -167,7 +142,7 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
 
       {/* Placeholder when nothing found */}
       {foundCount === 0 && (
-        <div className={styles.answerGridPlaceholder}>
+        <div className={styles.hintGridPlaceholder}>
           <p>
             Type answers in the chat to fill this up. There are{" "}
             <strong>{totalAnswers}</strong> answers to find. PSSSSST! Hints may
@@ -185,7 +160,6 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
         if (hintSlots.length === 0) return null;
         return (
           <div className={styles.hintsSection}>
-            <p className={styles.hintsSectionLabel}>{hintLabel}</p>
             <div className={styles.hintsGrid}>
               {hintSlots.map((slot) => (
                 <div key={slot.id} className={styles.hintChip}>
@@ -198,32 +172,8 @@ export const AnswerGrid: React.FC<AnswerGridProps> = ({ slots }) => {
           </div>
         );
       })()}
-
-      {/* Round hints — hidden during round breaks, and hints for already-answered slots are filtered out */}
-      {(() => {
-        if (isRoundBreak) return null;
-        const snappedSlotIds = new Set(
-          slots.filter((s) => s.is_snapped && s.id).map((s) => String(s.id)),
-        );
-        const visibleHints = hints.filter((h) => {
-          return !h.slot_id || !snappedSlotIds.has(h.slot_id.toString());
-        });
-        if (visibleHints.length === 0) return null;
-        return (
-          <div className={styles.hintsSection}>
-            <p className={styles.hintsSectionLabel}>{hintLabel}</p>
-            <div className={styles.hintsGrid}>
-              {visibleHints.map((hint, index) => (
-                <div key={index} className={styles.hintChip}>
-                  <span className={styles.hintChipText}>{hint.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      })()}
     </div>
   );
 };
 
-export default React.memo(AnswerGrid);
+export default React.memo(HintGrid);

@@ -1,25 +1,25 @@
 import { useAtomValue } from "jotai";
 import React, { useState } from "react";
 import { slotsAtom } from "../store/gameAtoms";
-import AnswerGrid from "./AnswerGrid";
+import HintGrid from "./HintGrid";
 import QuestionGrid from "./QuestionGrid";
 import styles from "./SlotGrid.module.css";
 
-type GridMode = "answers" | "questions";
+type GridMode = "hints" | "questions";
 
 function SlotGrid() {
   const slots = useAtomValue(slotsAtom);
-  const [gridMode, setGridMode] = useState<GridMode>("answers");
+  const [gridMode, setGridMode] = useState<GridMode>("hints");
 
   return (
     <div className={styles.slotGridWrapper}>
       {/* <div className={styles.gridModeToggle}>
         <button
-          className={`${styles.gridModeBtn} ${gridMode === "answers" ? styles.gridModeBtnActive : ""}`}
-          onClick={() => setGridMode("answers")}
-          aria-pressed={gridMode === "answers"}
+          className={`${styles.gridModeBtn} ${gridMode === "hints" ? styles.gridModeBtnActive : ""}`}
+          onClick={() => setGridMode("hints")}
+          aria-pressed={gridMode === "hints"}
         >
-          Answers
+          Hints
         </button>
         <button
           className={`${styles.gridModeBtn} ${gridMode === "questions" ? styles.gridModeBtnActive : ""}`}
@@ -30,8 +30,8 @@ function SlotGrid() {
         </button>
       </div> */}
 
-      {gridMode === "answers" ? (
-        <AnswerGrid slots={slots} />
+      {gridMode === "hints" ? (
+        <HintGrid slots={slots} />
       ) : (
         <QuestionGrid slots={slots} />
       )}

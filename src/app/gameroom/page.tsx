@@ -28,6 +28,8 @@ import { useAnswerBubbles } from "./hooks/useAnswerBubbles";
 import { useGameActions } from "./hooks/useGameActions";
 import { useGameEvents } from "./hooks/useGameEvents";
 import {
+  countdownTopicNameAtom,
+  countdownTopicPromptAtom,
   currentUserIdAtom,
   isRoundBreakAtom,
   loadingAtom,
@@ -71,6 +73,8 @@ export default function GameroomPage() {
   const isRoundBreak = useAtomValue(isRoundBreakAtom);
   const timeRemaining = useAtomValue(timeRemainingAtom);
   const showCountDown = useAtomValue(showCountDownAtom);
+  const countdownTopicName = useAtomValue(countdownTopicNameAtom);
+  const countdownTopicPrompt = useAtomValue(countdownTopicPromptAtom);
   const scores = useAtomValue(scoresAtom);
   const lobbyStatus = useAtomValue(lobbyStatusAtom);
   const minPlayersNeeded = useAtomValue(minPlayersNeededAtom);
@@ -190,7 +194,7 @@ export default function GameroomPage() {
       {loading && <Progress />}
       {!loading && (
         <div className={styles.container}>
-          <CountdownOverlay show={showCountDown} value={timeRemaining} />
+          <CountdownOverlay show={showCountDown} value={timeRemaining} topicName={countdownTopicName} topicPrompt={countdownTopicPrompt} />
 
           <div
             ref={mainRef}

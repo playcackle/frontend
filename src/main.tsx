@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
+import Progress from "./app/loading";
 import * as Sentry from "@sentry/react";
 
 Sentry.init({
@@ -18,7 +19,10 @@ Sentry.init({
   },
 });
 
-const router = createRouter({ routeTree });
+const router = createRouter({
+  routeTree,
+  defaultPendingComponent: Progress,
+});
 
 declare module "@tanstack/react-router" {
   interface Register {

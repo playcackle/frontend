@@ -72,4 +72,6 @@ export type GameState = {
   showCountDown: boolean;
   lobbyStatus: LobbyStatus;
   minPlayersNeeded: number;
+  countdownTopicName?: string | null;
+  countdownTopicPrompt?: string | null;
 };

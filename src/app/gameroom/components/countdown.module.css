@@ -23,6 +23,43 @@
   animation: scaleIn 0.3s ease-out forwards;
 }
 
+.topicSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.topicLabel {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--retro-font);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.topicName {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue);
+  font-family: var(--retro-font);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.topicPrompt {
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 8px var(--neon-blue);
+  font-family: var(--retro-font);
+  text-align: center;
+  margin-top: 0.5rem;
+  max-width: 600px;
+}
+
 .countdownValue {
   font-size: 15rem;
   font-weight: bold;

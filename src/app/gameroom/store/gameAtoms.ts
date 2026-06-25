@@ -74,6 +74,12 @@ export const playerAccoladesAtom = atom((get) => get(gameStateAtom).playerAccola
 export const showCountDownAtom = atom(
   (get) => get(gameStateAtom).showCountDown,
 );
+export const countdownTopicNameAtom = atom(
+  (get) => get(gameStateAtom).countdownTopicName,
+);
+export const countdownTopicPromptAtom = atom(
+  (get) => get(gameStateAtom).countdownTopicPrompt,
+);
 export const lobbyStatusAtom = atom((get) => get(gameStateAtom).lobbyStatus);
 export const minPlayersNeededAtom = atom(
   (get) => get(gameStateAtom).minPlayersNeeded,
